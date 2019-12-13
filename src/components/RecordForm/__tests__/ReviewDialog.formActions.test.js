@@ -24,10 +24,10 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
 
 /* eslint-disable react/prop-types */
 jest.mock('../../DropDownSelect', () => ({
-  resources = [], value, onChange, name,
+  options = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {
-    const option = resources.find(
+    const option = options.find(
       opt => opt === event.currentTarget.value,
     );
 
@@ -35,7 +35,7 @@ jest.mock('../../DropDownSelect', () => ({
   };
   return (
     <select data-testid="select" onChange={handleChange} value={value}>
-      {resources.map(opt => (
+      {options.map(opt => (
         <option key={opt} value={opt}>
           {opt}
         </option>

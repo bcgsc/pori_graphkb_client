@@ -177,7 +177,7 @@ const FormField = (props) => {
         name={name}
         onChange={onChange}
         required={mandatory}
-        resources={['', ...choices]}
+        options={['', ...choices]}
         value={value || ''}
       />
     );

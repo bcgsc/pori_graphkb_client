@@ -85,7 +85,7 @@ const PositionForm = ({
       <ResourceSelect
         disabled={disabled}
         onChange={handleVariantChange}
-        resources={positionVariants}
+        options={positionVariants}
         value={variant}
       />
       )}

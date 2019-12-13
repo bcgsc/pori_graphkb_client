@@ -139,7 +139,7 @@ function GraphOptionsPanel(props) {
               label="Label nodes by"
               name="nodeLabelProp"
               onChange={handleGraphOptionsChange}
-              resources={['', ...nodeLabelBy]}
+              options={['', ...nodeLabelBy]}
               value={graphOptions.nodeLabelProp}
             />
             <FormControl className="graph-option">
@@ -166,7 +166,7 @@ function GraphOptionsPanel(props) {
               label="Color nodes by"
               name="nodesColor"
               onChange={handleGraphOptionsChange}
-              resources={['', ...nodeColorBy]}
+              options={['', ...nodeColorBy]}
               value={graphOptions.nodesColor}
             />
             <FormControl className="graph-option">
@@ -197,7 +197,7 @@ function GraphOptionsPanel(props) {
               label="Label edges by"
               name="linkLabelProp"
               onChange={handleGraphOptionsChange}
-              resources={['', '@class', '@rid', 'source.name']}
+              options={['', '@class', '@rid', 'source.name']}
               value={graphOptions.linkLabelProp}
             />
             <DropDownSelect
@@ -206,7 +206,7 @@ function GraphOptionsPanel(props) {
               label="Color edges by"
               name="linksColor"
               onChange={handleGraphOptionsChange}
-              resources={['', '@class', '@rid', 'source.name']}
+              options={['', '@class', '@rid', 'source.name']}
               value={graphOptions.linksColor}
             />
             <FormControl>

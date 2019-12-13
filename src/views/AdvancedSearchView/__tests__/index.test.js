@@ -25,10 +25,10 @@ jest.mock('@/components/RecordAutocomplete', () => (({
 }));
 
 jest.mock('@/components/DropDownSelect', () => (({
-  resources = [], value, onChange, className,
+  options = [], value, onChange, className,
 }) => {
   const handleChange = (event) => {
-    const option = resources.find(
+    const option = options.find(
       opt => opt.value === event.currentTarget.value,
     );
     onChange({ target: { value: option ? option.value : option } });
@@ -40,7 +40,7 @@ jest.mock('@/components/DropDownSelect', () => (({
   const selectType = classCheck || propCheck || operatorCheck || 'filter';
   return (
     <select data-testid={`${selectType}-select`} onChange={handleChange} value={value}>
-      {resources.map(opt => (
+      {options.map(opt => (
         <option key={opt.key} value={opt.value}>
           {opt.label}
         </option>

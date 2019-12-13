@@ -1,125 +1,47 @@
 @import '../../globals';
 @import '../../theme';
 
-@media only screen and (max-width: $breakpoint-mobile) {
-  .class-select {
-    margin: 0 2px;
-    margin-top: 2px;
+.advanced-search__class-select {
+  margin: 0 2px;
+  margin-top: 2px;
+
+  @media (min-width: $breakpoint-mobile) {
+    margin: 0 20px;
+    margin-top: 20px;
+  }
+}
+
+.advanced-search__filter-groups {
+  display: flex;
+  justify-content: center;
+
+  &__dropdown {
+    margin: 20px 0;
+    width: fit-content;
   }
 
-  .add-filter-box {
-    border: 1px solid $palette__primary--light;
-    border-radius: 15px;
-    margin: 2px auto;
-    width: 89%;
-
-    h5 {
-      margin: 10px auto;
-      width: fit-content;
-    }
-
-    &-actions {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-
-      &__property {
-        margin: 0 auto;
-        width: 80%;
-      }
-
-      &__value {
-        margin: 0 auto;
-        width: 80%;
-      }
-
-      &__operator {
-        margin: 0 auto;
-        width: 80%;
-      }
-    }
-  }
-
-  .add-filter-group-box {
-    display: flex;
-    justify-content: center;
-
-    &__dropdown {
-      margin: 20px 0;
-      width: fit-content;
-    }
-
-    .action-button {
-      margin-top: 42px;
-    }
+  .action-button {
+    margin-top: 42px;
   }
 
   .search-btn {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-  }
-}
 
-@media only screen and (min-width: $breakpoint-mobile) {
-
-  .class-select {
-    margin: 0 20px;
-    margin-top: 20px;
-  }
-
-  .add-filter-box {
-    border: 1px solid $palette__primary--light;
-    border-radius: 15px;
-    margin: 0 75px;
-    width: 89%;
-
-    h5 {
-      margin: 10px;
-      position: relative;
-      top: 5px;
-    }
-
-    &-actions {
-      display: flex;
-      justify-content: space-between;
-
-      &__property {
-        width: 40%;
-      }
-
-      &__value {
-        width: 40%;
-      }
-
-      &__operator {
-        width: 20%;
+    @media (min-width: $breakpoint-mobile) {
+      .action-button {
+        float: right;
+        margin: 20px 0;
+        position: relative;
+        right: 60px;
       }
     }
   }
 
-  .add-filter-group-box {
-    display: flex;
-    justify-content: center;
-
+  @media (min-width: $breakpoint-mobile) {
     &__dropdown {
       margin: 20px;
-      width: fit-content;
-    }
-
-    .action-button {
-      margin-top: 42px;
-    }
-  }
-
-
-  .search-btn {
-
-    .action-button {
-      float: right;
-      margin: 20px 0;
-      position: relative;
-      right: 60px;
     }
   }
 }

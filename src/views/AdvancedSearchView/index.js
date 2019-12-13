@@ -186,7 +186,7 @@ function AdvancedSearchView(props) {
 
   return (
     <>
-      <div className="class-select">
+      <div className="advanced-search__class-select">
         <ModelSelect
           baseModel="V"
           onChange={({ target: { value: newValue } }) => setModelName(newValue)}
@@ -198,7 +198,7 @@ function AdvancedSearchView(props) {
         modelName={modelName}
         onSubmit={handleAddFilter}
       />
-      <Card className="filter-groups">
+      <Card className="advanced-search__filter-groups">
         <div className="filter-groups__header">
           <Typography variant="h5">
           Active Filter Groups

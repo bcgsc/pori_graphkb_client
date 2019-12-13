@@ -19,7 +19,7 @@ describe('<DropDownSelect />', () => {
   test('renders FormControl child correctly', () => {
     wrapper = mount(
       <DropDownSelect
-        resources={mockData}
+        options={mockData}
         value={val}
       />,
     );
@@ -30,7 +30,7 @@ describe('<DropDownSelect />', () => {
     wrapper = mount(
       <DropDownSelect
         name="test"
-        resources={mockData}
+        options={mockData}
         value={val}
       />,
     );

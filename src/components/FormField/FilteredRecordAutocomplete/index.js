@@ -75,7 +75,7 @@ const FilteredRecordAutocomplete = ({
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
-            resources={[...model.descendantTree(false).map(m => m.name)]}
+            options={[...model.descendantTree(false).map(m => m.name)]}
             value={selectedClassName}
           />
         )}

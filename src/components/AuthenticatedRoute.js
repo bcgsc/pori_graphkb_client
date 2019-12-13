@@ -19,7 +19,6 @@ const AuthenticatedRoute = ({
     autheticationToken, authorizationToken,
   } = useContext(KBContext);
 
-
   const authOk = isAuthenticated({ autheticationToken });
   const adminOk = isAdmin({ autheticationToken, authorizationToken });
 

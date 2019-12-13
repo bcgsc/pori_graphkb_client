@@ -91,7 +91,6 @@ const RecordView = (props) => {
       const search = qs.stringify(cleanLinkedRecords(content));
       history.push(`/data/table?${search}`, { search, content });
     } else {
-      // history.push('/error', { error: { name, message } });
       handleErrorSaveLocation({ name, message }, history);
     }
   }, [history]);

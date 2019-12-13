@@ -5,7 +5,6 @@ import {
   Card,
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useContext, useEffect, useReducer, useState,
@@ -13,6 +12,7 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import FormField from '@/components/FormField';
+import ModelSelect from '@/components/ModelSelect';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords } from '@/components/util';
 import api from '@/services/api';
@@ -96,24 +96,6 @@ function AdvancedSearchView(props) {
     setModel(schema.get(modelName || 'Statement'));
   }, [modelName]);
 
-  // fetching class model options
-  const [modelOptions, setModelOptions] = useState([]);
-  useEffect(() => {
-    try {
-      const options = schema.get('V').descendantTree(true).map(m => ({
-        label: m.name, value: m.name, key: m.name, caption: m.description,
-      }));
-      setModelOptions(options);
-
-      if (options.length === 1) {
-        setModelName(options[0].label);
-      } else {
-        setModelName('');
-      }
-    } catch (err) {
-      history.push('/error', { error: { name: err.name, message: err.toString() } });
-    }
-  }, [history]);
 
   // Based on the selected model, generate property/attribute list
   const queryProps = model ? model.queryProperties : [];
@@ -370,12 +352,9 @@ function AdvancedSearchView(props) {
   return (
     <>
       <div className="class-select">
-        <FormField
-          className="class-select"
-          model={{
-            choices: modelOptions, required: true, name: '@class type to be queried', type: 'string',
-          }}
-          onChange={({ target: { value } }) => setModelName(value)}
+        <ModelSelect
+          baseModel="V"
+          onChange={({ target: { value: newValue } }) => setModelName(newValue)}
           value={modelName}
         />
       </div>

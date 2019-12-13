@@ -68,9 +68,12 @@ class ErrorView extends Component {
     } = state;
 
     if (name === 'AuthenticationError') {
-      localStorage.setItem('savedLocation', true);
-      localStorage.setItem('savedPathname', pathname);
-      localStorage.setItem('savedSearch', search);
+      const savedLocation = {
+        pathname,
+        search,
+      };
+      localStorage.setItem('savedLocation', JSON.stringify(savedLocation));
+
       history.push({
         pathname: '/login',
         state: { from: { pathname, search } },

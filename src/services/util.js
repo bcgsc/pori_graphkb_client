@@ -402,11 +402,16 @@ const recordId = (obj) => {
 
 /**
  * navigates to error view and saves previous locaton to history object.
+ *
+ * @param {object} error error object containing message and name
+ * @param {object} history history object
+ * @param {object} referrerLocation location of application before handling error
  */
-const handleErrorSaveLocation = (error, history, referrerLocation) => {
+const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
   const { name, message } = error;
   const { location: { pathname, search } } = history;
 
+  // this is necessary for cases where multiple async api calls causes an error
   if (referrerLocation) {
     const { pathname: savedPath, search: savedSearch } = referrerLocation;
     history.push({

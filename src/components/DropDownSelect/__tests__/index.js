@@ -1,40 +1,30 @@
-import { FormControl } from '@material-ui/core';
-import { mount } from 'enzyme';
+import '@testing-library/jest-dom/extend-expect';
+
+import { render } from '@testing-library/react';
 import React from 'react';
 
 import DropDownSelect from '..';
 
-const mockData = [
-  { name: 'opt-1', '@rid': '#1' },
-  { name: 'opt-2', '@rid': '#2' },
-  { name: 'opt-3', '@rid': '#3' },
-  { name: 'opt-4', '@rid': '#4' },
-  { name: 'opt-5', '@rid': '#5' },
-];
-
-describe('<DropDownSelect />', () => {
-  let wrapper;
-  const val = 'best';
-
+describe('DropDownSelect', () => {
   test('renders FormControl child correctly', () => {
-    wrapper = mount(
+    const { getByText, queryByText } = render(
       <DropDownSelect
-        options={mockData}
-        value={val}
+        options={['blargh', 'monkeys']}
+        value="blargh"
       />,
     );
-    expect(wrapper.children().type()).toBe(FormControl);
+    expect(getByText('blargh')).toBeInTheDocument();
+    expect(queryByText('monkeys')).not.toBeInTheDocument();
   });
 
   test('props are passed down correctly', () => {
-    wrapper = mount(
+    const { getByText } = render(
       <DropDownSelect
-        name="test"
-        options={mockData}
-        value={val}
+        label="select something"
+        options={['blargh', 'monkeys']}
+        value="monkeys"
       />,
     );
-    expect(wrapper.find('input#resource-select-test').props().name).toBe('test');
-    expect(wrapper.find('input#resource-select-test').props().value).toBe('best');
+    expect(getByText('select something')).toBeInTheDocument();
   });
 });

@@ -1,47 +1,61 @@
 @import '../../globals';
 @import '../../theme';
 
-.advanced-search__class-select {
-  margin: 0 2px;
-  margin-top: 2px;
+.advanced-search {
+  padding: 20px;
 
-  @media (min-width: $breakpoint-mobile) {
-    margin: 0 20px;
-    margin-top: 20px;
-  }
-}
-
-.advanced-search__filter-groups {
-  display: flex;
-  justify-content: center;
-
-  &__dropdown {
-    margin: 20px 0;
-    width: fit-content;
-  }
-
-  .action-button {
-    margin-top: 42px;
-  }
-
-  .search-btn {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+  &__class-select {
+    margin: 0 2px;
+    margin-top: 2px;
 
     @media (min-width: $breakpoint-mobile) {
-      .action-button {
-        float: right;
-        margin: 20px 0;
-        position: relative;
-        right: 60px;
-      }
+      margin: 0 20px;
+      margin-top: 20px;
     }
   }
 
-  @media (min-width: $breakpoint-mobile) {
+  &__filter-groups,
+  &__property-filter {
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(100% - 40px);
+
+    @media (min-width: $breakpoint-lg) {
+      width: calc(100% - 110px);
+    }
+  }
+
+  &__filter-groups {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     &__dropdown {
-      margin: 20px;
+      margin: 20px 0;
+      width: fit-content;
+    }
+
+    .action-button {
+      margin-top: 42px;
+    }
+
+    .search-btn {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+
+      @media (min-width: $breakpoint-mobile) {
+        .action-button {
+          margin-left: auto;
+          margin-right: 20px;
+        }
+      }
+    }
+
+    @media (min-width: $breakpoint-mobile) {
+      &__dropdown {
+        margin: 20px;
+      }
     }
   }
 }

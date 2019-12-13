@@ -72,6 +72,10 @@ const PropertyFilter = ({
         label: p.name, value: p.name, key: p.name, caption: p.description,
       }));
     setPropertyChoices(choices);
+
+    if (choices.length) {
+      setProperty(choices[0].value);
+    }
   }, [modelName]);
 
   const valueModel = {
@@ -136,6 +140,7 @@ const PropertyFilter = ({
         <div className="property-filter__content">
           <FieldWrapper className="property-filter__property">
             <DropDownSelect
+              innerProps={{ 'data-testid': 'prop-select' }}
               onChange={({ target: { value } }) => setProperty(value)}
               options={propertyChoices}
               value={property}

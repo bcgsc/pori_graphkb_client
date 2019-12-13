@@ -71,11 +71,7 @@ const filterGroupReducer = (state, action) => {
  *
  * @property {object} props.history history router object to navigate to different views
  */
-function AdvancedSearchView(props) {
-  const {
-    history,
-  } = props;
-
+function AdvancedSearchView({ history }) {
   const snackbar = useContext(SnackbarContext);
 
   // set up current model for search

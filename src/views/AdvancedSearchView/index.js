@@ -78,20 +78,17 @@ const initialFilterValues = {
  * the knowledgebase. Query consists of different filter groups with their own
  * set of filters.
  *
- * @property {string} props.modelName name of target model of query
  * @property {object} props.history history router object to navigate to different views
  */
 function AdvancedSearchView(props) {
   const {
-    modelName: initialModelName,
     history,
   } = props;
-
 
   const snackbar = useContext(SnackbarContext);
 
   // set up current model for search
-  const [modelName, setModelName] = useState(initialModelName || 'Statement');
+  const [modelName, setModelName] = useState('Statement');
   const [model, setModel] = useState(null);
   const [propertyModel, setPropertyModel] = useState(null);
   useEffect(() => {
@@ -485,11 +482,6 @@ function AdvancedSearchView(props) {
 
 AdvancedSearchView.propTypes = {
   history: HistoryPropType.isRequired,
-  modelName: PropTypes.string,
-};
-
-AdvancedSearchView.defaultProps = {
-  modelName: null,
 };
 
 export default AdvancedSearchView;

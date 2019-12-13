@@ -141,6 +141,7 @@ const RecordView = (props) => {
     modelName
       ? (
         <RecordForm
+          history={history}
           modelName={modelName}
           onError={handleError}
           onSubmit={handleSubmit}

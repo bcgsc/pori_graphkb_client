@@ -23,6 +23,7 @@ import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
+import { navigateToGraphview } from '@/views/DataView/util';
 
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
@@ -70,6 +71,7 @@ const cleanPayload = (payload) => {
 const RecordForm = ({
   value: initialValue,
   modelName,
+  history,
   title,
   onTopClick,
   onSubmit,
@@ -264,7 +266,7 @@ const RecordForm = ({
             <div className="header-action-buttons__graphview">
               <Tooltip title="click here for graphview">
                 <IconButton
-                  onClick={() => console.log('jumping meow')}
+                  onClick={() => navigateToGraphview([formContent['@rid']], history, () => {})}
                 >
                   <TimelineIcon
                     color="secondary"
@@ -355,6 +357,7 @@ const RecordForm = ({
 
 
 RecordForm.propTypes = {
+  history: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   modelName: PropTypes.string,
   onError: PropTypes.func,

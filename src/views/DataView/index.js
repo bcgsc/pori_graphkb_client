@@ -11,7 +11,6 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import * as qs from 'qs';
 import React from 'react';
 
 import { HistoryPropType, LocationPropType } from '@/components/types';
@@ -24,7 +23,7 @@ import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
 import GraphComponent from './components/GraphComponent';
-import { hashRecordsByRID } from './util';
+import { getNodeRIDsFromURL, hashRecordsByRID, navigateToGraphview } from './util';
 
 /**
  * Shows the search result filters and an edit button
@@ -228,14 +227,9 @@ class DataView extends React.Component {
   @boundMethod
   async loadSavedStateFromURL() {
     const { cache } = this.state;
-    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
-    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
-    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
 
     try {
-      const decodedContent = decodeURIComponent(nodes);
-      const base64decoded = atob(decodedContent);
-      const decodedNodes = JSON.parse(base64decoded);
+      const decodedNodes = getNodeRIDsFromURL();
       const records = await cache.getRecords(decodedNodes);
       const data = hashRecordsByRID(records);
       this.setState({ graphData: data });
@@ -256,25 +250,7 @@ class DataView extends React.Component {
   @boundMethod
   handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history } = this.props;
-
-    const savedState = {};
-    let encodedState;
-
-    try {
-      const stringifiedState = JSON.stringify(nodeRIDs);
-      const base64encodedState = btoa(stringifiedState);
-      const encodedContent = encodeURIComponent(base64encodedState);
-
-      savedState.nodes = encodedContent;
-      encodedState = qs.stringify(savedState);
-    } catch (err) {
-      this.handleError(err);
-    }
-
-    history.push({
-      pathname: '/data/graph',
-      search: `${encodedState}`,
-    });
+    navigateToGraphview(nodeRIDs, history, this.handleError);
   }
 
   @boundMethod

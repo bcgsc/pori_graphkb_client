@@ -401,35 +401,29 @@ const recordId = (obj) => {
 };
 
 /**
- * navigates to error view and saves previous locaton to history object.
+ * navigates to error view and saves previous locaton to history object so that
+ * after login, the user is redirected back to the previous page they were on
  *
- * @param {object} error error object containing message and name
- * @param {object} history history object
+ * @param {object} error error object containing message and error name
+ * @param {object} history history object for navigation
  * @param {object} referrerLocation location of application before handling error
  */
 const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
   const { name, message } = error;
   const { location: { pathname, search } } = history;
 
-  // this is necessary for cases where multiple async api calls causes an error
-  if (referrerLocation) {
-    const { pathname: savedPath, search: savedSearch } = referrerLocation;
-    history.push({
-      pathname: '/error',
-      state: {
-        from: { pathname: savedPath, search: savedSearch },
-        error: { name, message },
-      },
-    });
-  } else {
-    history.push({
-      pathname: '/error',
-      state: {
-        from: { pathname, search },
-        error: { name, message },
-      },
-    });
-  }
+  const savedState = {
+    from: {
+      pathname: referrerLocation ? referrerLocation.pathname : pathname,
+      search: referrerLocation ? referrerLocation.search : search,
+    },
+    error: { name, message },
+  };
+
+  history.push({
+    pathname: '/error',
+    state: savedState,
+  });
 };
 
 export default {

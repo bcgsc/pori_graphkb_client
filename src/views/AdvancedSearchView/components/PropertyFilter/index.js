@@ -55,7 +55,9 @@ const NEW_FILTER_GROUP = 'Add to new Filter Group';
  * @property {string} props.modelName name of target model of query
  * @property {object} props.history history router object to navigate to different views
  */
-const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
+const PropertyFilter = ({
+  modelName, filterGroups, onSubmit, className,
+}) => {
   const model = schema.get(modelName);
 
   const [property, setProperty] = useState('');
@@ -127,12 +129,12 @@ const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
 
   return (
     <>
-      <div className="property-filter">
+      <div className={`property-filter ${className}`}>
         <Typography className="property-filter__title" variant="h5">
           Add New Filter
         </Typography>
         <div className="property-filter__content">
-          <FieldWrapper>
+          <FieldWrapper className="property-filter__property">
             <DropDownSelect
               onChange={({ target: { value } }) => setProperty(value)}
               options={propertyChoices}
@@ -140,6 +142,7 @@ const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
             />
           </FieldWrapper>
           <FormField
+            className="property-filter__value"
             disabled={!property}
             error={formHasErrors}
             formIsDirty={Boolean(property)}
@@ -149,7 +152,7 @@ const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
             value={formContent.value}
             variant="edit"
           />
-          <FieldWrapper>
+          <FieldWrapper className="property-filter__operator">
             <DropDownSelect
               disabled={!property || operatorChoices.length < 2}
               onChange={({ target: { value } }) => setOperator(value)}
@@ -160,8 +163,8 @@ const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
 
         </div>
       </div>
-      <div className="add-filter-group-box">
-        <div className="add-filter-group-box__dropdown">
+      <div className="property-filter__add-filter-box">
+        <div className="property-filter__add-filter-dropdown">
           <DropDownSelect
             onChange={({ target: { value } }) => setFilterGroup(value)}
             options={[NEW_FILTER_GROUP, ...filterGroups]}
@@ -184,11 +187,13 @@ const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
 PropertyFilter.propTypes = {
   modelName: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  className: PropTypes.string,
   filterGroups: PropTypes.arrayOf(PropTypes.string),
 };
 
 PropertyFilter.defaultProps = {
   filterGroups: [],
+  className: '',
 };
 
 export default PropertyFilter;

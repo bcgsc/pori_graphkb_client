@@ -185,7 +185,7 @@ function AdvancedSearchView(props) {
   };
 
   return (
-    <>
+    <div className="advanced-search">
       <div className="advanced-search__class-select">
         <ModelSelect
           baseModel="V"
@@ -194,6 +194,7 @@ function AdvancedSearchView(props) {
         />
       </div>
       <PropertyFilter
+        className="advanced-search__property-filter"
         filterGroups={filterGroups.map(f => f.name)}
         modelName={modelName}
         onSubmit={handleAddFilter}
@@ -221,7 +222,7 @@ function AdvancedSearchView(props) {
           </ActionButton>
         </div>
       </Card>
-    </>
+    </div>
   );
 }
 

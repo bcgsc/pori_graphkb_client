@@ -35,12 +35,13 @@ import FieldGroup from './FieldGroup';
  * @param {bool} props.formIsDirty flag to indicate if the form has had any changes
  * @param {object} props.content the form content
  * @param {object} props.errors the form errors
+ * @param {Array.<string>} props.exclusions an array of fields not to display
  * @param {string} props.variant the form variant
  * @param {bool} props.disabled flag to indicated form fields are disabled
  * @param {string} props.className css class to add to main element
  */
 const FormLayout = ({
-  content, errors, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups, formIsDirty,
+  content, errors, exclusions, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups, formIsDirty,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -99,6 +100,7 @@ const FormLayout = ({
             content={content}
             disabled={disabled}
             errors={errors}
+            exclusions={exclusions}
             formIsDirty={formIsDirty}
             model={model}
             onChange={onChange}
@@ -124,6 +126,7 @@ const FormLayout = ({
                 content={content}
                 disabled={disabled}
                 errors={errors}
+                exclusions={exclusions}
                 formIsDirty={formIsDirty}
                 model={model}
                 onChange={onChange}
@@ -160,6 +163,7 @@ FormLayout.propTypes = {
   content: PropTypes.object,
   disabled: PropTypes.bool,
   errors: PropTypes.object,
+  exclusions: PropTypes.arrayOf(PropTypes.string),
   formIsDirty: PropTypes.bool,
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   modelName: PropTypes.string,
@@ -194,6 +198,7 @@ FormLayout.defaultProps = {
   onChange: () => null,
   content: {},
   errors: {},
+  exclusions: [],
   variant: FORM_VARIANT.VIEW,
   formIsDirty: true,
 };

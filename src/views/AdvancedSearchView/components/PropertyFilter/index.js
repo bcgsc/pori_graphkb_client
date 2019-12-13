@@ -109,10 +109,10 @@ const PropertyFilter = ({ modelName, filterGroups, onSubmit }) => {
 
   // update the choices for filter groups when the user deletes all groups
   useEffect(() => {
-    if (!filterGroups.length) {
+    if (!filterGroups.includes(filterGroup)) {
       setFilterGroup(NEW_FILTER_GROUP);
     }
-  }, [filterGroups.length]);
+  }, [filterGroup, filterGroups]);
 
   const handleAddFilter = useCallback(() => {
     onSubmit({

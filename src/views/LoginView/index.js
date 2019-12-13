@@ -44,24 +44,13 @@ class LoginView extends React.Component {
     const {
       setAuthorizationToken, setAuthenticationToken,
     } = this.context;
-    const { history, location, location: { state } } = this.props;
-    let pathname;
-    let search;
-
-    if (state) {
-      pathname = state.pathname;
-      search = state.search;
-    }
+    const { history, location } = this.props;
     let from;
 
     try {
       from = location.state.from.pathname + location.state.from.search;
     } catch (err) {
-      try {
-        from = location.pathname + location.search;
-      } catch (error) {
-        from = getReferrerUri() || '/query';
-      }
+      from = getReferrerUri() || '/query';
     }
 
 
@@ -97,17 +86,14 @@ class LoginView extends React.Component {
         return;
       }
     }
-    const savedState = localStorage.getItem('savedLocation');
+    const savedLocation = JSON.parse(localStorage.getItem('savedLocation'));
 
-    if (savedState) {
-      const savedPath = localStorage.getItem('savedPathname');
-      const savedSearch = localStorage.getItem('savedSearch');
+    if (savedLocation) {
+      const { pathname, search } = savedLocation;
       localStorage.removeItem('savedLocation');
-      localStorage.removeItem('savedPathname');
-      localStorage.removeItem('savedSearch');
       history.push({
-        pathname: savedPath,
-        search: savedSearch,
+        pathname,
+        search,
       });
     } else {
       history.push(from);

@@ -18,8 +18,8 @@ import { cleanLinkedRecords } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-import { BLACKLISTED_PROPERTIES, OPERATORS } from './constants';
-import FilterGroup from './FilterGroup';
+import { BLACKLISTED_PROPERTIES, OPERATORS } from './components/constants';
+import FilterGroup from './components/FilterGroup';
 
 const defaultFilterGroup = [];
 

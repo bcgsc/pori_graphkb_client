@@ -21,7 +21,7 @@ import schema from '@/services/schema';
 import { BLACKLISTED_PROPERTIES, OPERATORS } from '../constants';
 
 
-const constructOperatorOptions = ({ iterable, type } = {}, currentVal) => {
+const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal) => {
   // check if property is iterable and set corresponding option values
   if (iterable) {
     if (currentVal && Array.isArray(currentVal) && currentVal.length > 1) {
@@ -41,7 +41,7 @@ const constructOperatorOptions = ({ iterable, type } = {}, currentVal) => {
     options = options.filter(op => !op.isNumOperator || op.label === '=');
   }
 
-  if (currentVal && !(type === 'string')) {
+  if (!(type === 'string') || name === '@rid') {
     options = options.filter(op => !(op.label === 'CONTAINSTEXT'));
   }
   return options;

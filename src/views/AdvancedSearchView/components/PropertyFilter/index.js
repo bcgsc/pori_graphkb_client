@@ -95,6 +95,7 @@ const PropertyFilter = ({
     formContent,
     formHasErrors,
     updateFieldEvent,
+    formErrors,
   } = useSchemaForm({ value: valueModel }, {}, { variant: FORM_VARIANT.SEARCH });
 
   // limit the choices for operators to select based on the property selected and the current value
@@ -150,7 +151,8 @@ const PropertyFilter = ({
             className="property-filter__value"
             disabled={!property}
             error={formHasErrors}
-            formIsDirty={Boolean(property)}
+            formIsDirty
+            helperText={formErrors.value && formErrors.value.message}
             innerProps={{ 'data-testid': 'value-select' }}
             model={valueModel}
             onChange={updateFieldEvent}

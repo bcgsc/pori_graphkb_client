@@ -47,6 +47,7 @@ const FormField = (props) => {
     variant = 'view',
     label = null,
     innerProps,
+    helperText: defaultHelperText,
     formIsDirty = true,
   } = props;
 
@@ -69,18 +70,20 @@ const FormField = (props) => {
 
   const errorFlag = error && !generated && formIsDirty;
 
-  let helperText;
+  let helperText = defaultHelperText;
 
-  if (errorFlag) {
-    helperText = error.message;
-  } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
-    if (!description) {
-      helperText = `ex. ${example}`;
+  if (!helperText) {
+    if (errorFlag && error && error.message) {
+      helperText = error.message;
+    } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+      if (!description) {
+        helperText = `ex. ${example}`;
+      } else {
+        helperText = `${description} (ex. ${example})`;
+      }
     } else {
-      helperText = `${description} (ex. ${example})`;
+      helperText = description;
     }
-  } else {
-    helperText = description;
   }
 
 
@@ -309,6 +312,7 @@ FormField.propTypes = {
     message: PropTypes.string,
   }),
   formIsDirty: PropTypes.bool,
+  helperText: PropTypes.string,
   innerProps: PropTypes.shape({
     inputProps: PropTypes.shape({
       'data-test-id': PropTypes.string,
@@ -334,6 +338,7 @@ FormField.defaultProps = {
   value: null,
   innerProps: {},
   formIsDirty: true,
+  helperText: '',
 };
 
 

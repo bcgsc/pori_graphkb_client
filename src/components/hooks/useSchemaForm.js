@@ -89,7 +89,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
 
   const updateFieldEvent = useCallback(({ target }) => {
     // add the new value to the field
-    const eventName = target.name || target.getAttribute('name'); // name of the form field triggering the event
+    const eventName = target.name || (target.getAttribute && target.getAttribute('name')); // name of the form field triggering the event
     const eventValue = target.value;
     updateField(eventName, eventValue);
   }, [updateField]);

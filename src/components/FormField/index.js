@@ -6,8 +6,8 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import RecordAutocomplete from '@/components/RecordAutocomplete';
 import DropDownSelect from '@/components/DropDownSelect';
+import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { GeneralRecordPropType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
@@ -176,8 +176,8 @@ const FormField = (props) => {
         label={label || name}
         name={name}
         onChange={onChange}
-        required={mandatory}
         options={['', ...choices]}
+        required={mandatory}
         value={value || ''}
       />
     );

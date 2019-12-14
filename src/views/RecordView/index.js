@@ -9,8 +9,8 @@ import React, {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { SecurityContext } from '@/components/SecurityContext';
 import RecordForm from '@/components/RecordForm';
+import { SecurityContext } from '@/components/SecurityContext';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';

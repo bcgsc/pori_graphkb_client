@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 import React from 'react';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import RecordForm from '@/components/RecordForm';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import { hasWriteAccess } from '@/services/auth';
@@ -33,7 +33,7 @@ const getVariantType = (url) => {
 
 
 class NodeView extends React.PureComponent {
-  static contextType = KBContext;
+  static contextType = SecurityContext;
 
   static propTypes = {
     history: PropTypes.object.isRequired,

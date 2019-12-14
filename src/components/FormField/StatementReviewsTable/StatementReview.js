@@ -17,7 +17,7 @@ import React, { useContext } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import { getUsername } from '@/services/auth';
 
 /**
@@ -35,7 +35,7 @@ const StatementReview = ({
   onDelete,
   label,
 }) => {
-  const context = useContext(KBContext);
+  const context = useContext(SecurityContext);
 
   const {
     status, createdBy: { name: username }, createdBy, comment,

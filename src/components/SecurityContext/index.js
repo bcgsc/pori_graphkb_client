@@ -4,7 +4,7 @@ import React from 'react';
 /**
  * Passes user values to wrapped consumers.
  */
-const KBContext = React.createContext({
+const SecurityContext = React.createContext({
   authorizationToken: '',
   authenticationToken: '',
   setAuthenticationToken: () => {},
@@ -12,19 +12,19 @@ const KBContext = React.createContext({
 });
 
 const withKB = Child => props => (
-  <KBContext.Consumer>
+  <SecurityContext.Consumer>
     {kbValues => (
       <Child
         {...kbValues}
         {...props}
       />
     )}
-  </KBContext.Consumer>
+  </SecurityContext.Consumer>
 );
 
 export {
-  KBContext,
+  SecurityContext,
   withKB,
 };
 
-export default KBContext;
+export default SecurityContext;

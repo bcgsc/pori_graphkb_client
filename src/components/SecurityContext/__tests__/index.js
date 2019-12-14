@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
-import { KBContext, withKB } from '..';
+import { SecurityContext, withKB } from '..';
 
 describe('KB Context provider and consumers', () => {
   test('consumer inherits value', () => {
@@ -13,9 +13,9 @@ describe('KB Context provider and consumers', () => {
     });
 
     const wrapper = mount(
-      <KBContext.Provider value={{ authorizationToken: 'test' }}>
+      <SecurityContext.Provider value={{ authorizationToken: 'test' }}>
         <Div />
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     );
 
     expect(wrapper.find('#test-div').props().value).toBe('test');

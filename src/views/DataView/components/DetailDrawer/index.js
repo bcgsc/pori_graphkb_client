@@ -25,7 +25,7 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 
-import KbContext from '@/components/KBContext';
+import SecurityContext from '@/components/SecurityContext';
 import { GeneralRecordPropType } from '@/components/types';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
@@ -71,7 +71,7 @@ function DetailDrawer(props) {
     isEdge,
   } = props;
 
-  const context = useContext(KbContext);
+  const context = useContext(SecurityContext);
 
   const [opened, setOpened] = useState([]);
 

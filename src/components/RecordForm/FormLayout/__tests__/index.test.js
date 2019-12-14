@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 
 import FormLayout from '..';
 
@@ -15,12 +15,12 @@ describe('FormLayout', () => {
 
   test('new variant hides generated fields', () => {
     const { getByText, queryByText } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <FormLayout
           modelName="User"
           variant="new"
         />
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     );
 
     expect(getByText('The username')).toBeInTheDocument();
@@ -29,13 +29,13 @@ describe('FormLayout', () => {
 
   test('view variant shows generated fields', () => {
     const { getByText, getByTestId } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <FormLayout
           content={{ '@rid': '#3:4' }}
           modelName="User"
           variant="view"
         />
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     );
 
     expect(getByText('The username')).toBeInTheDocument();
@@ -46,14 +46,14 @@ describe('FormLayout', () => {
 
   test('exclusion works', () => {
     const { getByText, queryByText } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <FormLayout
           content={{ '@rid': '#3:4' }}
           exclusions={['@rid']}
           modelName="User"
           variant="view"
         />
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     );
 
     expect(getByText('The username')).toBeInTheDocument();

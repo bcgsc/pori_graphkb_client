@@ -247,7 +247,7 @@ class Schema {
    * Validates a value against some property model and returns the new property tracking object
    */
   @boundMethod
-  validateValue(propModel, value, ignoreMandatory = false) {
+  validateValue(propModel, value, { ignoreMandatory = false }) {
     if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
       if (propModel.mandatory
       && !ignoreMandatory
@@ -266,7 +266,7 @@ class Schema {
 
         const valErrorCheck = (subPropModel, val, errors) => {
           const { name } = subPropModel;
-          const { error } = this.validateValue(subPropModel, val[name], ignoreMandatory);
+          const { error } = this.validateValue(subPropModel, val[name], { ignoreMandatory });
 
           const newErrors = { ...errors };
 

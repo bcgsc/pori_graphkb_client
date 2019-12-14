@@ -14,7 +14,7 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
-import KbContext from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
 import { GeneralRecordPropType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
@@ -76,7 +76,7 @@ const RecordForm = ({
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
-  const kbContext = useContext(KbContext);
+  const context = useContext(SecurityContext);
 
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = [];
@@ -105,7 +105,7 @@ const RecordForm = ({
     }
 
     if (!currContent.reviews) {
-      const createdBy = getUser(kbContext);
+      const createdBy = getUser(context);
       updatedContent.reviews = [{
         status: 'initial',
         comment: '',
@@ -114,7 +114,7 @@ const RecordForm = ({
     }
 
     return updatedContent;
-  }, [kbContext]);
+  }, [context]);
 
   /**
    * Handler for submission of a new record

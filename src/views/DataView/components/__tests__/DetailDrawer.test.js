@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 
 import DetailDrawer from '../DetailDrawer';
 
@@ -85,9 +85,9 @@ const statementNode = {
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <KBContext.Provider value={{}}>
+    <SecurityContext.Provider value={{}}>
       {children}
-    </KBContext.Provider>
+    </SecurityContext.Provider>
   </BrowserRouter>
 );
 

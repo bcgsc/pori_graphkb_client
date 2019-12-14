@@ -5,7 +5,7 @@ import {
   Route,
 } from 'react-router-dom';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import { LocationPropType } from '@/components/types';
 import { isAdmin, isAuthenticated } from '@/services/auth';
 
@@ -17,7 +17,7 @@ const AuthenticatedRoute = ({
 }) => {
   const {
     autheticationToken, authorizationToken,
-  } = useContext(KBContext);
+  } = useContext(SecurityContext);
 
   const authOk = isAuthenticated({ autheticationToken });
   const adminOk = isAdmin({ autheticationToken, authorizationToken });

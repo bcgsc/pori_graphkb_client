@@ -71,12 +71,12 @@ describe('AdvancedSearchView', () => {
     ));
   });
 
-  test.skip('add filter button is disabled on render', async () => {
+  test('add filter button is disabled on render', async () => {
     expect(getByText('ADD FILTER')).toBeInTheDocument();
     expect(getByText('ADD FILTER')).toBeDisabled();
   });
 
-  test.skip('search button fires correctly', () => {
+  test('search button fires correctly', () => {
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/data/table?complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D&%40class=Statement&searchChipProps%5BsearchType%5D=Advanced');
@@ -92,9 +92,9 @@ describe('AdvancedSearchView', () => {
     expect(getByText('relevance = \'value (1:1)\'')).toBeInTheDocument();
   });
 
-  test.skip('fires new search correctly', async () => {
+  test('fires new search correctly', async () => {
     await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-    await fireEvent.change(getByTestId('value'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }] } });
+    await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }], name: 'value' } });
     await fireEvent.click(getByText('ADD FILTER'));
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);

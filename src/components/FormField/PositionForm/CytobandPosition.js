@@ -40,7 +40,7 @@ const CytobandPosition = ({
   required,
   disabled,
 }) => {
-  const { formContent, formErrors, updateForm } = useSchemaForm(
+  const { formContent, formErrors, updateField } = useSchemaForm(
     properties,
     { ...(value || {}), '@class': VARIANT },
   );
@@ -50,8 +50,8 @@ const CytobandPosition = ({
   }, [formContent]);
 
   const handleUpdate = useCallback(({ target: { name: eventName, value: eventValue } }) => {
-    updateForm(eventName, eventValue);
-  }, [updateForm]);
+    updateField(eventName, eventValue);
+  }, [updateField]);
 
   return (
     <>

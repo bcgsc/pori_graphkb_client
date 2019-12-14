@@ -1,4 +1,4 @@
-.resource-select {
+.option-select {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -12,8 +12,8 @@
   }
 
   &__option {
-    margin-top: 5px;
     margin-bottom: 5px;
+    margin-top: 5px;
   }
 }
 

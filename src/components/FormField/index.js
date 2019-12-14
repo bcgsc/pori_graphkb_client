@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import RecordAutocomplete from '@/components/RecordAutocomplete';
-import ResourceSelectComponent from '@/components/ResourceSelectComponent';
+import DropDownSelect from '@/components/DropDownSelect';
 import { GeneralRecordPropType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
@@ -167,7 +167,7 @@ const FormField = (props) => {
     }
   } else if (choices) {
     propComponent = (
-      <ResourceSelectComponent
+      <DropDownSelect
         className={className}
         disabled={generated || disabled}
         error={errorFlag}
@@ -177,7 +177,7 @@ const FormField = (props) => {
         name={name}
         onChange={onChange}
         required={mandatory}
-        resources={['', ...choices]}
+        options={['', ...choices]}
         value={value || ''}
       />
     );

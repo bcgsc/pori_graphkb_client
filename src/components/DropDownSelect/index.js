@@ -1,5 +1,5 @@
 /**
- * @module /components/ResourceSelectComponent
+ * @module /components/DropDownSelect
  */
 import './index.scss';
 
@@ -21,33 +21,33 @@ import React from 'react';
 import { GeneralRecordPropType } from '@/components/types';
 
 
-const DefaultOptionComponent = (resource, disabled) => (
+const DefaultOptionComponent = (option, disabled) => (
   <MenuItem
-    key={resource.key || resource}
-    className="resource-select__option"
+    key={option.key || option}
+    className="option-select__option"
     component="li"
-    value={resource.value || resource}
+    value={option.value || option}
   >
     <ListItemText
       classes={{
         primary: disabled ? 'disabled-text' : '',
-        multiline: resource.caption ? 'margin-reset' : '',
-        root: resource.caption ? 'margin-reset' : '',
+        multiline: option.caption ? 'margin-reset' : '',
+        root: option.caption ? 'margin-reset' : '',
       }}
-      primary={resource.label || resource || 'None'}
-      secondary={resource.caption || ''}
-      secondaryTypographyProps={{ className: 'resource-select__option-description' }}
+      primary={option.label || option || 'None'}
+      secondary={option.caption || ''}
+      secondaryTypographyProps={{ className: 'option-select__option-description' }}
     />
   </MenuItem>
 );
 
 /**
- * Component to select resources from a list of defined options.
+ * Component to select options from a list of defined options.
  * @param {Object} props - Properties passed in by parent component.
  */
-function ResourceSelectComponent(props) {
+function DropDownSelect(props) {
   const {
-    resources,
+    options,
     value,
     onChange,
     name,
@@ -65,7 +65,7 @@ function ResourceSelectComponent(props) {
     IconComponent,
   } = props;
 
-  const resourcesDisplay = resources.map(resource => children(resource, disabled));
+  const optionsDisplay = options.map(option => children(option, disabled));
   let InputComponent = Input;
 
   if (variant === 'outlined') {
@@ -76,14 +76,14 @@ function ResourceSelectComponent(props) {
   }
   return (
     <FormControl
-      className={`resource-select ${className}`}
+      className={`option-select ${className}`}
       disabled={disabled}
       error={error}
       id={id}
       variant={variant}
     >
       <InputLabel
-        htmlFor={`resource-select-${name}`}
+        htmlFor={`option-select-${name}`}
         required={required}
         style={{
           fontSize: dense ? '0.8125rem' : '',
@@ -96,7 +96,7 @@ function ResourceSelectComponent(props) {
           ? 'span'
           : IconComponent
         }
-        input={<InputComponent id={`resource-select-${name}`} name={name} />}
+        input={<InputComponent id={`option-select-${name}`} name={name} />}
         inputProps={innerProps}
         onChange={onChange}
         style={{
@@ -104,7 +104,7 @@ function ResourceSelectComponent(props) {
         }}
         value={value || ''}
       >
-        {resourcesDisplay}
+        {optionsDisplay}
       </Select>
       <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
@@ -121,7 +121,7 @@ const SelectOptionPropType = PropTypes.shape({
 
 /**
  * @namespace
- * @property {Array.<any>} resources - List of resources to be selected from.
+ * @property {Array.<any>} options - List of options to be selected from.
  * @property {any} value - Parent property to bind output data to.
  * @property {function} onChange - Parent function to trigger on item select.
  * @property {string} name - DOM node name property.
@@ -135,7 +135,7 @@ const SelectOptionPropType = PropTypes.shape({
  * @property {string} variant - Material UI Select variant (outlined, filled, standard)
  */
 
-ResourceSelectComponent.propTypes = {
+DropDownSelect.propTypes = {
   IconComponent: PropTypes.element,
   children: PropTypes.func,
   className: PropTypes.string,
@@ -148,15 +148,15 @@ ResourceSelectComponent.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
   onChange: PropTypes.func,
+  options: PropTypes.arrayOf(PropTypes.oneOfType([SelectOptionPropType, PropTypes.string])),
   required: PropTypes.bool,
-  resources: PropTypes.arrayOf(PropTypes.oneOfType([SelectOptionPropType, PropTypes.string])),
   value: PropTypes.oneOfType([GeneralRecordPropType, PropTypes.string]),
   variant: PropTypes.string,
 };
 
-ResourceSelectComponent.defaultProps = {
+DropDownSelect.defaultProps = {
   children: DefaultOptionComponent,
-  resources: [],
+  options: [],
   onChange: null,
   name: '',
   label: '',
@@ -173,4 +173,4 @@ ResourceSelectComponent.defaultProps = {
   IconComponent: ArrowDropDownIcon,
 };
 
-export default ResourceSelectComponent;
+export default DropDownSelect;

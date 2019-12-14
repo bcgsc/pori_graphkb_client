@@ -25,7 +25,7 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 
-import SecurityContext from '@/components/SecurityContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import { GeneralRecordPropType } from '@/components/types';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';

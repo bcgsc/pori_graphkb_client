@@ -193,6 +193,7 @@ const FormField = (props) => {
       required: mandatory,
       value,
       helperText,
+      innerProps,
       DetailChipProps: {
         getLink: schema.getLink,
       },

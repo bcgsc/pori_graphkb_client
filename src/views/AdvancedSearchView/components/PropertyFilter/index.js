@@ -12,6 +12,7 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import DropDownSelect from '@/components/DropDownSelect';
+import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import FieldWrapper from '@/components/FormField/FieldWrapper';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
@@ -91,12 +92,11 @@ const PropertyFilter = ({
   }
 
   // use a schema form so that validation runs on the value based on the property selected
+  const form = useSchemaForm({ value: valueModel }, {}, { variant: FORM_VARIANT.SEARCH });
   const {
     formContent,
     formHasErrors,
-    updateFieldEvent,
-    formErrors,
-  } = useSchemaForm({ value: valueModel }, {}, { variant: FORM_VARIANT.SEARCH });
+  } = form;
 
   // limit the choices for operators to select based on the property selected and the current value
   useEffect(() => {
@@ -147,18 +147,15 @@ const PropertyFilter = ({
               value={property}
             />
           </FieldWrapper>
-          <FormField
-            className="property-filter__value"
-            disabled={!property}
-            error={formHasErrors}
-            formIsDirty
-            helperText={formErrors.value && formErrors.value.message}
-            innerProps={{ 'data-testid': 'value-select' }}
-            model={valueModel}
-            onChange={updateFieldEvent}
-            value={formContent.value}
-            variant="edit"
-          />
+          <FormContext.Provider value={form}>
+            <FormField
+              className="property-filter__value"
+              disabled={!property}
+              innerProps={{ 'data-testid': 'value-select' }}
+              model={valueModel}
+              variant="edit"
+            />
+          </FormContext.Provider>
           <FieldWrapper className="property-filter__operator">
             <DropDownSelect
               disabled={!property || operatorChoices.length < 2}

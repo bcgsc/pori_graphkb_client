@@ -13,6 +13,7 @@ import React, {
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
+import FormContext from '@/components/FormContext';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { SecurityContext } from '@/components/SecurityContext';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
@@ -91,9 +92,10 @@ const RecordForm = ({
     }
   }, [modelName]);
 
+  const form = useSchemaForm(fieldDefs, initialValue);
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
-  } = useSchemaForm(fieldDefs, initialValue);
+  } = form;
 
   useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
@@ -218,14 +220,6 @@ const RecordForm = ({
     }
   }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
 
-  const handleOnChange = (event) => {
-    // add the new value to the field
-    const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
-    const eventValue = event.target.value;
-
-    updateField(eventName, eventValue);
-    setFormIsDirty(true);
-  };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
@@ -242,6 +236,7 @@ const RecordForm = ({
   const isEdge = false; // TODO
 
   return (
+
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
         <Typography className="title" variant="h1">{title}</Typography>
@@ -276,18 +271,16 @@ const RecordForm = ({
         />
         ))}
       </div>
-      <FormLayout
-        {...rest}
-        collapseExtra
-        content={formContent}
-        disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
-        errors={formErrors}
-        exclusions={FIELD_EXCLUSIONS}
-        formIsDirty={formIsDirty}
-        modelName={modelName}
-        onChange={handleOnChange}
-        variant={variant}
-      />
+      <FormContext.Provider value={form}>
+        <FormLayout
+          {...rest}
+          collapseExtra
+          disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
+          exclusions={FIELD_EXCLUSIONS}
+          modelName={modelName}
+          variant={variant}
+        />
+      </FormContext.Provider>
       {variant === FORM_VARIANT.VIEW && (
         <div className="record-form__related-records">
           <Typography variant="h4">Related Records</Typography>

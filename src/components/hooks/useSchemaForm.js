@@ -19,7 +19,7 @@ import useObject from './useObject';
  * @param {Object} initialValue the start value of the form content
  * @param {boolean} ignoreMandatoryErrors do not throw errors when required fields are missing
  */
-const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false } = {}) => {
+const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false, variant = '' } = {}) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
 
@@ -103,6 +103,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
     update,
     updateField,
     updateFieldEvent,
+    formVariant: variant,
   };
 };
 

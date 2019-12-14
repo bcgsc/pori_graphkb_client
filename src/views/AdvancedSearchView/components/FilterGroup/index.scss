@@ -1,5 +1,5 @@
-@import '../../../globals';
-@import '../../../theme';
+@import '../../../../globals';
+@import '../../../../theme';
 
 @mixin box-content {
   border: 1px solid $palette__primary--light;
@@ -60,7 +60,6 @@
       }
     }
 
-
     &__box {
       @include box-content-mobile;
       margin: 45px auto;
@@ -86,7 +85,6 @@
           width: 14%;
         }
       }
-
     }
   }
 }
@@ -129,7 +127,6 @@
       }
     }
 
-
     &__box {
       @include box-content;
       margin-bottom: 50px;
@@ -164,8 +161,6 @@
           margin-left: 50px;
         }
       }
-
     }
   }
-
 }

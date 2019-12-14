@@ -6,8 +6,8 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import RecordAutocomplete from '@/components/RecordAutocomplete';
 import DropDownSelect from '@/components/DropDownSelect';
+import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { GeneralRecordPropType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
@@ -47,6 +47,7 @@ const FormField = (props) => {
     variant = 'view',
     label = null,
     innerProps,
+    helperText: defaultHelperText,
     formIsDirty = true,
   } = props;
 
@@ -69,18 +70,20 @@ const FormField = (props) => {
 
   const errorFlag = error && !generated && formIsDirty;
 
-  let helperText;
+  let helperText = defaultHelperText;
 
-  if (errorFlag) {
-    helperText = error.message;
-  } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
-    if (!description) {
-      helperText = `ex. ${example}`;
+  if (!helperText) {
+    if (errorFlag && error && error.message) {
+      helperText = error.message;
+    } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+      if (!description) {
+        helperText = `ex. ${example}`;
+      } else {
+        helperText = `${description} (ex. ${example})`;
+      }
     } else {
-      helperText = `${description} (ex. ${example})`;
+      helperText = description;
     }
-  } else {
-    helperText = description;
   }
 
 
@@ -176,8 +179,8 @@ const FormField = (props) => {
         label={label || name}
         name={name}
         onChange={onChange}
-        required={mandatory}
         options={['', ...choices]}
+        required={mandatory}
         value={value || ''}
       />
     );
@@ -193,6 +196,7 @@ const FormField = (props) => {
       required: mandatory,
       value,
       helperText,
+      innerProps,
       DetailChipProps: {
         getLink: schema.getLink,
       },
@@ -254,7 +258,7 @@ const FormField = (props) => {
         className="text-field"
         disabled={generated || disabled}
         error={errorFlag}
-        helperText={helperText}
+        helperText={helperText || ' '}
         InputLabelProps={{ shrink: !!value }}
         inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
         label={name}
@@ -308,6 +312,7 @@ FormField.propTypes = {
     message: PropTypes.string,
   }),
   formIsDirty: PropTypes.bool,
+  helperText: PropTypes.string,
   innerProps: PropTypes.shape({
     inputProps: PropTypes.shape({
       'data-test-id': PropTypes.string,
@@ -333,6 +338,7 @@ FormField.defaultProps = {
   value: null,
   innerProps: {},
   formIsDirty: true,
+  helperText: '',
 };
 
 

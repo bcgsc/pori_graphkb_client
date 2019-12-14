@@ -4,7 +4,7 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 
 import ReviewDialog from '../ReviewDialog';
 
@@ -60,7 +60,7 @@ describe('ReviewDialog formActions', () => {
 
   beforeEach(() => {
     ({ getByText, getByTestId } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
             isOpen
@@ -68,7 +68,7 @@ describe('ReviewDialog formActions', () => {
             onSubmit={onSubmitSpy}
           />
         </SnackbarProvider>
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     ));
   });
 

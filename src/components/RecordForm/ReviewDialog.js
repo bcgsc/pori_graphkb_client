@@ -14,7 +14,7 @@ import React, {
 import ActionButton from '@/components/ActionButton';
 import FormField from '@/components/FormField';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import {
   FORM_VARIANT,
 } from '@/components/util';
@@ -33,7 +33,7 @@ const AddReviewDialog = ({
   onSubmit, isOpen, onClose,
 }) => {
   const snackbar = useContext(SnackbarContext);
-  const context = useContext(KBContext);
+  const context = useContext(SecurityContext);
   const { comment, status } = schema.get(MODEL_NAME).properties;
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);

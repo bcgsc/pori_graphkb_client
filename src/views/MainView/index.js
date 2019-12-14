@@ -18,7 +18,7 @@ import {
 } from 'react-router-dom';
 
 import AuthenticatedRoute from '@/components/AuthenticatedRoute';
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import config from '@/static/config';
 
 import MainAppBar from './components/MainAppBar';
@@ -70,7 +70,7 @@ const Main = () => {
   }, [authorizationToken]);
 
   return (
-    <KBContext.Provider value={{
+    <SecurityContext.Provider value={{
       authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
     }}
     >
@@ -121,7 +121,7 @@ const Main = () => {
           </Suspense>
         </section>
       </div>
-    </KBContext.Provider>
+    </SecurityContext.Provider>
   );
 };
 

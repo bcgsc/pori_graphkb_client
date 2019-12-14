@@ -8,8 +8,8 @@ import {
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback,
-  useContext, useEffect, useState,
+  useCallback, useContext, useEffect, useRef,
+  useState,
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
@@ -79,7 +79,7 @@ const RecordForm = ({
   const context = useContext(SecurityContext);
 
   const [actionInProgress, setActionInProgress] = useState(false);
-  const controllers = [];
+  const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const [fieldDefs, setFieldDefs] = useState({});
@@ -95,7 +95,7 @@ const RecordForm = ({
     formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
   } = useSchemaForm(fieldDefs, initialValue);
 
-  useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
+  useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
   const statementReviewCheck = useCallback((currContent, content) => {
     const updatedContent = { ...content };
@@ -140,7 +140,7 @@ const RecordForm = ({
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
-      controllers.push(call);
+      controllers.current.push(call);
       setActionInProgress(true);
 
       try {
@@ -154,7 +154,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
+  }, [formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
 
   /**
    * Handler for deleting an existing record
@@ -167,7 +167,7 @@ const RecordForm = ({
     }
     const { routeName } = schema.get(content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    controllers.push(call);
+    controllers.current.push(call);
     setActionInProgress(true);
 
     try {
@@ -179,7 +179,7 @@ const RecordForm = ({
       onError({ error: err, content });
     }
     setActionInProgress(false);
-  }, [controllers, formContent, modelName, onError, onSubmit, snackbar]);
+  }, [formContent, modelName, onError, onSubmit, snackbar]);
 
   /**
    * Handler for edits to an existing record
@@ -203,7 +203,7 @@ const RecordForm = ({
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-      controllers.push(call);
+      controllers.current.push(call);
       setActionInProgress(true);
 
       try {
@@ -216,7 +216,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
 
   const handleOnChange = (event) => {
     // add the new value to the field

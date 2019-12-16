@@ -6,6 +6,18 @@ import RadioSelect from '@/components/RadioSelect';
 import schema from '@/services/schema';
 
 
+/**
+ * Select a database model class
+ *
+ * @param {object} props
+ * @param {string} props.baseModel the top level model to be used as the base of the tree of models to collect as options
+ * @param {string} props.defaultValue the default value to be selected when value is not given
+ * @param {string} props.value the currently selected value
+ * @param {function} props.onChange the parent onChange handler
+ * @param {bool} props.includeAbstract flag to indicate the options should include abstract classes
+ * @param {string} props.name the field name to use in passing events to the onChange handler
+ * @param {string} props.variant the display type (radio or select)
+ */
 const ModelSelect = ({
   baseModel, defaultValue, value, includeAbstract, onChange, name, variant, ...props
 }) => {

@@ -4,7 +4,7 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import * as api from '@/services/api';
 
 import RecordForm from '..';
@@ -91,10 +91,8 @@ describe('RecordForm', () => {
     let getByTestId;
 
     beforeEach(() => {
-      ({
-        getByText, queryByText, getByTestId,
-      } = render(
-        <KBContext.Provider value={{ }}>
+      ({ getByText, queryByText, getByTestId } = render(
+        <SecurityContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
               modelName="User"
@@ -107,7 +105,7 @@ describe('RecordForm', () => {
               variant="view"
             />
           </SnackbarProvider>
-        </KBContext.Provider>,
+        </SecurityContext.Provider>,
       ));
     });
 
@@ -140,7 +138,7 @@ describe('RecordForm', () => {
 
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <RecordForm
             modelName="Statement"
@@ -152,7 +150,7 @@ describe('RecordForm', () => {
             variant="edit"
           />
         </SnackbarProvider>
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     );
     expect(getByText('Add Review')).toBeInTheDocument();
   });
@@ -163,7 +161,7 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <KBContext.Provider value={{ }}>
+        <SecurityContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
               modelName="User"
@@ -175,7 +173,7 @@ describe('RecordForm', () => {
               variant="edit"
             />
           </SnackbarProvider>
-        </KBContext.Provider>,
+        </SecurityContext.Provider>,
       ));
     });
 
@@ -213,7 +211,7 @@ describe('RecordForm', () => {
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
         <SnackbarProvider value={{ add: snackbarSpy }}>
-          <KBContext.Provider value={{ }}>
+          <SecurityContext.Provider value={{ }}>
             <RecordForm
               modelName="User"
               onError={onErrorSpy}
@@ -223,7 +221,7 @@ describe('RecordForm', () => {
               value={{ }}
               variant="new"
             />
-          </KBContext.Provider>
+          </SecurityContext.Provider>
         </SnackbarProvider>,
       ));
     });
@@ -267,7 +265,7 @@ describe('RecordForm', () => {
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
         <SnackbarProvider value={{ add: snackbarSpy }}>
-          <KBContext.Provider value={{ }}>
+          <SecurityContext.Provider value={{ }}>
             <RecordForm
               modelName="Statement"
               onError={onErrorSpy}
@@ -277,7 +275,7 @@ describe('RecordForm', () => {
               value={{ }}
               variant="new"
             />
-          </KBContext.Provider>
+          </SecurityContext.Provider>
         </SnackbarProvider>,
       ));
     });

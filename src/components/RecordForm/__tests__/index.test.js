@@ -6,19 +6,8 @@ import React from 'react';
 
 import { KBContext } from '@/components/KBContext';
 import * as api from '@/services/api';
-// navSpy is not included in module, but needed to check if handler was called correctly
-// eslint-disable-next-line import/named
-import { navSpy } from '@/views/DataView/util';
 
 import RecordForm from '..';
-
-jest.mock('@/views/DataView/util', () => {
-  const mockGraphNavSpy = jest.fn();
-  return {
-    navigateToGraphview: mockGraphNavSpy,
-    navSpy: mockGraphNavSpy,
-  };
-});
 
 jest.mock('@/services/auth', () => ({
   getUser: () => '23:9',
@@ -96,6 +85,7 @@ describe('RecordForm', () => {
   const snackbarSpy = jest.fn();
 
   describe('view variant', () => {
+    const navSpy = jest.fn();
     let getByText;
     let queryByText;
     let getByTestId;
@@ -108,6 +98,7 @@ describe('RecordForm', () => {
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
               modelName="User"
+              navigateToGraph={navSpy}
               onError={onErrorSpy}
               onSubmit={onSubmitSpy}
               onTopClick={onTopClickSpy}

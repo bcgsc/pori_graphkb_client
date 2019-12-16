@@ -53,6 +53,7 @@ const NewRecordView = (props) => {
         className="record-form__class-select"
         onChange={({ target: { value } }) => setModelName(value)}
         value={modelName}
+        variant="radio"
       />
       {modelName
         ? (

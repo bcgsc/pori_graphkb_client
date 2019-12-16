@@ -1,15 +1,12 @@
 /**
  * RadioList based selection
  */
-import './index.scss';
-
 import {
-  FormControl,
-  FormControlLabel,
   FormLabel,
+  ListItemText,
+  MenuItem,
+  MenuList,
   Radio,
-  RadioGroup,
-  Typography,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -32,25 +29,27 @@ import React from 'react';
 const RadioSelect = ({
   options, onChange, className, label, value, optionToKey, name,
 }) => (
-  <FormControl className={`radio-select ${className}`} component="fieldset">
-    {label && (<FormLabel component="legend">{label}</FormLabel>)}
-    <RadioGroup name={name} onChange={onChange} value={value}>
-      {options.map(option => (
-        <FormControl key={optionToKey(option)} className="radio-option">
-          <FormControlLabel
-            control={<Radio inputProps={{ 'data-testid': `radio-option__${optionToKey(option)}` }} />}
-            label={option.label || option}
-            value={option.value || option}
-          />
-          {option && option.caption && (
-            <Typography className="radio-option__description" variant="body2">
-              {option.caption}
-            </Typography>
-          )}
-        </FormControl>
-      ))}
-    </RadioGroup>
-  </FormControl>
+  <MenuList className={`radio-select ${className}`}>
+    {label && (<FormLabel>{label}</FormLabel>)}
+    {options.map((option) => {
+      const optionValue = option.value === undefined ? option : option.value;
+      const checked = Boolean(value === optionValue);
+      return (
+        <MenuItem
+          key={optionToKey(option)}
+          className="radio-option"
+          onClick={() => {
+            onChange({ target: { name, value: optionValue } });
+          }}
+          selected={checked}
+          value={optionValue}
+        >
+          <Radio checked={checked} inputProps={{ 'data-testid': `radio-option__${optionToKey(option)}` }} />
+          <ListItemText primary={option.label || option} secondary={option.caption || ''} />
+        </MenuItem>
+      );
+    })}
+  </MenuList>
 );
 
 

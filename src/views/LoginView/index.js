@@ -3,7 +3,7 @@
  */
 import React from 'react';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import { HistoryPropType, LocationPropType } from '@/components/types';
 import api from '@/services/api';
 import {
@@ -22,7 +22,7 @@ const {
  * token in browser localstorage.
  */
 class LoginView extends React.Component {
-  static contextType = KBContext;
+  static contextType = SecurityContext;
 
   static propTypes = {
     history: HistoryPropType.isRequired,

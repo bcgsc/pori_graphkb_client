@@ -46,29 +46,29 @@ const NewRecordView = (props) => {
     }
   }, [history]);
 
+  const isAbstract = modelName && schema.get(modelName).isAbstract;
+
   return (
-    <>
-      <ModelSelect
-        baseModel={modelNameParam}
-        className="record-form__class-select"
-        onChange={({ target: { value } }) => setModelName(value)}
-        value={modelName}
-        variant="radio"
-      />
-      {modelName
-        ? (
-          <RecordForm
-            modelName={modelName}
-            onError={handleError}
-            onSubmit={handleSubmit}
-            onTopClick={null}
-            title={`Create a new ${modelName} Record`}
-            variant={FORM_VARIANT.NEW}
-          />
-        )
-        : null
-      }
-    </>
+    !modelName || isAbstract
+      ? (
+        <ModelSelect
+          baseModel={modelNameParam}
+          className="record-form__class-select"
+          onChange={({ target: { value } }) => setModelName(value)}
+          value={modelName}
+          variant="radio"
+        />
+      )
+      : (
+        <RecordForm
+          modelName={modelName}
+          onError={handleError}
+          onSubmit={handleSubmit}
+          onTopClick={null}
+          title={`Create a new ${modelName} Record`}
+          variant={FORM_VARIANT.NEW}
+        />
+      )
   );
 };
 

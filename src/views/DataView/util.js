@@ -1,4 +1,3 @@
-
 const hashRecordsByRID = (data) => {
   const newData = {};
   data.forEach((obj) => {

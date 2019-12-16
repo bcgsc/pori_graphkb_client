@@ -5,8 +5,8 @@ import FilterIcon from '@material-ui/icons/FilterList';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
+import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
-import ResourceSelectComponent from '@/components/ResourceSelectComponent';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -69,13 +69,13 @@ const FilteredRecordAutocomplete = ({
     <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
       <div className="filtered-record-autocomplete__content">
         {!disabled && (
-          <ResourceSelectComponent
+          <DropDownSelect
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
             IconComponent={FilterIcon}
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
-            resources={[...model.descendantTree(false).map(m => m.name)]}
+            options={[...model.descendantTree(false).map(m => m.name)]}
             value={selectedClassName}
           />
         )}

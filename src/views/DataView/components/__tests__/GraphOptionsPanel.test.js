@@ -11,18 +11,18 @@ import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsP
 import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
 /* eslint-disable react/prop-types */
-jest.mock('../../../../components/ResourceSelectComponent', () => ({
-  resources = [], value, onChange, name,
+jest.mock('../../../../components/DropDownSelect', () => ({
+  options = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {
-    const option = resources.find(
+    const option = options.find(
       opt => opt === event.currentTarget.value,
     );
     onChange({ target: { value: option, name } });
   };
   return (
     <select data-testid={`${name}`} onChange={handleChange} value={value}>
-      {resources.map(opt => (
+      {options.map(opt => (
         <option key={opt} value={opt}>
           {opt}
         </option>

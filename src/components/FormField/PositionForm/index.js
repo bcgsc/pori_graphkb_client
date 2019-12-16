@@ -11,7 +11,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import ResourceSelect from '@/components/ResourceSelectComponent';
+import DropDownSelect from '@/components/DropDownSelect';
 
 import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';
@@ -82,10 +82,10 @@ const PositionForm = ({
         </IconButton>
       )}
       {positionVariants.length > 1 && (
-      <ResourceSelect
+      <DropDownSelect
         disabled={disabled}
         onChange={handleVariantChange}
-        resources={positionVariants}
+        options={positionVariants}
         value={variant}
       />
       )}

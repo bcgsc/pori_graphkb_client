@@ -4,7 +4,7 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 
 import ReviewDialog from '../ReviewDialog';
 
@@ -23,11 +23,11 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
 });
 
 /* eslint-disable react/prop-types */
-jest.mock('../../ResourceSelectComponent', () => ({
-  resources = [], value, onChange, name,
+jest.mock('../../DropDownSelect', () => ({
+  options = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {
-    const option = resources.find(
+    const option = options.find(
       opt => opt === event.currentTarget.value,
     );
 
@@ -35,7 +35,7 @@ jest.mock('../../ResourceSelectComponent', () => ({
   };
   return (
     <select data-testid="select" onChange={handleChange} value={value}>
-      {resources.map(opt => (
+      {options.map(opt => (
         <option key={opt} value={opt}>
           {opt}
         </option>
@@ -60,7 +60,7 @@ describe('ReviewDialog formActions', () => {
 
   beforeEach(() => {
     ({ getByText, getByTestId } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
             isOpen
@@ -68,7 +68,7 @@ describe('ReviewDialog formActions', () => {
             onSubmit={onSubmitSpy}
           />
         </SnackbarProvider>
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     ));
   });
 

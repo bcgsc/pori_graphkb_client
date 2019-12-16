@@ -9,8 +9,8 @@ import React, {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { KBContext } from '@/components/KBContext';
 import RecordForm from '@/components/RecordForm';
+import { SecurityContext } from '@/components/SecurityContext';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
@@ -47,7 +47,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
 
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
-  const context = useContext(KBContext);
+  const context = useContext(SecurityContext);
 
   const [recordContent, setRecordContent] = useState({});
   const [modelName, setModelName] = useState('');

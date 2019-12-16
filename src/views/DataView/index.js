@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { HistoryPropType, LocationPropType } from '@/components/types';
+import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -23,7 +24,7 @@ import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
 import GraphComponent from './components/GraphComponent';
-import { getNodeRIDsFromURL, hashRecordsByRID, navigateToGraphview } from './util';
+import { hashRecordsByRID } from './util';
 
 /**
  * Shows the search result filters and an edit button
@@ -250,7 +251,7 @@ class DataView extends React.Component {
   @boundMethod
   handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history } = this.props;
-    navigateToGraphview(nodeRIDs, history, this.handleError);
+    navigateToGraph(nodeRIDs, history, this.handleError);
   }
 
   @boundMethod

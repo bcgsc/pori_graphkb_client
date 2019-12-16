@@ -12,7 +12,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { KBContext } from '@/components/KBContext';
 import RecordForm from '@/components/RecordForm';
 import { HistoryPropType } from '@/components/types';
-import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
+import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
@@ -137,12 +137,15 @@ const RecordView = (props) => {
     history.push(newPath);
   }, [history, modelName, rid, variant]);
 
+  const navigateToGraphView = useCallback(() => {
+    navigateToGraph([recordContent['@rid']], history, handleError);
+  }, [handleError, history, recordContent]);
   return (
     modelName
       ? (
         <RecordForm
-          history={history}
           modelName={modelName}
+          navigateToGraph={navigateToGraphView}
           onError={handleError}
           onSubmit={handleSubmit}
           onTopClick={

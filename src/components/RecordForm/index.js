@@ -23,7 +23,6 @@ import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
-import { navigateToGraphview } from '@/views/DataView/util';
 
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
@@ -67,16 +66,17 @@ const cleanPayload = (payload) => {
  * @property {string} props.title the title for this form
  * @property {string} props.modelName name of class model to be displayed
  * @property {value} props.value values of individual properties of passed class model
+ * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
 const RecordForm = ({
   value: initialValue,
   modelName,
-  history,
   title,
   onTopClick,
   onSubmit,
   onError,
   variant,
+  navigateToGraph,
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
@@ -267,7 +267,7 @@ const RecordForm = ({
               <Tooltip title="click here for graphview">
                 <IconButton
                   data-testid="graph-view"
-                  onClick={() => navigateToGraphview([formContent['@rid']], history, onError)}
+                  onClick={navigateToGraph}
                 >
                   <TimelineIcon
                     color="secondary"
@@ -358,7 +358,7 @@ const RecordForm = ({
 
 
 RecordForm.propTypes = {
-  history: PropTypes.object.isRequired,
+  navigateToGraph: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   modelName: PropTypes.string,
   onError: PropTypes.func,

@@ -1,4 +1,4 @@
-import kbSchema from '@bcgsc/knowledgebase-schema';
+import kbSchema, { Property } from '@bcgsc/knowledgebase-schema';
 import { boundMethod } from 'autobind-decorator';
 
 import { getQueryFromSearch } from './api/search';
@@ -247,7 +247,7 @@ class Schema {
    * Validates a value against some property model and returns the new property tracking object
    */
   @boundMethod
-  validateValue(propModel, value, ignoreMandatory = false) {
+  validateValue(propModel, value, { ignoreMandatory = false }) {
     if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
       if (propModel.mandatory
       && !ignoreMandatory
@@ -266,7 +266,7 @@ class Schema {
 
         const valErrorCheck = (subPropModel, val, errors) => {
           const { name } = subPropModel;
-          const { error } = this.validateValue(subPropModel, val[name], ignoreMandatory);
+          const { error } = this.validateValue(subPropModel, val[name], { ignoreMandatory });
 
           const newErrors = { ...errors };
 
@@ -314,7 +314,7 @@ class Schema {
         if (propModel.type === 'link') {
           valueToValidate = value['@rid'] || value;
         }
-        propModel.validate(valueToValidate);
+        Property.validateWith(propModel, valueToValidate);
         return { value };
       } catch (err) {
         return { error: err, value };

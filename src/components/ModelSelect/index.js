@@ -7,7 +7,7 @@ import schema from '@/services/schema';
 
 
 const ModelSelect = ({
-  baseModel, defaultValue, value, includeAbstract, onChange, name, variant, ...props
+  baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
 }) => {
   const [choices, setChoices] = useState([]);
   const model = value || defaultValue;
@@ -31,6 +31,7 @@ const ModelSelect = ({
 
   return (
     <BaseComponent
+      disabled={choices.length < 2 || disabled}
       onChange={onChange}
       options={choices}
       value={model}
@@ -44,6 +45,7 @@ ModelSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
   baseModel: PropTypes.string,
   defaultValue: PropTypes.string,
+  disabled: PropTypes.bool,
   includeAbstract: PropTypes.bool,
   value: PropTypes.string,
   variant: PropTypes.string,
@@ -55,6 +57,7 @@ ModelSelect.defaultProps = {
   includeAbstract: false,
   value: '',
   variant: 'select',
+  disabled: false,
 };
 
 export default ModelSelect;

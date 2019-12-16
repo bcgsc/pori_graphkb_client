@@ -17,7 +17,11 @@ import useObject from './useObject';
  *
  * @param {Object.<string,PropertyModel>} initialFieldDefs field definitions to use in validating the form
  * @param {Object} initialValue the start value of the form content
- * @param {boolean} ignoreMandatoryErrors do not throw errors when required fields are missing
+ * @param {Object} props extra options
+ * @param {boolean} props.ignoreMandatoryErrors do not throw errors when required fields are missing
+ * @param {string} props.variant the form type/variant (ex. view)
+ *
+ * @returns {FormContext} the form context values
  */
 const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false, variant = '' } = {}) => {
   const [formIsDirty, setFormIsDirty] = useState(false);

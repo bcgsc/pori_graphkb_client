@@ -21,7 +21,7 @@ import {
   Link,
 } from 'react-router-dom';
 
-import { KBContext } from '@/components/KBContext';
+import { SecurityContext } from '@/components/SecurityContext';
 import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
 import logo from '@/static/logo.png';
 import title from '@/static/title.png';
@@ -52,7 +52,7 @@ class MainNav extends React.PureComponent {
     };
   }
 
-  static contextType = KBContext;
+  static contextType = SecurityContext;
 
   /**
    * Handles closing of drawer.

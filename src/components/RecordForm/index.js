@@ -92,7 +92,7 @@ const RecordForm = ({
   }, [modelName]);
 
   const {
-    formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
+    formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
   } = useSchemaForm(fieldDefs, initialValue);
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
@@ -223,21 +223,21 @@ const RecordForm = ({
     const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
     const eventValue = event.target.value;
 
-    updateForm(eventName, eventValue);
+    updateField(eventName, eventValue);
     setFormIsDirty(true);
   };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
     const reviews = [...(formContent.reviews || []), content];
-    updateForm('reviews', reviews);
+    updateField('reviews', reviews);
 
     if (updateReviewStatus) {
-      updateForm('reviewStatus', content.status);
+      updateField('reviewStatus', content.status);
     }
     setReviewDialogOpen(false);
     setFormIsDirty(true);
-  }, [formContent.reviews, setFormIsDirty, updateForm]);
+  }, [formContent.reviews, setFormIsDirty, updateField]);
 
   const isEdge = false; // TODO
 

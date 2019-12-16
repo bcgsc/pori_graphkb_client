@@ -40,7 +40,7 @@ const AddReviewDialog = ({
 
   // handle and store the form content
   const {
-    formContent, formErrors, formHasErrors, updateForm, formIsDirty, setFormIsDirty,
+    formContent, formErrors, formHasErrors, updateField, formIsDirty, setFormIsDirty,
   } = useSchemaForm(
     { comment, status }, {},
   );
@@ -64,8 +64,8 @@ const AddReviewDialog = ({
     // add the new value to the field
     const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
     const eventValue = event.target.value;
-    updateForm(eventName, eventValue);
-  }, [updateForm]);
+    updateField(eventName, eventValue);
+  }, [updateField]);
 
   return (
     <Dialog

@@ -19,7 +19,7 @@ import useObject from './useObject';
  * @param {Object} initialValue the start value of the form content
  * @param {boolean} ignoreMandatoryErrors do not throw errors when required fields are missing
  */
-const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryErrors = false) => {
+const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false } = {}) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
 
@@ -34,6 +34,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
     content: formContent,
     updateField: setFormFieldContent,
     replace: replaceContent,
+    update,
   } = useObject(initialValue);
 
   const {
@@ -46,7 +47,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
     const prop = fieldDefs[propName];
 
     if (prop) {
-      return schema.validateValue(prop, propValue, ignoreMandatoryErrors);
+      return schema.validateValue(prop, propValue, { ignoreMandatory: ignoreMandatoryErrors });
     }
 
     return { value: propValue };
@@ -64,8 +65,8 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
 
     Object.values(fieldDefs).forEach((prop) => {
       const propValue = (initialValue || {})[prop.name];
-      const { error, value } = formValidator(prop.name, propValue);
 
+      const { error, value } = formValidator(prop.name, propValue);
       setFormFieldContent(prop.name, value);
       setFormFieldError(prop.name, error);
     });
@@ -74,7 +75,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
   }, [initialValue || {}, fieldDefs || {}]);
 
   // provide an update callback which includes the validation step
-  const updateForm = useCallback((propName, propValue) => {
+  const updateField = useCallback((propName, propValue) => {
     const { value, error } = formValidator(propName, propValue);
 
     setFormFieldContent(propName, value);
@@ -86,8 +87,22 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
     setFormIsDirty(true);
   }, [formValidator, setFormFieldContent, setFormFieldError]);
 
+  const updateFieldEvent = useCallback(({ target }) => {
+    // add the new value to the field
+    const eventName = target.name || (target.getAttribute && target.getAttribute('name')); // name of the form field triggering the event
+    const eventValue = target.value;
+    updateField(eventName, eventValue);
+  }, [updateField]);
+
   return {
-    formContent, formErrors, updateForm, formIsDirty, formHasErrors, setFormIsDirty,
+    formContent,
+    formErrors,
+    formHasErrors,
+    formIsDirty,
+    setFormIsDirty,
+    update,
+    updateField,
+    updateFieldEvent,
   };
 };
 

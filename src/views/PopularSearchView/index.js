@@ -13,6 +13,7 @@ import {
 import slugify from 'slugify';
 
 import { HistoryPropType, LocationPropType } from '@/components/types';
+import handleErrorSaveLocation from '@/services/util';
 
 import BasePopularSearch from './components/BasePopularSearch';
 
@@ -27,8 +28,7 @@ function PopularSearchView(props) {
   const { location: { pathname: currentUri }, history } = props;
 
   const onError = useCallback((error = {}) => {
-    const { name, message } = error;
-    history.push('/error', { error: { name, message } });
+    handleErrorSaveLocation(error, history);
   }, [history]);
 
   const onSubmit = useCallback((search = '') => {

@@ -30,7 +30,7 @@ jest.mock('@/services/api', () => {
   });
 
   // to check that initial reviewStatus is set to initial by default
-  const mockPost = jest.fn((route, payload) => ({ request: () => payload }));
+  const mockPost = jest.fn((route, payload) => ({ request: () => payload, abort: () => {} }));
   return ({
     delete: jest.fn().mockReturnValue(mockRequest()),
     post: mockPost,

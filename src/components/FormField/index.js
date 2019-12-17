@@ -4,11 +4,11 @@ import {
   TextField,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
+import FormContext from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
-import { GeneralRecordPropType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -27,29 +27,20 @@ import TextArrayField from './TextArrayField';
  *
  * @param {object} props
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements
- * @param {function} props.onChange the function to update the parent form
- * @param {function} props.onReviewSelection the function to toggle between statement reviews
- * @param {*} props.value the initial value of the field
- * @param {Error} props.error the error object if any
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
- * @param {string} props.variant the form variant to be passed down to embedded forms
  * @param {object} props.innerProps props to pass to the inner form field element
- * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
-const FormField = (props) => {
+const FormField = ({
+  className = '',
+  model,
+  disabled = false,
+  label = null,
+  innerProps,
+  helperText: defaultHelperText,
+}) => {
   const {
-    className = '',
-    error,
-    onChange,
-    model,
-    value: inputValue,
-    disabled = false,
-    variant = 'view',
-    label = null,
-    innerProps,
-    helperText: defaultHelperText,
-    formIsDirty = true,
-  } = props;
+    formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
+  } = useContext(FormContext);
 
   const {
     choices,
@@ -65,17 +56,18 @@ const FormField = (props) => {
     iterable,
   } = model;
 
-  const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
-  const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
+  const inputValue = formContent[name];
+  const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
+  const mandatory = Boolean(model.mandatory && formVariant !== FORM_VARIANT.SEARCH);
 
-  const errorFlag = error && !generated && formIsDirty;
+  const errorFlag = formErrors[name] && !generated && formIsDirty;
 
   let helperText = defaultHelperText;
 
   if (!helperText) {
-    if (errorFlag && error && error.message) {
-      helperText = error.message;
-    } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+    if (errorFlag) {
+      helperText = formErrors[name].message;
+    } else if (formVariant === FORM_VARIANT.EDIT && example !== undefined) {
       if (!description) {
         helperText = `ex. ${example}`;
       } else {
@@ -86,21 +78,20 @@ const FormField = (props) => {
     }
   }
 
-
   let value = inputValue;
 
-  if (variant !== FORM_VARIANT.SEARCH) {
+  if (formVariant !== FORM_VARIANT.SEARCH) {
     if (value === undefined || (!nullable && value === null)) {
       if (defaultValue !== undefined) {
         value = defaultValue;
       } else if (generateDefault) {
-        value = generateDefault();
+        value = generateDefault(formContent);
       }
     }
   }
 
   if (value !== inputValue) {
-    onChange({ target: { name, value } });
+    updateFieldEvent({ target: { name, value } });
   }
 
   let propComponent;
@@ -109,11 +100,11 @@ const FormField = (props) => {
     propComponent = (
       <BooleanField
         disabled={generated || disabled}
-        error={!!error}
+        error={errorFlag}
         helperText={helperText}
         label={label || model.name}
         name={model.name}
-        onChange={onChange}
+        onChange={updateFieldEvent}
         required={mandatory}
         value={value}
       />
@@ -122,12 +113,12 @@ const FormField = (props) => {
     propComponent = (
       <TextArrayField
         disabled={disabled || generated}
-        error={error}
+        error={errorFlag}
         helperText={helperText}
         label={label || name}
         model={model}
         name={name}
-        onChange={onChange}
+        onChange={updateFieldEvent}
         value={value}
       />
     );
@@ -137,9 +128,9 @@ const FormField = (props) => {
         <StatementReviewsTable
           label={name}
           name={name}
-          onChange={onChange}
+          onChange={updateFieldEvent}
           values={value || []}
-          variant={variant}
+          variant={formVariant}
         />
       );
     } else if (linkedClass.name === 'Permissions') {
@@ -150,7 +141,7 @@ const FormField = (props) => {
           label={label || name}
           model={model}
           name={name}
-          onChange={onChange}
+          onChange={updateFieldEvent}
           value={value}
         />
       );
@@ -158,11 +149,11 @@ const FormField = (props) => {
       propComponent = (
         <PositionForm
           disabled={disabled}
-          error={error && formIsDirty}
+          error={errorFlag}
           helperText={helperText}
           label={label || name}
           name={name}
-          onChange={onChange}
+          onChange={updateFieldEvent}
           value={value}
           variant={value && value['@class']}
         />
@@ -178,7 +169,7 @@ const FormField = (props) => {
         innerProps={innerProps}
         label={label || name}
         name={name}
-        onChange={onChange}
+        onChange={updateFieldEvent}
         options={['', ...choices]}
         required={mandatory}
         value={value || ''}
@@ -192,7 +183,7 @@ const FormField = (props) => {
       label: label || name,
       className,
       name,
-      onChange,
+      onChange: updateFieldEvent,
       required: mandatory,
       value,
       helperText,
@@ -263,7 +254,7 @@ const FormField = (props) => {
         inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
         label={name}
         name={label || name}
-        onChange={onChange}
+        onChange={updateFieldEvent}
         required={mandatory}
         value={value || ''}
       />
@@ -304,14 +295,8 @@ FormField.propTypes = {
     generated: PropTypes.bool,
     mandatory: PropTypes.bool,
   }).isRequired,
-  onChange: PropTypes.func.isRequired,
   className: PropTypes.string,
   disabled: PropTypes.bool,
-  error: PropTypes.shape({
-    name: PropTypes.string,
-    message: PropTypes.string,
-  }),
-  formIsDirty: PropTypes.bool,
   helperText: PropTypes.string,
   innerProps: PropTypes.shape({
     inputProps: PropTypes.shape({
@@ -319,25 +304,14 @@ FormField.propTypes = {
     }),
   }),
   label: PropTypes.string,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-    PropTypes.arrayOf(GeneralRecordPropType),
-    GeneralRecordPropType,
-  ]),
-  variant: PropTypes.string,
 };
 
 
 FormField.defaultProps = {
   className: '',
-  error: null,
   disabled: false,
   label: null,
-  variant: 'view',
-  value: null,
   innerProps: {},
-  formIsDirty: true,
   helperText: '',
 };
 

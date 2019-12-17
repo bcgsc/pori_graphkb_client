@@ -43,6 +43,7 @@ EmailReportError.propTypes = {
  */
 class ErrorView extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     location: LocationPropType.isRequired,
   };
 
@@ -52,7 +53,9 @@ class ErrorView extends Component {
   }
 
   render() {
-    const { location: { state } } = this.props;
+    const { location: { state }, history } = this.props;
+    const { from: { pathname, search } } = state;
+
     const { tooltipOpen } = this.state;
 
     const {
@@ -63,6 +66,19 @@ class ErrorView extends Component {
         ...rest
       } = {},
     } = state;
+
+    if (name === 'AuthenticationError') {
+      const savedLocation = {
+        pathname,
+        search,
+      };
+      localStorage.setItem('savedLocation', JSON.stringify(savedLocation));
+
+      history.push({
+        pathname: '/login',
+        state: { from: { pathname, search } },
+      });
+    }
 
     const jiraLink = <a href={JIRA_LINK} rel="noopener noreferrer" target="_blank">JIRA</a>;
 

@@ -10,6 +10,7 @@ import {
   getReferrerUri, isAuthenticated, isAuthorized,
   keycloak, login,
 } from '@/services/auth';
+import handleErrorSaveLocation from '@/services/util';
 import config from '@/static/config';
 
 const {
@@ -52,6 +53,7 @@ class LoginView extends React.Component {
       from = getReferrerUri() || '/query';
     }
 
+
     if (!isAuthenticated(this.context)) {
       try {
         await login(from);
@@ -80,11 +82,22 @@ class LoginView extends React.Component {
       } catch (error) {
         // redirect to the error page
         console.error(error);
-        history.push('/error', { error: error.toJSON() });
+        handleErrorSaveLocation({ error: error.toJSON() }, history);
         return;
       }
     }
-    history.push(from);
+    const savedLocation = JSON.parse(localStorage.getItem('savedLocation'));
+
+    if (savedLocation) {
+      const { pathname, search } = savedLocation;
+      localStorage.removeItem('savedLocation');
+      history.push({
+        pathname,
+        search,
+      });
+    } else {
+      history.push(from);
+    }
   }
 
   componentWillUnmount() {

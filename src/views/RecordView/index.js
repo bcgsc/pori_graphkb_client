@@ -16,6 +16,7 @@ import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
+import handleErrorSaveLocation from '@/services/util';
 
 
 const DEFAULT_TITLES = {
@@ -90,7 +91,7 @@ const RecordView = (props) => {
       const search = qs.stringify(cleanLinkedRecords(content));
       history.push(`/data/table?${search}`, { search, content });
     } else {
-      history.push('/error', { error: { name, message } });
+      handleErrorSaveLocation({ name, message }, history);
     }
   }, [history]);
 

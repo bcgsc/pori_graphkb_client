@@ -203,5 +203,10 @@ const cleanPayload = (payload) => {
 };
 
 export {
-  cleanLinkedRecords, cleanUndefined, sortAndGroupFields, CLASS_MODEL_PROP, FORM_VARIANT, cleanPayload,
+  cleanLinkedRecords,
+  cleanUndefined,
+  sortAndGroupFields,
+  CLASS_MODEL_PROP,
+  FORM_VARIANT,
+  cleanPayload,
 };

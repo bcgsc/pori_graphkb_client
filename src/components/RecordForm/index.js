@@ -8,11 +8,12 @@ import {
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback,
-  useContext, useEffect, useState,
+  useCallback, useContext, useEffect, useRef,
+  useState,
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
+import FormContext from '@/components/FormContext';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { SecurityContext } from '@/components/SecurityContext';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
@@ -79,7 +80,7 @@ const RecordForm = ({
   const context = useContext(SecurityContext);
 
   const [actionInProgress, setActionInProgress] = useState(false);
-  const controllers = [];
+  const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const [fieldDefs, setFieldDefs] = useState({});
@@ -91,11 +92,12 @@ const RecordForm = ({
     }
   }, [modelName]);
 
+  const form = useSchemaForm(fieldDefs, initialValue);
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
-  } = useSchemaForm(fieldDefs, initialValue);
+  } = form;
 
-  useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
+  useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
   const statementReviewCheck = useCallback((currContent, content) => {
     const updatedContent = { ...content };
@@ -140,7 +142,7 @@ const RecordForm = ({
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
-      controllers.push(call);
+      controllers.current.push(call);
       setActionInProgress(true);
 
       try {
@@ -154,7 +156,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
+  }, [formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
 
   /**
    * Handler for deleting an existing record
@@ -167,7 +169,7 @@ const RecordForm = ({
     }
     const { routeName } = schema.get(content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    controllers.push(call);
+    controllers.current.push(call);
     setActionInProgress(true);
 
     try {
@@ -179,7 +181,7 @@ const RecordForm = ({
       onError({ error: err, content });
     }
     setActionInProgress(false);
-  }, [controllers, formContent, modelName, onError, onSubmit, snackbar]);
+  }, [formContent, modelName, onError, onSubmit, snackbar]);
 
   /**
    * Handler for edits to an existing record
@@ -203,7 +205,7 @@ const RecordForm = ({
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-      controllers.push(call);
+      controllers.current.push(call);
       setActionInProgress(true);
 
       try {
@@ -216,16 +218,8 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
 
-  const handleOnChange = (event) => {
-    // add the new value to the field
-    const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
-    const eventValue = event.target.value;
-
-    updateField(eventName, eventValue);
-    setFormIsDirty(true);
-  };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
@@ -242,6 +236,7 @@ const RecordForm = ({
   const isEdge = false; // TODO
 
   return (
+
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
         <Typography className="title" variant="h1">{title}</Typography>
@@ -276,18 +271,16 @@ const RecordForm = ({
         />
         ))}
       </div>
-      <FormLayout
-        {...rest}
-        collapseExtra
-        content={formContent}
-        disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
-        errors={formErrors}
-        exclusions={FIELD_EXCLUSIONS}
-        formIsDirty={formIsDirty}
-        modelName={modelName}
-        onChange={handleOnChange}
-        variant={variant}
-      />
+      <FormContext.Provider value={form}>
+        <FormLayout
+          {...rest}
+          collapseExtra
+          disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
+          exclusions={FIELD_EXCLUSIONS}
+          modelName={modelName}
+          variant={variant}
+        />
+      </FormContext.Provider>
       {variant === FORM_VARIANT.VIEW && (
         <div className="record-form__related-records">
           <Typography variant="h4">Related Records</Typography>

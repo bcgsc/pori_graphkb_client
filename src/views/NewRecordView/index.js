@@ -1,11 +1,12 @@
 import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
-  useCallback, useEffect,
+  useCallback,
+  useEffect,
   useState,
 } from 'react';
 
-import FormField from '@/components/FormField';
+import ModelSelect from '@/components/ModelSelect';
 import RecordForm from '@/components/RecordForm';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
@@ -13,31 +14,13 @@ import handleErrorSaveLocation from '@/services/util';
 
 
 const NewRecordView = (props) => {
-  const { history, match: { path, params: { modelName: modelNameParam } } } = props;
+  const { history, match: { params: { modelName: modelNameParam } } } = props;
 
   const [modelName, setModelName] = useState('');
-  const [modelOptions, setModelOptions] = useState([]);
 
   useEffect(() => {
-    if (path) {
-      try {
-        const options = schema.get(modelNameParam || 'V').descendantTree(true).map(m => ({
-          label: m.name, value: m.name, key: m.name, caption: m.description,
-        }));
-        setModelOptions(options);
-
-        if (options.length === 1) {
-          setModelName(options[0].label);
-        } else {
-          setModelName('');
-        }
-      } catch (err) {
-        history.push('/error', { error: { name: err.name, message: err.toString() } });
-      }
-    }
-  }, [path, modelNameParam, history]);
-
-
+    setModelName('');
+  }, [modelNameParam]);
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
@@ -66,12 +49,9 @@ const NewRecordView = (props) => {
 
   return (
     <>
-      <FormField
+      <ModelSelect
+        baseModel={modelNameParam}
         className="record-form__class-select"
-        disabled={modelOptions.length < 2}
-        model={{
-          choices: modelOptions, required: true, name: '@class', type: 'string',
-        }}
         onChange={({ target: { value } }) => setModelName(value)}
         value={modelName}
       />

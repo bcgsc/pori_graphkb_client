@@ -8,8 +8,9 @@ import {
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
+import FormContext from '@/components/FormContext';
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
 import StatementSentence from '@/components/SentencePreview/StatementSentence';
 import {
@@ -41,8 +42,11 @@ import FieldGroup from './FieldGroup';
  * @param {string} props.className css class to add to main element
  */
 const FormLayout = ({
-  content, errors, exclusions, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups, formIsDirty,
+  exclusions, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
 }) => {
+  const {
+    formContent = {}, formIsDirty, formErrors = {}, updateFieldEvent,
+  } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [model, setModel] = useState(null);
@@ -63,7 +67,7 @@ const FormLayout = ({
 
   const edges = isEdge
     ? []
-    : schema.getEdges(content || {});
+    : schema.getEdges(formContent || {});
   const isStatement = model && model.name === 'Statement';
 
   return (
@@ -73,37 +77,33 @@ const FormLayout = ({
         <div className="record-form__content record-form__content--long">
           {isStatement && variant !== FORM_VARIANT.SEARCH && (
             <StatementSentence
-              content={content}
+              content={formContent}
             />
           )}
           {isEdge && variant !== FORM_VARIANT.SEARCH && (
             <EdgeSentence
-              srcRecord={content.out}
-              tgtRecord={content.in}
+              srcRecord={formContent.out}
+              tgtRecord={formContent.in}
               type={model.name}
             />
           )}
           {isEdge && (
             <EdgeFields
-              content={content}
+              content={formContent}
               disabled={disabled}
-              errors={errors}
+              errors={formErrors}
               formIsDirty={formIsDirty}
               model={model}
-              onChange={onChange}
+              onChange={updateFieldEvent}
               variant={variant}
             />
           )}
         </div>
         <List className="record-form__content">
           <FieldGroup
-            content={content}
             disabled={disabled}
-            errors={errors}
             exclusions={exclusions}
-            formIsDirty={formIsDirty}
             model={model}
-            onChange={onChange}
             ordering={fields}
             variant={variant}
           />
@@ -123,13 +123,9 @@ const FormLayout = ({
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <List className="record-form__content">
               <FieldGroup
-                content={content}
                 disabled={disabled}
-                errors={errors}
                 exclusions={exclusions}
-                formIsDirty={formIsDirty}
                 model={model}
-                onChange={onChange}
                 ordering={extraFields}
                 variant={variant}
               />
@@ -144,7 +140,7 @@ const FormLayout = ({
               Related Nodes
             </Typography>
             <EdgeTable
-              sourceNodeId={content['@rid']}
+              sourceNodeId={formContent['@rid']}
               values={edges}
             />
           </div>
@@ -160,14 +156,10 @@ FormLayout.propTypes = {
   belowFold: PropTypes.arrayOf(PropTypes.string),
   className: PropTypes.string,
   collapseExtra: PropTypes.bool,
-  content: PropTypes.object,
   disabled: PropTypes.bool,
-  errors: PropTypes.object,
   exclusions: PropTypes.arrayOf(PropTypes.string),
-  formIsDirty: PropTypes.bool,
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   modelName: PropTypes.string,
-  onChange: PropTypes.func,
   variant: PropTypes.oneOf([
     FORM_VARIANT.EDIT,
     FORM_VARIANT.NEW,
@@ -195,12 +187,8 @@ FormLayout.defaultProps = {
     ['out', 'in'],
   ],
   modelName: null,
-  onChange: () => null,
-  content: {},
-  errors: {},
   exclusions: [],
   variant: FORM_VARIANT.VIEW,
-  formIsDirty: true,
 };
 
 export default FormLayout;

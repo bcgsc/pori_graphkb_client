@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
+import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { SecurityContext } from '@/components/SecurityContext';
@@ -39,11 +40,12 @@ const AddReviewDialog = ({
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
   // handle and store the form content
-  const {
-    formContent, formErrors, formHasErrors, updateField, formIsDirty, setFormIsDirty,
-  } = useSchemaForm(
+  const form = useSchemaForm(
     { comment, status }, {},
   );
+  const {
+    formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
+  } = form;
 
   /**
    * Handler for submission of a new record
@@ -60,12 +62,6 @@ const AddReviewDialog = ({
     }
   }, [context, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
-  const handleOnChange = useCallback((event) => {
-    // add the new value to the field
-    const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
-    const eventValue = event.target.value;
-    updateField(eventName, eventValue);
-  }, [updateField]);
 
   return (
     <Dialog
@@ -84,25 +80,21 @@ const AddReviewDialog = ({
           </IconButton>
         </div>
         <DialogContent className="review-dialog__fields">
-          <FormField
-            error={formErrors[status.name]}
-            model={status}
-            onChange={handleOnChange}
-            value={formContent[status.name]}
-            variant={FORM_VARIANT.NEW}
-          />
-          <FormField
-            error={formErrors[comment.name]}
-            innerProps={{
-              multiline: true,
-              rows: 7,
-              variant: 'outlined',
-            }}
-            model={comment}
-            onChange={handleOnChange}
-            value={formContent[comment.name]}
-            variant={FORM_VARIANT.NEW}
-          />
+          <FormContext.Provider value={form}>
+            <FormField
+              model={status}
+              variant={FORM_VARIANT.NEW}
+            />
+            <FormField
+              innerProps={{
+                multiline: true,
+                rows: 7,
+                variant: 'outlined',
+              }}
+              model={comment}
+              variant={FORM_VARIANT.NEW}
+            />
+          </FormContext.Provider>
           <FormControlLabel
             checked={updateAmalgamated}
             color="primary"

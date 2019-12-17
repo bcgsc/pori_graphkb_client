@@ -37,7 +37,7 @@ const exclusionFilter = (orderingList, exclusionList) => {
  * @param {bool} disabled if field should be disabled
  */
 const FieldGroup = ({
-  model, ordering, content, errors, exclusions, variant, onChange, disabled, formIsDirty,
+  model, ordering, exclusions, variant, disabled,
 }) => {
   const { properties: { out, in: tgt, ...properties } } = model;
 
@@ -77,12 +77,8 @@ const FieldGroup = ({
       fields.push((
         <List key={key} className="record-form__content-subgroup">
           <FieldGroup
-            content={content}
             disabled={disabled}
-            errors={errors}
-            formIsDirty={formIsDirty}
             model={model}
-            onChange={onChange}
             ordering={item}
             variant={variant}
           />
@@ -94,13 +90,8 @@ const FieldGroup = ({
       const wrapper = (
         <FormField
           key={name}
-          content={content}
           disabled={disabled}
-          error={errors[name]}
-          formIsDirty={formIsDirty}
           model={prop}
-          onChange={onChange}
-          value={content[name]}
           variant={variant}
         />
       );
@@ -115,26 +106,19 @@ const FieldGroup = ({
 
 FieldGroup.propTypes = {
   model: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
   ordering: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ])).isRequired,
-  content: PropTypes.object,
   disabled: PropTypes.bool,
-  errors: PropTypes.object,
   exclusions: PropTypes.arrayOf(PropTypes.string),
-  formIsDirty: PropTypes.bool,
   variant: PropTypes.string,
 };
 
 FieldGroup.defaultProps = {
-  content: {},
-  errors: {},
   exclusions: [],
   disabled: false,
   variant: FORM_VARIANT.VIEW,
-  formIsDirty: true,
 };
 
 

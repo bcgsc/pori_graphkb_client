@@ -21,6 +21,11 @@ import PositionForm from './PositionForm';
 import StatementReviewsTable from './StatementReviewsTable';
 import TextArrayField from './TextArrayField';
 
+const POSITION_CLASSES = [
+  'Position',
+  ...schema.schema.Position.descendantTree(false).map(m => m.name),
+];
+
 /**
  * Generate the field component for a form. Uses the property model to decide
  * the component type to render. Factory wrapper which standardized form fields.
@@ -103,8 +108,8 @@ const FormField = ({
         disabled={generated || disabled}
         error={errorFlag}
         helperText={helperText}
-        label={label || model.name}
-        name={model.name}
+        label={label || name}
+        name={name}
         onChange={updateFieldEvent}
         required={mandatory}
         value={value}
@@ -146,7 +151,7 @@ const FormField = ({
           value={value}
         />
       );
-    } else if (linkedClass.name === 'Position') {
+    } else if (POSITION_CLASSES.includes(linkedClass.name)) {
       propComponent = (
         <PositionForm
           baseVariant={baseModel}

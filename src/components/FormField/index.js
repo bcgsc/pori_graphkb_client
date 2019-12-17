@@ -37,6 +37,7 @@ const FormField = ({
   label = null,
   innerProps,
   helperText: defaultHelperText,
+  baseModel,
 }) => {
   const {
     formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
@@ -148,6 +149,7 @@ const FormField = ({
     } else if (linkedClass.name === 'Position') {
       propComponent = (
         <PositionForm
+          baseVariant={baseModel}
           disabled={disabled}
           error={errorFlag}
           helperText={helperText}
@@ -295,6 +297,7 @@ FormField.propTypes = {
     generated: PropTypes.bool,
     mandatory: PropTypes.bool,
   }).isRequired,
+  baseModel: PropTypes.string,
   className: PropTypes.string,
   disabled: PropTypes.bool,
   helperText: PropTypes.string,
@@ -313,6 +316,7 @@ FormField.defaultProps = {
   label: null,
   innerProps: {},
   helperText: '',
+  baseModel: '',
 };
 
 

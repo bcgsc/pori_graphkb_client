@@ -173,6 +173,35 @@ const cleanUndefined = (content) => {
   return newContent;
 };
 
+
+const cleanPayload = (payload) => {
+  if (typeof payload !== 'object' || payload === null) {
+    return payload;
+  }
+  const newPayload = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
+      if (typeof value === 'object' && value !== null) {
+        if (Array.isArray(value)) {
+          newPayload[key] = value.map((arr) => {
+            if (arr && arr['@rid']) {
+              return arr['@rid'];
+            }
+            return cleanPayload(arr);
+          });
+        } else if (value['@rid']) {
+          newPayload[key] = value['@rid'];
+        } else {
+          newPayload[key] = value;
+        }
+      } else {
+        newPayload[key] = value;
+      }
+    }
+  });
+  return newPayload;
+};
+
 export {
-  cleanLinkedRecords, cleanUndefined, sortAndGroupFields, CLASS_MODEL_PROP, FORM_VARIANT,
+  cleanLinkedRecords, cleanUndefined, sortAndGroupFields, CLASS_MODEL_PROP, FORM_VARIANT, cleanPayload,
 };

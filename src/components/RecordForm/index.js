@@ -18,7 +18,7 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { SecurityContext } from '@/components/SecurityContext';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
 import { GeneralRecordPropType } from '@/components/types';
-import { FORM_VARIANT } from '@/components/util';
+import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
@@ -28,34 +28,6 @@ import FormLayout from './FormLayout';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
-
-const cleanPayload = (payload) => {
-  if (typeof payload !== 'object' || payload === null) {
-    return payload;
-  }
-  const newPayload = {};
-  Object.entries(payload).forEach(([key, value]) => {
-    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
-      if (typeof value === 'object' && value !== null) {
-        if (Array.isArray(value)) {
-          newPayload[key] = value.map((arr) => {
-            if (arr && arr['@rid']) {
-              return arr['@rid'];
-            }
-            return cleanPayload(arr);
-          });
-        } else if (value['@rid']) {
-          newPayload[key] = value['@rid'];
-        } else {
-          newPayload[key] = value;
-        }
-      } else {
-        newPayload[key] = value;
-      }
-    }
-  });
-  return newPayload;
-};
 
 /**
  * Form/View that displays the contents of a single node

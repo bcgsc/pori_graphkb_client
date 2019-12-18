@@ -1,3 +1,6 @@
+import './index.scss';
+
+import { Paper } from '@material-ui/core';
 import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
@@ -11,6 +14,9 @@ import RecordForm from '@/components/RecordForm';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
 
+import NewVariant from './components/NewVariant';
+
+const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
 const NewRecordView = (props) => {
   const { history, match: { params: { modelName: modelNameParam } } } = props;
@@ -48,9 +54,21 @@ const NewRecordView = (props) => {
 
   const isAbstract = modelName && schema.get(modelName).isAbstract;
 
-  return (
-    !modelName || isAbstract
-      ? (
+  let innerComponent = null;
+
+  if (
+    VARIANT_CLASSES.includes(modelNameParam.toLowerCase())
+    || (modelName && VARIANT_CLASSES.includes(modelName.toLowerCase()))
+  ) {
+    innerComponent = (
+      <NewVariant
+        onError={handleError}
+        onSubmit={handleSubmit}
+      />
+    );
+  } else if (!modelName || isAbstract) {
+    innerComponent = (
+      <Paper>
         <ModelSelect
           baseModel={modelNameParam}
           className="record-form__class-select"
@@ -58,17 +76,22 @@ const NewRecordView = (props) => {
           value={modelName}
           variant="radio"
         />
-      )
-      : (
-        <RecordForm
-          modelName={modelName}
-          onError={handleError}
-          onSubmit={handleSubmit}
-          onTopClick={null}
-          title={`Create a new ${modelName} Record`}
-          variant={FORM_VARIANT.NEW}
-        />
-      )
+      </Paper>
+    );
+  } else {
+    innerComponent = (
+      <RecordForm
+        modelName={modelName}
+        onError={handleError}
+        onSubmit={handleSubmit}
+        onTopClick={null}
+        title={`Create a new ${modelName} Record`}
+        variant={FORM_VARIANT.NEW}
+      />
+    );
+  }
+  return (
+    <div className="new-record-view">{innerComponent}</div>
   );
 };
 

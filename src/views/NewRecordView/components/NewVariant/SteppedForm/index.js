@@ -85,7 +85,12 @@ const SteppedForm = ({
                 data-testid={`stepped-form__step-button-${index}`}
                 onClick={() => handleOnClick(index)}
               >
-                <StepLabel error={errors && visited[index]}>{label}</StepLabel>
+                <StepLabel
+                  className="stepped-form__step-label"
+                  error={errors && visited[index]}
+                >
+                  {label}
+                </StepLabel>
               </StepButton>
               <StepContent>
                 {child}

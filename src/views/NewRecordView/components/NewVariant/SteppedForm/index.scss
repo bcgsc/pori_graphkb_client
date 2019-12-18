@@ -13,4 +13,10 @@
     margin-right: $default-spacing;
     width: fit-content;
   }
+
+  &__step-label {
+    .MuiStepLabel-labelContainer {
+      text-align: left;
+    }
+  }
 }

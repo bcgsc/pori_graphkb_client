@@ -134,7 +134,7 @@ describe('PopularSearchView', () => {
       const searchBtn = getByText('Search');
       fireEvent.click(searchBtn);
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);
-      expect(onSubmitSpy).toHaveBeenCalledWith('complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7IkFORCI6W3sic3ViamVjdCI6WyJkcnVnIHRoZXJhcHkgcmlkcyJdLCJvcGVyYXRvciI6IklOIn0seyJyZWxldmFuY2UiOiJyZWxldmFuY2UgcmlkIiwib3BlcmF0b3IiOiI9In1dfX0%253D&%40class=Statement');
+      expect(onSubmitSpy).toHaveBeenCalledWith('%40class=Statement&searchProps%5BsearchIndex%5D=0&searchProps%5BsearchType%5D=Popular&searchProps%5BoptionalValue%5D=&searchProps%5Bvalue%5D=kras&searchProps%5Bvariant%5D=batch1');
     });
   });
 
@@ -185,7 +185,7 @@ describe('PopularSearchView', () => {
       fireEvent.change(getByTestId('additional-input'), { target: { value: 'tp53' } });
       fireEvent.click(searchBtn);
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);
-      expect(onSubmitSpy).toHaveBeenCalledWith('complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7IkFORCI6W3sic3ViamVjdCI6WyJkcnVnIHRoZXJhcHkgcmlkcyJdLCJvcGVyYXRvciI6IklOIn0seyJyZWxldmFuY2UiOiJyZWxldmFuY2UgcmlkIiwib3BlcmF0b3IiOiI9In1dfX0%253D&%40class=Statement');
+      expect(onSubmitSpy).toHaveBeenCalledWith('%40class=Statement&searchProps%5BsearchIndex%5D=0&searchProps%5BsearchType%5D=Popular&searchProps%5BoptionalValue%5D=tp53&searchProps%5Bvalue%5D=kras&searchProps%5Bvariant%5D=batch2');
     });
   });
 });

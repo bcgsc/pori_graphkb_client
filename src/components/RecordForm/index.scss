@@ -1,4 +1,5 @@
 @import '../../globals';
+@import '../../theme';
 
 .record-form {
   &__wrapper {
@@ -73,10 +74,12 @@
         float: right;
       }
 
-      button {
-        &:first-child {
-          height: 40px;
-        }
+      &__graphview {
+        border: 1px solid $palette__grey--A100;
+        border-radius: 100px;
+        position: relative;
+        top: -4px;
+
       }
     }
   }

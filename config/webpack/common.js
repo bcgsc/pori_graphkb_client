@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // eslint ignore-line
@@ -6,9 +7,26 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
-const createBaseConfig = (outputPath) => {
+const createBaseConfig = ({
+  env = {}, mode = 'production', sourceMap = false, outputPath,
+} = {}) => {
+  const ENV_VARS = {
+    DEBUG: false,
+    DISABLE_AUTH: null,
+    KEYCLOAK_CLIENT_ID: 'GraphKB',
+    KEYCLOAK_REALM: 'GSC',
+    KEYCLOAK_ROLE: 'GraphKB',
+    KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
+    NODE_ENV: 'production',
+    USER: null,
+    PASSWORD: null,
+    npm_package_version: null,
+    ...env || {},
+  };
+
   const BASE_DIR = path.resolve(__dirname, '../..');
   const SRC_PATH = path.resolve(BASE_DIR, 'src');
   const INCLUDE = [
@@ -46,7 +64,7 @@ const createBaseConfig = (outputPath) => {
         include: INCLUDE,
         use: [
           'babel-loader',
-        // 'eslint-loader',
+          'eslint-loader',
         ],
         sideEffects: false,
       },
@@ -89,6 +107,8 @@ const createBaseConfig = (outputPath) => {
     new CleanWebpackPlugin(
       outputPath, { root: BASE_DIR },
     ),
+    // Copy values of ENV variables in as strings using these defaults (null = unset)
+    new webpack.EnvironmentPlugin(ENV_VARS),
     // template index.html. Required for running the dev-server properly
     new HtmlWebpackPlugin({
       template: path.resolve(SRC_PATH, 'static/index.html'),
@@ -130,7 +150,7 @@ const createBaseConfig = (outputPath) => {
         // https://github.com/facebookincubator/create-react-app/issues/2612
           return;
         }
-        console.log(message);
+        console.log(message);  // eslint-disable-line
       },
       minify: true,
       // For unknown URLs, fallback to the index page
@@ -145,6 +165,7 @@ const createBaseConfig = (outputPath) => {
 
 
   return {
+    mode,
     context: SRC_PATH,
     entry: [
       './polyfills.js',
@@ -168,6 +189,15 @@ const createBaseConfig = (outputPath) => {
     // production optimizations
     optimization: {
       runtimeChunk: 'single',
+      minimizer: [
+        new TerserWebpackPlugin({
+          terserOptions: {
+            keep_classnames: true,
+            module: true,
+            sourceMap,
+          },
+        }),
+      ],
     },
     plugins,
     resolve: {

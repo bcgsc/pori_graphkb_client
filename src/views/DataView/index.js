@@ -19,73 +19,16 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import util from '../../services/util';
-import SEARCH_OPTS from '../PopularSearchView/components/util';
 import DataTable from './components/DataTable';
 import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
 import GraphComponent from './components/GraphComponent';
-import { hashRecordsByRID } from './util';
-
-
-/**
-* ridMap to replace rids with user readable values in filter table
-* @param {object} cache cache object to fetch full records for displayName or name
-* @param {object} filters query object used to extract relevant rids
-* returns ridMap ex. { "148:34" : "sensitivity"}
-*/
-const generateRidMap = async (cache, filters) => {
-  const totalValues = [];
-  // collect values to construct ridMap
-  filters.OR.forEach((fg) => {
-    const filterGroup = fg.AND;
-    filterGroup.forEach((filter) => {
-      const { operator, ...prop } = filter;
-      const [key] = Object.keys(prop);
-
-      if (Array.isArray(prop[key])) {
-        totalValues.push(...prop[key]);
-      } else {
-        totalValues.push(prop[key]);
-      }
-    });
-  });
-
-  // filter out values that dont look like rids
-  const ridCheck = RegExp(/^#?-?\d{1,5}:-?\d+$/);
-  const uniqueValues = new Set(totalValues);
-  const rids = [...uniqueValues].filter(el => ridCheck.test(el));
-  const records = await cache.getRecords([...rids]);
-  const ridMap = {};
-  records.forEach((rec) => {
-    ridMap[rec['@rid']] = rec.displayName || rec.name;
-  });
-
-  return ridMap;
-};
-
-const generateFilterGroups = (query, ridMap) => {
-  const filterGroups = query.OR.map((fg) => {
-    const filterGroup = fg.AND;
-    const chipGroup = filterGroup.map((filter) => {
-      const { operator, ...prop } = filter;
-      const [key] = Object.keys(prop);
-      let chip;
-
-      if (Array.isArray(prop[key])) {
-        const conditions = prop[key].map(rid => ridMap[rid]).join(', ');
-        chip = `${key} ${operator} ${conditions}`;
-      } else {
-        chip = ridMap[prop[key]]
-          ? `${key} ${operator} ${ridMap[prop[key]]}`
-          : `${key} ${operator} ${prop[key]}`;
-      }
-      return chip;
-    });
-    return chipGroup;
-  });
-  return filterGroups;
-};
+import {
+  getFilterTableProps,
+  getPopularChipsPropsAndSearch,
+  hashRecordsByRID,
+} from './util';
 
 /**
  * Shows the search result filters and an edit button
@@ -130,7 +73,9 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
-    const { cacheBlocks, blockSize, history } = this.props;
+    const {
+      cacheBlocks, blockSize, history, location: { search },
+    } = this.props;
     const cache = api.getNewCache({
       schema,
       cacheBlocks,
@@ -143,10 +88,12 @@ class DataView extends React.Component {
 
     if (URLContainsTable) {
       const {
-        searchType, limit, neighbors, ...filters
+        searchType, limit, neighbors, filterGroups, newSearch, ...filters
       } = await this.parseFilters(cache);
 
-      this.setState({ cache, filters, searchType });
+      this.setState({
+        cache, filters, searchType, filterGroups, search: newSearch || search,
+      });
     } else {
       this.setState({ cache });
     }
@@ -161,7 +108,9 @@ class DataView extends React.Component {
   }
 
   /**
-   * Grab filters from search and sets filtergroups if it is advanced search
+   * Grab filters from search which are used to display search chips shown at the
+   * top of the data table. Also updates the search if it is a popular search to
+   * generate a shorter URL.
    */
   async parseFilters(cache) {
     const { search } = this.state;
@@ -172,41 +121,27 @@ class DataView extends React.Component {
         queryParams, modelName, searchProps, searchProps: { searchType }, payload,
       } = api.getQueryFromSearch({ search, schema });
 
+      let chipProps = searchProps;
+      let newSearch = null;
+
       if (searchType === 'Popular') {
         const {
-          value, optionalValue, variant, searchIndex,
-        } = searchProps;
-        const selectedOption = SEARCH_OPTS[variant][searchIndex];
-
-        if (selectedOption.buildSearch) {
-          await selectedOption.buildSearch(value, optionalValue);
-        }
-
-        const { search: rawSearch, searchChipProps: chipProps } = selectedOption;
-        const encodedSearch = api.encodeQueryComplexToSearch(rawSearch, modelName);
-        this.setState({ search: encodedSearch });
-
-        delete searchProps.value;
-        delete searchProps.optionalValue;
-        delete searchProps.variant;
-        delete searchProps.searchIndex;
-        Object.keys(chipProps).forEach((key) => {
-          searchProps[key] = chipProps[key];
-        });
+          search: encodedSearch,
+          chipProps: popChipProps,
+        } = await getPopularChipsPropsAndSearch(searchProps, modelName);
+        newSearch = encodedSearch;
+        chipProps = popChipProps;
       }
+
+      let filterGroups = [];
 
       if (searchType === 'Advanced') {
         const { filters } = payload;
-
-        const ridMap = await generateRidMap(cache, filters);
-        const filterGroups = generateFilterGroups(filters, ridMap);
-
-        this.setState({ filterGroups });
-        delete searchProps.filters;
+        filterGroups = await getFilterTableProps(filters, cache);
       }
 
       return {
-        '@class': modelName, ...queryParams, ...searchProps,
+        '@class': modelName, ...queryParams, ...chipProps, filterGroups, newSearch,
       };
     } catch (err) {
       return this.handleError(err);

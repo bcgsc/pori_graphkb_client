@@ -71,11 +71,10 @@ class QueryView extends Component {
 
         const searchChipProps = {
           searchType: 'Quick',
-          // keyword: trimmed.join(' '),
+          keyword: trimmed.join(' '),
         };
 
         const search = api.encodeQueryComplexToSearch(payload, 'Statement', searchChipProps);
-        console.log('TCL: QueryView -> searchKeyword -> search', search);
         history.push({
           pathname: '/data/table',
           search,
@@ -90,18 +89,33 @@ class QueryView extends Component {
   @boundMethod
   searchByHGVS() {
     const {
-      variant,
+      variant, value,
     } = this.state;
     const { history } = this.props;
 
+    const trimmed = String(value)
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(word => word.length >= MIN_WORD_LENGTH);
+
     if (variant) {
-      const search = api.encodeQueryComplexToSearch({
+      const HGVSQuery = {
         target: 'Statement',
         filters: {
           conditions: api.buildSearchFromParseVariant(schema, variant),
           operator: 'CONTAINSANY',
         },
-      }, 'Statement');
+      };
+
+      const search = api.encodeQueryComplexToSearch(
+        HGVSQuery,
+        'Statement',
+        {
+          searchType: 'HGVS Quick',
+          keyword: trimmed.join(' '),
+        },
+      );
 
       history.push({
         pathname: '/data/table',

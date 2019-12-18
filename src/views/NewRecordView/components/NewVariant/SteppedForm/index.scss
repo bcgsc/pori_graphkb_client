@@ -1,0 +1,12 @@
+@import '../../../../../globals';
+
+.stepped-form {
+  max-width: $readable-max;
+  min-width: $readable-min;
+
+  &__action {
+    margin-left: auto;
+    margin-right: $default-spacing;
+    width: fit-content;
+  }
+}

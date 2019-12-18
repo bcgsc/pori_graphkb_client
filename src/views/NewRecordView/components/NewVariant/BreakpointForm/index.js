@@ -1,0 +1,110 @@
+import {
+  Checkbox,
+  FormControlLabel,
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useState } from 'react';
+
+import FormContext from '@/components/FormContext';
+import FormField from '@/components/FormField';
+import schema from '@/services/schema';
+
+
+const { schema: { PositionalVariant: { properties: { reference1, break1Start } } } } = schema;
+
+/**
+ * Handles the form for a single breakpoint (start and end) with the reference element it is
+ * associated with
+ *
+ * Used for inputting positional variants
+ *
+ * @param {object} props
+ * @param {string} props.coordinateType the Position class
+ * @param {string} props.reference the field name of the reference element (ex. reference1)
+ * @param {string} props.start the field name of the start position (ex. break1Start)
+ * @param {string} props.end the field name of the end position (ex. break1End)
+ * @param {bool} props.required flag to indicate this field is required
+ */
+const BreakpointForm = ({
+  coordinateType, reference, start, end, required,
+}) => {
+  const { formContent, updateField } = useContext(FormContext);
+  const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
+
+  const handleCheckUncertain = useCallback((checked) => {
+    if (!checked) {
+      // unchecking
+      updateField(end, null);
+    }
+    setUncertain(checked);
+  }, [end, updateField]);
+
+  return (
+    <div className="breakpoint-form">
+      {reference && (
+        <FormField
+          initialFilterClass="Feature"
+          label="reference"
+          model={{ ...reference1, required, name: reference }}
+        />
+      )}
+      {start && (
+        <>
+          <FormControlLabel
+            className="breakpoint-form__uncertain-checkbox"
+            control={(
+              <Checkbox
+                checked={uncertain}
+                data-testid="breakpoint-form__uncertain-checkbox"
+                onChange={() => handleCheckUncertain(!uncertain)}
+              />
+            )}
+            label="uncertain position"
+          />
+          <FormField
+            baseModel={coordinateType}
+            clearable={false}
+            label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
+            model={{
+              ...break1Start,
+              name: start,
+              mandatory: required,
+              linkedClass: schema.get(coordinateType),
+              description: '',
+            }}
+          />
+          {uncertain && (
+          <FormField
+            baseModel={coordinateType}
+            clearable={false}
+            label={`end (${coordinateType})`}
+            model={{
+              ...break1Start,
+              name: end,
+              mandatory: required,
+              linkedClass: schema.get(coordinateType),
+              description: 'end of the breakpoint range',
+            }}
+          />
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+BreakpointForm.propTypes = {
+  coordinateType: PropTypes.string.isRequired,
+  reference: PropTypes.string.isRequired,
+  end: PropTypes.string,
+  required: PropTypes.bool,
+  start: PropTypes.string,
+};
+
+BreakpointForm.defaultProps = {
+  required: true,
+  start: '',
+  end: '',
+};
+
+export default BreakpointForm;

@@ -51,14 +51,17 @@ function BasePopularSearch(props) {
   const isDisabled = inputCheck();
 
   const handleSubmit = async () => {
-    // build search by fetching rids for subqueries to complete full search
+    // pass search chip params to identify correct search option
     try {
-      if (selectedOption.buildSearch) {
-        await selectedOption.buildSearch(value, optionalValue);
-      }
-      const { search: rawSearch, searchChipProps } = selectedOption;
+      const searchChipProps = {
+        searchIndex,
+        searchType: 'Popular',
+        optionalValue,
+        value,
+        variant,
+      };
 
-      const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement', searchChipProps);
+      const search = api.encodeQueryComplexToSearch(null, 'Statement', searchChipProps);
       onSubmit(search);
     } catch (err) {
       onError(err);

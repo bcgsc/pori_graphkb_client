@@ -2,10 +2,10 @@
 
 .stepped-form {
   max-width: $readable-max;
+  width: $readable-max;
 
   @media (min-width: $breakpoint-lg) {
     margin-right: $closed-drawer-width;
-    max-width: $readable-max;
   }
 
   &__action {

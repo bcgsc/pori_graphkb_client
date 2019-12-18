@@ -172,11 +172,6 @@ class DataView extends React.Component {
         queryParams, modelName, searchProps, searchProps: { searchType }, payload,
       } = api.getQueryFromSearch({ search, schema });
 
-      if (searchType === 'Quick') {
-        const { keyword } = payload;
-        searchProps.keyword = keyword;
-      }
-
       if (searchType === 'Popular') {
         const {
           value, optionalValue, variant, searchIndex,

@@ -19,13 +19,20 @@ import NewVariant from './components/NewVariant';
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
 const NewRecordView = (props) => {
-  const { history, match: { params: { modelName: modelNameParam } } } = props;
+  const {
+    history,
+    match: {
+      params: { modelName: modelNameParam },
+    },
+    location: { state: { click = false } = {} },
+  } = props;
 
   const [modelName, setModelName] = useState('');
 
   useEffect(() => {
     setModelName('');
-  }, [modelNameParam]);
+  }, [modelNameParam, click]);
+
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
@@ -97,6 +104,7 @@ const NewRecordView = (props) => {
 
 NewRecordView.propTypes = {
   history: propTypes.object.isRequired,
+  location: propTypes.object.isRequired,
   match: propTypes.object.isRequired,
 };
 

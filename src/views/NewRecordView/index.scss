@@ -1,0 +1,14 @@
+@import '../../globals';
+
+.new-record-view {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  min-width: $readable-min;
+  width: 100%;
+
+  @media (min-width: $breakpoint-med) {
+    margin-right: $closed-drawer-width;
+    max-width: calc(100% - #{$closed-drawer-width});
+  }
+}

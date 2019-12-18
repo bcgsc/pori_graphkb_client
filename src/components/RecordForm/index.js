@@ -3,9 +3,11 @@ import './index.scss';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Button, CircularProgress,
-  Paper, Typography,
+  IconButton,
+  Paper, Tooltip, Typography,
 } from '@material-ui/core';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useRef,
@@ -65,6 +67,7 @@ const cleanPayload = (payload) => {
  * @property {string} props.title the title for this form
  * @property {string} props.modelName name of class model to be displayed
  * @property {value} props.value values of individual properties of passed class model
+ * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
 const RecordForm = ({
   value: initialValue,
@@ -74,6 +77,7 @@ const RecordForm = ({
   onSubmit,
   onError,
   variant,
+  navigateToGraph,
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
@@ -253,6 +257,20 @@ const RecordForm = ({
             Add Review
           </Button>
           ))}
+          {variant === FORM_VARIANT.VIEW && (
+            <div className="header-action-buttons__graphview">
+              <Tooltip title="click here for graphview">
+                <IconButton
+                  data-testid="graph-view"
+                  onClick={navigateToGraph}
+                >
+                  <TimelineIcon
+                    color="secondary"
+                  />
+                </IconButton>
+              </Tooltip>
+            </div>
+          )}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <ToggleButtonGroup
             message="Are you sure? You will lose your changes."
@@ -333,6 +351,7 @@ const RecordForm = ({
 
 
 RecordForm.propTypes = {
+  navigateToGraph: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   modelName: PropTypes.string,
   onError: PropTypes.func,

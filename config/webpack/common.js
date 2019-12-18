@@ -4,10 +4,20 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // eslint ignore-line
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
+
+
+const stripToBaseUrl = (url) => {
+  const match = /^(https?:\/\/[^/]+)/.exec(url);
+  const baseAuthUrl = match
+    ? match[1]
+    : url;
+  return baseAuthUrl;
+};
 
 
 const createBaseConfig = ({
@@ -16,10 +26,11 @@ const createBaseConfig = ({
   const ENV_VARS = {
     DEBUG: false,
     DISABLE_AUTH: null,
+    API_BASE_URL: 'http://localhost:8080/api',
     KEYCLOAK_CLIENT_ID: 'GraphKB',
     KEYCLOAK_REALM: 'GSC',
     KEYCLOAK_ROLE: 'GraphKB',
-    KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
+    KEYCLOAK_URL: "'none'",
     NODE_ENV: 'production',
     USER: null,
     PASSWORD: null,
@@ -119,6 +130,49 @@ const createBaseConfig = ({
         removeComments: false,
       },
     }),
+    new CspHtmlWebpackPlugin({
+      'base-uri': "'self'",
+      'default-src': "'self'",
+      'object-src': "'none'",
+      'img-src': ["'self'", 'data:'],
+      'frame-src': [
+        "'self'",
+        stripToBaseUrl(ENV_VARS.KEYCLOAK_URL),
+        stripToBaseUrl(ENV_VARS.API_BASE_URL),
+        'https://www.ncbi.nlm.nih.gov',
+      ],
+      'connect-src': [
+        "'self'",
+        stripToBaseUrl(ENV_VARS.KEYCLOAK_URL),
+        stripToBaseUrl(ENV_VARS.API_BASE_URL),
+      ],
+      // TODO: Remove google charts requirement since it requires external load which cannot include nonce/hash
+      // Then re-add the nonce/hash to scripts
+      // https://www.gstatic.com is for google charts API
+      'script-src': [
+        'https://www.gstatic.com',
+        "'self'",
+        "'unsafe-eval'",
+        "'unsafe-inline'",
+      ],
+      'style-src': [
+        'https://www.gstatic.com',
+        "'self'",
+        "'unsafe-eval'",
+        "'unsafe-inline'",
+      ],
+      'font-src': ["'self'", 'data:'],
+    }, {
+      enabled: true,
+      hashEnabled: {
+        'style-src': false,
+        'script-src': false,
+      },
+      nonceEnabled: {
+        'style-src': false,
+        'script-src': false,
+      },
+    }),
     new CompressionPlugin({
       test: /.*\.(js|css)$/,
       minRatio: 0.8,
@@ -207,6 +261,7 @@ const createBaseConfig = ({
       },
     },
     module: moduleSettings,
+
   };
 };
 

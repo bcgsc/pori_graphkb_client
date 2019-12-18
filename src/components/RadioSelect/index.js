@@ -1,6 +1,8 @@
 /**
  * RadioList based selection
  */
+import './index.scss';
+
 import {
   FormLabel,
   ListItemText,
@@ -10,7 +12,6 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
-
 
 /**
  * Select from a list of radio button options
@@ -45,7 +46,12 @@ const RadioSelect = ({
           value={optionValue}
         >
           <Radio checked={checked} inputProps={{ 'data-testid': `radio-option__${optionToKey(option)}` }} />
-          <ListItemText primary={option.label || option} secondary={option.caption || ''} />
+          <ListItemText
+            primary={option.label || option}
+            primaryTypographyProps={{ className: 'radio-option__title' }}
+            secondary={option.caption || ''}
+            secondaryTypographyProps={{ className: 'radio-option__caption' }}
+          />
         </MenuItem>
       );
     })}

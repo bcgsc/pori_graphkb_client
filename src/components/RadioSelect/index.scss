@@ -1,0 +1,22 @@
+@import '../../globals';
+
+.radio-select {
+  max-width: 100%;
+
+  @media (min-width: $breakpoint-lg) {
+    max-width: $readable-max;
+  }
+
+  .radio-option {
+    &__title {
+      white-space: normal;
+    }
+
+    &__caption {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+    }
+  }
+}

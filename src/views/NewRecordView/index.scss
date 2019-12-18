@@ -7,8 +7,11 @@
   min-width: $readable-min;
   width: 100%;
 
-  @media (min-width: $breakpoint-med) {
-    margin-right: $closed-drawer-width;
-    max-width: calc(100% - #{$closed-drawer-width});
+  &__select-model {
+    max-width: $readable-max;
+
+    @media (min-width: $breakpoint-lg) {
+      margin-right: $closed-drawer-width;
+    }
   }
 }

@@ -68,7 +68,7 @@ const NewRecordView = (props) => {
     );
   } else if (!modelName || isAbstract) {
     innerComponent = (
-      <Paper>
+      <Paper className="new-record-view__select-model">
         <ModelSelect
           baseModel={modelNameParam}
           className="record-form__class-select"

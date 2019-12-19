@@ -28,24 +28,19 @@ import FieldGroup from './FieldGroup';
 /**
  * @param {object} props the input properties
  * @param {string} props.modelName the name of the schema model to use
- * @param {function} props.onChange the parent handler function
  * @param {Array.<string>} props.aboveFold the property names which should be put above the collapse
  * @param {Array.<string>} props.belowFold the property names which should be put in the collapsed section
  * @param {Array.<Array.<string>>} props.groups properties that should be grouped together
  * @param {bool} props.collapseExtra flag to indicate a collapsible section should be created
- * @param {bool} props.formIsDirty flag to indicate if the form has had any changes
- * @param {object} props.content the form content
- * @param {object} props.errors the form errors
  * @param {Array.<string>} props.exclusions an array of fields not to display
- * @param {string} props.variant the form variant
  * @param {bool} props.disabled flag to indicated form fields are disabled
  * @param {string} props.className css class to add to main element
  */
 const FormLayout = ({
-  exclusions, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
+  exclusions, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
 }) => {
   const {
-    formContent = {}, formIsDirty, formErrors = {}, updateFieldEvent,
+    formContent = {}, formVariant,
   } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -60,7 +55,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model, {
-    aboveFold, belowFold, collapseExtra, variant, groups,
+    aboveFold, belowFold, collapseExtra, formVariant, groups,
   });
 
   const isEdge = model && model.isEdge;
@@ -75,12 +70,12 @@ const FormLayout = ({
       { model && (
       <>
         <div className="record-form__content record-form__content--long">
-          {isStatement && variant !== FORM_VARIANT.SEARCH && (
+          {isStatement && formVariant !== FORM_VARIANT.SEARCH && (
             <StatementSentence
               content={formContent}
             />
           )}
-          {isEdge && variant !== FORM_VARIANT.SEARCH && (
+          {isEdge && formVariant !== FORM_VARIANT.SEARCH && (
             <EdgeSentence
               srcRecord={formContent.out}
               tgtRecord={formContent.in}
@@ -89,13 +84,8 @@ const FormLayout = ({
           )}
           {isEdge && (
             <EdgeFields
-              content={formContent}
               disabled={disabled}
-              errors={formErrors}
-              formIsDirty={formIsDirty}
               model={model}
-              onChange={updateFieldEvent}
-              variant={variant}
             />
           )}
         </div>
@@ -105,7 +95,6 @@ const FormLayout = ({
             exclusions={exclusions}
             model={model}
             ordering={fields}
-            variant={variant}
           />
         </List>
         {extraFields.length > 0 && (
@@ -127,14 +116,13 @@ const FormLayout = ({
                 exclusions={exclusions}
                 model={model}
                 ordering={extraFields}
-                variant={variant}
               />
             </List>
           </Collapse>
         </>
         )}
 
-        {!variant === FORM_VARIANT.VIEW && edges.length > 0 && (
+        {!formVariant === FORM_VARIANT.VIEW && edges.length > 0 && (
           <div className="record-form__related-nodes">
             <Typography component="h2" variant="h6">
               Related Nodes
@@ -160,11 +148,6 @@ FormLayout.propTypes = {
   exclusions: PropTypes.arrayOf(PropTypes.string),
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   modelName: PropTypes.string,
-  variant: PropTypes.oneOf([
-    FORM_VARIANT.EDIT,
-    FORM_VARIANT.NEW,
-    FORM_VARIANT.VIEW,
-  ]),
 };
 
 FormLayout.defaultProps = {
@@ -188,7 +171,6 @@ FormLayout.defaultProps = {
   ],
   modelName: null,
   exclusions: [],
-  variant: FORM_VARIANT.VIEW,
 };
 
 export default FormLayout;

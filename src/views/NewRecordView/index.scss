@@ -6,12 +6,4 @@
   max-width: 100%;
   min-width: $readable-min;
   width: 100%;
-
-  &__select-model {
-    max-width: $readable-max;
-
-    @media (min-width: $breakpoint-lg) {
-      margin-right: $closed-drawer-width;
-    }
-  }
 }

@@ -1,15 +1,11 @@
 import './index.scss';
 
-import { Paper } from '@material-ui/core';
 import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
   useCallback,
-  useEffect,
-  useState,
 } from 'react';
 
-import ModelSelect from '@/components/ModelSelect';
 import RecordForm from '@/components/RecordForm';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
@@ -22,16 +18,9 @@ const NewRecordView = (props) => {
   const {
     history,
     match: {
-      params: { modelName: modelNameParam },
+      params: { modelName },
     },
-    location: { state: { click = false } = {} },
   } = props;
-
-  const [modelName, setModelName] = useState('');
-
-  useEffect(() => {
-    setModelName('');
-  }, [modelNameParam, click]);
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -59,12 +48,10 @@ const NewRecordView = (props) => {
     }
   }, [history]);
 
-  const isAbstract = modelName && schema.get(modelName).isAbstract;
-
   let innerComponent = null;
 
   if (
-    VARIANT_CLASSES.includes(modelNameParam.toLowerCase())
+    VARIANT_CLASSES.includes(modelName.toLowerCase())
     || (modelName && VARIANT_CLASSES.includes(modelName.toLowerCase()))
   ) {
     innerComponent = (
@@ -72,18 +59,6 @@ const NewRecordView = (props) => {
         onError={handleError}
         onSubmit={handleSubmit}
       />
-    );
-  } else if (!modelName || isAbstract) {
-    innerComponent = (
-      <Paper className="new-record-view__select-model">
-        <ModelSelect
-          baseModel={modelNameParam}
-          className="record-form__class-select"
-          onChange={({ target: { value } }) => setModelName(value)}
-          value={modelName}
-          variant="radio"
-        />
-      </Paper>
     );
   } else {
     innerComponent = (
@@ -104,7 +79,6 @@ const NewRecordView = (props) => {
 
 NewRecordView.propTypes = {
   history: propTypes.object.isRequired,
-  location: propTypes.object.isRequired,
   match: propTypes.object.isRequired,
 };
 

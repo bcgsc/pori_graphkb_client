@@ -98,7 +98,7 @@ class MainNav extends React.PureComponent {
       const selected = (activeLink === route) && (!topLevel);
 
       return (
-        <Link key={label.toLowerCase()} to={{ pathname: route, state: { click: new Date().getTime() } }}>
+        <Link key={label.toLowerCase()} to={route}>
           <MenuItem onClick={() => { this.handleClickLink(route, topLevel ? route : null); }}>
             {icon && <ListItemIcon>{icon}</ListItemIcon>}
             <ListItemText

@@ -1,0 +1,9 @@
+@import '../../globals';
+
+.new-record-view {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  min-width: $readable-min;
+  width: 100%;
+}

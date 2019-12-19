@@ -176,6 +176,34 @@ const cleanUndefined = (content) => {
 };
 
 
+const cleanPayload = (payload) => {
+  if (typeof payload !== 'object' || payload === null) {
+    return payload;
+  }
+  const newPayload = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
+      if (typeof value === 'object' && value !== null) {
+        if (Array.isArray(value)) {
+          newPayload[key] = value.map((arr) => {
+            if (arr && arr['@rid']) {
+              return arr['@rid'];
+            }
+            return cleanPayload(arr);
+          });
+        } else if (value['@rid']) {
+          newPayload[key] = value['@rid'];
+        } else {
+          newPayload[key] = value;
+        }
+      } else {
+        newPayload[key] = value;
+      }
+    }
+  });
+  return newPayload;
+};
+
 /**
  * Save graph state (nodeRIDS) to URL and jump to graphview with nodeRIDs as initial seed
  *
@@ -224,6 +252,7 @@ export {
   sortAndGroupFields,
   CLASS_MODEL_PROP,
   FORM_VARIANT,
+  cleanPayload,
   navigateToGraph,
   getNodeRIDsFromURL,
 };

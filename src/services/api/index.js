@@ -224,20 +224,22 @@ const getNewCache = (opt) => {
  *
  * @param {object} content is the payload or query object to be sent with request
  * @param {string} modelName target class that is expected to be returned
- * @param {object} searchChipProps props passed to query specifically for search chips
+ * @param {object} searchProps props passed to query specifically for search parsing
  * generated at the top of dataview
  */
-const encodeQueryComplexToSearch = (content, modelName = 'V', searchChipProps) => {
-  const stringifiedContent = JSON.stringify(content);
-  const base64EncodedContent = btoa(stringifiedContent);
-  const encodedContent = encodeURIComponent(base64EncodedContent);
-
+const encodeQueryComplexToSearch = (content, modelName = 'V', searchProps) => {
   const payload = {};
-  payload.complex = encodedContent;
   payload['@class'] = modelName;
 
-  if (searchChipProps) {
-    payload.searchChipProps = searchChipProps;
+  if (content) {
+    const stringifiedContent = JSON.stringify(content);
+    const base64EncodedContent = btoa(stringifiedContent);
+    const encodedContent = encodeURIComponent(base64EncodedContent);
+    payload.complex = encodedContent;
+  }
+
+  if (searchProps) {
+    payload.searchProps = searchProps;
   }
   const search = qs.stringify(payload);
   return search;

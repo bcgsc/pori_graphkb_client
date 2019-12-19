@@ -108,20 +108,6 @@ function AdvancedSearchView({ history }) {
     }
   };
 
-  /**
-   * Generates search chip props from filter groups
-   */
-  const generateSearchChipProps = (FilterGroups) => {
-    const filters = FilterGroups.map(fg => (
-      fg.filters.map((filter) => {
-        const value = Array.isArray(filter.value)
-          ? filter.value.map(val => val.displayName || val.name).join(' , ')
-          : filter.value.displayName || filter.value.name || filter.value;
-        return `${filter.attr} ${filter.operator} ${value}`;
-      })));
-    return filters;
-  };
-
   const handleSubmit = () => {
     const searchFilters = filterGroups.map(fg => ({
       filters: [...fg.filters],
@@ -170,7 +156,6 @@ function AdvancedSearchView({ history }) {
     // search chip props need to be added here due to how search is constructed
     const searchChipProps = {};
     searchChipProps.searchType = 'Advanced';
-    searchChipProps.filters = generateSearchChipProps(filterGroups);
 
     try {
       const search = api.encodeQueryComplexToSearch(content, modelName, searchChipProps);

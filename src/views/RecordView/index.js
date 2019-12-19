@@ -12,10 +12,11 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import RecordForm from '@/components/RecordForm';
 import { SecurityContext } from '@/components/SecurityContext';
 import { HistoryPropType } from '@/components/types';
-import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
+import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
+import handleErrorSaveLocation from '@/services/util';
 
 
 const DEFAULT_TITLES = {
@@ -90,7 +91,7 @@ const RecordView = (props) => {
       const search = qs.stringify(cleanLinkedRecords(content));
       history.push(`/data/table?${search}`, { search, content });
     } else {
-      history.push('/error', { error: { name, message } });
+      handleErrorSaveLocation({ name, message }, history);
     }
   }, [history]);
 
@@ -137,11 +138,15 @@ const RecordView = (props) => {
     history.push(newPath);
   }, [history, modelName, rid, variant]);
 
+  const navigateToGraphView = useCallback(() => {
+    navigateToGraph([recordContent['@rid']], history, handleError);
+  }, [handleError, history, recordContent]);
   return (
     modelName
       ? (
         <RecordForm
           modelName={modelName}
+          navigateToGraph={navigateToGraphView}
           onError={handleError}
           onSubmit={handleSubmit}
           onTopClick={

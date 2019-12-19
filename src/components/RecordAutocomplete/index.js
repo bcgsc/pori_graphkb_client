@@ -12,6 +12,8 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import defaultComponents from './components';
 
+const MIN_TERM_LENGTH = 3;
+
 /**
  * @typedef {function} searchHandlerRequest
  * @param {string} searchTermValue the term to search for
@@ -110,6 +112,23 @@ const RecordAutocomplete = (props) => {
   useEffect(() => {
     setSelectedValue(value);
   }, [value]);
+
+  // check if there are any short terms below min length
+  useEffect(() => {
+    if (searchTerm) {
+      const terms = searchTerm.split(' ');
+      const searchTerms = terms.filter(term => term); // remove empty/null terms
+
+      if (terms.length > 1) {
+        const badTerms = searchTerms.filter(term => term.length < MIN_TERM_LENGTH);
+
+        if (badTerms.length) {
+          const badLength = `WARNING : terms (${badTerms.join(', ')}) will be ignored in search`;
+          setHelperText(badLength);
+        }
+      }
+    }
+  }, [searchTerm]);
 
   // initial load handler
   useDeepCompareEffect(

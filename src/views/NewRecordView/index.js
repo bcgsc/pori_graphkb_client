@@ -9,6 +9,7 @@ import React, {
 import RecordForm from '@/components/RecordForm';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
+import handleErrorSaveLocation from '@/services/util';
 
 import NewVariant from './components/NewVariant';
 
@@ -44,7 +45,7 @@ const NewRecordView = (props) => {
       const search = qs.stringify(cleanLinkedRecords(content));
       history.push(`/data/table?${search}`, { search, content });
     } else {
-      history.push('/error', { error: { name, message } });
+      handleErrorSaveLocation({ name, message }, history);
     }
   }, [history]);
 

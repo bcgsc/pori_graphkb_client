@@ -123,7 +123,7 @@ const RecordAutocomplete = (props) => {
         const badTerms = searchTerms.filter(term => term.length < MIN_TERM_LENGTH);
 
         if (badTerms.length) {
-          const badLengthText = `WARNING : terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
+          const badLengthText = `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
           setHelperText(badLengthText);
         }
       }

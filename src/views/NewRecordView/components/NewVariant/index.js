@@ -1,5 +1,6 @@
 import { schema } from '@bcgsc/knowledgebase-schema';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import { List } from '@material-ui/core';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 import React, {
@@ -179,23 +180,25 @@ const NewPositionalVariantForm = ({
           fields={['refSeq', 'untemplatedSeq', 'untemplatedSeqSize']}
           label="Input ref/alt Sequence"
         >
-          <FieldGroup
-            disabled={false}
-            model={{
-              properties: {
-                refSeq: {
-                  ...PositionalVariant.properties.refSeq,
-                  mandatory: isSubstitution,
+          <List className="record-form__content--long">
+            <FieldGroup
+              disabled={false}
+              model={{
+                properties: {
+                  refSeq: {
+                    ...PositionalVariant.properties.refSeq,
+                    mandatory: isSubstitution,
+                  },
+                  untemplatedSeq: {
+                    ...PositionalVariant.properties.untemplatedSeq,
+                    mandatory: isSubstitution,
+                  },
+                  untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
                 },
-                untemplatedSeq: {
-                  ...PositionalVariant.properties.untemplatedSeq,
-                  mandatory: isSubstitution,
-                },
-                untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
-              },
-            }}
-            ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
-          />
+              }}
+              ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
+            />
+          </List>
         </FormStepWrapper>
       )}
       <FormStepWrapper fields={['type']} label="Select the Variant Type">
@@ -214,19 +217,21 @@ const NewPositionalVariantForm = ({
         }
         label="Optional Information"
       >
-        <FieldGroup
-          disabled={false}
-          model={
+        <List className="record-form__content--long">
+          <FieldGroup
+            disabled={false}
+            model={
             hasPositions
               ? PositionalVariant
               : CategoryVariant
           }
-          ordering={
+            ordering={
             hasPositions
               ? positionalFields
               : categoryFields
           }
-        />
+          />
+        </List>
       </FormStepWrapper>
     </SteppedForm>
   );

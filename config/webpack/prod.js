@@ -10,7 +10,7 @@ module.exports = createBaseConfig({
   mode: 'production',
   env: {
     API_BASE_URL: 'https://graphkb-api.bcgsc.ca/api',
-    KEYCLOAK_URL: 'https://keycloak.bcgsc.ca/auth',
+    KEYCLOAK_URL: 'https://sso.bcgsc.ca/auth',
     NODE_ENV: 'production',
   },
   sourceMap: false,

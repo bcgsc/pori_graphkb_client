@@ -183,7 +183,7 @@ const NewPositionalVariantForm = ({
           fields={['refSeq', 'untemplatedSeq', 'untemplatedSeqSize']}
           label="Input ref/alt Sequence"
         >
-          <List className="record-form__content--long">
+          <List className="form-layout__content--long">
             <FieldGroup
               disabled={false}
               model={{
@@ -220,7 +220,7 @@ const NewPositionalVariantForm = ({
         }
         label="Optional Information"
       >
-        <List className="record-form__content--long">
+        <List className="form-layout__content--long">
           <FieldGroup
             disabled={false}
             model={

@@ -55,7 +55,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model, {
-    aboveFold, belowFold, collapseExtra, formVariant, groups,
+    aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 
   const isEdge = model && model.isEdge;

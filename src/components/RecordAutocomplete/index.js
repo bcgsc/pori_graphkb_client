@@ -113,7 +113,7 @@ const RecordAutocomplete = (props) => {
     setSelectedValue(value);
   }, [value]);
 
-  // check if there are any short terms below min length
+  // check if there are any short terms below min length and give warning if so
   useEffect(() => {
     if (searchTerm) {
       const terms = searchTerm.split(' ');
@@ -123,8 +123,8 @@ const RecordAutocomplete = (props) => {
         const badTerms = searchTerms.filter(term => term.length < MIN_TERM_LENGTH);
 
         if (badTerms.length) {
-          const badLength = `WARNING : terms (${badTerms.join(', ')}) will be ignored in search`;
-          setHelperText(badLength);
+          const badLengthText = `WARNING : terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
+          setHelperText(badLengthText);
         }
       }
     }
@@ -180,7 +180,12 @@ const RecordAutocomplete = (props) => {
             controller.abort();
             setIsLoading(false);
           }
-          controller = searchHandler(debouncedSearchTerm);
+          const terms = debouncedSearchTerm.split(' ');
+          const searchTerms = terms
+            .filter(term => term)
+            .filter(term => term.length >= MIN_TERM_LENGTH)
+            .join(' ');
+          controller = searchHandler(searchTerms);
 
           try {
             setIsLoading(true);
@@ -279,6 +284,7 @@ const RecordAutocomplete = (props) => {
       <Select
         className={`record-autocomplete ${className}`}
         components={components}
+        data-testid="autocomplete-select"
         DetailChipProps={DetailChipProps}
         error={Boolean(errorText)}
         filterOption={optionFilter}

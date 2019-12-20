@@ -2,20 +2,19 @@
  * Wrapper for api, handles all requests and special functions.
  * @module /services/api
  */
+import kbp from '@bcgsc/knowledgebase-parser';
+import kbSchema from '@bcgsc/knowledgebase-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 
-import kbSchema from '@bcgsc/knowledgebase-schema';
-import kbp from '@bcgsc/knowledgebase-parser';
+import config from '@/static/config';
 
-import config from '../../static/config';
-
+import schema from '../schema';
 import { ApiCall } from './call';
 import DataCache from './dataCache';
 import {
-  getQueryFromSearch, buildSearchFromParseVariant, getSearchFromQuery,
+  buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
-import schema from '../schema';
 
 
 const {
@@ -225,15 +224,23 @@ const getNewCache = (opt) => {
  *
  * @param {object} content is the payload or query object to be sent with request
  * @param {string} modelName target class that is expected to be returned
+ * @param {object} searchProps props passed to query specifically for search parsing
+ * generated at the top of dataview
  */
-const encodeQueryComplexToSearch = (content, modelName = 'V') => {
-  const stringifiedContent = JSON.stringify(content);
-  const base64EncodedContent = btoa(stringifiedContent);
-  const encodedContent = encodeURIComponent(base64EncodedContent);
-
+const encodeQueryComplexToSearch = (content, modelName = 'V', searchProps) => {
   const payload = {};
-  payload.complex = encodedContent;
   payload['@class'] = modelName;
+
+  if (content) {
+    const stringifiedContent = JSON.stringify(content);
+    const base64EncodedContent = btoa(stringifiedContent);
+    const encodedContent = encodeURIComponent(base64EncodedContent);
+    payload.complex = encodedContent;
+  }
+
+  if (searchProps) {
+    payload.searchProps = searchProps;
+  }
   const search = qs.stringify(payload);
   return search;
 };

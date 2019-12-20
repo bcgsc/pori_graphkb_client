@@ -1,13 +1,13 @@
+import { PropTypes } from 'prop-types';
 import React, { useContext } from 'react';
 import {
-  Route,
   Redirect,
+  Route,
 } from 'react-router-dom';
-import { PropTypes } from 'prop-types';
 
-import { KBContext } from './KBContext';
-import { isAuthenticated, isAdmin } from '../services/auth';
-import { LocationPropType } from './types';
+import { SecurityContext } from '@/components/SecurityContext';
+import { LocationPropType } from '@/components/types';
+import { isAdmin, isAuthenticated } from '@/services/auth';
 
 /**
  * @returns {Route} a route component which checks authentication on render or redirects to login
@@ -17,7 +17,7 @@ const AuthenticatedRoute = ({
 }) => {
   const {
     autheticationToken, authorizationToken,
-  } = useContext(KBContext);
+  } = useContext(SecurityContext);
 
   const authOk = isAuthenticated({ autheticationToken });
   const adminOk = isAdmin({ autheticationToken, authorizationToken });
@@ -40,7 +40,7 @@ const AuthenticatedRoute = ({
       <Redirect to="/" />
     );
   } else {
-    ChildComponent = props => (<Component {...props} />);
+    ChildComponent = Component;
   }
   return (
     <Route
@@ -51,9 +51,9 @@ const AuthenticatedRoute = ({
 };
 
 AuthenticatedRoute.propTypes = {
+  component: PropTypes.object.isRequired,
   location: LocationPropType.isRequired,
   admin: PropTypes.bool,
-  component: PropTypes.object.isRequired,
 };
 
 AuthenticatedRoute.defaultProps = {

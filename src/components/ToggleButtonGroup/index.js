@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import EditIcon from '@material-ui/icons/Create';
 import ViewIcon from '@material-ui/icons/Pageview';
-import utils from '../../services/util';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
-import ConfirmActionDialog from '../ActionButton/ConfirmActionDialog';
-import './index.scss';
+import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
+import utils from '@/services/util';
 
 /**
  * Toggle Button Navigation to switch between modes or settings.
@@ -61,7 +62,7 @@ function ToggleButtonGroup(props) {
   };
 
   const toggleButtons = options.map((option, index) => (
-    <button type="button" className="toggle-button" onClick={() => handleChange(option)}>
+    <button className="toggle-button" onClick={() => handleChange(option)} type="button">
       <span className={`toggle-button__wrapper${value === option ? '--selected' : ''}`}>
         {icons[index]}
         <span className={`toggle-button__label${value === option ? '--selected' : ''}`}>{utils.antiCamelCase(option)}</span>
@@ -76,11 +77,11 @@ function ToggleButtonGroup(props) {
       </div>
       {requireConfirm && (
       <ConfirmActionDialog
-        onCancel={handleDialogCancel}
-        onConfirm={handleDialogConfirm}
+        className="action-button__dialog"
         isOpen={dialogOpen}
         message={message}
-        className="action-button__dialog"
+        onCancel={handleDialogCancel}
+        onConfirm={handleDialogConfirm}
       />
       )}
     </>
@@ -89,10 +90,10 @@ function ToggleButtonGroup(props) {
 
 ToggleButtonGroup.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  icons: PropTypes.array,
+  message: PropTypes.string,
   onClick: PropTypes.func,
   requireConfirm: PropTypes.bool,
-  message: PropTypes.string,
-  icons: PropTypes.array,
   variant: PropTypes.string,
 };
 

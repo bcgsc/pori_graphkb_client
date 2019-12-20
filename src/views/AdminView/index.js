@@ -1,15 +1,17 @@
 /**
  * @module /views/AdminView
  */
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
+import './index.scss';
+
 import {
   Typography,
 } from '@material-ui/core';
+import { boundMethod } from 'autobind-decorator';
+import React, { Component } from 'react';
 
-import './index.scss';
+import api from '@/services/api';
+
 import AdminTable from './components/AdminTable';
-import api from '../../services/api';
 
 /**
  * View for editing or adding database users.
@@ -61,15 +63,15 @@ class AdminView extends Component {
 
     return (
       <div className="admin">
-        <Typography variant="h1" className="admin__headline">Admin</Typography>
+        <Typography className="admin__headline" variant="h1">Admin</Typography>
         <AdminTable
-          records={users}
           onChange={this.fetchData}
+          records={users}
           variant="User"
         />
         <AdminTable
-          records={userGroups}
           onChange={this.fetchData}
+          records={userGroups}
           variant="UserGroup"
         />
       </div>

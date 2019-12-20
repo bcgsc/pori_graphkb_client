@@ -1,19 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import './index.scss';
+
+import {
+  Tab,
+  Tabs,
+} from '@material-ui/core';
+import React, { useCallback, useState } from 'react';
 import {
   NavLink,
   Route,
   Switch,
 } from 'react-router-dom';
-import {
-  Tabs,
-  Tab,
-} from '@material-ui/core';
 import slugify from 'slugify';
 
+import { HistoryPropType, LocationPropType } from '@/components/types';
+import handleErrorSaveLocation from '@/services/util';
 
 import BasePopularSearch from './components/BasePopularSearch';
-import './index.scss';
-import { LocationPropType, HistoryPropType } from '../../components/types';
 
 /**
  * Main view for popular search. Displays top level query option tabs. This view
@@ -26,8 +28,7 @@ function PopularSearchView(props) {
   const { location: { pathname: currentUri }, history } = props;
 
   const onError = useCallback((error = {}) => {
-    const { name, message } = error;
-    history.push('/error', { error: { name, message } });
+    handleErrorSaveLocation(error, history);
   }, [history]);
 
   const onSubmit = useCallback((search = '') => {
@@ -38,7 +39,7 @@ function PopularSearchView(props) {
     }
   }, [history]);
 
-  const LoadedSearch = variant => (<BasePopularSearch variant={variant} onError={onError} onSubmit={onSubmit} />);
+  const LoadedSearch = variant => (<BasePopularSearch onError={onError} onSubmit={onSubmit} variant={variant} />);
 
   const tabsList = [
     { label: 'Gene', component: () => LoadedSearch('GENE') },
@@ -64,20 +65,20 @@ function PopularSearchView(props) {
 
   const tabNavList = tabsList.map(({ uri, label }, index) => (
     <Tab
-      label={label}
-      component={NavLink}
       key={label}
-      value={index}
+      component={NavLink}
+      label={label}
       to={uri}
+      value={index}
     />
   ));
 
   const tabsRouteList = tabsList.map(({ uri, label, component }) => (
     <Route
-      label={label}
       key={label}
       component={component}
       exact
+      label={label}
       path={uri}
     />
   ));
@@ -85,10 +86,10 @@ function PopularSearchView(props) {
   return (
     <div className="popular-search">
       <Tabs
-        value={tabIndex}
-        onChange={(event, value) => setTabIndex(value)}
         centered
         className="tabs-bar"
+        onChange={(event, value) => setTabIndex(value)}
+        value={tabIndex}
       >
         {tabNavList}
       </Tabs>
@@ -102,8 +103,8 @@ function PopularSearchView(props) {
 }
 
 PopularSearchView.propTypes = {
-  location: LocationPropType.isRequired,
   history: HistoryPropType.isRequired,
+  location: LocationPropType.isRequired,
 };
 
 export default PopularSearchView;

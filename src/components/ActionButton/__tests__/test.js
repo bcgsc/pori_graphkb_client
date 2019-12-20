@@ -1,5 +1,5 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
 
 import ActionButton from '..';
 import ConfirmActionDialog from '../ConfirmActionDialog';
@@ -11,9 +11,9 @@ describe('ActionButton', () => {
   test('uses onClick when requireConfirm flag is false', () => {
     const wrapper = mount((
       <ActionButton
-        title="action"
         onClick={onClick}
         requireConfirm={false}
+        title="action"
       >
         action
       </ActionButton>
@@ -29,9 +29,9 @@ describe('ActionButton', () => {
   test('does not use onClick when requireConfirm flag is given', () => {
     const wrapper = mount((
       <ActionButton
-        title="action"
         onClick={onClick}
         requireConfirm
+        title="action"
       >
         action
       </ActionButton>

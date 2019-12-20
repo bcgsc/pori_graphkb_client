@@ -1,4 +1,5 @@
 @import '../../globals';
+@import '../../theme';
 
 .about-page {
   height: 100%;
@@ -12,7 +13,6 @@
     h2,
     h3,
     h4 {
-      opacity: 0.7;
       text-align: center;
       margin-bottom: 20px;
     }
@@ -24,6 +24,22 @@
 
     h2:not(:first-child) {
       margin-top: 20px;
+    }
+  }
+
+  &__loader {
+    display: block;
+  }
+
+  @media (min-width: #{$breakpoint-med}) {
+    &__version-chips {
+      display: flex;
+      justify-content: center;
+
+      > * {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
     }
   }
 
@@ -93,7 +109,6 @@
     font-size: 0.875rem;
     min-width: $readable-min;
     max-width: $readable-max;
-    opacity: 0.7;
     width: 700px;
   }
 

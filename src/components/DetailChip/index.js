@@ -1,28 +1,28 @@
 /**
  * @module /components/DetailChip
  */
-import { boundMethod } from 'autobind-decorator';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import './index.scss';
+
 import {
-  Chip,
   Avatar,
-  Popover,
-  Typography,
-  Divider,
   Card,
   CardContent,
+  Chip,
+  Divider,
+  IconButton,
+  Popover,
   Table,
   TableBody,
-  TableRow,
   TableCell,
-  IconButton,
+  TableRow,
+  Typography,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-
-import './index.scss';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * Default card pop up component displayed outlining details of record.
@@ -49,11 +49,11 @@ const DefaultPopupComponent = (props) => {
     <Card>
       <CardContent className="detail-popover__panel">
         <div className="detail-popover__panel-header">
-          <Typography variant="h4" gutterBottom>
+          <Typography gutterBottom variant="h4">
             {title || label}
           </Typography>
           {getLink && getLink(retrievedDetails) && (
-          <Link to={getLink(retrievedDetails)} target="_blank">
+          <Link target="_blank" to={getLink(retrievedDetails)}>
             <IconButton>
               <OpenInNewIcon />
             </IconButton>
@@ -83,12 +83,12 @@ const DefaultPopupComponent = (props) => {
 };
 
 DefaultPopupComponent.propTypes = {
-  getDetails: PropTypes.func,
-  details: PropTypes.object,
   label: PropTypes.string.isRequired,
-  valueToString: PropTypes.func,
-  title: PropTypes.string,
+  details: PropTypes.object,
+  getDetails: PropTypes.func,
   getLink: PropTypes.func,
+  title: PropTypes.string,
+  valueToString: PropTypes.func,
 };
 
 DefaultPopupComponent.defaultProps = {
@@ -119,17 +119,17 @@ const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => (k ? `${v}` : v));
  */
 class DetailChip extends React.Component {
   static propTypes = {
+    label: PropTypes.string.isRequired,
     ChipProps: PropTypes.object,
+    PopUpComponent: PropTypes.func,
+    PopUpProps: PropTypes.object,
     className: PropTypes.string,
     details: PropTypes.object,
     getDetails: PropTypes.func,
-    label: PropTypes.string.isRequired,
-    onDelete: PropTypes.func,
-    valueToString: PropTypes.func,
-    title: PropTypes.string,
     getLink: PropTypes.func,
-    PopUpComponent: PropTypes.func,
-    PopUpProps: PropTypes.object,
+    onDelete: PropTypes.func,
+    title: PropTypes.string,
+    valueToString: PropTypes.func,
   };
 
   static defaultProps = {
@@ -208,23 +208,23 @@ class DetailChip extends React.Component {
     return (
       <div className="detail-chip" {...rest}>
         <Popover
-          open={!!anchorEl}
           anchorEl={anchorEl}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          onClose={this.handlePopoverClose}
           className="detail-chip__popover detail-popover"
+          onClose={this.handlePopoverClose}
+          open={!!anchorEl}
+          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         >
           <PopUpComponent {...this.props} {...PopUpProps} />
         </Popover>
         <Chip
-          label={label}
           classes={{
             avatar: 'detail-chip__avatar',
             outlined: 'detail-chip__outlined',
           }}
           className={`detail-chip__root ${className || ''}`}
           clickable
+          label={label}
           onClick={this.handlePopoverOpen}
           onDelete={onDelete}
           {...ChipProps}

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-
 import './index.scss';
+
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import api from '@/services/api';
+
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
-import api from '../../../services/api';
 import SEARCH_OPTS from './util';
 
 
@@ -49,14 +51,17 @@ function BasePopularSearch(props) {
   const isDisabled = inputCheck();
 
   const handleSubmit = async () => {
-    // build search by fetching rids for subqueries to complete full search
+    // pass search chip params to identify correct search option
     try {
-      if (selectedOption.buildSearch) {
-        await selectedOption.buildSearch(value, optionalValue);
-      }
-      const { search: rawSearch } = selectedOption;
+      const searchChipProps = {
+        searchIndex,
+        searchType: 'Popular',
+        optionalValue,
+        value,
+        variant,
+      };
 
-      const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
+      const search = api.encodeQueryComplexToSearch(null, 'Statement', searchChipProps);
       onSubmit(search);
     } catch (err) {
       onError(err);
@@ -67,9 +72,9 @@ function BasePopularSearch(props) {
     <div className="popular-search__contents">
       <div className="popular-search__menu">
         <SearchMenu
+          handleChange={handleSelectionChange}
           labels={labels}
           value={searchIndex}
-          handleChange={handleSelectionChange}
         />
       </div>
       <div className={`popular-search__input-field${hasAdditionalField ? '--optional' : ''}`}>
@@ -78,9 +83,9 @@ function BasePopularSearch(props) {
           handleInputChange={setValue}
           handleOptionalChange={setOptionalValue}
           handleSubmit={handleSubmit}
-          value={value}
           optionalValue={optionalValue}
           selectedOption={selectedOption}
+          value={value}
         />
       </div>
     </div>
@@ -88,8 +93,8 @@ function BasePopularSearch(props) {
 }
 
 BasePopularSearch.propTypes = {
-  variant: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  variant: PropTypes.string.isRequired,
   onError: PropTypes.func,
 };
 

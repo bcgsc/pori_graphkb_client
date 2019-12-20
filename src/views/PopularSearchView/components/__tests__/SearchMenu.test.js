@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
+
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
 
 import SearchMenu from '../SearchMenu';
 
@@ -36,9 +37,9 @@ describe('SearchMenu', () => {
     beforeEach(() => {
       ({ getByText, getAllByText } = render(
         <SearchMenu
+          handleChange={changeSpy}
           labels={labels}
           value={selectedOpt}
-          handleChange={changeSpy}
         />,
       ));
     });

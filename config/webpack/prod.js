@@ -2,11 +2,14 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 
+const path = require('path');
 
-const common = require('./common.js');
+const createBaseConfig = require('./common.js');
+
+const DIST = path.resolve(__dirname, '../../dist/production');
 
 
-const devConfig = {
+const config = {
   mode: 'production',
   plugins: [
     // Copy values of ENV variables in as strings using these defaults (null = unset)
@@ -17,7 +20,7 @@ const devConfig = {
       KEYCLOAK_CLIENT_ID: 'GraphKB',
       KEYCLOAK_REALM: 'GSC',
       KEYCLOAK_ROLE: 'GraphKB',
-      KEYCLOAK_URL: 'https://sso.bcgsc.ca/auth',
+      KEYCLOAK_URL: 'https://keycloak.bcgsc.ca/auth',
       NODE_ENV: 'production',
       USER: null,
       PASSWORD: null,
@@ -35,4 +38,5 @@ const devConfig = {
     ],
   },
 };
-module.exports = merge(common, devConfig);
+
+module.exports = merge(createBaseConfig(DIST), config);

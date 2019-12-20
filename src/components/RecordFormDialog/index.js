@@ -1,18 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  DialogActions,
   IconButton,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import RecordForm from '../RecordForm';
-import { FORM_VARIANT } from '../RecordForm/util';
-
-import './index.scss';
+import RecordForm from '@/components/RecordForm';
+import { FORM_VARIANT } from '@/components/util';
 
 
 /**
@@ -47,13 +47,13 @@ const RecordFormDialog = (props) => {
 
   return (
     <Dialog
-      open={isOpen}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
       classes={{
         paper: 'record-form-dialog',
       }}
+      fullWidth
+      maxWidth="md"
+      onClose={onClose}
+      open={isOpen}
       TransitionProps={{ unmountOnExit: true }}
     >
       <div className="record-form-dialog__header">
@@ -71,11 +71,11 @@ const RecordFormDialog = (props) => {
       <DialogContent>
         <RecordForm
           {...rest}
-          variant={variant}
           modelName={modelName}
-          value={value}
-          onSubmit={onSubmit}
           onError={onError}
+          onSubmit={onSubmit}
+          value={value}
+          variant={variant}
         />
       </DialogContent>
     </Dialog>
@@ -83,14 +83,14 @@ const RecordFormDialog = (props) => {
 };
 
 RecordFormDialog.propTypes = {
-  isOpen: PropTypes.bool,
   modelName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  value: PropTypes.object,
   variant: PropTypes.oneOf(Object.values(FORM_VARIANT)).isRequired,
+  isOpen: PropTypes.bool,
   title: PropTypes.string,
+  value: PropTypes.object,
 };
 
 RecordFormDialog.defaultProps = {

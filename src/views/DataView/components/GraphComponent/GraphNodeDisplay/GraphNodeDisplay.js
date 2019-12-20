@@ -2,15 +2,17 @@
  * @module /components/GraphNodeDisplay
  */
 
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import * as d3Select from 'd3-selection';
-import * as d3Drag from 'd3-drag';
-
 import './GraphNodeDisplay.scss';
-import config from '../../../../../static/config';
+
+import * as d3Drag from 'd3-drag';
+import * as d3Select from 'd3-selection';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
+
+import schema from '@/services/schema';
+import config from '@/static/config';
+
 import { GraphNode } from '../kbgraph';
-import schema from '../../../../../services/schema';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
@@ -30,119 +32,115 @@ const FADED_OPACITY = 0.6;
  * @property {Object} props.detail - Node currently opened in detail drawer.
  * @property {string} props.filter - current filter string value.
  */
-class GraphNodeDisplay extends PureComponent {
-  static propTypes = {
-    node: PropTypes.object,
-    handleClick: PropTypes.func,
-    color: PropTypes.string,
-    applyDrag: PropTypes.func,
-    labelKey: PropTypes.string,
-    actionsNode: PropTypes.object,
-    detail: PropTypes.object,
-    filter: PropTypes.string,
-  };
+function GraphNodeDisplay(props) {
+  const {
+    applyDrag,
+    handleClick,
+    color,
+    labelKey,
+    node,
+    actionsNode,
+    detail,
+    filter,
+  } = props;
 
-  static defaultProps = {
-    node: null,
-    handleClick: null,
-    color: '#26328C',
-    labelKey: 'name',
-    actionsNode: null,
-    applyDrag: null,
-    detail: null,
-    filter: '',
-  };
 
-  /**
-   * Initializes node element and applies drag behavior to it.
-   */
-  componentDidMount() {
-    const { node, applyDrag } = this.props;
+  const nodeSVG = useRef(null);
 
+  // enables svg dragging,calls applyDrag to set dragged position as new position
+  useEffect(() => {
     if (applyDrag) {
-      const nodeElement = d3Select.select(this.node);
+      const nodeElement = d3Select.select(nodeSVG.current);
       nodeElement.call(d3Drag.drag()
         .on('start', () => applyDrag(node)));
     }
-  }
 
-  /**
-   * Removes d3 listener from object.
-   */
-  componentWillUnmount() {
-    const nodeElement = d3Select.select(this.node);
-    nodeElement.call(d3Drag.drag()
-      .on('start', null));
-  }
+    return () => {
+      const nodeElement = d3Select.select(nodeSVG.current);
+      nodeElement.call(d3Drag.drag()
+        .on('start', null));
+    };
+  }, [applyDrag, node]);
 
-  render() {
-    const {
-      node,
-      handleClick,
-      color,
-      labelKey,
-      actionsNode,
-      detail,
-      filter,
-    } = this.props;
+  if (!node) return null;
+  let label;
 
-    if (!node) return null;
-    let label;
+  if (labelKey === 'preview') {
+    label = schema.getPreview(node.data);
+  } else {
+    label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
 
-    if (labelKey === 'preview') {
-      label = schema.getPreview(node.data);
-    } else {
-      label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
-
-      if (typeof label === 'object') {
-        label = schema.getLabel(label, true);
-      }
+    if (typeof label === 'object') {
+      label = schema.getLabel(label, true);
     }
+  }
 
-    const faded = (detail && detail['@rid'] !== node.getId())
+  const faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));
 
-    let opacity = DEFAULT_OPACITY;
+  let opacity = DEFAULT_OPACITY;
 
-    if (faded) {
-      opacity = FADED_OPACITY;
-    }
-
-    return (
-      <g
-        ref={(n) => { this.node = n; }}
-        transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
-      >
-        <text
-          style={{
-            opacity,
-          }}
-        >
-          <tspan className="node-name" dy={28}>
-            {label}
-          </tspan>
-        </text>
-        <circle
-          fill="#fff"
-          cx={0}
-          cy={0}
-          r={NODE_RADIUS}
-        />
-        <circle
-          style={{
-            opacity,
-          }}
-          onClick={handleClick}
-          className="node"
-          fill={color}
-          cx={0}
-          cy={0}
-          r={NODE_RADIUS}
-        />
-      </g>
-    );
+  if (faded) {
+    opacity = FADED_OPACITY;
   }
+
+  return (
+    <g
+      ref={(n) => { nodeSVG.current = n; }}
+      transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
+    >
+      <text
+        style={{
+          opacity,
+        }}
+      >
+        <tspan className="node-name" dy={28}>
+          {label}
+        </tspan>
+      </text>
+      <circle
+        cx={0}
+        cy={0}
+        fill="#fff"
+        onClick={handleClick}
+        r={NODE_RADIUS}
+      />
+      <circle
+        className="node"
+        cx={0}
+        cy={0}
+        fill={color}
+        onClick={handleClick}
+        r={NODE_RADIUS}
+        style={{
+          opacity,
+        }}
+      />
+    </g>
+  );
 }
+
+GraphNodeDisplay.propTypes = {
+  actionsNode: PropTypes.object,
+  applyDrag: PropTypes.func,
+  color: PropTypes.string,
+  detail: PropTypes.object,
+  filter: PropTypes.string,
+  handleClick: PropTypes.func,
+  labelKey: PropTypes.string,
+  node: PropTypes.object,
+};
+
+GraphNodeDisplay.defaultProps = {
+  node: null,
+  handleClick: null,
+  color: '#26328C',
+  labelKey: 'name',
+  actionsNode: null,
+  applyDrag: null,
+  detail: null,
+  filter: '',
+};
 
 export default GraphNodeDisplay;

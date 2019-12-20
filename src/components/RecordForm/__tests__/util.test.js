@@ -1,4 +1,4 @@
-import { sortAndGroupFields } from '../util';
+import { sortAndGroupFields } from '@/components/util';
 
 
 describe('util', () => {

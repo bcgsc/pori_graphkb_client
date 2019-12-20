@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import ConfirmActionDialog from './ConfirmActionDialog';
 
@@ -53,26 +53,26 @@ function ActionButton(props) {
   return (
     <div className={`action-button ${className}`} {...rest}>
       <Button
-        variant={variant}
+        className="action-button__button"
+        color={color}
+        disabled={disabled}
         onClick={
             requireConfirm
               ? handleOpenDialog
               : onClick
           }
         size={size}
-        color={color}
-        className="action-button__button"
-        disabled={disabled}
+        variant={variant}
       >
         {children}
       </Button>
       {requireConfirm && (
       <ConfirmActionDialog
-        onCancel={handleDialogCancel}
-        onConfirm={handleDialogConfirm}
+        className="action-button__dialog"
         isOpen={dialogOpen}
         message={message}
-        className="action-button__dialog"
+        onCancel={handleDialogCancel}
+        onConfirm={handleDialogConfirm}
       />
       )}
     </div>
@@ -80,15 +80,15 @@ function ActionButton(props) {
 }
 
 ActionButton.propTypes = {
-  requireConfirm: PropTypes.bool,
-  onClick: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
-  message: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
-  variant: PropTypes.string,
   color: PropTypes.string,
   disabled: PropTypes.bool,
+  message: PropTypes.string,
+  requireConfirm: PropTypes.bool,
   size: PropTypes.string,
+  variant: PropTypes.string,
 };
 
 ActionButton.defaultProps = {

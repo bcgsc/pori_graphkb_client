@@ -1,25 +1,26 @@
-import React, {
-  useContext, useCallback, useState,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  IconButton, Typography, Dialog, DialogContent, FormControlLabel, Checkbox,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+import './index.scss';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import {
+  Checkbox,
+  Dialog, DialogContent, FormControlLabel, IconButton, Typography,
+} from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback, useContext, useState,
+} from 'react';
 
-import { getUser } from '../../services/auth';
-
-import './index.scss';
-import ActionButton from '../ActionButton';
+import ActionButton from '@/components/ActionButton';
+import FormContext from '@/components/FormContext';
+import FormField from '@/components/FormField';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { SecurityContext } from '@/components/SecurityContext';
 import {
   FORM_VARIANT,
-} from './util';
-import { KBContext } from '../KBContext';
-import FormField from './FormField';
-import useSchemaForm from '../hooks/useSchemaForm';
-import schema from '../../services/schema';
+} from '@/components/util';
+import { getUser } from '@/services/auth';
+import schema from '@/services/schema';
 
 
 const MODEL_NAME = 'StatementReview';
@@ -33,17 +34,18 @@ const AddReviewDialog = ({
   onSubmit, isOpen, onClose,
 }) => {
   const snackbar = useContext(SnackbarContext);
-  const context = useContext(KBContext);
+  const context = useContext(SecurityContext);
   const { comment, status } = schema.get(MODEL_NAME).properties;
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
   // handle and store the form content
-  const {
-    formContent, formErrors, formHasErrors, updateForm, formIsDirty, setFormIsDirty,
-  } = useSchemaForm(
-    { comment, status }, {},
+  const form = useSchemaForm(
+    { comment, status }, {}, { variant: FORM_VARIANT.NEW },
   );
+  const {
+    formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
+  } = form;
 
   /**
    * Handler for submission of a new record
@@ -60,19 +62,13 @@ const AddReviewDialog = ({
     }
   }, [context, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
-  const handleOnChange = useCallback((event) => {
-    // add the new value to the field
-    const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
-    const eventValue = event.target.value;
-    updateForm(eventName, eventValue);
-  }, [updateForm]);
 
   return (
     <Dialog
-      open={isOpen}
+      maxWidth="lg"
       onClose={onClose}
       onEscapeKeyDown={onClose}
-      maxWidth="lg"
+      open={isOpen}
     >
       <div className="review-dialog">
         <div className="review-dialog__header">
@@ -84,41 +80,35 @@ const AddReviewDialog = ({
           </IconButton>
         </div>
         <DialogContent className="review-dialog__fields">
-          <FormField
-            model={status}
-            onChange={handleOnChange}
-            value={formContent[status.name]}
-            variant={FORM_VARIANT.NEW}
-            error={formErrors[status.name]}
-          />
-          <FormField
-            model={comment}
-            onChange={handleOnChange}
-            value={formContent[comment.name]}
-            variant={FORM_VARIANT.NEW}
-            error={formErrors[comment.name]}
-            innerProps={{
-              multiline: true,
-              rows: 7,
-              variant: 'outlined',
-            }}
-          />
+          <FormContext.Provider value={form}>
+            <FormField
+              model={status}
+            />
+            <FormField
+              innerProps={{
+                multiline: true,
+                rows: 7,
+                variant: 'outlined',
+              }}
+              model={comment}
+            />
+          </FormContext.Provider>
           <FormControlLabel
+            checked={updateAmalgamated}
+            color="primary"
             control={<Checkbox />}
             label="Also Update the Statement Amalgamated Review Status (Recommended)"
-            checked={updateAmalgamated}
             onChange={() => setUpdateAmalgamated(!updateAmalgamated)}
-            color="primary"
           />
         </DialogContent>
         <div className="review-dialog__action-button">
           <ActionButton
-            onClick={handleSubmit}
-            variant="contained"
             color="primary"
-            size="large"
-            requireConfirm={false}
             disabled={formHasErrors && formIsDirty}
+            onClick={handleSubmit}
+            requireConfirm={false}
+            size="large"
+            variant="contained"
           >
               ADD REVIEW
           </ActionButton>
@@ -129,8 +119,8 @@ const AddReviewDialog = ({
 };
 
 AddReviewDialog.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
 };
 

@@ -1,5 +1,6 @@
-import React from 'react';
 import { mount, shallow } from 'enzyme';
+import React from 'react';
+
 import GraphNodeDisplay from '../GraphComponent/GraphNodeDisplay/GraphNodeDisplay';
 import { GraphNode } from '../GraphComponent/kbgraph';
 
@@ -31,8 +32,8 @@ describe('<GraphNodeDisplay />', () => {
   test('renders correct label', () => {
     wrapper = shallow(
       <GraphNodeDisplay
-        node={mockData}
         labelKey="name"
+        node={mockData}
       />,
     );
     expect(wrapper.type()).toBe('g');
@@ -43,10 +44,10 @@ describe('<GraphNodeDisplay />', () => {
     const detail = { '@rid': '#2' };
     wrapper = shallow(
       <GraphNodeDisplay
-        node={mockData}
-        labelKey="source.name"
-        detail={detail}
         actionsNode={{ data: detail }}
+        detail={detail}
+        labelKey="source.name"
+        node={mockData}
       />,
     );
 
@@ -56,9 +57,9 @@ describe('<GraphNodeDisplay />', () => {
   test('does not render invalid node', () => {
     wrapper = shallow(
       <GraphNodeDisplay
-        node={null}
-        labelKey="source.name"
         detail={mockData}
+        labelKey="source.name"
+        node={null}
       />,
     );
     expect(wrapper.find('circle.node')).toHaveLength(0);
@@ -69,9 +70,9 @@ describe('<GraphNodeDisplay />', () => {
     const applyDrag = jest.fn();
     wrapper = mount(
       <GraphNodeDisplay
-        node={mockData}
-        labelKey="source.name"
         applyDrag={applyDrag}
+        labelKey="source.name"
+        node={mockData}
       />,
     );
     expect(applyDrag.mock.calls.length).toBe(0);

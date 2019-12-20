@@ -1,41 +1,27 @@
-import React, {
-  useState, useCallback, useEffect,
-} from 'react';
-import * as qs from 'qs';
+import './index.scss';
+
 import propTypes from 'prop-types';
+import * as qs from 'qs';
+import React, {
+  useCallback,
+} from 'react';
 
-import RecordForm from '../../components/RecordForm';
-import FormField from '../../components/RecordForm/FormField';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import schema from '../../services/schema';
+import RecordForm from '@/components/RecordForm';
+import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
+import schema from '@/services/schema';
+import handleErrorSaveLocation from '@/services/util';
 
+import NewVariant from './components/NewVariant';
+
+const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
 const NewRecordView = (props) => {
-  const { history, match: { path, params: { modelName: modelNameParam } } } = props;
-
-  const [modelName, setModelName] = useState('');
-  const [modelOptions, setModelOptions] = useState([]);
-
-  useEffect(() => {
-    if (path) {
-      try {
-        const options = schema.get(modelNameParam || 'V').descendantTree(true).map(m => ({
-          label: m.name, value: m.name, key: m.name, caption: m.description,
-        }));
-        setModelOptions(options);
-
-        if (options.length === 1) {
-          setModelName(options[0].label);
-        } else {
-          setModelName('');
-        }
-      } catch (err) {
-        history.push('/error', { error: { name: err.name, message: err.toString() } });
-      }
-    }
-  }, [path, modelNameParam, history]);
-
+  const {
+    history,
+    match: {
+      params: { modelName },
+    },
+  } = props;
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -59,35 +45,36 @@ const NewRecordView = (props) => {
       const search = qs.stringify(cleanLinkedRecords(content));
       history.push(`/data/table?${search}`, { search, content });
     } else {
-      history.push('/error', { error: { name, message } });
+      handleErrorSaveLocation({ name, message }, history);
     }
   }, [history]);
 
-  return (
-    <>
-      <FormField
-        model={{
-          choices: modelOptions, required: true, name: '@class', type: 'string',
-        }}
-        value={modelName}
-        onChange={({ target: { value } }) => setModelName(value)}
-        disabled={modelOptions.length < 2}
-        className="record-form__class-select"
+  let innerComponent = null;
+
+  if (
+    VARIANT_CLASSES.includes(modelName.toLowerCase())
+    || (modelName && VARIANT_CLASSES.includes(modelName.toLowerCase()))
+  ) {
+    innerComponent = (
+      <NewVariant
+        onError={handleError}
+        onSubmit={handleSubmit}
       />
-      {modelName
-        ? (
-          <RecordForm
-            variant={FORM_VARIANT.NEW}
-            modelName={modelName}
-            title={`Create a new ${modelName} Record`}
-            onTopClick={null}
-            onSubmit={handleSubmit}
-            onError={handleError}
-          />
-        )
-        : null
-      }
-    </>
+    );
+  } else {
+    innerComponent = (
+      <RecordForm
+        modelName={modelName}
+        onError={handleError}
+        onSubmit={handleSubmit}
+        onTopClick={null}
+        title={`Create a new ${modelName} Record`}
+        variant={FORM_VARIANT.NEW}
+      />
+    );
+  }
+  return (
+    <div className="new-record-view">{innerComponent}</div>
   );
 };
 

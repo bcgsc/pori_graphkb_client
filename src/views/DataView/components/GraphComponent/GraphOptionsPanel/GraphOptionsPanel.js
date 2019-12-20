@@ -1,23 +1,23 @@
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import './GraphOptionsPanel.scss';
+
 import {
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
   FormControlLabel,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Typography,
-  FormControl,
-  Divider,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
-import './GraphOptionsPanel.scss';
-import ResourceSelectComponent from '../../../../../components/ResourceSelectComponent';
-import config from '../../../../../static/config';
+import DropDownSelect from '@/components/DropDownSelect';
+import config from '@/static/config';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
@@ -32,256 +32,250 @@ const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
  * @property {function} props.handleDialogClose - function for closing dialog.
  * @property {function} props.handleGraphOptionsChange - function for field changing.
  */
-class GraphOptionsPanel extends Component {
-  static propTypes = {
-    graphOptions: PropTypes.object,
-    propsMap: PropTypes.object,
-    graphOptionsOpen: PropTypes.bool,
-    linkLegendDisabled: PropTypes.bool,
-    handleDialogClose: PropTypes.func.isRequired,
-    handleGraphOptionsChange: PropTypes.func.isRequired,
-  };
+function GraphOptionsPanel(props) {
+  const {
+    graphOptionsOpen,
+    graphOptions,
+    propsMap,
+    linkLegendDisabled,
+    handleDialogClose,
+    handleGraphOptionsChange,
+  } = props;
 
-  static defaultProps = {
-    graphOptions: {},
-    propsMap: { nodeProps: [], linkProps: [] },
-    graphOptionsOpen: false,
-    linkLegendDisabled: true,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      mainHelp: false,
-      advancedHelp: false,
-    };
-  }
+  const [mainHelp, setMainHelp] = useState(false);
+  const [advancedHelp, setAdvancedHelp] = useState(false);
 
   /**
    * Opens help drawer.
    * @param {string} key - help type state key.
    */
-  @boundMethod
-  handleHelpOpen(key) {
-    this.setState({ [key]: true });
-  }
+  const handleHelpOpen = (key) => {
+    if (key === 'mainHelp') {
+      setMainHelp(true);
+    } else {
+      setAdvancedHelp(true);
+    }
+  };
 
   /**
    * Closes both help drawers.
    */
-  @boundMethod
-  handleHelpClose() {
-    this.setState({ mainHelp: false, advancedHelp: false });
-  }
+  const handleHelpClose = () => {
+    setMainHelp(false);
+    setAdvancedHelp(false);
+  };
 
-  render() {
-    const {
-      graphOptionsOpen,
-      graphOptions,
-      propsMap,
-      linkLegendDisabled,
-      handleDialogClose,
-      handleGraphOptionsChange,
-    } = this.props;
+  const helpOpen = advancedHelp || mainHelp;
+  const helpPanel = (
+    <Dialog
+      onClose={handleHelpClose}
+      open={helpOpen}
+    >
+      <DialogTitle className="help-title" disableTypography>
+        <Typography variant="h5">
+          {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
+        </Typography>
+        <IconButton onClick={handleHelpClose}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
+          <React.Fragment key={help.title}>
+            <Typography gutterBottom variant="h6">
+              {help.title}
+            </Typography>
+            <Typography paragraph>
+              {help.description}
+            </Typography>
+          </React.Fragment>
+        ))}
+      </DialogContent>
+    </Dialog>
+  );
 
-    const {
-      mainHelp,
-      advancedHelp,
-    } = this.state;
-
-    const helpOpen = advancedHelp || mainHelp;
-    const helpPanel = (
-      <Dialog
-        open={helpOpen}
-        onClose={this.handleHelpClose}
-      >
-        <DialogTitle disableTypography className="help-title">
-          <Typography variant="h5">
-            {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
-          </Typography>
-          <IconButton onClick={this.handleHelpClose}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
-            <React.Fragment key={help.title}>
-              <Typography variant="h6" gutterBottom>
-                {help.title}
-              </Typography>
-              <Typography paragraph>
-                {help.description}
-              </Typography>
-            </React.Fragment>
-          ))}
-        </DialogContent>
-      </Dialog>
-    );
-
-    const nodeLabelBy = Object.keys(propsMap.nodeProps || {})
-      .filter(prop => propsMap.nodeProps[prop]
+  const nodeLabelBy = Object.keys(propsMap.nodeProps || {})
+    .filter(prop => propsMap.nodeProps[prop]
         && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
-    const nodeColorBy = Object.keys(propsMap.nodeProps || {})
-      .filter(prop => propsMap.nodeProps[prop]
+  const nodeColorBy = Object.keys(propsMap.nodeProps || {})
+    .filter(prop => propsMap.nodeProps[prop]
         && propsMap.nodeProps[prop].length <= 20
         && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
 
-    return (
-      <>
-        {helpPanel}
-        <Dialog
-          open={graphOptionsOpen}
-          onClose={handleDialogClose('graphOptionsOpen')}
-          classes={{
-            paper: 'options-panel-wrapper',
-          }}
-          scroll="body"
+  return (
+    <>
+      {helpPanel}
+      <Dialog
+        classes={{
+          paper: 'options-panel-wrapper',
+        }}
+        onClose={handleDialogClose}
+        open={graphOptionsOpen}
+        scroll="body"
+      >
+        <IconButton
+          data-testid="close-btn"
+          id="options-close-btn"
+          onClick={handleDialogClose}
         >
+          <CloseIcon />
+        </IconButton>
+        <DialogTitle className="options-title" disableTypography>
+          <Typography variant="h6">Graph Options</Typography>
           <IconButton
-            onClick={handleDialogClose('graphOptionsOpen')}
-            id="options-close-btn"
+            color="primary"
+            data-testid="main-help-btn"
+            id="main-help-btn"
+            onClick={() => handleHelpOpen('mainHelp')}
           >
-            <CloseIcon />
+            <HelpIcon />
           </IconButton>
-          <DialogTitle className="options-title" disableTypography>
-            <Typography variant="h6">Graph Options</Typography>
-            <IconButton
-              color="primary"
-              onClick={() => this.handleHelpOpen('mainHelp')}
-              id="main-help-btn"
-            >
-              <HelpIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <div className="main-options-wrapper">
-              <ResourceSelectComponent
-                className="graph-option"
-                label="Label nodes by"
-                name="nodeLabelProp"
-                onChange={handleGraphOptionsChange}
-                value={graphOptions.nodeLabelProp}
-                resources={['', ...nodeLabelBy]}
-                disabled={graphOptions.nodePreview}
-              />
-              <FormControl className="graph-option">
-                <FormControlLabel
-                  control={(
-                    <Checkbox
-                      color="secondary"
-                      onChange={e => handleGraphOptionsChange({
-                        target: {
-                          value: e.target.checked,
-                          name: e.target.name,
-                        },
-                      })
+        </DialogTitle>
+        <DialogContent>
+          <div className="main-options-wrapper">
+            <DropDownSelect
+              className="graph-option"
+              disabled={graphOptions.nodePreview}
+              label="Label nodes by"
+              name="nodeLabelProp"
+              onChange={handleGraphOptionsChange}
+              options={['', ...nodeLabelBy]}
+              value={graphOptions.nodeLabelProp}
+            />
+            <FormControl className="graph-option">
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={!!(graphOptions.nodePreview)}
+                    color="secondary"
+                    name="nodePreview"
+                    onChange={e => handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
                       }
-                      name="nodePreview"
-                      checked={!!(graphOptions.nodePreview)}
-                    />
+                  />
                   )}
-                  label="Label nodes by preview"
-                />
-              </FormControl>
-              <ResourceSelectComponent
-                className="graph-option"
-                label="Color nodes by"
-                name="nodesColor"
-                onChange={handleGraphOptionsChange}
-                value={graphOptions.nodesColor}
-                resources={['', ...nodeColorBy]}
+                label="Label nodes by preview"
               />
-              <FormControl className="graph-option">
-                <FormControlLabel
-                  control={(
-                    <Checkbox
-                      color="secondary"
-                      onChange={e => handleGraphOptionsChange({
-                        target: {
-                          value: e.target.checked,
-                          name: e.target.name,
-                        },
-                      })
+            </FormControl>
+            <DropDownSelect
+              className="graph-option"
+              label="Color nodes by"
+              name="nodesColor"
+              onChange={handleGraphOptionsChange}
+              options={['', ...nodeColorBy]}
+              value={graphOptions.nodesColor}
+            />
+            <FormControl className="graph-option">
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={!!(graphOptions.nodesLegend && graphOptions.nodesColor)}
+                    color="secondary"
+                    disabled={!graphOptions.nodesColor}
+                    name="nodesLegend"
+                    onChange={e => handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
                       }
-                      name="nodesLegend"
-                      checked={!!(graphOptions.nodesLegend && graphOptions.nodesColor)}
-                      disabled={!graphOptions.nodesColor}
-                    />
+                  />
                   )}
-                  label="Show Nodes Coloring Legend"
-                />
-              </FormControl>
-            </div>
-            <div className="main-options-wrapper">
-              <ResourceSelectComponent
-                className="graph-option"
-                label="Label edges by"
-                name="linkLabelProp"
-                onChange={handleGraphOptionsChange}
-                value={graphOptions.linkLabelProp}
-                disabled={linkLegendDisabled}
-                resources={['', '@class', '@rid', 'source.name']}
+                label="Show Nodes Coloring Legend"
               />
-              <ResourceSelectComponent
-                className="graph-option"
-                label="Color edges by"
-                name="linksColor"
-                onChange={handleGraphOptionsChange}
-                value={graphOptions.linksColor}
-                disabled={linkLegendDisabled}
-                resources={['', '@class', '@rid', 'source.name']}
-              />
-              <FormControl>
-                <FormControlLabel
-                  control={(
-                    <Checkbox
-                      color="secondary"
-                      onChange={e => handleGraphOptionsChange({
-                        target: {
-                          value: e.target.checked,
-                          name: e.target.name,
-                        },
-                      })
-                      }
-                      name="linksLegend"
-                      checked={
+            </FormControl>
+          </div>
+          <div className="main-options-wrapper">
+            <DropDownSelect
+              className="graph-option"
+              disabled={linkLegendDisabled}
+              label="Label edges by"
+              name="linkLabelProp"
+              onChange={handleGraphOptionsChange}
+              options={['', '@class', '@rid', 'source.name']}
+              value={graphOptions.linkLabelProp}
+            />
+            <DropDownSelect
+              className="graph-option"
+              disabled={linkLegendDisabled}
+              label="Color edges by"
+              name="linksColor"
+              onChange={handleGraphOptionsChange}
+              options={['', '@class', '@rid', 'source.name']}
+              value={graphOptions.linksColor}
+            />
+            <FormControl>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={
                         graphOptions.linksLegend
                         && graphOptions.linksColor
                         && !linkLegendDisabled}
-                      disabled={linkLegendDisabled || !graphOptions.linksColor}
-                    />
-                  )}
-                  label="Show Links Coloring Legend"
-                />
-              </FormControl>
-            </div>
-            <div className="main-options-wrapper">
-              <FormControl className="graph-option">
-                <FormControlLabel
-                  control={(
-                    <Checkbox
-                      color="secondary"
-                      onChange={e => handleGraphOptionsChange({
-                        target: {
-                          value: e.target.checked,
-                          name: e.target.name,
-                        },
-                      })
+                    color="secondary"
+                    disabled={linkLegendDisabled || !graphOptions.linksColor}
+                    name="linksLegend"
+                    onChange={e => handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
                       }
-                      name="isTreeLayout"
-                      checked={!!(graphOptions.isTreeLayout)}
-                    />
+                  />
                   )}
-                  label="Use a Weak Tree layout"
-                />
-              </FormControl>
-            </div>
-          </DialogContent>
-          <Divider />
-        </Dialog>
-      </>
-    );
-  }
+                label="Show Links Coloring Legend"
+              />
+            </FormControl>
+          </div>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option">
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={!!(graphOptions.isTreeLayout)}
+                    color="secondary"
+                    name="isTreeLayout"
+                    onChange={e => handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
+                      }
+                  />
+                  )}
+                label="Use a Weak Tree layout"
+              />
+            </FormControl>
+          </div>
+        </DialogContent>
+        <Divider />
+      </Dialog>
+    </>
+  );
 }
+
+GraphOptionsPanel.propTypes = {
+  handleDialogClose: PropTypes.func.isRequired,
+  handleGraphOptionsChange: PropTypes.func.isRequired,
+  graphOptions: PropTypes.object,
+  graphOptionsOpen: PropTypes.bool,
+  linkLegendDisabled: PropTypes.bool,
+  propsMap: PropTypes.object,
+};
+
+GraphOptionsPanel.defaultProps = {
+  graphOptions: {},
+  propsMap: { nodeProps: [], linkProps: [] },
+  graphOptionsOpen: false,
+  linkLegendDisabled: true,
+};
+
 
 export default GraphOptionsPanel;

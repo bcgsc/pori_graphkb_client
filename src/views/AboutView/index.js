@@ -1,3 +1,9 @@
+import './index.scss';
+
+import {
+  Tab,
+  Tabs,
+} from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import {
@@ -5,24 +11,18 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import {
-  Tabs,
-  Tab,
-} from '@material-ui/core';
 import slugify from 'slugify';
 
-import './index.scss';
-import {
-  AboutForms,
-  AboutMain,
-  AboutNotation,
-  AboutQuerying,
-  AboutStatements,
-  AboutClasses,
-  AboutUsageTerms,
-  AboutGraphView,
-} from './components';
-import { LocationPropType } from '../../components/types';
+import { LocationPropType } from '@/components/types';
+
+import AboutClasses from './components/AboutClasses';
+import AboutForms from './components/AboutForms';
+import AboutGraphView from './components/AboutGraphView';
+import AboutMain from './components/AboutMain';
+import AboutNotation from './components/AboutNotation';
+import AboutQuerying from './components/AboutQuerying';
+import AboutStatements from './components/AboutStatements';
+import AboutUsageTerms from './components/AboutUsageTerms';
 
 
 class AboutView extends Component {
@@ -76,27 +76,27 @@ class AboutView extends Component {
 
     const tabNavList = this.tabsList.map(({ uri, label }, index) => (
       <Tab
-        label={label}
-        component={NavLink}
         key={label}
-        value={index}
+        component={NavLink}
+        label={label}
         to={uri}
+        value={index}
       />
     ));
 
     const tabsRouteList = this.tabsList.map(({ uri, label, component }) => (
       <Route
-        label={label}
         key={label}
         component={component}
         exact
+        label={label}
         path={uri}
       />
     ));
 
     return (
       <div className="about-page">
-        <Tabs value={tabIndex} onChange={this.handleChange} variant="scrollable" className="tabs-bar">
+        <Tabs className="tabs-bar" onChange={this.handleChange} value={tabIndex} variant="scrollable">
           {tabNavList}
         </Tabs>
         <div className="tabs-content">

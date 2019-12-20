@@ -1,0 +1,19 @@
+@import '../../globals';
+
+.import-view {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $readable-max;
+  padding: 10px;
+
+  &__title {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  &__search-box {
+    margin: 20px;
+    max-width: calc($readable-max - 40px);
+  }
+}

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import { render } from '@testing-library/react';
 
+import { render } from '@testing-library/react';
+import React from 'react';
 
 import RecordAutocomplete from '..';
 
@@ -26,11 +26,11 @@ describe('RecordAutocomplete', () => {
     const record = { '@rid': '#2:3', name: 'bob' };
     const { getByText } = render(
       <RecordAutocomplete
+        itemToString={v => v.name}
         name="test"
         onChange={jest.fn()}
-        itemToString={v => v.name}
-        value={record}
         searchHandler={jest.fn()}
+        value={record}
       />,
     );
     expect(getByText('bob')).toBeInTheDocument();
@@ -40,12 +40,12 @@ describe('RecordAutocomplete', () => {
     const record = [{ '@rid': '#2:3', name: 'bob' }, { '@rid': '#2:4', name: 'alice' }];
     const { getByText } = render(
       <RecordAutocomplete
+        isMulti
+        itemToString={v => v.name}
         name="test"
         onChange={jest.fn()}
-        itemToString={v => v.name}
-        value={record}
         searchHandler={jest.fn()}
-        isMulti
+        value={record}
       />,
     );
     expect(getByText('bob')).toBeInTheDocument();

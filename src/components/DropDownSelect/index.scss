@@ -1,0 +1,26 @@
+.option-select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+
+  label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  &__option {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+}
+
+.disabled-text {
+  color: grey;
+}
+
+.margin-reset {
+  margin: 0;
+}

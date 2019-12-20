@@ -1,0 +1,44 @@
+@import '../../globals';
+@import '../../theme';
+
+.form-field {
+  align-items: flex-end;
+  display: flex;
+  max-width: 100%;
+  min-height: 56px;
+  padding-top: 0; // override mui list nth child even padding
+  width: 100%;
+
+  &--embedded {
+    display: block;
+  }
+
+  .text-field,
+  .text-field * {
+    width: 100%;
+  }
+
+  & &__help {
+    margin-left: auto;
+  }
+}
+
+.review-card {
+  max-width: 600px;
+  min-width: 300px;
+
+  &__header {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__avatar {
+    background-color: $palette__secondary--main;
+  }
+
+  &__action-button {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto 0;
+  }
+}

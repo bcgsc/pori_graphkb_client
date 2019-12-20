@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Button,
   Dialog,
@@ -7,6 +5,8 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * Component for simple dialog that prompts the user before deleting a record.
@@ -27,9 +27,9 @@ const ConfirmActionDialog = (props) => {
 
   return (
     <Dialog
+      className="confirm-action-dialog"
       onClose={onCancel}
       open={isOpen}
-      className="confirm-action-dialog"
     >
       <DialogTitle>
         {message}
@@ -38,17 +38,17 @@ const ConfirmActionDialog = (props) => {
         {children}
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button
-            onClick={onCancel}
-            color="primary"
-            size="large"
             className="confirm-action-dialog__cancel"
+            color="primary"
+            onClick={onCancel}
+            size="large"
           >
             Cancel
           </Button>
           <Button
+            className="confirm-action-dialog__confirm"
             onClick={onConfirm}
             size="large"
-            className="confirm-action-dialog__confirm"
           >
             Confirm
           </Button>
@@ -59,11 +59,11 @@ const ConfirmActionDialog = (props) => {
 };
 
 ConfirmActionDialog.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   isOpen: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 
 ConfirmActionDialog.defaultProps = {

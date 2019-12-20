@@ -1,14 +1,15 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
 
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import { act, fireEvent, render } from '@testing-library/react';
+import React from 'react';
+
+import { SecurityContext } from '@/components/SecurityContext';
 
 import ReviewDialog from '../ReviewDialog';
-import { KBContext } from '../../KBContext';
 
 
-jest.mock('../../../services/auth', () => ({
+jest.mock('@/services/auth', () => ({
   getUser: () => ({ '@rid': '#20:0' }),
 }));
 
@@ -22,19 +23,19 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
 });
 
 /* eslint-disable react/prop-types */
-jest.mock('../../ResourceSelectComponent', () => ({
-  resources = [], value, onChange, name,
+jest.mock('../../DropDownSelect', () => ({
+  options = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {
-    const option = resources.find(
+    const option = options.find(
       opt => opt === event.currentTarget.value,
     );
 
     onChange({ target: { value: option, name } });
   };
   return (
-    <select data-testid="select" value={value} onChange={handleChange}>
-      {resources.map(opt => (
+    <select data-testid="select" onChange={handleChange} value={value}>
+      {options.map(opt => (
         <option key={opt} value={opt}>
           {opt}
         </option>
@@ -59,15 +60,15 @@ describe('ReviewDialog formActions', () => {
 
   beforeEach(() => {
     ({ getByText, getByTestId } = render(
-      <KBContext.Provider value={{ }}>
+      <SecurityContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
-            onSubmit={onSubmitSpy}
             isOpen
             onClose={onCancelSpy}
+            onSubmit={onSubmitSpy}
           />
         </SnackbarProvider>
-      </KBContext.Provider>,
+      </SecurityContext.Provider>,
     ));
   });
 

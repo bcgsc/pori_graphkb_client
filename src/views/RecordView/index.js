@@ -1,21 +1,22 @@
-import React, {
-  useContext, useState, useCallback, useEffect,
-} from 'react';
-import * as qs from 'qs';
 import {
   CircularProgress,
 } from '@material-ui/core';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import propTypes from 'prop-types';
+import * as qs from 'qs';
+import React, {
+  useCallback, useContext, useEffect,
+  useState,
+} from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import RecordForm from '../../components/RecordForm';
-import { KBContext } from '../../components/KBContext';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import { hasWriteAccess } from '../../services/auth';
-import api from '../../services/api';
-import { HistoryPropType } from '../../components/types';
-import schema from '../../services/schema';
+import RecordForm from '@/components/RecordForm';
+import { SecurityContext } from '@/components/SecurityContext';
+import { HistoryPropType } from '@/components/types';
+import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
+import api from '@/services/api';
+import { hasWriteAccess } from '@/services/auth';
+import schema from '@/services/schema';
+import handleErrorSaveLocation from '@/services/util';
 
 
 const DEFAULT_TITLES = {
@@ -47,7 +48,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
 
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
-  const context = useContext(KBContext);
+  const context = useContext(SecurityContext);
 
   const [recordContent, setRecordContent] = useState({});
   const [modelName, setModelName] = useState('');
@@ -90,7 +91,7 @@ const RecordView = (props) => {
       const search = qs.stringify(cleanLinkedRecords(content));
       history.push(`/data/table?${search}`, { search, content });
     } else {
-      history.push('/error', { error: { name, message } });
+      handleErrorSaveLocation({ name, message }, history);
     }
   }, [history]);
 
@@ -137,22 +138,26 @@ const RecordView = (props) => {
     history.push(newPath);
   }, [history, modelName, rid, variant]);
 
+  const navigateToGraphView = useCallback(() => {
+    navigateToGraph([recordContent['@rid']], history, handleError);
+  }, [handleError, history, recordContent]);
   return (
     modelName
       ? (
         <RecordForm
-          variant={variant}
           modelName={modelName}
-          rid={rid}
-          value={recordContent}
-          title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+          navigateToGraph={navigateToGraphView}
+          onError={handleError}
+          onSubmit={handleSubmit}
           onTopClick={
             hasWriteAccess(context)
               ? onTopClick
               : null
           }
-          onSubmit={handleSubmit}
-          onError={handleError}
+          rid={rid}
+          title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+          value={recordContent}
+          variant={variant}
         />
       )
       : (<CircularProgress />)

@@ -1,11 +1,11 @@
-import React from 'react';
 import {
-  Typography,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
+  ListItemText,
+  Typography,
 } from '@material-ui/core';
+import React from 'react';
 
 const AboutUsageTerms = () => {
   const sectionData = [
@@ -36,7 +36,7 @@ const AboutUsageTerms = () => {
 
     const section = (
       <div>
-        <Typography variant="h3" id={sectionDatum.id}>
+        <Typography id={sectionDatum.id} variant="h3">
           {sectionDatum.label}
         </Typography>
         <Typography paragraph>

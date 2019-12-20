@@ -284,7 +284,6 @@ const RecordAutocomplete = (props) => {
       <Select
         className={`record-autocomplete ${className}`}
         components={components}
-        data-testid="autocomplete-select"
         DetailChipProps={DetailChipProps}
         error={Boolean(errorText)}
         filterOption={optionFilter}

@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { render } from '@testing-library/react';
+import { fireEvent, render, waitForElement } from '@testing-library/react';
 import React from 'react';
 
 import RecordAutocomplete from '..';
+
+const DOWN_ARROW = { keyCode: 40 };
 
 
 describe('RecordAutocomplete', () => {

@@ -1,3 +1,5 @@
+import './index.scss';
+
 import { schema } from '@bcgsc/knowledgebase-schema';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import omit from 'lodash.omit';
@@ -120,6 +122,7 @@ const NewPositionalVariantForm = ({
 
   return (
     <SteppedForm
+      className="new-variant"
       modelName={model.name}
       onSubmit={handleNewAction}
       properties={model.properties}

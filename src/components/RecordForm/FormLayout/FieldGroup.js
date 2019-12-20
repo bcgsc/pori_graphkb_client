@@ -1,3 +1,5 @@
+import './index.scss';
+
 import { List } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';

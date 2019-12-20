@@ -1,6 +1,6 @@
 import * as qs from 'qs';
 
-import config from '../../static/config';
+import config from '@/static/config';
 
 
 const DEFAULT_LIMIT = 100;
@@ -76,6 +76,7 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     limit = DEFAULT_LIMIT,
     keyword,
     complex,
+    searchProps,
     ...params
   } = qs.parse(search.replace(/^\?/, ''));
 
@@ -121,7 +122,7 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     }
   }
   return {
-    routeName, queryParams, payload, modelName,
+    routeName, queryParams, payload, modelName, searchProps,
   };
 };
 

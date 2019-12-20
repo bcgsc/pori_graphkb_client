@@ -1,6 +1,5 @@
+import kbSchema, { Property } from '@bcgsc/knowledgebase-schema';
 import { boundMethod } from 'autobind-decorator';
-
-import kbSchema from '@bcgsc/knowledgebase-schema';
 
 import { getQueryFromSearch } from './api/search';
 
@@ -248,7 +247,7 @@ class Schema {
    * Validates a value against some property model and returns the new property tracking object
    */
   @boundMethod
-  validateValue(propModel, value, ignoreMandatory = false) {
+  validateValue(propModel, value, { ignoreMandatory = false }) {
     if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
       if (propModel.mandatory
       && !ignoreMandatory
@@ -262,24 +261,46 @@ class Schema {
       return { error: { message: 'Cannot be empty/null' }, value };
     } else if (value !== null) { // validate the new value using the schema model property
       if (propModel.linkedClass && propModel.type.includes('embedded')) {
-        const subErrors = {};
+        let subErrors = {};
         let embeddedModel;
 
-        try {
-          embeddedModel = this.get(value);
-        } catch (err) { } // eslint-disable-line no-empty
-
-        if (!embeddedModel) {
-          return { error: { '@class': { message: 'Required Value' } } };
-        }
-        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+        const valErrorCheck = (subPropModel, val, errors) => {
           const { name } = subPropModel;
-          const { error } = this.validateValue(subPropModel, value[name], ignoreMandatory);
+          const { error } = this.validateValue(subPropModel, val[name], { ignoreMandatory });
+
+          const newErrors = { ...errors };
 
           if (error) {
-            subErrors[name] = error;
+            newErrors[name] = error;
           }
-        });
+
+          return newErrors;
+        };
+
+        if (Array.isArray(value) && value.length) {
+          // values could have different class models
+          value.forEach((val) => {
+            embeddedModel = this.get(val);
+
+            if (embeddedModel) {
+              Object.values(embeddedModel.properties).forEach((subPropModel) => {
+                subErrors = valErrorCheck(subPropModel, val, subErrors);
+              });
+            }
+          });
+        } else {
+          try {
+            embeddedModel = this.get(value);
+          } catch (err) { } // eslint-disable-line no-empty
+
+          if (!embeddedModel) {
+            return { error: { '@class': { message: 'Required Value' } } };
+          }
+
+          Object.values(embeddedModel.properties).forEach((subPropModel) => {
+            subErrors = valErrorCheck(subPropModel, value, subErrors);
+          });
+        }
 
         if (Object.keys(subErrors).length) {
           return { error: subErrors, value };
@@ -293,7 +314,7 @@ class Schema {
         if (propModel.type === 'link') {
           valueToValidate = value['@rid'] || value;
         }
-        propModel.validate(valueToValidate);
+        Property.validateWith(propModel, valueToValidate);
         return { value };
       } catch (err) {
         return { error: err, value };

@@ -1,7 +1,9 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
+
+import testSchema from '@/services/schema';
+
 import GraphExpansionDialog from '../GraphComponent/GraphExpansionDialog/GraphExpansionDialog';
-import testSchema from '../../../../services/schema';
 
 
 const testNode = {
@@ -24,14 +26,14 @@ describe('<GraphExpansionDialog />', () => {
   test('does not crash', () => {
     mount(
       <GraphExpansionDialog
-        schema={testSchema}
-        open
         node={testNode}
         onClose={jest.fn()}
         onExpand={jest.fn()}
-        onStageAll={jest.fn()}
         onStage={jest.fn()}
+        onStageAll={jest.fn()}
         onStageClass={jest.fn()}
+        open
+        schema={testSchema}
       />,
     );
   });

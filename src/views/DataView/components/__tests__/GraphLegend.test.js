@@ -1,5 +1,6 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
+
 import GraphLegend from '../GraphComponent/GraphLegend/GraphLegend';
 import { PropsMap } from '../GraphComponent/kbgraph';
 
@@ -16,9 +17,9 @@ describe('<GraphLegend />', () => {
           nodesColors: { color1: 'white' },
           linksColors: { color2: 'black' },
         }}
-        propsMap={new PropsMap()}
-        onChange={onChange}
         linkDisabled={false}
+        onChange={onChange}
+        propsMap={new PropsMap()}
       />,
     );
 

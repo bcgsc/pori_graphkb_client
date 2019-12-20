@@ -1,18 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './GraphLegend.scss';
+
 import {
-  Paper,
-  Typography,
   IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper,
+  Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import './GraphLegend.scss';
-import util from '../../../../../services/util';
+import util from '@/services/util';
 
 /**
  * Legend panels for nodes and links in graph.
@@ -61,13 +62,13 @@ function GraphLegend(props) {
                 <ListItem key={key}>
                   <ListItemIcon>
                     <div
-                      style={{ backgroundColor: graphOptions.nodesColors[key] }}
                       className="color-chip"
+                      style={{ backgroundColor: graphOptions.nodesColors[key] }}
                     />
                   </ListItemIcon>
                   <ListItemText primary={typeof key === 'object'
-                    ? util.antiCamelCase(key.name)
-                    : util.antiCamelCase(key)
+                    ? key.displayName || util.antiCamelCase(key.name)
+                    : key
                                           }
                   />
                 </ListItem>
@@ -76,8 +77,8 @@ function GraphLegend(props) {
                 <ListItem key="null">
                   <ListItemIcon>
                     <div
-                      style={{ backgroundColor: graphOptions.defaultColor }}
                       className="color-chip"
+                      style={{ backgroundColor: graphOptions.defaultColor }}
                     />
                   </ListItemIcon>
                   <ListItemText primary="Null" />
@@ -117,8 +118,8 @@ function GraphLegend(props) {
                   <ListItem key={key}>
                     <ListItemIcon>
                       <div
-                        style={{ backgroundColor: graphOptions.linksColors[key] }}
                         className="color-chip"
+                        style={{ backgroundColor: graphOptions.linksColors[key] }}
                       />
                     </ListItemIcon>
                     <ListItemText primary={util.antiCamelCase(key)} />
@@ -128,8 +129,8 @@ function GraphLegend(props) {
                   <ListItem key="null">
                     <ListItemIcon>
                       <div
-                        style={{ backgroundColor: graphOptions.defaultColor }}
                         className="color-chip"
+                        style={{ backgroundColor: graphOptions.defaultColor }}
                       />
                     </ListItemIcon>
                     <ListItemText primary="Null" />
@@ -153,9 +154,9 @@ function GraphLegend(props) {
  * @property {boolean} linkDisabled - flag for link legend being disabled.
  */
 GraphLegend.propTypes = {
-  propsMap: PropTypes.object.isRequired,
   graphOptions: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
+  propsMap: PropTypes.object.isRequired,
   linkDisabled: PropTypes.bool,
 };
 

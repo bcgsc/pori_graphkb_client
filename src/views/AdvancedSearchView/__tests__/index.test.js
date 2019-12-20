@@ -1,21 +1,22 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import {
-  render, fireEvent,
-} from '@testing-library/react';
 
+import {
+  fireEvent,
+  render,
+} from '@testing-library/react';
+import React from 'react';
 
 import AdvancedSearchView from '..';
 
-jest.mock('../../../components/RecordAutocomplete', () => (({
+jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,
 }) => {
   const handleChange = () => {
-    onChange({ target: { value: [{ displayName: 'value', '@rid': '1:1' }] }, name });
+    onChange({ target: { value: [{ displayName: 'value', '@rid': '1:1' }], name } });
   };
 
   return (
-    <select data-testid="value-select" value={value} onChange={handleChange}>
+    <select data-testid="value-select" onChange={handleChange} value={value}>
       <option key="test" value={value}>
         {label}
       </option>
@@ -23,30 +24,28 @@ jest.mock('../../../components/RecordAutocomplete', () => (({
   );
 }));
 
-jest.mock('../../../components/ResourceSelectComponent', () => (({
-  resources = [], value, onChange, className,
+/* eslint-disable react/prop-types */
+jest.mock('@/components/DropDownSelect', () => ({
+  options = [], value, onChange, name, innerProps: { 'data-testid': testId = 'select' } = {},
 }) => {
   const handleChange = (event) => {
-    const option = resources.find(
-      opt => opt.value === event.currentTarget.value,
+    const option = options.find(
+      opt => (opt.value === undefined ? opt : opt.value) === event.currentTarget.value,
     );
-    onChange({ target: { value: option ? option.value : option } });
-  };
 
-  const classCheck = className.includes('class') ? 'class' : null;
-  const propCheck = className.includes('property') ? 'prop' : null;
-  const operatorCheck = className.includes('operator') ? 'operator' : null;
-  const selectType = classCheck || propCheck || operatorCheck || 'filter';
+    onChange({ target: { value: option.value === undefined ? option : option.value, name } });
+  };
   return (
-    <select data-testid={`${selectType}-select`} value={value} onChange={handleChange}>
-      {resources.map(opt => (
-        <option key={opt.key} value={opt.value}>
-          {opt.label}
+    <select data-testid={testId} onChange={handleChange} value={value}>
+      {options.map(opt => (
+        <option key={opt.key || opt} value={opt.value === undefined ? opt : opt.value}>
+          {opt.label || opt}
         </option>
       ))}
     </select>
   );
-}));
+});
+/* eslint-enable react/prop-types */
 
 describe('AdvancedSearchView', () => {
   afterEach(() => {
@@ -68,7 +67,6 @@ describe('AdvancedSearchView', () => {
     } = render(
       <AdvancedSearchView
         history={mockHistory}
-        modelName="Statement"
       />,
     ));
   });
@@ -81,14 +79,13 @@ describe('AdvancedSearchView', () => {
   test('search button fires correctly', () => {
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith('/data/table?complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D&%40class=Statement');
+    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D&searchProps%5BsearchType%5D=Advanced');
   });
 
 
   test('renders new filter group correctly', async () => {
     await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-    await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }] } });
-
+    await fireEvent.change(getByTestId('value-select'), { target: { name: 'value', value: [{ displayName: 'value', '@rid': '1:1' }] } });
     expect(getByText('ADD FILTER')).toBeInTheDocument();
     expect(getByText('ADD FILTER')).not.toBeDisabled();
     await fireEvent.click(getByText('ADD FILTER'));
@@ -97,10 +94,10 @@ describe('AdvancedSearchView', () => {
 
   test('fires new search correctly', async () => {
     await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-    await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }] } });
+    await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }], name: 'value' } });
     await fireEvent.click(getByText('ADD FILTER'));
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith('/data/table?complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7Ik9SIjpbeyJBTkQiOlt7InJlbGV2YW5jZSI6IjE6MSIsIm9wZXJhdG9yIjoiPSJ9XX1dfX0%253D&%40class=Statement');
+    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7Ik9SIjpbeyJBTkQiOlt7InJlbGV2YW5jZSI6IjE6MSIsIm9wZXJhdG9yIjoiPSJ9XX1dfX0%253D&searchProps%5BsearchType%5D=Advanced');
   });
 });

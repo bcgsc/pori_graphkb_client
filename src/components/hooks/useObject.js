@@ -1,5 +1,6 @@
 import {
-  useReducer, useCallback,
+  useCallback,
+  useReducer,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -16,7 +17,13 @@ const useObject = (initialValue = {}) => {
     if (actionType === 'update') {
       const { name, value } = payload;
       return { ...state, [name]: value };
-    } if (actionType === 'replace') {
+    }
+
+    if (actionType === 'bulk-update') {
+      return { ...state, ...payload };
+    }
+
+    if (actionType === 'replace') {
       return { ...payload };
     }
     throw new Error(`actionType (${actionType}) not implemented`);
@@ -24,6 +31,10 @@ const useObject = (initialValue = {}) => {
 
   const updateField = useCallback((name, value) => {
     setContent({ type: 'update', payload: { name, value } });
+  }, [setContent]);
+
+  const update = useCallback((newContent = {}) => {
+    setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
 
@@ -36,7 +47,9 @@ const useObject = (initialValue = {}) => {
     replace(initialValue || {});
   }, [initialValue || {}]);
 
-  return { content, updateField, replace };
+  return {
+    content, updateField, replace, update,
+  };
 };
 
 

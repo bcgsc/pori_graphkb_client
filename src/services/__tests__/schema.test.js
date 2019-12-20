@@ -1,4 +1,5 @@
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
+
 import testSchema from '../schema';
 
 

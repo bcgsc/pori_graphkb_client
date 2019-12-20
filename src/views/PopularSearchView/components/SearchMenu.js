@@ -1,6 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Card, CardContent } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import SearchOption from './SearchOption';
 
 /**
@@ -15,9 +16,9 @@ function SearchMenu(props) {
   const searchOptions = labels.map(((label, index) => (
     <SearchOption
       key={`${label}`}
+      handleChange={() => handleChange(index)}
       label={label}
       selected={value === index}
-      handleChange={() => handleChange(index)}
     />
   )));
   return (
@@ -31,9 +32,9 @@ function SearchMenu(props) {
 }
 
 SearchMenu.propTypes = {
-  handleChange: PropTypes.func,
   labels: PropTypes.arrayOf(PropTypes.string).isRequired,
   value: PropTypes.number.isRequired,
+  handleChange: PropTypes.func,
 };
 
 SearchMenu.defaultProps = {

@@ -3,7 +3,7 @@
  * @module /services/util
  */
 
-import config from '../static/config';
+import config from '@/static/config';
 
 const {
   PERMISSIONS,
@@ -400,6 +400,31 @@ const recordId = (obj) => {
   return obj;
 };
 
+/**
+ * navigates to error view and saves previous locaton to history object so that
+ * after login, the user is redirected back to the previous page they were on
+ *
+ * @param {object} error error object containing message and error name
+ * @param {object} history history object for navigation
+ * @param {object} referrerLocation location of application before handling error
+ */
+const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
+  const { name, message } = error;
+  const { location: { pathname, search } } = history;
+
+  const savedState = {
+    from: {
+      pathname: referrerLocation ? referrerLocation.pathname : pathname,
+      search: referrerLocation ? referrerLocation.search : search,
+    },
+    error: { name, message },
+  };
+
+  history.push({
+    pathname: '/error',
+    state: savedState,
+  });
+};
 
 export default {
   antiCamelCase,
@@ -407,6 +432,7 @@ export default {
   getTSVRepresentation,
   parsePayload,
   getPallette,
+  handleErrorSaveLocation,
   expanded,
   positionInit,
   parsePermission,

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import { render, fireEvent, waitForElement } from '@testing-library/react';
 
+import { fireEvent, render, waitForElement } from '@testing-library/react';
+import React from 'react';
 
 import RecordAutocomplete from '..';
 
@@ -25,7 +25,7 @@ jest.mock('react-select', () => ({ options = [], value, onChange }) => {
     onChange(option);
   };
   return (
-    <select data-testid="select" value={value} onChange={handleChange}>
+    <select data-testid="select" onChange={handleChange} value={value}>
       {options.map(({ name, options: subOptions }) => {
         if (subOptions) {
           return (
@@ -52,12 +52,12 @@ describe('RecordAutocomplete (data-fetching)', () => {
     const placeholder = 'input something';
     const { getByText, getByTestId } = render(
       <RecordAutocomplete
+        minSearchLength={0}
         name="test"
         onChange={jest.fn()}
+        placeholder={placeholder}
         searchHandler={spy}
         singleLoad
-        placeholder={placeholder}
-        minSearchLength={0}
       />,
     );
     expect(spy).toHaveBeenCalledTimes(1);

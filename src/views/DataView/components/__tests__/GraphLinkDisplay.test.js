@@ -1,5 +1,6 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
+
 import GraphLinkDisplay from '../GraphComponent/GraphLinkDisplay/GraphLinkDisplay';
 
 const mockData = {
@@ -38,8 +39,8 @@ describe('<GraphLinkDisplay />', () => {
     mockData.source.y = mockData.target.y;
     wrapper = shallow(
       <GraphLinkDisplay
-        link={mockData}
         labelKey="name"
+        link={mockData}
       />,
     );
     expect(wrapper.type()).toBe('g');
@@ -51,10 +52,10 @@ describe('<GraphLinkDisplay />', () => {
     const detail = { '@rid': '#2' };
     wrapper = shallow(
       <GraphLinkDisplay
-        link={mockData}
-        labelKey="source.name"
-        detail={detail}
         actionsNode={{ data: detail }}
+        detail={detail}
+        labelKey="source.name"
+        link={mockData}
       />,
     );
 
@@ -65,9 +66,9 @@ describe('<GraphLinkDisplay />', () => {
     mockData.source = mockData.target;
     wrapper = shallow(
       <GraphLinkDisplay
-        link={mockData}
-        labelKey="source.name"
         detail={mockData}
+        labelKey="source.name"
+        link={mockData}
       />,
     );
     expect(wrapper.find('path.link')).toHaveLength(0);

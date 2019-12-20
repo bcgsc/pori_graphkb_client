@@ -1,58 +1,35 @@
-import React, {
-  useEffect, useContext, useState, useCallback,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  Paper, Typography, Button, CircularProgress,
-} from '@material-ui/core';
-import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import './index.scss';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
-
-import api from '../../services/api';
-
-import './index.scss';
-import ActionButton from '../ActionButton';
-import FormLayout from './FormLayout';
 import {
-  FORM_VARIANT,
-} from './util';
-import schema from '../../services/schema';
-import ReviewDialog from './ReviewDialog';
-import ToggleButtonGroup from '../ToggleButtonGroup';
+  Button, CircularProgress,
+  IconButton,
+  Paper, Tooltip, Typography,
+} from '@material-ui/core';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback, useContext, useEffect, useRef,
+  useState,
+} from 'react';
+
+import ActionButton from '@/components/ActionButton';
+import FormContext from '@/components/FormContext';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { SecurityContext } from '@/components/SecurityContext';
+import ToggleButtonGroup from '@/components/ToggleButtonGroup';
+import { GeneralRecordPropType } from '@/components/types';
+import { cleanPayload, FORM_VARIANT } from '@/components/util';
+import api from '@/services/api';
+import { getUser } from '@/services/auth';
+import schema from '@/services/schema';
+
 import EdgeTable from './EdgeTable';
-import useSchemaForm from '../hooks/useSchemaForm';
-import { GeneralRecordPropType } from '../types';
+import FormLayout from './FormLayout';
+import ReviewDialog from './ReviewDialog';
 
-
-const cleanPayload = (payload) => {
-  if (typeof payload !== 'object' || payload === null) {
-    return payload;
-  }
-  const newPayload = {};
-  Object.entries(payload).forEach(([key, value]) => {
-    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
-      if (typeof value === 'object' && value !== null) {
-        if (Array.isArray(value)) {
-          newPayload[key] = value.map((arr) => {
-            if (arr && arr['@rid']) {
-              return arr['@rid'];
-            }
-            return cleanPayload(arr);
-          });
-        } else if (value['@rid']) {
-          newPayload[key] = value['@rid'];
-        } else {
-          newPayload[key] = value;
-        }
-      } else {
-        newPayload[key] = value;
-      }
-    }
-  });
-  return newPayload;
-};
-
+const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
 /**
  * Form/View that displays the contents of a single node
@@ -62,6 +39,7 @@ const cleanPayload = (payload) => {
  * @property {string} props.title the title for this form
  * @property {string} props.modelName name of class model to be displayed
  * @property {value} props.value values of individual properties of passed class model
+ * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
 const RecordForm = ({
   value: initialValue,
@@ -71,12 +49,14 @@ const RecordForm = ({
   onSubmit,
   onError,
   variant,
+  navigateToGraph,
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
+  const context = useContext(SecurityContext);
 
   const [actionInProgress, setActionInProgress] = useState(false);
-  const controllers = [];
+  const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const [fieldDefs, setFieldDefs] = useState({});
@@ -88,12 +68,31 @@ const RecordForm = ({
     }
   }, [modelName]);
 
+  const form = useSchemaForm(fieldDefs, initialValue);
   const {
-    formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
-  } = useSchemaForm(fieldDefs, initialValue);
+    formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
+  } = form;
 
+  useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
-  useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
+  const statementReviewCheck = useCallback((currContent, content) => {
+    const updatedContent = { ...content };
+
+    if (!currContent.reviewStatus) {
+      updatedContent.reviewStatus = 'initial';
+    }
+
+    if (!currContent.reviews) {
+      const createdBy = getUser(context);
+      updatedContent.reviews = [{
+        status: 'initial',
+        comment: '',
+        createdBy,
+      }];
+    }
+
+    return updatedContent;
+  }, [context]);
 
   /**
    * Handler for submission of a new record
@@ -106,15 +105,20 @@ const RecordForm = ({
       setFormIsDirty(true);
     } else {
       // ok to POST
-      const content = { ...formContent };
+      let content = { ...formContent };
 
       if (!formContent['@class']) {
         content['@class'] = modelName;
       }
+
+      if (modelName === 'Statement') {
+        content = statementReviewCheck(formContent, content);
+      }
+
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
-      controllers.push(call);
+      controllers.current.push(call);
       setActionInProgress(true);
 
       try {
@@ -128,7 +132,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
 
   /**
    * Handler for deleting an existing record
@@ -141,7 +145,7 @@ const RecordForm = ({
     }
     const { routeName } = schema.get(content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    controllers.push(call);
+    controllers.current.push(call);
     setActionInProgress(true);
 
     try {
@@ -153,7 +157,7 @@ const RecordForm = ({
       onError({ error: err, content });
     }
     setActionInProgress(false);
-  }, [controllers, formContent, modelName, onError, onSubmit, snackbar]);
+  }, [formContent, modelName, onError, onSubmit, snackbar]);
 
   /**
    * Handler for edits to an existing record
@@ -177,7 +181,7 @@ const RecordForm = ({
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-      controllers.push(call);
+      controllers.current.push(call);
       setActionInProgress(true);
 
       try {
@@ -190,41 +194,34 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
 
-  const handleOnChange = (event) => {
-    // add the new value to the field
-    const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
-    const eventValue = event.target.value;
-
-    updateForm(eventName, eventValue);
-    setFormIsDirty(true);
-  };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
     const reviews = [...(formContent.reviews || []), content];
-    updateForm('reviews', reviews);
+    updateField('reviews', reviews);
 
     if (updateReviewStatus) {
-      updateForm('reviewStatus', content.status);
+      updateField('reviewStatus', content.status);
     }
     setReviewDialogOpen(false);
     setFormIsDirty(true);
-  }, [formContent.reviews, setFormIsDirty, updateForm]);
+  }, [formContent.reviews, setFormIsDirty, updateField]);
 
   const isEdge = false; // TODO
 
   return (
+
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
-        <Typography variant="h1" className="title">{title}</Typography>
+        <Typography className="title" variant="h1">{title}</Typography>
         <div className="header-action-buttons">
           {(modelName === 'Statement' && variant === FORM_VARIANT.EDIT && (
           <Button
+            disabled={actionInProgress}
             onClick={() => setReviewDialogOpen(true)}
             variant="outlined"
-            disabled={actionInProgress}
           >
             <LocalLibraryIcon
               classes={{ root: 'review-icon' }}
@@ -232,13 +229,27 @@ const RecordForm = ({
             Add Review
           </Button>
           ))}
+          {variant === FORM_VARIANT.VIEW && (
+            <div className="header-action-buttons__graphview">
+              <Tooltip title="click here for graphview">
+                <IconButton
+                  data-testid="graph-view"
+                  onClick={navigateToGraph}
+                >
+                  <TimelineIcon
+                    color="secondary"
+                  />
+                </IconButton>
+              </Tooltip>
+            </div>
+          )}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <ToggleButtonGroup
-            onClick={() => onTopClick(formContent)}
-            requireConfirm
-            options={['view', 'edit']}
-            variant={variant}
             message="Are you sure? You will lose your changes."
+            onClick={() => onTopClick(formContent)}
+            options={['view', 'edit']}
+            requireConfirm
+            variant={variant}
           />
           )}
         </div>
@@ -250,17 +261,16 @@ const RecordForm = ({
         />
         ))}
       </div>
-      <FormLayout
-        {...rest}
-        formIsDirty={formIsDirty}
-        content={formContent}
-        errors={formErrors}
-        onChange={handleOnChange}
-        modelName={modelName}
-        variant={variant}
-        collapseExtra
-        disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
-      />
+      <FormContext.Provider value={form}>
+        <FormLayout
+          {...rest}
+          collapseExtra
+          disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
+          exclusions={FIELD_EXCLUSIONS}
+          modelName={modelName}
+          variant={variant}
+        />
+      </FormContext.Provider>
       {variant === FORM_VARIANT.VIEW && (
         <div className="record-form__related-records">
           <Typography variant="h4">Related Records</Typography>
@@ -271,11 +281,11 @@ const RecordForm = ({
         {variant === FORM_VARIANT.EDIT
           ? (
             <ActionButton
-              onClick={handleDeleteAction}
-              variant="outlined"
-              size="large"
-              message="Are you sure you want to delete this record?"
               disabled={actionInProgress}
+              message="Are you sure you want to delete this record?"
+              onClick={handleDeleteAction}
+              size="large"
+              variant="outlined"
             >
               DELETE
             </ActionButton>
@@ -288,15 +298,15 @@ const RecordForm = ({
         {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
           ? (
             <ActionButton
+              color="primary"
+              disabled={actionInProgress || (formHasErrors && formIsDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
                 : handleNewAction
                 }
-              variant="contained"
-              color="primary"
-              size="large"
               requireConfirm={false}
-              disabled={actionInProgress || (formHasErrors && formIsDirty)}
+              size="large"
+              variant="contained"
             >
               {variant === FORM_VARIANT.EDIT
                 ? 'SUBMIT CHANGES'
@@ -313,14 +323,15 @@ const RecordForm = ({
 
 
 RecordForm.propTypes = {
+  navigateToGraph: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
   modelName: PropTypes.string,
   onError: PropTypes.func,
   onSubmit: PropTypes.func,
   onTopClick: PropTypes.func,
   rid: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  variant: PropTypes.string,
   value: GeneralRecordPropType,
+  variant: PropTypes.string,
 };
 
 RecordForm.defaultProps = {

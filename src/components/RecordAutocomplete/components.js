@@ -1,15 +1,14 @@
 /**
  * Adapted from: https://material-ui.com/demos/autocomplete/#react-select
  */
-import React from 'react';
 import {
-  Typography,
-  TextField,
   MenuItem,
   Paper,
+  TextField,
+  Typography,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-
+import React from 'react';
 
 import DetailChip from '../DetailChip';
 
@@ -20,8 +19,8 @@ const NoOptionsMessage = (props) => {
   const { innerProps, children } = props;
   return (
     <Typography
-      color="textSecondary"
       className="record-autocomplete__no-options-message"
+      color="textSecondary"
       {...innerProps}
     >
       {children}
@@ -65,13 +64,13 @@ const Option = (props) => {
   } = props;
   return (
     <MenuItem
+      buttonRef={innerRef}
       className={`record-autocomplete__option ${isSelected
         ? 'record-autocomplete__option--selected'
         : ''
       }`}
-      buttonRef={innerRef}
-      selected={isFocused}
       component="div"
+      selected={isFocused}
       {...innerProps}
     >
       {children}
@@ -84,8 +83,8 @@ const Placeholder = (props) => {
   const { innerProps, children } = props;
   return (
     <Typography
-      color="textSecondary"
       className="record-autocomplete__placeholder"
+      color="textSecondary"
       {...innerProps}
     >
       {children}
@@ -105,8 +104,8 @@ const SingleValue = (props) => {
   return (
     <DetailChip
       className="record-autocomplete__chip record-autocomplete__chip--single"
-      label={children}
       details={data}
+      label={children}
       onDelete={isClearable
         ? clearValue
         : null
@@ -129,8 +128,8 @@ const MultiValue = (props) => {
   return (
     <DetailChip
       className="record-autocomplete__chip record-autocomplete__chip--multi"
-      label={children}
       details={data}
+      label={children}
       onDelete={isClearable
         ? onClick
         : null
@@ -153,7 +152,7 @@ const Menu = (props) => {
 
   return (isSearchable
     && (
-    <Paper elevation={2} square className="record-autocomplete__paper" {...innerProps}>
+    <Paper className="record-autocomplete__paper" elevation={2} square {...innerProps}>
       {children}
     </Paper>
     )

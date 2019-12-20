@@ -1,14 +1,13 @@
-import React from 'react';
+import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import * as qs from 'qs';
+import React from 'react';
 
-import { boundMethod } from 'autobind-decorator';
-import RecordForm from '../../components/RecordForm';
-import { KBContext } from '../../components/KBContext';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import { hasWriteAccess } from '../../services/auth';
-import schema from '../../services/schema';
+import RecordForm from '@/components/RecordForm';
+import { SecurityContext } from '@/components/SecurityContext';
+import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
+import { hasWriteAccess } from '@/services/auth';
+import schema from '@/services/schema';
 
 
 const DEFAULT_TITLES = {
@@ -34,11 +33,11 @@ const getVariantType = (url) => {
 
 
 class NodeView extends React.PureComponent {
-  static contextType = KBContext;
+  static contextType = SecurityContext;
 
   static propTypes = {
-    match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
   };
 
   /**
@@ -137,17 +136,17 @@ class NodeView extends React.PureComponent {
 
     return (
       <RecordForm
-        variant={variant}
         modelName={defaultModelName}
-        rid={rid}
-        title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
+        onError={this.handleError}
+        onSubmit={this.handleSubmit}
         onTopClick={
           hasWriteAccess(this.context)
             ? onTopClick
             : null
         }
-        onSubmit={this.handleSubmit}
-        onError={this.handleError}
+        rid={rid}
+        title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
+        variant={variant}
       />
     );
   }

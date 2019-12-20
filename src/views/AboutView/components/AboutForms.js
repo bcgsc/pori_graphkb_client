@@ -1,21 +1,21 @@
-import React from 'react';
 import {
-  Typography,
-  ListItem,
   List,
+  ListItem,
+  Typography,
 } from '@material-ui/core';
+import React from 'react';
 
 // static content
-import listFields from '../../../static/images/list-fields.png';
-import singleAutocomplete1 from '../../../static/images/single-autocomplete-1.png';
-import singleAutocomplete2 from '../../../static/images/single-autocomplete-2.png';
-import singleAutocomplete3 from '../../../static/images/single-autocomplete-3.png';
-import selectFields from '../../../static/images/select-fields.png';
+import listFields from '@/static/images/list-fields.png';
+import selectFields from '@/static/images/select-fields.png';
+import singleAutocomplete1 from '@/static/images/single-autocomplete-1.png';
+import singleAutocomplete2 from '@/static/images/single-autocomplete-2.png';
+import singleAutocomplete3 from '@/static/images/single-autocomplete-3.png';
 
 
 const AboutForms = () => (
   <div className="about-page__content">
-    <Typography variant="h1" id="about-forms">
+    <Typography id="about-forms" variant="h1">
         GraphKB Forms
     </Typography>
     <Typography paragraph>
@@ -33,7 +33,7 @@ const AboutForms = () => (
             them or clicking the <q>x</q> shown in the example image.
 
     </Typography>
-    <img src={listFields} alt="List Fields" />
+    <img alt="List Fields" src={listFields} />
     <Typography variant="h2">Link Fields</Typography>
     <Typography paragraph>
             Some records in GraphKB are dependent on or reference others.
@@ -50,15 +50,15 @@ const AboutForms = () => (
     <List>
       <ListItem className="about-page__image-list">
         <Typography variant="h4">Before Input</Typography>
-        <img src={singleAutocomplete1} alt="blank link field" />
+        <img alt="blank link field" src={singleAutocomplete1} />
       </ListItem>
       <ListItem className="about-page__image-list">
         <Typography variant="h4">Auto-completion on Type</Typography>
-        <img src={singleAutocomplete2} alt="searching link field" />
+        <img alt="searching link field" src={singleAutocomplete2} />
       </ListItem>
       <ListItem className="about-page__image-list">
         <Typography variant="h4">Selected Input</Typography>
-        <img src={singleAutocomplete3} alt="selected link field" />
+        <img alt="selected link field" src={singleAutocomplete3} />
       </ListItem>
     </List>
     <Typography variant="h2">Select Fields</Typography>
@@ -69,7 +69,7 @@ const AboutForms = () => (
             before submitting the form.
     </Typography>
 
-    <img src={selectFields} alt="Select Fields" />
+    <img alt="Select Fields" src={selectFields} />
   </div>
 );
 

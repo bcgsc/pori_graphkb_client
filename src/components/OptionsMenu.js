@@ -1,11 +1,12 @@
-import React from 'react';
 import {
-  MenuList, MenuItem, Collapse, ListItemIcon, ListItemText,
+  Collapse, ListItemIcon, ListItemText,
+  MenuItem, MenuList,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import { boundMethod } from 'autobind-decorator';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 
 class OptionsMenu extends React.Component {

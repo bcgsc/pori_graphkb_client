@@ -1,20 +1,20 @@
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import {
   Link,
 } from 'react-router-dom';
-import {
-  Typography,
-  ListItem,
-  List,
-  ListItemText,
-} from '@material-ui/core';
 
-import queryResults from '../../../static/images/table-view.png';
+import queryResults from '@/static/images/table-view.png';
 
 
 const AboutQuerying = () => (
   <div className="about-page__content">
-    <Typography variant="h1" id="about-page__querying">
+    <Typography id="about-page__querying" variant="h1">
         Querying
     </Typography>
     <Typography paragraph variant="body2">
@@ -46,13 +46,13 @@ const AboutQuerying = () => (
         <Typography>This view is for advanced users and lets the user build their own queries from scratch. New users should start with one of the other two query views</Typography>
       </ListItem>
     </List>
-    <Typography variant="h2" id="about-results-table">
+    <Typography id="about-results-table" variant="h2">
       Viewing Results (Table)
     </Typography>
     <Typography>
       After sending a query, result records will be loaded into the Table view
     </Typography>
-    <img src={queryResults} alt="Query Results" id="query-table-view" />
+    <img alt="Query Results" id="query-table-view" src={queryResults} />
     <Typography paragraph>
       Clicking any row in table view will open the details panel. From the details panel you can
       view or edit the record in a new window

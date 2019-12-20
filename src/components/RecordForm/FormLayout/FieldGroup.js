@@ -1,9 +1,28 @@
-import React from 'react';
+import { List } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import FormField from '../FormField';
-import { FORM_VARIANT } from '../util';
+import FormContext from '@/components/FormContext';
+import FormField from '@/components/FormField';
+import { FORM_VARIANT } from '@/components/util';
 
+/**
+ * returns an array of strings without any of the indicated exclusion values
+ *
+ * @param {Array.<string>} orderingList specifies property display ordering
+ * @param {Array.<string>} exclusions fields that should not be rendered
+ */
+const exclusionFilter = (orderingList, exclusionList) => {
+  const newOrdering = [];
+  orderingList.forEach((filter) => {
+    if (Array.isArray(filter)) {
+      newOrdering.push(exclusionFilter(filter, exclusionList));
+    } else if (!exclusionList.includes(filter)) {
+      newOrdering.push(filter);
+    }
+  });
+  return newOrdering;
+};
 
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
@@ -12,11 +31,16 @@ import { FORM_VARIANT } from '../util';
  * @param {Array.<Array.<string>|string>} props.ordering the property names in order to be rendered (array of array of strings for groups)
  * @param {Object} content the form content keyed by property name
  * @param {Object} errors form errors keyed by property name
+ * @param {Array.<string>} exclusions fields to be excluded from rendering
  * @param {function} onChange parent form handler to pass to fields
+ * @param {bool} formIsDirty if the form has been modified at all
+ * @param {String} variant one of ['new', 'edit', 'search]
+ * @param {bool} disabled if field should be disabled
  */
 const FieldGroup = ({
-  model, ordering, content, errors, variant, onChange, disabled, formIsDirty,
+  model, ordering, exclusions, disabled,
 }) => {
+  const { formVariant } = useContext(FormContext);
   const { properties: { out, in: tgt, ...properties } } = model;
 
   // get the form content
@@ -43,41 +67,32 @@ const FieldGroup = ({
 
   let filteredOrdering = ordering;
 
-  if ((variant === FORM_VARIANT.EDIT || variant === FORM_VARIANT.NEW)) {
+  if ((formVariant === FORM_VARIANT.EDIT || formVariant === FORM_VARIANT.NEW)) {
     filteredOrdering = filterGeneratedFields(ordering);
   }
+  filteredOrdering = exclusionFilter(filteredOrdering, exclusions);
+
 
   filteredOrdering.forEach((item) => {
     if (Array.isArray(item)) { // subgrouping
       const key = item.join('--');
       fields.push((
-        <div key={key} className="record-form__content-subgroup">
+        <List key={key} className="record-form__content-subgroup">
           <FieldGroup
-            content={content}
-            errors={errors}
-            onChange={onChange}
-            ordering={item}
-            model={model}
             disabled={disabled}
-            variant={variant}
-            formIsDirty={formIsDirty}
+            model={model}
+            ordering={item}
           />
-        </div>
+        </List>
       ));
     } else if (properties[item]) {
       const prop = properties[item];
       const { name } = prop;
       const wrapper = (
         <FormField
-          model={prop}
-          value={content[name]}
-          error={errors[name]}
-          onChange={onChange}
-          variant={variant}
           key={name}
-          content={content}
           disabled={disabled}
-          formIsDirty={formIsDirty}
+          model={prop}
         />
       );
       fields.push(wrapper);
@@ -95,20 +110,13 @@ FieldGroup.propTypes = {
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ])).isRequired,
-  onChange: PropTypes.func.isRequired,
-  content: PropTypes.object,
-  errors: PropTypes.object,
   disabled: PropTypes.bool,
-  variant: PropTypes.string,
-  formIsDirty: PropTypes.bool,
+  exclusions: PropTypes.arrayOf(PropTypes.string),
 };
 
 FieldGroup.defaultProps = {
-  content: {},
-  errors: {},
+  exclusions: [],
   disabled: false,
-  variant: FORM_VARIANT.VIEW,
-  formIsDirty: true,
 };
 
 

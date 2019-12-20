@@ -1,19 +1,20 @@
-import React from 'react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-material.css';
+
 import {
-  FormControlLabel, Checkbox, Popover,
+  Checkbox, FormControlLabel, Popover,
 } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
+import DetailChip from '@/components/DetailChip';
+import OptionsMenu from '@/components/OptionsMenu';
+import DataCache from '@/services/api/dataCache';
+import { getUsername } from '@/services/auth';
+import schema from '@/services/schema';
 
-import schema from '../../../services/schema';
-import OptionsMenu from '../../../components/OptionsMenu';
-import DetailChip from '../../../components/DetailChip';
-import { getUsername } from '../../../services/auth';
-import DataCache from '../../../services/api/dataCache';
 import { SelectionTracker } from './SelectionTracker';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
@@ -36,10 +37,12 @@ const RecordList = (props) => {
         const label = schema.getLabel(record);
         return (
           <DetailChip
-            label={label}
-            title={schema.getLabel(record, false)}
             key={label}
             details={record}
+            getLink={schema.getLink}
+            label={label}
+            title={schema.getLabel(record, false)}
+
             valueToString={(v) => {
               if (Array.isArray(v)) {
                 return `Array(${v.length})`;
@@ -49,8 +52,6 @@ const RecordList = (props) => {
               }
               return `${v}`;
             }}
-
-            getLink={schema.getLink}
           />
         );
       })}
@@ -64,15 +65,17 @@ RecordList.propTypes = {
 
 class DataTable extends React.Component {
   static propTypes = {
-    search: PropTypes.string,
-    rowBuffer: PropTypes.number,
     cache: PropTypes.instanceOf(DataCache).isRequired,
-    onRecordClicked: PropTypes.func,
-    onRecordsSelected: PropTypes.func,
+    isExportingData: PropTypes.func.isRequired,
     onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
-    isExportingData: PropTypes.func.isRequired,
+    totalRows: PropTypes.number.isRequired,
+    totalRowsSelected: PropTypes.number.isRequired,
+    onRecordClicked: PropTypes.func,
+    onRecordsSelected: PropTypes.func,
+    rowBuffer: PropTypes.number,
+    search: PropTypes.string,
   };
 
   static defaultProps = {
@@ -93,7 +96,6 @@ class DataTable extends React.Component {
       allGroups: {},
       activeGroups: new Set(),
       pingedIndices: new Set(),
-      totalNumOfRows: null,
       selectionTracker: new SelectionTracker(),
       prevNodeID: null,
     };
@@ -283,8 +285,8 @@ class DataTable extends React.Component {
 
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
-    const { totalNumOfRows, selectionTracker } = this.state;
-    const { isExportingData } = this.props;
+    const { selectionTracker } = this.state;
+    const { isExportingData, totalRows } = this.props;
     isExportingData(true);
 
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
@@ -318,14 +320,14 @@ class DataTable extends React.Component {
     };
 
     if (!selectionOnly) {
-      gridOptions.cacheBlockSize = totalNumOfRows; // in preparation to fetch entire dataset
+      gridOptions.cacheBlockSize = totalRows; // in preparation to fetch entire dataset
 
       const tempDataSource = {
         rowCount: null,
         getRows: async ({
           successCallback, failCallback, ...params
         }) => {
-          params.endRow = totalNumOfRows; // fetches entire data set with this adjustment
+          params.endRow = totalRows; // fetches entire data set with this adjustment
 
           try {
             const [rows, lastRow] = await this.getTableData(params);
@@ -487,9 +489,10 @@ class DataTable extends React.Component {
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows, selectionTracker,
+      allColumns, activeColumns, allGroups, activeGroups, selectionTracker,
     } = this.state;
-    const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
+
+    const { optionsMenuAnchor, optionsMenuOnClose, totalRowsSelected } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
     const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
@@ -535,7 +538,7 @@ class DataTable extends React.Component {
       },
     ];
 
-    if (totalNumOfRows < MAX_FULL_EXPORTS_ROWS) {
+    if (totalRowsSelected < MAX_FULL_EXPORTS_ROWS) {
       menuContents.push({
         label: 'Export All to TSV',
         handler: () => this.handleExportTsv(false),
@@ -551,13 +554,13 @@ class DataTable extends React.Component {
 
     const result = (
       <Popover
-        open={optionsMenuAnchor !== null}
         anchorEl={optionsMenuAnchor}
-        onClose={optionsMenuOnClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        onClose={optionsMenuOnClose}
+        open={optionsMenuAnchor !== null}
       >
         <OptionsMenu
           className="data-view__options-menu"
@@ -574,35 +577,30 @@ class DataTable extends React.Component {
     return (
       <div
         className="ag-theme-material data-table"
+        onKeyDown={this.handleKeyDown}
+        onKeyUp={this.handleKeyUp}
+        role="presentation"
         style={{
           width: '100%',
           height: '100%',
         }}
-        onKeyDown={this.handleKeyDown}
-        onKeyUp={this.handleKeyUp}
-        role="presentation"
       >
         {this.renderOptionsMenu()}
         <AgGridReact
-          reactNext
+          blockLoadDebounceMillis={100}
+          cacheBlockSize={CACHE_BLOCK_SIZE}
+          cacheOverflowSize={1}
           defaultColDef={{
             sortable: true,
             resizable: true,
             width: 150,
           }}
-          infiniteInitialRowCount={1}
-          maxBlocksInCache={0}
-          maxConcurrentDatasourceRequests={1}
-          onGridReady={this.onGridReady}
-          cacheBlockSize={CACHE_BLOCK_SIZE}
-          paginationPageSize={25}
-          cacheOverflowSize={1}
-          rowModelType="infinite"
-          suppressHorizontalScroll={false}
           frameworkComponents={{
             RecordList,
           }}
-          blockLoadDebounceMillis={100}
+          infiniteInitialRowCount={1}
+          maxBlocksInCache={0}
+          maxConcurrentDatasourceRequests={1}
           onBodyScroll={this.detectFetchTrigger}
           onCellFocused={({ rowIndex }) => {
             if (rowIndex !== null && onRecordClicked) {
@@ -610,15 +608,20 @@ class DataTable extends React.Component {
               onRecordClicked(rowNode);
             }
           }}
-          // allow the user to select using the arrow keys and shift
           onCellKeyDown={this.handleSelectionChange}
+          onGridReady={this.onGridReady}
           onSelectionChanged={() => {
             if (onRecordsSelected) {
               const rows = this.gridApi.getSelectedRows();
               onRecordsSelected(rows);
             }
           }}
+          paginationPageSize={25}
+          reactNext
+          // allow the user to select using the arrow keys and shift
+          rowModelType="infinite"
           rowSelection="multiple"
+          suppressHorizontalScroll={false}
         />
       </div>
     );

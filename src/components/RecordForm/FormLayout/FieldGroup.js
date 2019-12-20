@@ -1,7 +1,8 @@
 import { List } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 
+import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
 
@@ -37,8 +38,9 @@ const exclusionFilter = (orderingList, exclusionList) => {
  * @param {bool} disabled if field should be disabled
  */
 const FieldGroup = ({
-  model, ordering, exclusions, variant, disabled,
+  model, ordering, exclusions, disabled,
 }) => {
+  const { formVariant } = useContext(FormContext);
   const { properties: { out, in: tgt, ...properties } } = model;
 
   // get the form content
@@ -65,7 +67,7 @@ const FieldGroup = ({
 
   let filteredOrdering = ordering;
 
-  if ((variant === FORM_VARIANT.EDIT || variant === FORM_VARIANT.NEW)) {
+  if ((formVariant === FORM_VARIANT.EDIT || formVariant === FORM_VARIANT.NEW)) {
     filteredOrdering = filterGeneratedFields(ordering);
   }
   filteredOrdering = exclusionFilter(filteredOrdering, exclusions);
@@ -80,7 +82,6 @@ const FieldGroup = ({
             disabled={disabled}
             model={model}
             ordering={item}
-            variant={variant}
           />
         </List>
       ));
@@ -92,7 +93,6 @@ const FieldGroup = ({
           key={name}
           disabled={disabled}
           model={prop}
-          variant={variant}
         />
       );
       fields.push(wrapper);
@@ -112,13 +112,11 @@ FieldGroup.propTypes = {
   ])).isRequired,
   disabled: PropTypes.bool,
   exclusions: PropTypes.arrayOf(PropTypes.string),
-  variant: PropTypes.string,
 };
 
 FieldGroup.defaultProps = {
   exclusions: [],
   disabled: false,
-  variant: FORM_VARIANT.VIEW,
 };
 
 

@@ -41,7 +41,7 @@ const AddReviewDialog = ({
 
   // handle and store the form content
   const form = useSchemaForm(
-    { comment, status }, {},
+    { comment, status }, {}, { variant: FORM_VARIANT.NEW },
   );
   const {
     formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
@@ -83,7 +83,6 @@ const AddReviewDialog = ({
           <FormContext.Provider value={form}>
             <FormField
               model={status}
-              variant={FORM_VARIANT.NEW}
             />
             <FormField
               innerProps={{
@@ -92,7 +91,6 @@ const AddReviewDialog = ({
                 variant: 'outlined',
               }}
               model={comment}
-              variant={FORM_VARIANT.NEW}
             />
           </FormContext.Provider>
           <FormControlLabel

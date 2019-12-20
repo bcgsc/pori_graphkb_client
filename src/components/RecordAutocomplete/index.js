@@ -12,6 +12,8 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import defaultComponents from './components';
 
+const MIN_TERM_LENGTH = 3;
+
 /**
  * @typedef {function} searchHandlerRequest
  * @param {string} searchTermValue the term to search for
@@ -111,6 +113,23 @@ const RecordAutocomplete = (props) => {
     setSelectedValue(value);
   }, [value]);
 
+  // check if there are any short terms below min length and give warning if so
+  useEffect(() => {
+    if (searchTerm) {
+      const terms = searchTerm.split(' ');
+      const searchTerms = terms.filter(term => term); // remove empty/null terms
+
+      if (terms.length > 1) {
+        const badTerms = searchTerms.filter(term => term.length < MIN_TERM_LENGTH);
+
+        if (badTerms.length) {
+          const badLengthText = `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
+          setHelperText(badLengthText);
+        }
+      }
+    }
+  }, [searchTerm]);
+
   // initial load handler
   useDeepCompareEffect(
     () => {
@@ -161,7 +180,12 @@ const RecordAutocomplete = (props) => {
             controller.abort();
             setIsLoading(false);
           }
-          controller = searchHandler(debouncedSearchTerm);
+          const terms = debouncedSearchTerm.split(' ');
+          const searchTerms = terms
+            .filter(term => term)
+            .filter(term => term.length >= MIN_TERM_LENGTH)
+            .join(' ');
+          controller = searchHandler(searchTerms);
 
           try {
             setIsLoading(true);

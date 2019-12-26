@@ -7,7 +7,7 @@
   min-width: $readable-min;
   width: 100%;
 
-  .record-form__content--long {
+  .form-layout__content--long {
     > .form-field:not(:last-child) {
       margin-bottom: 20px;
     }

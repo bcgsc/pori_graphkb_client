@@ -1,0 +1,37 @@
+@import '../../../globals';
+@import '../../../theme';
+
+.form-layout {
+  &__content,
+  &__content-subgroup,
+  &__content--long {
+    float: left;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  &__content,
+  &__content-subgroup {
+    > .form-field {
+      @media (min-width: #{$breakpoint-med}) {
+        margin-right: 20px;
+        width: calc(50% - 20px);
+      }
+      float: left;
+    }
+  }
+
+  &__content--long {
+    display: block;
+  }
+
+  & &__content-subgroup {
+    @include field-set;
+    margin: 0;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 100%;
+  }
+}

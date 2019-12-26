@@ -29,7 +29,7 @@ import { FORM_VARIANT } from '@/components/util';
  * @param {function} onSubmit handler to call on form submission
  */
 const SteppedForm = ({
-  children, modelName, properties, onSubmit,
+  children, modelName, properties, onSubmit, className,
 }) => {
   const snackbar = useContext(SnackbarContext);
   const [activeStep, setActiveStep] = useState(0);
@@ -67,7 +67,7 @@ const SteppedForm = ({
     <FormContext.Provider value={form}>
       <Stepper
         activeStep={activeStep}
-        className="stepped-form"
+        className={`stepped-form ${className}`}
         elevation={0}
         nonLinear
         orientation="vertical"
@@ -117,6 +117,11 @@ SteppedForm.propTypes = {
   modelName: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
   properties: PropTypes.object.isRequired,
+  className: PropTypes.string,
+};
+
+SteppedForm.defaultProps = {
+  className: '',
 };
 
 export default SteppedForm;

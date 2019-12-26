@@ -1,9 +1,10 @@
+import './index.scss';
+
 import {
   Collapse,
   List,
   ListItem,
   ListItemText,
-  Typography,
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -20,7 +21,6 @@ import {
 } from '@/components/util';
 import schema from '@/services/schema';
 
-import EdgeTable from '../EdgeTable';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
@@ -60,16 +60,14 @@ const FormLayout = ({
 
   const isEdge = model && model.isEdge;
 
-  const edges = isEdge
-    ? []
-    : schema.getEdges(formContent || {});
+
   const isStatement = model && model.name === 'Statement';
 
   return (
-    <div className={`record-form ${className}`}>
+    <div className={`form-layout ${className}`}>
       { model && (
       <>
-        <div className="record-form__content record-form__content--long">
+        <div className="form-layout__content form-layout__content--long">
           {isStatement && formVariant !== FORM_VARIANT.SEARCH && (
             <StatementSentence
               content={formContent}
@@ -82,14 +80,15 @@ const FormLayout = ({
               type={model.name}
             />
           )}
-          {isEdge && (
-            <EdgeFields
-              disabled={disabled}
-              model={model}
-            />
-          )}
+
         </div>
-        <List className="record-form__content">
+        <List className="form-layout__content">
+          {isEdge && (
+          <EdgeFields
+            disabled={disabled}
+            model={model}
+          />
+          )}
           <FieldGroup
             disabled={disabled}
             exclusions={exclusions}
@@ -110,7 +109,7 @@ const FormLayout = ({
             {isExpanded ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-            <List className="record-form__content">
+            <List className="form-layout__content">
               <FieldGroup
                 disabled={disabled}
                 exclusions={exclusions}
@@ -120,18 +119,6 @@ const FormLayout = ({
             </List>
           </Collapse>
         </>
-        )}
-
-        {!formVariant === FORM_VARIANT.VIEW && edges.length > 0 && (
-          <div className="record-form__related-nodes">
-            <Typography component="h2" variant="h6">
-              Related Nodes
-            </Typography>
-            <EdgeTable
-              sourceNodeId={formContent['@rid']}
-              values={edges}
-            />
-          </div>
         )}
       </>
       )}

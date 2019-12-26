@@ -1,3 +1,5 @@
+import './index.scss';
+
 import { List } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
@@ -77,7 +79,7 @@ const FieldGroup = ({
     if (Array.isArray(item)) { // subgrouping
       const key = item.join('--');
       fields.push((
-        <List key={key} className="record-form__content-subgroup">
+        <List key={key} className="form-layout__content-subgroup">
           <FieldGroup
             disabled={disabled}
             model={model}

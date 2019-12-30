@@ -3,9 +3,11 @@ import './index.scss';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Button, CircularProgress,
-  Paper, Typography,
+  IconButton,
+  Paper, Tooltip, Typography,
 } from '@material-ui/core';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useRef,
@@ -18,7 +20,7 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { SecurityContext } from '@/components/SecurityContext';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
 import { GeneralRecordPropType } from '@/components/types';
-import { FORM_VARIANT } from '@/components/util';
+import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
@@ -29,34 +31,6 @@ import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
-const cleanPayload = (payload) => {
-  if (typeof payload !== 'object' || payload === null) {
-    return payload;
-  }
-  const newPayload = {};
-  Object.entries(payload).forEach(([key, value]) => {
-    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
-      if (typeof value === 'object' && value !== null) {
-        if (Array.isArray(value)) {
-          newPayload[key] = value.map((arr) => {
-            if (arr && arr['@rid']) {
-              return arr['@rid'];
-            }
-            return cleanPayload(arr);
-          });
-        } else if (value['@rid']) {
-          newPayload[key] = value['@rid'];
-        } else {
-          newPayload[key] = value;
-        }
-      } else {
-        newPayload[key] = value;
-      }
-    }
-  });
-  return newPayload;
-};
-
 /**
  * Form/View that displays the contents of a single node
  *
@@ -65,6 +39,7 @@ const cleanPayload = (payload) => {
  * @property {string} props.title the title for this form
  * @property {string} props.modelName name of class model to be displayed
  * @property {value} props.value values of individual properties of passed class model
+ * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
 const RecordForm = ({
   value: initialValue,
@@ -74,6 +49,7 @@ const RecordForm = ({
   onSubmit,
   onError,
   variant,
+  navigateToGraph,
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
@@ -253,6 +229,20 @@ const RecordForm = ({
             Add Review
           </Button>
           ))}
+          {variant === FORM_VARIANT.VIEW && (
+            <div className="header-action-buttons__graphview">
+              <Tooltip title="click here for graphview">
+                <IconButton
+                  data-testid="graph-view"
+                  onClick={navigateToGraph}
+                >
+                  <TimelineIcon
+                    color="secondary"
+                  />
+                </IconButton>
+              </Tooltip>
+            </div>
+          )}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <ToggleButtonGroup
             message="Are you sure? You will lose your changes."
@@ -333,6 +323,7 @@ const RecordForm = ({
 
 
 RecordForm.propTypes = {
+  navigateToGraph: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   modelName: PropTypes.string,
   onError: PropTypes.func,

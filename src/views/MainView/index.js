@@ -19,6 +19,7 @@ import {
 
 import AuthenticatedRoute from '@/components/AuthenticatedRoute';
 import { SecurityContext } from '@/components/SecurityContext';
+import schema from '@/services/schema';
 import config from '@/static/config';
 
 import MainAppBar from './components/MainAppBar';
@@ -33,6 +34,7 @@ const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
 const LoginView = lazy(() => import('@/views/LoginView'));
 const NewRecordView = lazy(() => import('@/views/NewRecordView'));
+const NewRecordSelectView = lazy(() => import('@/views/NewRecordSelectView'));
 const PopularSearchView = lazy(() => import('@/views/PopularSearchView'));
 const QueryView = lazy(() => import('@/views/QueryView'));
 const RecordView = lazy(() => import('@/views/RecordView'));
@@ -40,6 +42,10 @@ const RecordView = lazy(() => import('@/views/RecordView'));
 const {
   API_BASE_URL,
 } = config;
+
+const ABSTRACT_CLASSES = Object.values(schema.schema)
+  .filter(m => m.isAbstract && m.name !== 'Variant')
+  .map(m => m.name);
 
 
 /**
@@ -110,6 +116,12 @@ const Main = () => {
                 admin
                 component={NewRecordView}
                 path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
+              />
+              <AuthenticatedRoute
+                component={NewRecordSelectView}
+                path={`/:variant(new)/:modelName(${
+                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map(m => m.toLowerCase())].join('|')
+                })`}
               />
               <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
               <Redirect exact path="/query/advanced" to="/search/v" />

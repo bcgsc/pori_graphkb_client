@@ -85,15 +85,18 @@ describe('RecordForm', () => {
   const snackbarSpy = jest.fn();
 
   describe('view variant', () => {
+    const navSpy = jest.fn();
     let getByText;
     let queryByText;
+    let getByTestId;
 
     beforeEach(() => {
-      ({ getByText, queryByText } = render(
+      ({ getByText, queryByText, getByTestId } = render(
         <SecurityContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
               modelName="User"
+              navigateToGraph={navSpy}
               onError={onErrorSpy}
               onSubmit={onSubmitSpy}
               onTopClick={onTopClickSpy}
@@ -124,6 +127,12 @@ describe('RecordForm', () => {
     test('no submit button', () => {
       expect(queryByText('SUBMIT')).not.toBeInTheDocument();
       expect(queryByText('SUBMIT CHANGES')).not.toBeInTheDocument();
+    });
+
+    test('triggers graphview navigation on graphview icon click', () => {
+      const graphviewBtn = getByTestId('graph-view');
+      fireEvent.click(graphviewBtn);
+      expect(navSpy).toHaveBeenCalledTimes(1);
     });
   });
 

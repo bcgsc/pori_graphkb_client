@@ -17,6 +17,8 @@ import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';
 import ProteinPosition from './ProteinPosition';
 
+const DEFAULT_BASE_VARIANT = 'Position';
+
 /**
  * @param {object} props
  * @param {function} props.onChange change handler
@@ -44,7 +46,8 @@ const PositionForm = ({
   variant: initialVariant,
   ...props
 }) => {
-  const positionVariants = schema.schema[baseVariant].descendantTree(true).map(m => m.name);
+  const positionVariants = schema.schema[baseVariant || DEFAULT_BASE_VARIANT]
+    .descendantTree(true).map(m => m.name);
   const [variant, setVariant] = useState(initialVariant);
 
   let PositionComponent;
@@ -89,13 +92,13 @@ const PositionForm = ({
         value={variant}
       />
       )}
-      {variant && (
+      {(variant || positionVariants.length === 1) && (
       <PositionComponent
         disabled={disabled}
         name={name}
         onChange={onChange}
         value={value}
-        variant={variant}
+        variant={variant || positionVariants[0]}
         {...props}
       />
       )}
@@ -119,7 +122,7 @@ PositionForm.propTypes = {
 };
 
 PositionForm.defaultProps = {
-  baseVariant: 'Position',
+  baseVariant: DEFAULT_BASE_VARIANT,
   clearable: true,
   disabled: false,
   error: false,

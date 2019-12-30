@@ -1,3 +1,5 @@
+import * as qs from 'qs';
+
 const CLASS_MODEL_PROP = '@class';
 
 const FORM_VARIANT = {
@@ -173,6 +175,84 @@ const cleanUndefined = (content) => {
   return newContent;
 };
 
+
+const cleanPayload = (payload) => {
+  if (typeof payload !== 'object' || payload === null) {
+    return payload;
+  }
+  const newPayload = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
+      if (typeof value === 'object' && value !== null) {
+        if (Array.isArray(value)) {
+          newPayload[key] = value.map((arr) => {
+            if (arr && arr['@rid']) {
+              return arr['@rid'];
+            }
+            return cleanPayload(arr);
+          });
+        } else if (value['@rid']) {
+          newPayload[key] = value['@rid'];
+        } else {
+          newPayload[key] = value;
+        }
+      } else {
+        newPayload[key] = value;
+      }
+    }
+  });
+  return newPayload;
+};
+
+/**
+ * Save graph state (nodeRIDS) to URL and jump to graphview with nodeRIDs as initial seed
+ *
+ * @param {Arrayof.<strings>} nodeRIDs an array of node RIDs
+ * @param {object} history history object
+ * @param {function} onErrorCallback callback function to call if error occurs
+ */
+const navigateToGraph = (nodeRIDs, history, onErrorCallback) => {
+  const savedState = {};
+  let encodedState;
+
+  try {
+    const stringifiedState = JSON.stringify(nodeRIDs);
+    const base64encodedState = btoa(stringifiedState);
+    const encodedContent = encodeURIComponent(base64encodedState);
+
+    savedState.nodes = encodedContent;
+    encodedState = qs.stringify(savedState);
+  } catch (err) {
+    onErrorCallback(err);
+  }
+
+  history.push({
+    pathname: '/data/graph',
+    search: `${encodedState}`,
+  });
+};
+
+/**
+ * parses through URL and decodes it to return an array of node RIDs.
+ */
+const getNodeRIDsFromURL = () => {
+  const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
+  const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
+  const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+
+  const decodedContent = decodeURIComponent(nodes);
+  const base64decoded = atob(decodedContent);
+  const decodedNodes = JSON.parse(base64decoded);
+  return decodedNodes;
+};
+
 export {
-  cleanLinkedRecords, cleanUndefined, sortAndGroupFields, CLASS_MODEL_PROP, FORM_VARIANT,
+  cleanLinkedRecords,
+  cleanUndefined,
+  sortAndGroupFields,
+  CLASS_MODEL_PROP,
+  FORM_VARIANT,
+  cleanPayload,
+  navigateToGraph,
+  getNodeRIDsFromURL,
 };

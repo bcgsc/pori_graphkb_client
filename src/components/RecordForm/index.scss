@@ -1,4 +1,5 @@
 @import '../../globals';
+@import '../../theme';
 
 .record-form {
   &__wrapper {
@@ -14,39 +15,6 @@
       // allow 2 columns for large dislays
       max-width: calc(#{$readable-max} * 2 + 40px);
     }
-  }
-
-  &__content,
-  &__content-subgroup,
-  &__content--long {
-    float: left;
-    max-width: 100%;
-    width: 100%;
-  }
-
-  &__content,
-  &__content-subgroup {
-    > .form-field {
-      @media (min-width: #{$breakpoint-med}) {
-        margin-right: 20px;
-        width: calc(50% - 20px);
-      }
-      float: left;
-    }
-  }
-
-  &__content--long {
-    display: block;
-  }
-
-  & &__content-subgroup {
-    @include field-set;
-    margin: 0;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    width: 100%;
   }
 
   &__related-records {
@@ -73,10 +41,11 @@
         float: right;
       }
 
-      button {
-        &:first-child {
-          height: 40px;
-        }
+      &__graphview {
+        border: 1px solid $palette__grey--A100;
+        border-radius: 100px;
+        position: relative;
+        top: -4px;
       }
     }
   }

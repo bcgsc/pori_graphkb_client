@@ -23,6 +23,9 @@ const hashRecordsByRID = (data) => {
 * returns ridMap ex. { "148:34" : "sensitivity"}
 */
 const generateRidMap = async (cache, filters) => {
+  if (!filters) {
+    return {};
+  }
   const totalValues = [];
   // collect values to construct ridMap
   filters.OR.forEach((fg) => {
@@ -59,6 +62,9 @@ const generateRidMap = async (cache, filters) => {
  * @param {object} ridMap maps rid to record name/display name for filter table
  */
 const generateFilterGroups = (query, ridMap) => {
+  if (!query) {
+    return [];
+  }
   const filterGroups = query.OR.map((fg) => {
     const filterGroup = fg.AND;
     const chipGroup = filterGroup.map((filter) => {

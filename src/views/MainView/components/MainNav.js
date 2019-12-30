@@ -24,7 +24,6 @@ import {
 import { SecurityContext } from '@/components/SecurityContext';
 import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
 import logo from '@/static/logo.png';
-import title from '@/static/title.png';
 
 /**
  * @property {object} props
@@ -167,10 +166,8 @@ class MainNav extends React.PureComponent {
         <div className="main-nav-drawer__footer">
           <Divider />
           <ListItem dense>
-            <ListItemIcon>
-              <img alt="" id="bcc-logo" src={logo} />
-            </ListItemIcon>
-            <img alt="" id="bcc-label" src={title} />
+            <img alt="" id="bcc-logo" src={logo} />
+            <Typography className="footer__label" variant="caption">Genome Sciences Centre</Typography>
           </ListItem>
         </div>
       </Drawer>

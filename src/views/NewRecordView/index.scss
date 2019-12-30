@@ -1,0 +1,15 @@
+@import '../../globals';
+
+.new-record-view {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  min-width: $readable-min;
+  width: 100%;
+
+  .form-layout__content--long {
+    > .form-field:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+}

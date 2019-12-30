@@ -11,10 +11,10 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import * as qs from 'qs';
 import React from 'react';
 
 import { HistoryPropType, LocationPropType } from '@/components/types';
+import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -24,7 +24,11 @@ import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
 import GraphComponent from './components/GraphComponent';
-import { hashRecordsByRID } from './util';
+import {
+  getFilterTableProps,
+  getPopularChipsPropsAndSearch,
+  hashRecordsByRID,
+} from './util';
 
 /**
  * Shows the search result filters and an edit button
@@ -69,7 +73,9 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
-    const { cacheBlocks, blockSize, history } = this.props;
+    const {
+      cacheBlocks, blockSize, history, location: { search },
+    } = this.props;
     const cache = api.getNewCache({
       schema,
       cacheBlocks,
@@ -82,9 +88,12 @@ class DataView extends React.Component {
 
     if (URLContainsTable) {
       const {
-        searchType, limit, neighbors, ...filters
-      } = this.parseFilters();
-      this.setState({ cache, filters, searchType });
+        searchType, limit, neighbors, filterGroups, newSearch, ...filters
+      } = await this.parseFilters(cache);
+
+      this.setState({
+        cache, filters, searchType, filterGroups, search: newSearch || search,
+      });
     } else {
       this.setState({ cache });
     }
@@ -99,23 +108,41 @@ class DataView extends React.Component {
   }
 
   /**
-   * Grab filters from search and sets filtergroups if it is advanced search
+   * Grab filters from search which are used to display search chips shown at the
+   * top of the data table. Also updates the search if it is a popular search to
+   * generate a shorter URL.
    */
-  parseFilters() {
+  async parseFilters(cache) {
     const { search } = this.state;
+
 
     try {
       const {
-        queryParams, modelName, searchChipProps, searchChipProps: { searchType },
+        queryParams, modelName, searchProps, searchProps: { searchType }, payload,
       } = api.getQueryFromSearch({ search, schema });
 
-      if (searchType === 'Advanced') {
-        const { filters: filterGroups } = searchChipProps;
-        this.setState({ filterGroups });
-        delete searchChipProps.filters;
+      let chipProps = searchProps;
+      let newSearch = null;
+
+      if (searchType === 'Popular') {
+        const {
+          search: encodedSearch,
+          chipProps: popChipProps,
+        } = await getPopularChipsPropsAndSearch(searchProps, modelName);
+        newSearch = encodedSearch;
+        chipProps = popChipProps;
       }
 
-      return { '@class': modelName, ...queryParams, ...searchChipProps };
+      let filterGroups = [];
+
+      if (searchType === 'Advanced') {
+        const { filters } = payload;
+        filterGroups = await getFilterTableProps(filters, cache);
+      }
+
+      return {
+        '@class': modelName, ...queryParams, ...chipProps, filterGroups, newSearch,
+      };
     } catch (err) {
       return this.handleError(err);
     }
@@ -230,14 +257,9 @@ class DataView extends React.Component {
   @boundMethod
   async loadSavedStateFromURL() {
     const { cache } = this.state;
-    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
-    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
-    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
 
     try {
-      const decodedContent = decodeURIComponent(nodes);
-      const base64decoded = atob(decodedContent);
-      const decodedNodes = JSON.parse(base64decoded);
+      const decodedNodes = getNodeRIDsFromURL();
       const records = await cache.getRecords(decodedNodes);
       const data = hashRecordsByRID(records);
       this.setState({ graphData: data });
@@ -258,25 +280,7 @@ class DataView extends React.Component {
   @boundMethod
   handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history } = this.props;
-
-    const savedState = {};
-    let encodedState;
-
-    try {
-      const stringifiedState = JSON.stringify(nodeRIDs);
-      const base64encodedState = btoa(stringifiedState);
-      const encodedContent = encodeURIComponent(base64encodedState);
-
-      savedState.nodes = encodedContent;
-      encodedState = qs.stringify(savedState);
-    } catch (err) {
-      this.handleError(err);
-    }
-
-    history.push({
-      pathname: '/data/graph',
-      search: `${encodedState}`,
-    });
+    navigateToGraph(nodeRIDs, history, this.handleError);
   }
 
   @boundMethod

@@ -1,8 +1,3 @@
-const merge = require('webpack-merge');
-const webpack = require('webpack');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
-
-
 const path = require('path');
 
 const createBaseConfig = require('./common.js');
@@ -10,35 +5,13 @@ const createBaseConfig = require('./common.js');
 const DIST = path.resolve(__dirname, '../../dist/production');
 
 
-const config = {
-  mode: 'development',
-  plugins: [
-    // Copy values of ENV variables in as strings using these defaults (null = unset)
-    new webpack.EnvironmentPlugin({
-      API_BASE_URL: `http://${process.env.HOSTNAME}:8080/api`,
-      DEBUG: false,
-      DISABLE_AUTH: null,
-      KEYCLOAK_CLIENT_ID: 'GraphKB',
-      KEYCLOAK_REALM: 'GSC',
-      KEYCLOAK_ROLE: 'GraphKB',
-      KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
-      NODE_ENV: 'local',
-      USER: null,
-      PASSWORD: null,
-      npm_package_version: null,
-    }),
-  ],
-  optimization: {
-    minimizer: [
-      new TerserWebpackPlugin({
-        terserOptions: {
-          keep_classnames: true,
-          module: true,
-          sourceMap: true,
-        },
-      }),
-    ],
+module.exports = createBaseConfig({
+  outputPath: DIST,
+  env: {
+    API_BASE_URL: `http://${process.env.HOSTNAME}:8080/api`,
+    KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
+    NODE_ENV: 'local',
   },
-};
-
-module.exports = merge(createBaseConfig(DIST), config);
+  sourceMap: true,
+  mode: 'development',
+});

@@ -1,84 +1,85 @@
-import {
-  Chip, Popover,
-  TableRow,
-} from '@material-ui/core';
-import { Cancel } from '@material-ui/icons';
-import { mount } from 'enzyme';
+import '@testing-library/jest-dom/extend-expect';
+
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
 import DetailChip from '..';
 
 
 describe('DetailChip', () => {
-  const handlePopoverOpen = jest.spyOn(DetailChip.prototype, 'handlePopoverOpen');
-  const handlePopoverClose = jest.spyOn(DetailChip.prototype, 'handlePopoverClose');
-  const onDelete = jest.fn();
+  const onDeleteSpy = jest.fn();
+  const getLinkSpy = jest.fn(() => '/test');
+  let queryFunctions;
 
-  test('popper renders details on click', () => {
-    const wrapper = mount((
-      <DetailChip
-        details={{ a: 1, b: 2 }}
-        label="label"
-        onDelete={onDelete}
-      />
-    ));
-    const chip = wrapper.find(Chip);
-    chip.prop('onClick')({ currentTarget: chip.getDOMNode() });
-    wrapper.update();
-    // check that the popover opened
-    expect(handlePopoverOpen).toHaveBeenCalled();
-    // check that pop over was not closed
-    expect(handlePopoverClose).not.toHaveBeenCalled();
-    // check the the popover content was rendered
-    const popoverRows = wrapper.find(TableRow);
-    expect(popoverRows).toHaveLength(2);
+  beforeEach(() => {
+    queryFunctions = render(
+      <BrowserRouter>
+        <DetailChip
+          details={{ a: 1, b: 2 }}
+          getLink={getLinkSpy}
+          label="label"
+          onDelete={onDeleteSpy}
+        />,
+      </BrowserRouter>,
+    );
   });
 
-  test('closes details popper on subsequent click', () => {
-    const wrapper = mount((
-      <DetailChip
-        details={{ a: 1, b: 2 }}
-        label="label"
-        onDelete={onDelete}
-      />
-    ));
-    const chip = wrapper.find(Chip);
-    chip.prop('onClick')({ currentTarget: chip.getDOMNode() });
-    wrapper.update();
-    // check that the popover opened
-    expect(handlePopoverOpen).toHaveBeenCalled();
-    // click to close the popover
-    wrapper.find(Popover).prop('onClose')();
-    wrapper.update();
-    // check that pop over was not closed
-    expect(handlePopoverClose).toHaveBeenCalled();
-    // check the the popover content was rendered
-    const popoverRows = wrapper.find(TableRow);
-    expect(popoverRows).toHaveLength(0);
+  test('Detail Chip is rendered with correct labels', () => {
+    const { getByText } = queryFunctions;
+    expect(getByText('label')).toBeInTheDocument();
   });
 
-  test('calls onDelete handler on clicking the close icon', () => {
-    const wrapper = mount((
-      <DetailChip
-        details={{ a: 1, b: 2 }}
-        label="label"
-        onDelete={onDelete}
-      />
-    ));
-    wrapper.find(Chip).prop('onDelete')();
-    wrapper.update();
-    expect(onDelete).toHaveBeenCalled();
+  const closedPopoverCheck = (labelArr, queryFn) => {
+    labelArr.forEach((label) => {
+      expect(queryFn(label)).toBe(null); // pop up closed
+    });
+  };
+
+  const openPopoverCheck = (labelArr, queryFn) => {
+    labelArr.forEach((label) => {
+      expect(queryFn(label)).toBeInTheDocument(); // pop up open
+    });
+  };
+
+  test('pop over opens on detail chip click', async () => {
+    const { getByText, queryByText, debug } = queryFunctions;
+
+    const detailLabels = ['a', '1', 'b', '2'];
+    closedPopoverCheck(detailLabels, queryByText);
+    debug();
+
+    const chip = getByText('label');
+    await fireEvent.click(chip);
+    openPopoverCheck(detailLabels, getByText);
   });
 
-  test('does not provide a close icon when onDelete handler is null', () => {
-    const wrapper = mount((
+  test('calls onDelete handler on clicking the close icon', async () => {
+    const { getByText, container } = queryFunctions;
+    const chip = getByText('label');
+    await fireEvent.click(chip);
+
+
+    const cancelIcon = container.querySelector('[class*="MuiChip-deleteIcon"]');
+    await fireEvent.click(cancelIcon);
+    expect(onDeleteSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('renders getLink icon correctly with correct pathname', async () => {
+    const { getByText, container } = queryFunctions;
+    const chip = getByText('label');
+    await fireEvent.click(chip);
+
+    const viewRecordIcon = container.querySelector('[class*="MuiSvgIcon-root"]');
+    expect(viewRecordIcon).toBeInTheDocument();
+  });
+
+  test('doesnt crash if you only pass required props', () => {
+    render(
       <DetailChip
-        details={{ a: 1, b: 2 }}
-        label="label"
-        onDelete={null}
-      />
-    ));
-    expect(wrapper.find(Cancel)).toHaveLength(0);
+        label="Please oh please don't crash"
+      />,
+    );
   });
 
   afterEach(() => {

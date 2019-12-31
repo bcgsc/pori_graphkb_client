@@ -103,15 +103,15 @@ DefaultPopupComponent.defaultProps = {
  * containing some brief details about the record.
  *
  * @param {obejct} props
- * @param {string} props.label - label for the record
- * @param {Object} props.details - record to be displayed in chip.
- * @param {function} props.onDelete - function handler for the user clicking the X on the chip
- * @param {function} props.valueToString - function to call on details values
- * @param {object} props.ChipProps - properties passed to the chip element
- * @param {function} props.getDetails function to retrieve the details from the details object
- * @param {string} props.title the title for the pop-up card (defaults to the chip label)
- * @param {function} props.PopUpComponent function component constructor
- * @param {object} props.PopUpProps props for PopUpComponent so that it mounts correctly
+ * @property {string} props.label - label for the record
+ * @property {Object} props.details - record to be displayed in chip.
+ * @property {function} props.onDelete - function handler for the user clicking the X on the chip
+ * @property {function} props.valueToString - function to call on details values
+ * @property {object} props.ChipProps - properties passed to the chip element
+ * @property {function} props.getDetails function to retrieve the details from the details object
+ * @property {string} props.title the title for the pop-up card (defaults to the chip label)
+ * @property {function} props.PopUpComponent function component constructor
+ * @property {object} props.PopUpProps props for PopUpComponent so that it mounts correctly
  */
 function DetailChip(props) {
   const {

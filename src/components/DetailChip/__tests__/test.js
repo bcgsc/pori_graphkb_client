@@ -25,6 +25,10 @@ describe('DetailChip', () => {
     );
   });
 
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   test('Detail Chip is rendered with correct labels', () => {
     const { getByText } = queryFunctions;
     expect(getByText('label')).toBeInTheDocument();
@@ -43,11 +47,9 @@ describe('DetailChip', () => {
   };
 
   test('pop over opens on detail chip click', async () => {
-    const { getByText, queryByText, debug } = queryFunctions;
-
+    const { getByText, queryByText } = queryFunctions;
     const detailLabels = ['a', '1', 'b', '2'];
     closedPopoverCheck(detailLabels, queryByText);
-    debug();
 
     const chip = getByText('label');
     await fireEvent.click(chip);
@@ -80,9 +82,5 @@ describe('DetailChip', () => {
         label="Please oh please don't crash"
       />,
     );
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
   });
 });

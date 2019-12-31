@@ -44,6 +44,8 @@ function FilterTablePopover(props) {
     </div>
   );
 
+  const title = filterGroups.length ? 'Advanced Search Filter Groups' : 'No Filters Applied';
+
   return (
     <div>
       <Popover
@@ -63,7 +65,7 @@ function FilterTablePopover(props) {
         <Card>
           <CardContent className="filter-table">
             <div className="filter-table__title">
-              <Typography variant="h5"> Advanced Search Filter Groups</Typography>
+              <Typography variant="h5">{title}</Typography>
             </div>
             <div className="filter-table__content">
               {filterGroups.map(renderRow)}

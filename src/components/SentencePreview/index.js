@@ -83,7 +83,10 @@ const SentencePreview = ({ content, highlighted }) => {
     const isStopWord = STOP_WORDS.has(word.toLowerCase());
 
     if (highlightedPositions.includes(wordPosition) && !isStopWord) {
-      const [, leadingPunc, centerWord, trailingPunc] = /^([,),]*)(.*)([,),]*)$/.exec(word);
+      const [, leadingPunc, prefixStripped] = /^([,)(),]*)(.*)$/.exec(word);
+      const [, trailingPunc] = /([,),]*)$/.exec(prefixStripped);
+      const centerWord = prefixStripped.slice(0, prefixStripped.length - trailingPunc.length);
+
       return (
         // if a word changes position within the sentence we re-render the sentence so this is a valid key here
         // eslint-disable-next-line react/no-array-index-key

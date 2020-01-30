@@ -83,8 +83,8 @@ const SentencePreview = ({ content, highlighted }) => {
     const isStopWord = STOP_WORDS.has(word.toLowerCase());
 
     if (highlightedPositions.includes(wordPosition) && !isStopWord) {
-      const [, leadingPunc, prefixStripped] = /^([,)(),]*)(.*)$/.exec(word);
-      const [, trailingPunc] = /([,),]*)$/.exec(prefixStripped);
+      const [, leadingPunc, prefixStripped] = /^([,)(]*)(.*)$/.exec(word);
+      const [, trailingPunc] = /([,)(]*)$/.exec(prefixStripped);
       const centerWord = prefixStripped.slice(0, prefixStripped.length - trailingPunc.length);
 
       return (

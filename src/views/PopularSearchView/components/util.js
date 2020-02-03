@@ -239,7 +239,7 @@ const SEARCH_OPTS = {
               subject: ['drug RIDs'], operator: 'IN',
             },
             {
-              evidenceLevel: ['evidence level RIDs'],
+              evidenceLevel: ['evidence level RIDs'], operator: 'CONTAINSANY',
             },
           ],
         },

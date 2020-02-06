@@ -278,12 +278,15 @@ const FormField = ({
 
 FormField.propTypes = {
   model: PropTypes.shape({
-    choices: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string,
-      label: PropTypes.string,
-      value: PropTypes.string,
-      caption: PropTypes.string,
-    })),
+    choices: PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.shape({
+        key: PropTypes.string,
+        label: PropTypes.string,
+        value: PropTypes.string,
+        caption: PropTypes.string,
+      }),
+      PropTypes.string,
+    ])),
     default: PropTypes.string,
     description: PropTypes.string,
     example: PropTypes.string,

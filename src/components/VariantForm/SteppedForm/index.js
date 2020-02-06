@@ -112,7 +112,7 @@ const SteppedForm = ({
           )}
           <ActionButton
             className="stepped-form__actions--primary"
-            disabled={formHasErrors || isIncomplete || !formIsDirty}
+            disabled={formHasErrors || isIncomplete || (formVariant === FORM_VARIANT.EDIT && !formIsDirty)}
             onClick={handleSubmit}
             requireConfirm={false}
           >

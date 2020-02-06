@@ -104,11 +104,15 @@ const VariantForm = ({
   }
   const [coordinateType, setCoordinateType] = useState(defaultCoordinateType || 'GenomicPosition');
 
-  const [inputType, setInputType] = useState(pickInputType(value));
+  const [inputType, setInputType] = useState(
+    formVariant === FORM_VARIANT.NEW
+      ? MAJOR_FORM_TYPES.SUB
+      : pickInputType(value),
+  );
   const snackbar = useContext(SnackbarContext);
   const controllers = useRef([]);
 
-  const hasPositions = inputType === MAJOR_FORM_TYPES.OTHER || inputType === MAJOR_FORM_TYPES.TRANS;
+  const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
   const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS;
 

@@ -177,7 +177,7 @@ const FormField = ({
         label={label || name}
         name={name}
         onChange={updateFieldEvent}
-        options={['', ...choices]}
+        options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices]}
         required={mandatory}
         value={value || ''}
       />

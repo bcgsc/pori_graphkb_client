@@ -23,10 +23,18 @@ import { GeneralRecordPropType } from '@/components/types';
 
 const DefaultOptionComponent = (option, disabled) => (
   <MenuItem
-    key={option.key || option}
+    key={
+        option.key === undefined
+          ? option
+          : option.key
+      }
     className="option-select__option"
     component="li"
-    value={option.value || option}
+    value={
+        option.value === undefined
+          ? option
+          : option.value
+      }
   >
     <ListItemText
       classes={{
@@ -34,7 +42,11 @@ const DefaultOptionComponent = (option, disabled) => (
         multiline: option.caption ? 'margin-reset' : '',
         root: option.caption ? 'margin-reset' : '',
       }}
-      primary={option.label || option || 'None'}
+      primary={
+          option.label === undefined
+            ? option || 'None'
+            : option.label
+        }
       secondary={option.caption || ''}
       secondaryTypographyProps={{ className: 'option-select__option-description' }}
     />
@@ -66,6 +78,7 @@ function DropDownSelect(props) {
   } = props;
 
   const optionsDisplay = options.map(option => children(option, disabled));
+
   let InputComponent = Input;
 
   if (variant === 'outlined') {

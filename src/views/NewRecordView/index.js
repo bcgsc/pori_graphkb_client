@@ -8,10 +8,9 @@ import React, {
 
 import RecordForm from '@/components/RecordForm';
 import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
+import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
 import handleErrorSaveLocation from '@/services/util';
-
-import NewVariant from './components/NewVariant';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 

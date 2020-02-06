@@ -1,3 +1,5 @@
+import './index.scss';
+
 import {
   CircularProgress,
 } from '@material-ui/core';
@@ -153,13 +155,15 @@ const RecordView = (props) => {
     && variant === FORM_VARIANT.EDIT
   ) {
     return (
-      <VariantForm
-        formVariant={variant}
-        navigateToGraph={navigateToGraphView}
-        onError={handleError}
-        onSubmit={handleSubmit}
-        value={recordContent}
-      />
+      <div className="edit-variant-view">
+        <VariantForm
+          formVariant={variant}
+          navigateToGraph={navigateToGraphView}
+          onError={handleError}
+          onSubmit={handleSubmit}
+          value={recordContent}
+        />
+      </div>
     );
   }
   return (

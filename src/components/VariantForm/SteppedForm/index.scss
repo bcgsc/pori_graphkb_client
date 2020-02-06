@@ -8,10 +8,14 @@
     margin-right: $closed-drawer-width;
   }
 
-  &__action {
-    margin-left: auto;
-    margin-right: $default-spacing;
-    width: fit-content;
+  &__actions {
+    display: flex;
+
+    &--primary {
+      margin-left: auto;
+      margin-right: $default-spacing;
+      width: fit-content;
+    }
   }
 
   &__step-label {

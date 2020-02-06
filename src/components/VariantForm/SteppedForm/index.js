@@ -37,7 +37,7 @@ const SteppedForm = ({
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
   const form = useSchemaForm(properties, { '@class': modelName, ...value }, { variant: formVariant });
   const {
-    formContent, formErrors, formHasErrors,
+    formContent, formErrors, formHasErrors, formIsDirty,
   } = form;
 
   useEffect(() => () => controllers.current.forEach(c => c.abort()), []);
@@ -112,7 +112,7 @@ const SteppedForm = ({
           )}
           <ActionButton
             className="stepped-form__actions--primary"
-            disabled={formHasErrors || isIncomplete}
+            disabled={formHasErrors || isIncomplete || !formIsDirty}
             onClick={handleSubmit}
             requireConfirm={false}
           >

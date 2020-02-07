@@ -21,25 +21,39 @@ import React from 'react';
 import { GeneralRecordPropType } from '@/components/types';
 
 
-const DefaultOptionComponent = (option, disabled) => (
-  <MenuItem
-    key={option.key || option}
-    className="option-select__option"
-    component="li"
-    value={option.value || option}
-  >
-    <ListItemText
-      classes={{
-        primary: disabled ? 'disabled-text' : '',
-        multiline: option.caption ? 'margin-reset' : '',
-        root: option.caption ? 'margin-reset' : '',
-      }}
-      primary={option.label || option || 'None'}
-      secondary={option.caption || ''}
-      secondaryTypographyProps={{ className: 'option-select__option-description' }}
-    />
-  </MenuItem>
-);
+const DefaultOptionComponent = (option, disabled) => {
+  const key = option.key === undefined
+    ? option
+    : option.key;
+
+  const value = option.value === undefined
+    ? option
+    : option.value;
+
+  const label = option.label === undefined
+    ? option || 'None'
+    : option.label;
+
+  return (
+    <MenuItem
+      key={key}
+      className="option-select__option"
+      component="li"
+      value={value}
+    >
+      <ListItemText
+        classes={{
+          primary: disabled ? 'disabled-text' : '',
+          multiline: option.caption ? 'margin-reset' : '',
+          root: option.caption ? 'margin-reset' : '',
+        }}
+        primary={label}
+        secondary={option.caption || ''}
+        secondaryTypographyProps={{ className: 'option-select__option-description' }}
+      />
+    </MenuItem>
+  );
+};
 
 /**
  * Component to select options from a list of defined options.
@@ -66,6 +80,7 @@ function DropDownSelect(props) {
   } = props;
 
   const optionsDisplay = options.map(option => children(option, disabled));
+
   let InputComponent = Input;
 
   if (variant === 'outlined') {

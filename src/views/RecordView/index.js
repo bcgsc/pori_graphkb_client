@@ -51,7 +51,7 @@ const RecordView = (props) => {
   const context = useContext(SecurityContext);
 
   const [recordContent, setRecordContent] = useState({});
-  const [modelName, setModelName] = useState('');
+  const [modelName, setModelName] = useState(modelNameParam || '');
 
   useEffect(() => {
     if (path) {

@@ -1,3 +1,5 @@
+import './index.scss';
+
 import {
   CircularProgress,
 } from '@material-ui/core';
@@ -13,6 +15,7 @@ import RecordForm from '@/components/RecordForm';
 import { SecurityContext } from '@/components/SecurityContext';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
+import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
@@ -141,26 +144,44 @@ const RecordView = (props) => {
   const navigateToGraphView = useCallback(() => {
     navigateToGraph([recordContent['@rid']], history, handleError);
   }, [handleError, history, recordContent]);
-  return (
-    modelName
-      ? (
-        <RecordForm
-          modelName={modelName}
+
+  if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
+    // wait for the model to be set for new Records
+    // wait for the content to load for existing records
+    return (<CircularProgress />);
+  }
+  if (
+    ['positionalvariant', 'categoryvariant', 'variant'].includes(modelName.toLowerCase())
+    && variant === FORM_VARIANT.EDIT
+  ) {
+    return (
+      <div className="edit-variant-view">
+        <VariantForm
+          formVariant={variant}
           navigateToGraph={navigateToGraphView}
           onError={handleError}
           onSubmit={handleSubmit}
-          onTopClick={
-            hasWriteAccess(context)
-              ? onTopClick
-              : null
-          }
-          rid={rid}
-          title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
           value={recordContent}
-          variant={variant}
         />
-      )
-      : (<CircularProgress />)
+      </div>
+    );
+  }
+  return (
+    <RecordForm
+      modelName={modelName}
+      navigateToGraph={navigateToGraphView}
+      onError={handleError}
+      onSubmit={handleSubmit}
+      onTopClick={
+          hasWriteAccess(context)
+            ? onTopClick
+            : null
+        }
+      rid={rid}
+      title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+      value={recordContent}
+      variant={variant}
+    />
   );
 };
 

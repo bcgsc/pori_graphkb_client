@@ -8,6 +8,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import { Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { AgGridReact } from 'ag-grid-react';
+import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 import React, {
   useContext, useEffect, useRef, useState,
@@ -117,7 +118,7 @@ const ActivityView = () => {
           headerName: 'created at',
           field: 'createdAt',
           sortable: true,
-          valueGetter: ({ data: record }) => new Date(record.createdAt),
+          valueFormatter: ({ value }) => `${formatDistanceToNow(value)} ago`,
         },
         {
           headerName: 'name',

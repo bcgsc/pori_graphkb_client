@@ -1,0 +1,22 @@
+@import '../../globals';
+
+$title-bar-height: 36px;
+
+.activity-view {
+  height: calc(100% - #{$default-spacing});
+  margin-top: $default-spacing;
+
+  &__title {
+    height: $title-bar-height;
+    margin-left: $default-spacing;
+  }
+
+  &__table {
+    height: calc(100% - #{$title-bar-height});
+  }
+
+  &__jump-to-record {
+    align-items: center;
+    display: flex;
+  }
+}

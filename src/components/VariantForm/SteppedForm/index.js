@@ -29,15 +29,15 @@ import { FORM_VARIANT } from '@/components/util';
  * @param {function} onSubmit handler to call on form submission
  */
 const SteppedForm = ({
-  children, modelName, properties, onSubmit, className,
+  children, modelName, properties, onSubmit, className, value, formVariant, onDelete,
 }) => {
   const snackbar = useContext(SnackbarContext);
   const [activeStep, setActiveStep] = useState(0);
   const controllers = useRef([]);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
-  const form = useSchemaForm(properties, { '@class': modelName }, { variant: FORM_VARIANT.NEW });
+  const form = useSchemaForm(properties, { '@class': modelName, ...value }, { variant: formVariant });
   const {
-    formContent, formErrors, formHasErrors,
+    formContent, formErrors, formHasErrors, formIsDirty,
   } = form;
 
   useEffect(() => () => controllers.current.forEach(c => c.abort()), []);
@@ -98,14 +98,31 @@ const SteppedForm = ({
             </Step>
           );
         })}
-        <ActionButton
-          className="stepped-form__action"
-          disabled={formHasErrors || isIncomplete}
-          onClick={handleSubmit}
-          requireConfirm={false}
-        >
-          SUBMIT
-        </ActionButton>
+        <div className="stepped-form__actions">
+          {formVariant === FORM_VARIANT.EDIT && (
+          <ActionButton
+            className="stepped-form__actions--secondary"
+            disabled={formHasErrors || isIncomplete}
+            onClick={onDelete}
+            requireConfirm
+            variant="outlined"
+          >
+            DELETE
+          </ActionButton>
+          )}
+          <ActionButton
+            className="stepped-form__actions--primary"
+            disabled={formHasErrors || isIncomplete || (formVariant === FORM_VARIANT.EDIT && !formIsDirty)}
+            onClick={handleSubmit}
+            requireConfirm={false}
+          >
+            {
+            formVariant === FORM_VARIANT.NEW
+              ? 'SUBMIT'
+              : 'SUBMIT CHANGES'
+          }
+          </ActionButton>
+        </div>
       </Stepper>
     </FormContext.Provider>
   );
@@ -115,13 +132,18 @@ const SteppedForm = ({
 SteppedForm.propTypes = {
   children: PropTypes.node.isRequired,
   modelName: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   properties: PropTypes.object.isRequired,
   className: PropTypes.string,
+  formVariant: PropTypes.string,
+  value: PropTypes.object,
 };
 
 SteppedForm.defaultProps = {
   className: '',
+  value: {},
+  formVariant: FORM_VARIANT.NEW,
 };
 
 export default SteppedForm;

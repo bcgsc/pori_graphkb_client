@@ -60,6 +60,33 @@ const coordinateOptions = Position.descendantTree(true).map(m => ({
   label: m.name, value: m.name, key: m.name, caption: m.description,
 }));
 
+
+const MAJOR_FORM_TYPES = {
+  SUB: 'Substitution',
+  INDEL: 'Indel',
+  TRANS_WITH_POS: 'Multi-Reference (ex. Translocation)',
+  TRANS: 'Multi-Reference (ex. Translocation) without Position Information',
+  OTHER_WITH_POS: 'Other Variant',
+  OTHER: 'Other Variant without Position Information',
+};
+
+
+const pickInputType = (record) => {
+  if (record['@class'] === 'PositionalVariant') {
+    if (record.reference2) {
+      return MAJOR_FORM_TYPES.TRANS_WITH_POS;
+    } if (record.type && record.type.name) {
+      if (record.type.name === 'substitution') {
+        return MAJOR_FORM_TYPES.SUB;
+      }
+    }
+    return MAJOR_FORM_TYPES.OTHER_WITH_POS;
+  } if (record.reference2) {
+    return MAJOR_FORM_TYPES.TRANS;
+  }
+  return MAJOR_FORM_TYPES.OTHER;
+};
+
 /**
  * Input form for new Variants
  *
@@ -67,34 +94,68 @@ const coordinateOptions = Position.descendantTree(true).map(m => ({
  * @param {function} props.onSubmit the handler to be called when the form is submitted
  * @param {function} props.onError the handler to be called when the submission throws an error
  */
-const NewPositionalVariantForm = ({
-  onSubmit, onError,
+const VariantForm = ({
+  onSubmit, onError, value, formVariant,
 }) => {
-  const [coordinateType, setCoordinateType] = useState('GenomicPosition');
-  const [inputType, setInputType] = useState('Substitution');
+  let defaultCoordinateType;
+
+  if (value.break1Start) {
+    defaultCoordinateType = value.break1Start['@class'];
+  }
+  const [coordinateType, setCoordinateType] = useState(defaultCoordinateType || 'GenomicPosition');
+
+  const [inputType, setInputType] = useState(
+    formVariant === FORM_VARIANT.NEW
+      ? MAJOR_FORM_TYPES.SUB
+      : pickInputType(value),
+  );
   const snackbar = useContext(SnackbarContext);
   const controllers = useRef([]);
 
-  const hasPositions = !inputType.endsWith('without Position Information');
-  const isSubstitution = inputType === 'Substitution';
-  const isFusion = inputType.includes('Translocation');
+  const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
+  const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
+  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS;
 
   /**
-   * Handler for submission of a new record
+   * Handler for submission of a new (or updates to an existing) record
    */
-  const handleNewAction = useCallback(async (content) => {
+  const handleSubmitAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
     const { routeName } = schema.get(payload);
-    const call = api.post(routeName, payload);
+    const call = formVariant === FORM_VARIANT.NEW
+      ? api.post(routeName, payload)
+      : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+    controllers.current.push(call);
+
+    const actionType = formVariant === FORM_VARIANT.NEW
+      ? 'created'
+      : 'edited';
+
+    try {
+      const result = await call.request();
+      snackbar.add(`Sucessfully ${actionType} the record ${result['@rid']}`);
+      onSubmit(result);
+    } catch (err) {
+      console.error(err);
+      snackbar.add(`Error (${err.name}) in ${actionType.replace(/ed$/, 'ing')} the record`);
+      onError({ error: err, content });
+    }
+  }, [formVariant, onError, onSubmit, snackbar]);
+
+
+  const handleDeleteAction = useCallback(async (content) => {
+    const payload = cleanPayload(content);
+    const { routeName } = schema.get(payload);
+    const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     controllers.current.push(call);
 
     try {
       const result = await call.request();
-      snackbar.add(`Sucessfully created the record ${result['@rid']}`);
+      snackbar.add(`Sucessfully deleted the record ${result['@rid']}`);
       onSubmit(result);
     } catch (err) {
       console.error(err);
-      snackbar.add(`Error (${err.name}) in creating the record`);
+      snackbar.add(`Error (${err.name}) in deleting the record`);
       onError({ error: err, content });
     }
   }, [onError, onSubmit, snackbar]);
@@ -124,9 +185,12 @@ const NewPositionalVariantForm = ({
   return (
     <SteppedForm
       className="new-variant"
+      formVariant={formVariant}
       modelName={model.name}
-      onSubmit={handleNewAction}
+      onDelete={handleDeleteAction}
+      onSubmit={handleSubmitAction}
       properties={model.properties}
+      value={value}
     >
       <FormStepWrapper
         caption="Changes to the initial selection here will affect downstream portions of the form"
@@ -134,14 +198,7 @@ const NewPositionalVariantForm = ({
       >
         <RadioSelect
           onChange={({ target: { value: newValue } }) => setInputType(newValue)}
-          options={[
-            'Substitution',
-            'Indel',
-            'Multi-Reference (ex. Translocation)',
-            'Multi-Reference (ex. Translocation) without Position Information',
-            'Other Variant',
-            'Other Variant without Position Information',
-          ]}
+          options={Object.values(MAJOR_FORM_TYPES)}
           value={inputType}
         />
       </FormStepWrapper>
@@ -241,9 +298,16 @@ const NewPositionalVariantForm = ({
 };
 
 
-NewPositionalVariantForm.propTypes = {
+VariantForm.propTypes = {
   onError: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  formVariant: PropTypes.string,
+  value: PropTypes.object,
 };
 
-export default NewPositionalVariantForm;
+VariantForm.defaultProps = {
+  value: {},
+  formVariant: FORM_VARIANT.NEW,
+};
+
+export default VariantForm;

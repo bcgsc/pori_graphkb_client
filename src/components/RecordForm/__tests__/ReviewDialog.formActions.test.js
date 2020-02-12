@@ -37,7 +37,7 @@ jest.mock('../../DropDownSelect', () => ({
     <select data-testid="select" onChange={handleChange} value={value}>
       {options.map(opt => (
         <option key={opt} value={opt}>
-          {opt}
+          {opt.label || opt}
         </option>
       ))}
     </select>

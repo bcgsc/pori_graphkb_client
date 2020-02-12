@@ -19,9 +19,8 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 /**
@@ -99,14 +98,11 @@ DefaultPopupComponent.defaultProps = {
   title: null,
 };
 
-
-const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => (k ? `${v}` : v));
-
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
  *
- * @property {obejct} props
+ * @param {obejct} props
  * @property {string} props.label - label for the record
  * @property {Object} props.details - record to be displayed in chip.
  * @property {function} props.onDelete - function handler for the user clicking the X on the chip
@@ -117,121 +113,97 @@ const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => (k ? `${v}` : v));
  * @property {function} props.PopUpComponent function component constructor
  * @property {object} props.PopUpProps props for PopUpComponent so that it mounts correctly
  */
-class DetailChip extends React.Component {
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    ChipProps: PropTypes.object,
-    PopUpComponent: PropTypes.func,
-    PopUpProps: PropTypes.object,
-    className: PropTypes.string,
-    details: PropTypes.object,
-    getDetails: PropTypes.func,
-    getLink: PropTypes.func,
-    onDelete: PropTypes.func,
-    title: PropTypes.string,
-    valueToString: PropTypes.func,
-  };
+function DetailChip(props) {
+  const {
+    details,
+    onDelete,
+    className,
+    getDetails,
+    label,
+    valueToString,
+    ChipProps,
+    getLink,
+    title,
+    PopUpComponent,
+    PopUpProps,
+    ...rest
+  } = props;
 
-  static defaultProps = {
-    ChipProps: {
-      avatar: (<Avatar><AssignmentOutlinedIcon /></Avatar>),
-      variant: 'outlined',
-      color: 'primary',
-    },
-    PopUpComponent: DefaultPopupComponent,
-    PopUpProps: null,
-    className: '',
-    details: {},
-    getDetails: d => d,
-    onDelete: null,
-    valueToString: s => `${s}`,
-    getLink: null,
-    title: null,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorEl: null,
-    };
-  }
-
-  /**
-   * Only update if the contents change or the anchor was added/deleted
-   * Do not update if the anchor changes (causes infinite render loop)
-   */
-  shouldComponentUpdate(nextProps, nextState) {
-    const { label, details, onDelete } = this.props;
-    const { anchorEl } = this.state;
-    return (
-      label !== nextProps.label
-      || shallowObjectKey(details) !== shallowObjectKey(nextProps.details)
-      || Boolean(anchorEl) !== Boolean(nextState.anchorEl)
-      || Boolean(onDelete) !== Boolean(nextProps.onDelete)
-    );
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
 
   /**
    * Closes popover.
    */
-  @boundMethod
-  handlePopoverClose() {
-    this.setState({ anchorEl: null });
-  }
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Opens popover.
    * @param {Event} event - User click event.
    */
-  @boundMethod
-  handlePopoverOpen(event) {
-    this.setState({ anchorEl: event.currentTarget });
-  }
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  render() {
-    const {
-      details,
-      onDelete,
-      className,
-      getDetails,
-      label,
-      valueToString,
-      ChipProps,
-      getLink,
-      title,
-      PopUpComponent,
-      PopUpProps,
-      ...rest
-    } = this.props;
-    const { anchorEl } = this.state;
 
-    return (
-      <div className="detail-chip" {...rest}>
-        <Popover
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          className="detail-chip__popover detail-popover"
-          onClose={this.handlePopoverClose}
-          open={!!anchorEl}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        >
-          <PopUpComponent {...this.props} {...PopUpProps} />
-        </Popover>
-        <Chip
-          classes={{
-            avatar: 'detail-chip__avatar',
-            outlined: 'detail-chip__outlined',
-          }}
-          className={`detail-chip__root ${className || ''}`}
-          clickable
-          label={label}
-          onClick={this.handlePopoverOpen}
-          onDelete={onDelete}
-          {...ChipProps}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className="detail-chip" {...rest}>
+      <Popover
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        className="detail-chip__popover detail-popover"
+        onClose={handlePopoverClose}
+        open={!!anchorEl}
+        transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <PopUpComponent {...props} {...PopUpProps} />
+      </Popover>
+      <Chip
+        classes={{
+          avatar: 'detail-chip__avatar',
+          outlined: 'detail-chip__outlined',
+        }}
+        className={`detail-chip__root ${className || ''}`}
+        clickable
+        label={label}
+        onClick={handlePopoverOpen}
+        onDelete={onDelete}
+        {...ChipProps}
+      />
+    </div>
+  );
 }
+
+DetailChip.propTypes = {
+  label: PropTypes.string.isRequired,
+  ChipProps: PropTypes.object,
+  PopUpComponent: PropTypes.func,
+  PopUpProps: PropTypes.object,
+  className: PropTypes.string,
+  details: PropTypes.object,
+  getDetails: PropTypes.func,
+  getLink: PropTypes.func,
+  onDelete: PropTypes.func,
+  title: PropTypes.string,
+  valueToString: PropTypes.func,
+};
+
+DetailChip.defaultProps = {
+  ChipProps: {
+    avatar: (<Avatar><AssignmentOutlinedIcon /></Avatar>),
+    variant: 'outlined',
+    color: 'primary',
+  },
+  PopUpComponent: DefaultPopupComponent,
+  PopUpProps: null,
+  className: '',
+  details: {},
+  getDetails: d => d,
+  onDelete: null,
+  valueToString: s => `${s}`,
+  getLink: null,
+  title: null,
+};
 
 export default DetailChip;

@@ -26,6 +26,7 @@ import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
 
 const AboutView = lazy(() => import('@/views/AboutView'));
+const ActivityView = lazy(() => import('@/views/ActivityView'));
 const AdminView = lazy(() => import('@/views/AdminView'));
 const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
 const DataView = lazy(() => import('@/views/DataView'));
@@ -102,6 +103,7 @@ const Main = () => {
               <Route component={LoginView} path="/login" />
               <Route component={ErrorView} exact path="/error" />
               <AuthenticatedRoute component={AboutView} path="/about" />
+              <AuthenticatedRoute component={ActivityView} path="/activity" />
               <AuthenticatedRoute component={QueryView} exact path="/query" />
               <AuthenticatedRoute component={PopularSearchView} path="/query-popular" />
               <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />

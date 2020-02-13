@@ -12,7 +12,6 @@ import React, {
   useState,
 } from 'react';
 
-import FormField from '@/components/FormField';
 import RadioSelect from '@/components/RadioSelect';
 import FieldGroup from '@/components/RecordForm/FormLayout/FieldGroup';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
@@ -38,6 +37,7 @@ const leftoverPositionalProps = omit(
     'refSeq',
     'untemplatedSeq',
     'untemplatedSeqSize',
+    'zygosity',
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
@@ -50,6 +50,7 @@ const leftoverCategoryProps = omit(
     'reference1',
     'reference2',
     'type',
+    'zygosity',
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
@@ -261,10 +262,16 @@ const VariantForm = ({
           </List>
         </FormStepWrapper>
       )}
-      <FormStepWrapper fields={['type']} label="Select the Variant Type">
-        <FormField
-          label="type"
-          model={PositionalVariant.properties.type}
+      <FormStepWrapper fields={['type', 'zygosity']} label="Select the Variant Type">
+        <FieldGroup
+          disabled={false}
+          model={{
+            properties: {
+              type: PositionalVariant.properties.type,
+              zygosity: PositionalVariant.properties.zygosity,
+            },
+          }}
+          ordering={['type', 'zygosity']}
         />
       </FormStepWrapper>
       <FormStepWrapper

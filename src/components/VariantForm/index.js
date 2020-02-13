@@ -12,7 +12,6 @@ import React, {
   useState,
 } from 'react';
 
-import FormField from '@/components/FormField';
 import RadioSelect from '@/components/RadioSelect';
 import FieldGroup from '@/components/RecordForm/FormLayout/FieldGroup';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
@@ -38,6 +37,7 @@ const leftoverPositionalProps = omit(
     'refSeq',
     'untemplatedSeq',
     'untemplatedSeqSize',
+    'zygosity',
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
@@ -50,6 +50,7 @@ const leftoverCategoryProps = omit(
     'reference1',
     'reference2',
     'type',
+    'zygosity',
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
@@ -114,7 +115,7 @@ const VariantForm = ({
 
   const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
-  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS;
+  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS;
 
   /**
    * Handler for submission of a new (or updates to an existing) record
@@ -213,7 +214,7 @@ const VariantForm = ({
       )}
       <FormStepWrapper
         fields={['break1Start', 'reference1', 'break1End']}
-        label="Input the First Breakpoint"
+        label={`Input the ${(isFusion || (hasPositions && !isSubstitution)) ? 'First ' : ''}${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
       >
         <BreakpointForm
           coordinateType={coordinateType}
@@ -225,7 +226,7 @@ const VariantForm = ({
       {(!isSubstitution && (hasPositions || isFusion)) && (
         <FormStepWrapper
           fields={['break2Start', 'reference2', 'break2End']}
-          label="Input the Second Breakpoint"
+          label={`Input the Second ${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
         >
           <BreakpointForm
             coordinateType={coordinateType}
@@ -261,10 +262,16 @@ const VariantForm = ({
           </List>
         </FormStepWrapper>
       )}
-      <FormStepWrapper fields={['type']} label="Select the Variant Type">
-        <FormField
-          label="type"
-          model={PositionalVariant.properties.type}
+      <FormStepWrapper fields={['type', 'zygosity']} label="Select the Variant Type">
+        <FieldGroup
+          disabled={false}
+          model={{
+            properties: {
+              type: PositionalVariant.properties.type,
+              zygosity: PositionalVariant.properties.zygosity,
+            },
+          }}
+          ordering={['type', 'zygosity']}
         />
       </FormStepWrapper>
       <FormStepWrapper

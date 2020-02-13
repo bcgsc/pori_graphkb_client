@@ -115,7 +115,7 @@ const VariantForm = ({
 
   const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
-  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS;
+  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS;
 
   /**
    * Handler for submission of a new (or updates to an existing) record
@@ -214,7 +214,7 @@ const VariantForm = ({
       )}
       <FormStepWrapper
         fields={['break1Start', 'reference1', 'break1End']}
-        label="Input the First Breakpoint"
+        label={`Input the ${(isFusion || (hasPositions && !isSubstitution)) ? 'First ' : ''}${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
       >
         <BreakpointForm
           coordinateType={coordinateType}
@@ -226,7 +226,7 @@ const VariantForm = ({
       {(!isSubstitution && (hasPositions || isFusion)) && (
         <FormStepWrapper
           fields={['break2Start', 'reference2', 'break2End']}
-          label="Input the Second Breakpoint"
+          label={`Input the Second ${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
         >
           <BreakpointForm
             coordinateType={coordinateType}

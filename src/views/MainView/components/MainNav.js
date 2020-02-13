@@ -14,6 +14,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import InputIcon from '@material-ui/icons/Input';
 import SearchIcon from '@material-ui/icons/Search';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -161,6 +162,7 @@ class MainNav extends React.PureComponent {
               <MenuLink inset label="PubMed" route="/import/pubmed" />
             </>
           )}
+          <MenuLink icon={<TrendingUpIcon />} label="Activity" route="/activity" />
           <MenuLink icon={<HelpOutlineIcon />} label="About" route="/about" />
         </List>
         <div className="main-nav-drawer__footer">

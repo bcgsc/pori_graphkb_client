@@ -110,12 +110,12 @@ const ActivityView = () => {
           sortable: true,
         },
         {
-          headerName: 'created by',
+          headerName: 'last updated by',
           valueGetter: ({ data: record }) => record.createdBy.name,
           sortable: true,
         },
         {
-          headerName: 'created at',
+          headerName: 'last updated at',
           field: 'createdAt',
           sortable: true,
           valueFormatter: ({ value }) => `${formatDistanceToNow(value)} ago`,

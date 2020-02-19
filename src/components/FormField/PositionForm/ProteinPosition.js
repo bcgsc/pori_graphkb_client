@@ -12,8 +12,7 @@ import FieldWrapper from '../FieldWrapper';
 
 const {
   schema: {
-    ProteinPosition: { properties: { pos: posProperty, refAA: refAAProperty } },
-    name: VARIANT,
+    ProteinPosition: { properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT },
   },
 } = schema;
 

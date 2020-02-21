@@ -6,21 +6,72 @@ import schema from '@/services/schema';
 
 const MAX_RESULT_COUNT = 300;
 
-/**
- * Given vocabulary term, returns rid of term if it exists
- */
-const vocabularyRIDGenerator = async (vocabName) => {
-  const search = {
-    target: 'Vocabulary',
-    filters: { name: vocabName },
-    returnProperties: ['@rid'],
-  };
-  const call = api.post('/query', search);
-  const record = await call.request();
-  const [vocab] = record;
-  const { '@rid': rid } = vocab;
-  return rid;
+const resistanceSubquery = {
+  queryType: 'ancestors',
+  target: 'Vocabulary',
+  filters: { name: 'no response' },
 };
+
+const sensitivitySubquery = {
+  queryType: 'ancestors',
+  target: 'Vocabulary',
+  filters: { name: 'targetable' },
+};
+
+const highEvidenceLevelSubquery = {
+  target: 'EvidenceLevel',
+  filters: {
+    OR: [
+      {
+        AND: [
+          {
+            name: ['1', 'r1'],
+          },
+          {
+            source: {
+              target: 'Source',
+              filters: { name: 'oncokb' },
+            },
+          },
+        ],
+      },
+      {
+        AND: [
+          {
+            name: ['a4', 'a5'], operator: 'IN',
+          },
+          {
+            source: {
+              target: 'Source',
+              filters: { name: 'civic' },
+            },
+          },
+        ],
+      },
+      {
+        AND: [
+          {
+            name: ['fda guidelines', 'nccn guidelines', 'nccn/cap guidelines'], operator: 'IN',
+          },
+          {
+            source: {
+              target: 'Source',
+              filters: { name: 'cancer genome interpreter' },
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
+
+const diagnosticSubquery = {
+  queryType: 'ancestors',
+  target: 'Vocabulary',
+  filters: { name: 'diagnostic indicator' },
+};
+
+
 /**
  * returns a keyword search object with rid set for return properties
  */
@@ -115,7 +166,7 @@ const SEARCH_OPTS = {
               subject: ['drug therapy rids'], operator: 'IN',
             },
             {
-              relevance: 'relevance rid', operator: '=',
+              relevance: sensitivitySubquery, operator: 'IN',
             },
           ],
         },
@@ -126,11 +177,8 @@ const SEARCH_OPTS = {
         drugChip: 'all variants associated with therapeutic sensitivity',
       },
       set drug(drug) { this.searchChipProps.drug = drug; },
-      set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       get subjectClause() { return this.search.filters.AND[0]; },
       async buildSearch(keyword) {
-        this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
-
         const search = keywordSearchGenerator('Therapy', keyword);
         const subjectCondition = this.subjectClause;
         subjectCondition.subject = await setSubQuery(search);
@@ -155,7 +203,7 @@ const SEARCH_OPTS = {
               subject: ['drug therapy rids'], operator: 'IN',
             },
             {
-              relevance: 'resistance RID', operator: '=',
+              relevance: resistanceSubquery, operator: 'IN',
             },
           ],
         },
@@ -166,11 +214,8 @@ const SEARCH_OPTS = {
         drugChip: 'all variants associated with therapeutic resistance',
       },
       set drug(drug) { this.searchChipProps.drug = drug; },
-      set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       get subjectClause() { return this.search.filters.AND[0]; },
       async buildSearch(keyword) {
-        this.relevanceRID = await vocabularyRIDGenerator('resistance');
-
         const search = keywordSearchGenerator('Therapy', keyword);
         const subjectCondition = this.subjectClause;
         subjectCondition.subject = await setSubQuery(search);
@@ -195,7 +240,12 @@ const SEARCH_OPTS = {
               subject: ['RID Arr'], operator: 'IN',
             },
             {
-              relevance: ['RID Arr'], operator: 'IN',
+              relevance: {
+                queryType: 'ancestors',
+                target: 'Vocabulary',
+                filters: { name: 'therapeutic indicator' },
+              },
+              operator: 'IN',
             },
           ],
         },
@@ -206,20 +256,8 @@ const SEARCH_OPTS = {
         drugChip: 'all variants with pharmacogenomic information',
       },
       set drug(drug) { this.searchChipProps.drug = drug; },
-      get relevanceClause() { return this.search.filters.AND[1]; },
       get therapyClause() { return this.search.filters.AND[0]; },
       async buildSearch(keyword) {
-        const relevanceSearch = {
-          queryType: 'similarTo',
-          target: {
-            target: 'Vocabulary',
-            filters: { name: 'pharmacogenomic' },
-          },
-          returnProperties: ['@rid'],
-        };
-        const relevanceCondition = this.relevanceClause;
-        relevanceCondition.relevance = await setSubQuery(relevanceSearch);
-
         const therapySearch = keywordSearchGenerator('Therapy', keyword);
         const therapyCondition = this.therapyClause;
         therapyCondition.subject = await setSubQuery(therapySearch);
@@ -239,7 +277,7 @@ const SEARCH_OPTS = {
               subject: ['drug RIDs'], operator: 'IN',
             },
             {
-              evidenceLevel: ['evidence level RIDs'], operator: 'CONTAINSANY',
+              evidenceLevel: highEvidenceLevelSubquery, operator: 'CONTAINSANY',
             },
           ],
         },
@@ -250,59 +288,11 @@ const SEARCH_OPTS = {
         drugChip: 'all high-level evidence statements',
       },
       set drug(drug) { this.searchChipProps.drug = drug; },
-      set evidenceLevelClause(subQuery) { this.search.filters.AND[1].evidenceLevel = subQuery; },
       set therapyClause(subQuery) { this.search.filters.AND[0].subject = subQuery; },
       async buildSearch(keyword) {
         const therapySearch = keywordSearchGenerator('Therapy', keyword);
         this.therapyClause = await setSubQuery(therapySearch);
 
-        const evidenceSearch = {
-          target: 'EvidenceLevel',
-          filters: {
-            OR: [
-              {
-                AND: [
-                  {
-                    name: ['1', 'r1'],
-                  },
-                  {
-                    source: {
-                      target: 'Source',
-                      filters: { name: 'OncoKB' },
-                    },
-                  },
-                ],
-              },
-              {
-                AND: [
-                  {
-                    name: ['a4', 'a5'], operator: 'IN',
-                  },
-                  {
-                    source: {
-                      target: 'Source',
-                      filters: { name: 'CIViC' },
-                    },
-                  },
-                ],
-              },
-              {
-                AND: [
-                  {
-                    name: ['fda guidelines', 'nccn guidelines', 'nccn/cap guidelines'], operator: 'IN',
-                  },
-                  {
-                    source: {
-                      target: 'Source',
-                      filters: { name: 'CGI' },
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        };
-        this.evidenceLevelClause = await setSubQuery(evidenceSearch);
         this.drug = keyword;
       },
     },
@@ -321,7 +311,7 @@ const SEARCH_OPTS = {
               conditions: ['loose match to gene RIDs'], operator: 'CONTAINSANY',
             },
             {
-              relevance: 'sensitivityRID', operator: '=',
+              relevance: sensitivitySubquery, operator: 'IN',
             },
           ],
         },
@@ -332,11 +322,8 @@ const SEARCH_OPTS = {
         diseaseChip: 'all genes associated with therapeutic sensitivity',
       },
       set disease(disease) { this.searchChipProps.disease = disease; },
-      set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       set conditionsClause(search) { this.search.filters.AND[0].conditions = search; },
       async buildSearch(keyword) {
-        this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
-
         const search = keywordSearchGenerator('Disease', keyword);
         this.conditionsClause = await setSubQuery(search);
         this.disease = keyword;
@@ -355,7 +342,7 @@ const SEARCH_OPTS = {
               conditions: [], operator: 'CONTAINSANY',
             },
             {
-              relevance: 'resistance rid', operator: '=',
+              relevance: resistanceSubquery, operator: 'IN',
             },
           ],
         },
@@ -428,7 +415,12 @@ const SEARCH_OPTS = {
               AND: [{ conditions: [], operator: 'CONTAINSANY' }],
             },
             {
-              relevance: [], operator: '=',
+              relevance: {
+                queryType: 'ancestors',
+                target: 'Vocabulary',
+                filters: { name: 'targetable' },
+              },
+              operator: 'IN',
             },
           ],
         },
@@ -439,13 +431,10 @@ const SEARCH_OPTS = {
         disease: 'not specified',
         variantChip: 'all therapies associated with sensitivity for Disease(s)',
       },
-      set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       set variant(variant) { this.searchChipProps.variant = variant; },
       set disease(disease) { this.searchChipProps.disease = disease; },
       get conditionsClauseArr() { return this.search.filters.AND[0].AND; },
       async buildSearch(keyword, additionalInput) {
-        this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
-
         let search;
 
         try {
@@ -486,7 +475,12 @@ const SEARCH_OPTS = {
               AND: [{ conditions: [], operator: 'CONTAINSANY' }],
             },
             {
-              relevance: 'resistance rid', operator: '=',
+              relevance: {
+                queryType: 'ancestors',
+                target: 'Vocabulary',
+                filters: { name: 'no response' },
+              },
+              operator: 'IN',
             },
           ],
         },
@@ -499,11 +493,8 @@ const SEARCH_OPTS = {
       },
       set variant(variant) { this.searchChipProps.variant = variant; },
       set disease(disease) { this.searchChipProps.disease = disease; },
-      set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       get conditionsClauseArr() { return this.search.filters.AND[0].AND; },
       async buildSearch(keyword, additionalInput) {
-        this.relevanceRID = await vocabularyRIDGenerator('resistance');
-
         let search;
 
         try {
@@ -536,9 +527,14 @@ const SEARCH_OPTS = {
       },
       search: {
         target: 'Statement',
-        filters: {
-          conditions: [], operator: 'CONTAINSANY',
-        },
+        filters: [
+          {
+            conditions: [],
+            operator: 'CONTAINSANY',
+
+          },
+          { relevance: diagnosticSubquery, operator: 'IN' },
+        ],
       },
       searchChipProps: {
         searchType: 'Popular',
@@ -546,10 +542,8 @@ const SEARCH_OPTS = {
         variantChip: 'all diseases associated with variant',
       },
       set variant(variant) { this.searchChipProps.variant = variant; },
-      set conditions(search) { this.search.filters.conditions = search; },
+      set conditions(search) { this.search.filters[0].conditions = search; },
       async buildSearch(keyword) {
-        this.relevanceRID = await vocabularyRIDGenerator('resistance');
-
         let search;
 
         try {
@@ -682,7 +676,12 @@ const SEARCH_OPTS = {
               conditions: [], operator: 'CONTAINSANY',
             },
             {
-              relevance: ['relevance RIDs'], operator: 'IN',
+              relevance: {
+                queryType: 'ancestors',
+                target: 'Vocabulary',
+                filters: { name: 'therapeutic efficacy' },
+              },
+              operator: 'IN',
             },
           ],
         },

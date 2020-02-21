@@ -208,6 +208,7 @@ function DetailDrawer(props) {
 
   if (drawerIsOpen) {
     const recordId = node['@rid'].slice(1);
+    const recordClass = node['@class'];
 
     const otherProps = formatOtherProps(node);
     const metadata = formatMetadata(node, true);
@@ -238,7 +239,7 @@ function DetailDrawer(props) {
             )}
           </div>
           {hasWriteAccess(context) && (
-          <Link target="_blank" to={`/edit/${recordId}`}>
+          <Link target="_blank" to={`/edit/${recordClass}/${recordId}`}>
             <IconButton
               variant="outlined"
             >
@@ -246,7 +247,7 @@ function DetailDrawer(props) {
             </IconButton>
           </Link>
           )}
-          <Link target="_blank" to={`/view/${recordId}`}>
+          <Link target="_blank" to={`/view/${recordClass}/${recordId}`}>
             <IconButton
               variant="outlined"
             >

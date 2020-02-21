@@ -38,13 +38,13 @@ describe('NewVariant', () => {
   });
 
   test('changing coordinate type affects position forms in later section', () => {
-    fireEvent.click(getByText('Input the First Breakpoint'));
+    fireEvent.click(getByText('Input the Breakpoint'));
     expect(getByText('position (GenomicPosition)')).toBeInTheDocument();
 
     fireEvent.click(getByText('Pick the Position Coordinate System'));
     fireEvent.click(getByTestId('radio-option__CdsPosition'));
 
-    fireEvent.click(getByText('Input the First Breakpoint'));
+    fireEvent.click(getByText('Input the Breakpoint'));
     expect(getByText('position (CdsPosition)')).toBeInTheDocument();
   });
 });

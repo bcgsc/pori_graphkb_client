@@ -575,20 +575,10 @@ const SEARCH_OPTS = {
       set keyword(keyword) { this.searchChipProps.gene = keyword; },
       async buildSearch(keyword) {
         const geneSearch = {
-          queryType: 'similarTo',
-          target: {
-            target: 'Feature',
-            filters: {
-              AND: [
-                {
-                  biotype: 'gene',
-                },
-                {
-                  name: keyword,
-                },
-              ],
-            },
-          },
+          queryType: 'keyword',
+          target: 'Variant',
+          keyword,
+          operator: '=',
           returnProperties: ['@rid'],
         };
 
@@ -628,20 +618,10 @@ const SEARCH_OPTS = {
       set disease(disease) { this.searchChipProps.disease = disease; },
       async buildSearch(keyword, disease) {
         const geneSearch = {
-          queryType: 'similarTo',
-          target: {
-            target: 'Feature',
-            filters: {
-              AND: [
-                {
-                  biotype: 'gene',
-                },
-                {
-                  name: keyword,
-                },
-              ],
-            },
-          },
+          queryType: 'keyword',
+          target: 'Variant',
+          keyword,
+          operator: '=',
           returnProperties: ['@rid'],
         };
 

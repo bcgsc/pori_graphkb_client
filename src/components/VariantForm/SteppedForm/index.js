@@ -63,6 +63,10 @@ const SteppedForm = ({
     }
   }, [formContent, formErrors, formHasErrors, isIncomplete, onSubmit, snackbar]);
 
+  const handleDelete = useCallback(() => {
+    onDelete(formContent);
+  }, [formContent, onDelete]);
+
   return (
     <FormContext.Provider value={form}>
       <Stepper
@@ -102,8 +106,7 @@ const SteppedForm = ({
           {formVariant === FORM_VARIANT.EDIT && (
           <ActionButton
             className="stepped-form__actions--secondary"
-            disabled={formHasErrors || isIncomplete}
-            onClick={onDelete}
+            onClick={handleDelete}
             requireConfirm
             variant="outlined"
           >

@@ -153,7 +153,7 @@ const VariantForm = ({
     try {
       const result = await call.request();
       snackbar.add(`Sucessfully deleted the record ${result['@rid']}`);
-      onSubmit(result);
+      onSubmit(null);
     } catch (err) {
       console.error(err);
       snackbar.add(`Error (${err.name}) in deleting the record`);

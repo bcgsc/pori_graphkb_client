@@ -299,7 +299,7 @@ const SEARCH_OPTS = {
   ],
   DISEASE: [
     {
-      label: 'Given a disease, find all genes associated with therapeutic sensitivity',
+      label: 'Given a disease, find all statements associated with therapeutic sensitivity',
       requiredInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
@@ -319,7 +319,7 @@ const SEARCH_OPTS = {
       searchChipProps: {
         searchType: 'Popular',
         disease: 'user input',
-        diseaseChip: 'all genes associated with therapeutic sensitivity',
+        diseaseChip: 'all statements associated with therapeutic sensitivity',
       },
       set disease(disease) { this.searchChipProps.disease = disease; },
       set conditionsClause(search) { this.search.filters.AND[0].conditions = search; },
@@ -330,7 +330,7 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a disease, find all genes associated with therapeutic resistance',
+      label: 'Given a disease, find all statements associated with therapeutic resistance',
       requiredInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
@@ -350,21 +350,18 @@ const SEARCH_OPTS = {
       searchChipProps: {
         searchType: 'Popular',
         disease: 'user input',
-        diseaseChip: 'all genes associated with therapeutic resistance',
+        diseaseChip: 'all statements associated with therapeutic resistance',
       },
       set disease(disease) { this.searchChipProps.disease = disease; },
-      set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       set conditionsClause(search) { this.search.filters.AND[0].conditions = search; },
       async buildSearch(keyword) {
-        this.relevanceRID = await vocabularyRIDGenerator('resistance');
-
         const search = keywordSearchGenerator('Disease', keyword);
         this.conditionsClause = await setSubQuery(search);
         this.disease = keyword;
       },
     },
     {
-      label: 'Given a disease, find all variants associated with a relevance',
+      label: 'Given a disease, find all statements associated with a relevance',
       requiredInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
@@ -388,7 +385,7 @@ const SEARCH_OPTS = {
       searchChipProps: {
         searchType: 'Popular',
         disease: 'user input',
-        diseaseChip: 'all variants associated with a relevance',
+        diseaseChip: 'all statements associated with a relevance',
       },
       set disease(disease) { this.searchChipProps.disease = disease; },
       set searchInput(keyword) { this.search.filters.AND[0].conditions.target.keyword = keyword; },
@@ -400,7 +397,7 @@ const SEARCH_OPTS = {
   ],
   VARIANT: [
     {
-      label: 'Given a variant, find all therapies associated with sensitivity for Disease(s)',
+      label: 'Given a variant, find all statements associated with sensitivity for Disease(s)',
       requiredInput: {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
@@ -429,7 +426,7 @@ const SEARCH_OPTS = {
         searchType: 'Popular',
         variant: 'user input',
         disease: 'not specified',
-        variantChip: 'all therapies associated with sensitivity for Disease(s)',
+        variantChip: 'all statements associated with sensitivity for Disease(s)',
       },
       set variant(variant) { this.searchChipProps.variant = variant; },
       set disease(disease) { this.searchChipProps.disease = disease; },
@@ -460,7 +457,7 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a variant, find all therapies associated with resistance for Disease(s)',
+      label: 'Given a variant, find all statements associated with resistance for Disease(s)',
       requiredInput: {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
@@ -489,7 +486,7 @@ const SEARCH_OPTS = {
         searchType: 'Popular',
         variant: 'user input',
         disease: 'not specified',
-        variantChip: 'all therapies associated with resistance for Disease(s)',
+        variantChip: 'all statements associated with resistance for Disease(s)',
       },
       set variant(variant) { this.searchChipProps.variant = variant; },
       set disease(disease) { this.searchChipProps.disease = disease; },

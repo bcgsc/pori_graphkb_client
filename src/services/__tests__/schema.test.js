@@ -72,7 +72,7 @@ describe('schema service', () => {
         evidence: [{ displayName: 'A reputable source' }],
       };
 
-      const statementLabel = testSchema.getPreview(mockStatementRecord, false);
+      const statementLabel = testSchema.getPreview(mockStatementRecord);
       expect(statementLabel).toEqual('Given Low blood sugar Mood Swings applies to hungertitis (A reputable source)');
     });
 

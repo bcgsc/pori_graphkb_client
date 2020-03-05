@@ -47,7 +47,7 @@ class Schema {
   getLabel(obj, truncate = true) {
     let label = this.getPreview(obj);
 
-    if (obj['@rid']) {
+    if (label && obj['@rid'] && !label.includes(obj['@rid'])) {
       label = `${label} (${obj['@rid']})`;
     }
 

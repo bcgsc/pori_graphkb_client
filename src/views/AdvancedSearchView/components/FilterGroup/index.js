@@ -40,10 +40,10 @@ function FilterGroup(props) {
           let filterValue = filter.value;
 
           if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
-            filterValue = schema.getPreview(filter.value);
+            filterValue = schema.getLabel(filter.value);
           } else if (Array.isArray(filterValue)) {
             const filterValueArr = [...filterValue];
-            filterValue = (filterValueArr.map(val => schema.getPreview(val))).join(' ');
+            filterValue = (filterValueArr.map(val => schema.getLabel(val))).join(' ');
           }
 
           return (

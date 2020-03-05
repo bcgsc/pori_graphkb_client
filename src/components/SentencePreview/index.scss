@@ -13,8 +13,8 @@
     padding-left: 10px;
   }
 
-  &__word--highlighted {
-    color: $palette__secondary--main;
+  &__chunk--highlighted {
+    background: $palette__secondary--light;
     display: inline;
 
     font-weight: 600;

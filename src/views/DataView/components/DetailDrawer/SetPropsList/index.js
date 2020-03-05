@@ -71,7 +71,7 @@ function SetPropsList(props) {
                     {util.antiCamelCase(item['@class'])}
                   </Typography>
                   <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
-                    {schema.getPreview(item)}
+                    {schema.getLabel(item)}
                   </Typography>
                 </div>
               </ListItemText>

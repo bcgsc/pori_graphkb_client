@@ -43,8 +43,7 @@ describe('StatementSentence', () => {
         }}
       />,
     );
-    expect(getByText('KRAS')).toBeInTheDocument();
-    expect(getByText('mutation')).toBeInTheDocument();
+    expect(getByText('KRAS mutation')).toBeInTheDocument();
     expect(getByText('sensitivity')).toBeInTheDocument();
     expect(getByText('drugName')).toBeInTheDocument();
     expect(getByText('PMID:1234')).toBeInTheDocument();

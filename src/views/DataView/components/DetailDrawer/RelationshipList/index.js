@@ -51,7 +51,7 @@ function RelationshipList(props) {
         let preview;
 
         try {
-          preview = schema.getPreview(targetNode);
+          preview = schema.getLabel(targetNode);
         } catch (e) {
           preview = 'Invalid variant';
         }

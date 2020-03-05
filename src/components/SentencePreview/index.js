@@ -5,53 +5,26 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const STOP_WORDS = new Set([
-  'and', 'is', 'a', 'the', 'of', 'in',
-]);
+const chunkSentence = (sentence, words) => {
+  let chunkPositions = new Set([0, sentence.length]);
 
-const normalizeTerm = term => term.replace(/[),]$/, '').replace(/^\(/, '').trim().toLowerCase();
+  words.forEach((word) => {
+    const index = sentence.indexOf(word);
 
-
-/**
- * Find the all positions in a parent array which are part of a complete match to the child array
- *
- * @param {Array} arr the parent array
- * @param {Array} subArr the child/subset array
- *
- * @returns {Array.<Number>} the array of all matching start positions
- *
- * @example
- * indexOfSubArray([1, 2, 3, 4], [3, 4])
- * // [2, 3]
- */
-const indexOfSubArray = (arr, subArr) => {
-  if (!subArr.length) {
-    return null;
-  }
-
-  const matches = [];
-
-  for (let startIndex = 0; startIndex < arr.length; startIndex++) {
-    let matched = true;
-    const currentMatches = [];
-
-    for (let subIndex = 0; subIndex < subArr.length && (startIndex + subIndex) < arr.length; subIndex++) {
-      const parentIndex = startIndex + subIndex;
-
-      if (normalizeTerm(arr[parentIndex]) !== normalizeTerm(subArr[subIndex])) {
-        // ignore trailing commas
-
-        matched = false;
-        break;
-      }
-      currentMatches.push(parentIndex);
+    if (index >= 0) {
+      chunkPositions.add(index);
+      chunkPositions.add(index + word.length);
     }
+  });
+  chunkPositions = Array.from(chunkPositions).sort((a, b) => a - b);
+  const chunks = [];
 
-    if (matched) {
-      matches.push(...currentMatches);
-    }
+  for (let index = 1; index < chunkPositions.length; index++) {
+    const prev = chunkPositions[index - 1];
+    const curr = chunkPositions[index];
+    chunks.push(sentence.slice(prev, curr));
   }
-  return matches;
+  return chunks;
 };
 
 
@@ -65,71 +38,20 @@ const SentencePreview = ({ content, highlighted }) => {
     return null;
   }
 
-  const words = content.split(/\s+/g);
-
   // find the positions of the highlighted terms by matching words
-  const highlightedPositions = [];
-  highlighted.forEach((term) => {
-    if (term) {
-      const matches = indexOfSubArray(words.map(word => word), term.split(/\s+/g));
+  const chunks = chunkSentence(content, highlighted);
 
-      if (matches) {
-        highlightedPositions.push(...matches);
-      }
+  const sentence = chunks.map((chunk) => {
+    if (highlighted.includes(chunk)) {
+      return (<mark className="sentence-preview__chunk--highlighted">{chunk}</mark>);
     }
-  });
-
-  const sentence = words.map((word, wordPosition) => {
-    const isStopWord = STOP_WORDS.has(word.toLowerCase());
-
-    if (highlightedPositions.includes(wordPosition) && !isStopWord) {
-      const [, leadingPunc, prefixStripped] = /^([,)(]*)(.*)$/.exec(word);
-      const [, trailingPunc] = /([,)(]*)$/.exec(prefixStripped);
-      const centerWord = prefixStripped.slice(0, prefixStripped.length - trailingPunc.length);
-
-      return (
-        // if a word changes position within the sentence we re-render the sentence so this is a valid key here
-        // eslint-disable-next-line react/no-array-index-key
-        <React.Fragment key={wordPosition}>
-          {leadingPunc}
-          <Typography
-            className="sentence-preview__word--highlighted"
-            color="textPrimary"
-            component="span"
-            variant="body1"
-          >
-            {
-            wordPosition === 0
-              ? null
-              : (<span> </span>)
-          }
-            {centerWord}
-
-          </Typography>
-          {trailingPunc}
-        </React.Fragment>
-      );
-    }
-    return (
-      <>
-        {
-          wordPosition === 0 || word === ','
-            ? null
-            : (<span> </span>)
-        }
-        {
-          isStopWord
-            ? word.toLowerCase()
-            : word
-        }
-      </>
-    );
+    return (<span className="sentence-preview__chunk">{chunk}</span>);
   });
 
   return (
-    <div className="sentence-preview">
+    <Typography className="sentence-preview">
       {sentence}
-    </div>
+    </Typography>
   );
 };
 
@@ -144,5 +66,4 @@ SentencePreview.defaultProps = {
 };
 
 
-export { indexOfSubArray };
 export default SentencePreview;

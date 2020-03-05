@@ -8,6 +8,13 @@ const { schema: SCHEMA_DEFN } = kbSchema;
 const MAX_LABEL_LENGTH = 50;
 
 
+const naturalListJoin = (words) => {
+  if (words.length > 1) {
+    return `${words.slice(0, words.length - 1).join(', ')}, and ${words[words.length - 1]}`;
+  }
+  return words[0];
+};
+
 /**
  * Knowledgebase schema.
  */
@@ -38,30 +45,17 @@ class Schema {
    */
   @boundMethod
   getLabel(obj, truncate = true) {
-    let label;
+    let label = this.getPreview(obj);
 
-    if (obj) {
-      if (obj.displayNameTemplate) {
-        label = this.getPreview(obj);
+    if (obj['@rid']) {
+      label = `${label} (${obj['@rid']})`;
+    }
 
-        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
-        }
-        return label;
-      } if (obj.displayName || obj.name) {
-        label = obj.displayName || obj.name;
-
-        if (obj['@rid']) {
-          label = `${label} (${obj['@rid']})`;
-        }
-        return label;
+    if (label) {
+      if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
       }
-      if (obj.target) {
-        return this.getLabel(obj.target);
-      }
-      if (obj['@class']) {
-        return obj['@class'];
-      }
+      return label;
     }
     return obj;
   }
@@ -81,46 +75,16 @@ class Schema {
    */
   getPreview(obj) {
     if (obj) {
-      if (obj.displayNameTemplate) {
-        const statementBuilder = (record) => {
-          if (record === undefined) {
-            return null;
-          }
-          const vals = Array.isArray(record) ? record : [record];
-          let label = '';
-          vals.forEach((val) => {
-            if (val) {
-              label = `${label}${val.displayName} `;
-            }
-          });
-          return label;
-        };
-
-        const implyBy = statementBuilder(obj.conditions);
-        const relevance = statementBuilder(obj.relevance);
-        const subject = statementBuilder(obj.subject);
-        const evidence = statementBuilder(obj.evidence);
-
-        const label = obj.displayNameTemplate
-          .replace('{conditions}', implyBy)
-          .replace('{relevance}', relevance)
-          .replace('{subject}', subject)
-          .replace('{evidence}', evidence);
-
-        return label;
+      if (obj['@class'] === 'Statement') {
+        const { content } = this.buildStatementSentence(obj);
+        return content;
       }
 
-      if (obj.displayName || obj.name) {
-        let label;
-        label = obj.displayName || obj.name;
-
-        if (label.length > MAX_LABEL_LENGTH) {
-          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
-        }
-        if (obj['@rid']) {
-          label = `${label} (${obj['@rid']})`;
-        }
-        return label;
+      if (obj.displayName) {
+        return obj.displayName;
+      }
+      if (obj.name) {
+        return obj.name;
       }
       if (obj['@class']) {
         const label = this.getPreview(this.get(obj));
@@ -135,8 +99,60 @@ class Schema {
       if (Array.isArray(obj)) { // embedded link set
         return obj.length;
       }
+      if (obj.target) {
+        // preview pseudo-edge objects
+        return this.getPreview(obj.target);
+      }
     }
     return obj;
+  }
+
+  @boundMethod
+  buildStatementSentence(record) {
+    const substitutions = {
+      '{conditions}': '[conditions]',
+      '{subject}': '[subject]',
+      '{relevance}': '[relevance]',
+      '{evidence}': '[evidence]',
+    };
+    const highlighted = [];
+
+    if (record.subject) {
+      const preview = this.getPreview(record.subject);
+      substitutions['{subject}'] = preview;
+      highlighted.push(preview);
+    }
+
+    if (record.relevance) {
+      const preview = this.getPreview(record.relevance);
+      substitutions['{relevance}'] = preview;
+      highlighted.push(preview);
+    }
+
+    if (record.conditions && record.conditions.length) {
+      const words = record.conditions
+        .map(cond => this.getPreview(cond))
+        .filter(word => word !== substitutions['{subject}']);
+      highlighted.push(...words);
+
+      substitutions['{conditions}'] = naturalListJoin(words);
+    }
+
+    if (record.evidence && record.evidence.length) {
+      const words = record.evidence
+        .map(rec => this.getPreview(rec));
+      highlighted.push(...words);
+
+      substitutions['{evidence}'] = words.join(', ');
+    }
+
+
+    let content = record.displayNameTemplate || 'Given {conditions}, {relevance} applies to {subject} ({evidence})';
+
+    Object.keys(substitutions).forEach((key) => {
+      content = content.replace(key, substitutions[key]);
+    });
+    return { content, highlighted };
   }
 
   /**

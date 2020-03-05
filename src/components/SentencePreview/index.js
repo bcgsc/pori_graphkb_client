@@ -65,5 +65,6 @@ SentencePreview.defaultProps = {
   highlighted: [],
 };
 
+export { chunkSentence };
 
 export default SentencePreview;

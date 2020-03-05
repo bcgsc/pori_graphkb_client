@@ -1,16 +1,22 @@
-import { indexOfSubArray } from '..';
+import { chunkSentence } from '..';
 
 
-describe('indexOfSubArray', () => {
-  test('returns null for empty subarray', () => {
-    expect(indexOfSubArray([], [])).toBe(null);
+describe('chunkSentence', () => {
+  test('chunk with spaces', () => {
+    const sentence = 'Craft beer knausgaard schlitz skateboard offal fingerstache';
+    const words = ['beer knausgaard'];
+    expect(chunkSentence(sentence, words)).toEqual(['Craft ', 'beer knausgaard', ' schlitz skateboard offal fingerstache']);
   });
 
-  test('returns an empty array when there are no matches', () => {
-    expect(indexOfSubArray(['1', '2', '3', '4'], ['5', '6'])).toEqual([]);
+  test('chunk without spaces', () => {
+    const sentence = 'Craft beer knausgaard schlitz skateboard offal fingerstache';
+    const words = ['beer'];
+    expect(chunkSentence(sentence, words)).toEqual(['Craft ', 'beer', ' knausgaard schlitz skateboard offal fingerstache']);
   });
 
-  test('returns all when there are multiple matches', () => {
-    expect(indexOfSubArray(['4', '5', '6', '7', '5', '6'], ['5', '6'])).toEqual([1, 2, 4, 5]);
+  test('chunks for multiple words', () => {
+    const sentence = 'Craft beer knausgaard schlitz skateboard offal fingerstache';
+    const words = ['beer', 'schlitz'];
+    expect(chunkSentence(sentence, words)).toEqual(['Craft ', 'beer', ' knausgaard ', 'schlitz', ' skateboard offal fingerstache']);
   });
 });

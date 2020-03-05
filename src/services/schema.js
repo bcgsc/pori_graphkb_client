@@ -468,7 +468,6 @@ class Schema {
       'groups',
       'uuid',
       'displayName',
-      'displayNameTemplate',
     ];
 
     const showNested = [
@@ -490,14 +489,13 @@ class Schema {
 
     const defns = [];
 
-    if (modelName !== 'Statement') {
-      defns.push({
-        colId: 'preview',
-        field: 'preview',
-        sortable: false,
-        valueGetter: ({ data }) => this.getLabel(data),
-      });
-    }
+    defns.push({
+      colId: 'preview',
+      field: 'preview',
+      sortable: false,
+      valueGetter: ({ data }) => this.getLabel(data, false),
+      hide: modelName === 'Statement',
+    });
 
     const propModels = Object.values(allProps)
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')

@@ -479,9 +479,9 @@ class Schema {
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
-          return this.getLabel(data[propName]);
+          return this.getPreview(data[propName]);
         } if (data[propName]) {
-          return this.getLabel(data[propName][subPropName]);
+          return this.getPreview(data[propName][subPropName]);
         }
       }
       return '';
@@ -493,7 +493,7 @@ class Schema {
       colId: 'preview',
       field: 'preview',
       sortable: false,
-      valueGetter: ({ data }) => this.getLabel(data, false),
+      valueGetter: ({ data }) => this.getPreview(data, false),
       hide: modelName === 'Statement',
     });
 

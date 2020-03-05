@@ -99,7 +99,7 @@ function TextRow(props) {
                 <Typography>
                   {DATE_KEYS.includes(name)
                     ? (new Date(value)).toLocaleString()
-                    : util.formatStr(schema.getPreview(value))}
+                    : util.formatStr(schema.getLabel(value))}
                 </Typography>
               </Wrapper>
             </div>

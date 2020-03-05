@@ -35,7 +35,7 @@ function LinkEmbeddedPropList(props) {
   let listItemProps = {};
 
   if (isNested) {
-    previewStr = schema.getPreview(value);
+    previewStr = schema.getLabel(value);
   } else {
     listItemProps = { button: true, onClick: () => handleExpand(name) };
     previewStr = value.displayName;

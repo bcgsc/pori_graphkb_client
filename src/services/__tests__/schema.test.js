@@ -3,7 +3,7 @@ import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import testSchema from '../schema';
 
 
-describe('Schema wrapper class tests', () => {
+describe('schema service', () => {
   describe('Retrieving classmodels and properties', () => {
     test('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {
@@ -63,17 +63,17 @@ describe('Schema wrapper class tests', () => {
     test('builds displayNameTemplate correctly', () => {
       const mockStatementRecord = {
         displayName: 'displayName',
-        '@class': 'Mock',
+        '@class': 'Statement',
         '@rid': '22:0',
         displayNameTemplate: 'Given {conditions} {relevance} applies to {subject} ({evidence})',
         relevance: { displayName: 'Mood Swings' },
         conditions: [{ displayName: 'Low blood sugar' }],
-        subject: [{ displayName: 'hungertitis' }],
+        subject: { displayName: 'hungertitis' },
         evidence: [{ displayName: 'A reputable source' }],
       };
 
-      const statementLabel = testSchema.getLabel(mockStatementRecord, false);
-      expect(statementLabel).toEqual('Given Low blood sugar  Mood Swings  applies to hungertitis  (A reputable source )');
+      const statementLabel = testSchema.getPreview(mockStatementRecord, false);
+      expect(statementLabel).toEqual('Given Low blood sugar Mood Swings applies to hungertitis (A reputable source)');
     });
 
     test('returns displayname label', () => {
@@ -86,11 +86,11 @@ describe('Schema wrapper class tests', () => {
       expect(shortLabel).toEqual('displayName (22:0)');
 
       const longNameModel = {
-        displayName: 'super long display name that is going to go over the limit but does not get cut off because its not a preview',
+        displayName: 'super long display name that is going to go over the limit but does not get cut off because its not truncated',
         '@class': 'Mock',
       };
-      const cutOffLabel = testSchema.getLabel(longNameModel);
-      expect(cutOffLabel).toEqual('super long display name that is going to go over the limit but does not get cut off because its not a preview');
+      const cutOffLabel = testSchema.getLabel(longNameModel, false);
+      expect(cutOffLabel).toEqual('super long display name that is going to go over the limit but does not get cut off because its not truncated');
     });
 
     test('Preview returns cut off displayName', () => {
@@ -98,7 +98,7 @@ describe('Schema wrapper class tests', () => {
         displayName: 'super long display name that is going to go over the limit and gets cut off because its a preview',
         '@class': 'Mock',
       };
-      const cutOffLabel = testSchema.getPreview(longNameModel);
+      const cutOffLabel = testSchema.getLabel(longNameModel);
       expect(cutOffLabel).toEqual('super long display name that is going to go ove...');
     });
 
@@ -128,10 +128,11 @@ describe('Schema wrapper class tests', () => {
           '@class': 'Mock',
           '@rid': '22:0',
         },
+
       };
 
       const targetLabel = testSchema.getLabel(targetModel);
-      expect(targetLabel).toEqual('displayName (22:0)');
+      expect(targetLabel).toEqual('displayName');
     });
 
     test('user model', () => {
@@ -141,7 +142,7 @@ describe('Schema wrapper class tests', () => {
         createdBy: 'Mom',
         deletedBy: 'Mom',
       };
-      const label = testSchema.getLabel(userMock);
+      const label = testSchema.getPreview(userMock);
       expect(label).toEqual(userMock['@class']);
     });
 
@@ -151,7 +152,7 @@ describe('Schema wrapper class tests', () => {
         '@class': 'Mock',
         '@rid': '22:0',
       };
-      const shortLabel = testSchema.getPreview(mockClassModel);
+      const shortLabel = testSchema.getLabel(mockClassModel);
       expect(shortLabel).toEqual('displayName (22:0)');
     });
 

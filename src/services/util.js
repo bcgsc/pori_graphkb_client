@@ -426,6 +426,24 @@ const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
   });
 };
 
+/**
+ * Formats RecordExistsError to have a better message instead of raw output from console
+ * Returns raw output only if targeted regex does not match
+ * @param {object} error error object containing message and error name
+ */
+const massageRecordExistsError = (error) => {
+  const { message } = error;
+  const incomingRecordStr = message.match(/previously assigned to the record\s*#[\d]*:[\d]*/gi);
+  const existingRecordStr = message.match(/Cannot index record\s*#[\d]*:[\d]*/gi);
+
+  if (incomingRecordStr && existingRecordStr) {
+    const incoming = incomingRecordStr[0].match(/#[\d]*:[\d]*/gi)[0];
+    const existing = existingRecordStr[0].match(/#[\d]*:[\d]*/gi)[0];
+    return `Cannot modify record ${incoming} because record ${existing} exists with the same parameters.`;
+  }
+  return message;
+};
+
 export default {
   antiCamelCase,
   expandEdges,
@@ -443,4 +461,5 @@ export default {
   parseKBType,
   recordId,
   sortFields,
+  massageRecordExistsError,
 };

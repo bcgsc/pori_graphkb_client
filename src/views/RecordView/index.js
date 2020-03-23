@@ -86,8 +86,9 @@ const RecordView = (props) => {
    * Handles the redirect if an error occurs in the child component
    */
   const handleError = useCallback(({ error = {} }) => {
-    const { name, message } = error;
-    util.handleErrorSaveLocation({ name, message }, history);
+    const { name } = error;
+    const massagedMsg = util.massageRecordExistsError(error);
+    util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
   // fetch the record from the rid if given

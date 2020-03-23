@@ -19,8 +19,7 @@ import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
-import handleErrorSaveLocation from '@/services/util';
-
+import util from '@/services/util';
 
 const DEFAULT_TITLES = {
   [FORM_VARIANT.EDIT]: 'Edit this Record',
@@ -86,16 +85,10 @@ const RecordView = (props) => {
   /**
    * Handles the redirect if an error occurs in the child component
    */
-  const handleError = useCallback(({ error = {}, content = null }) => {
-    const { name, message } = error;
-
-    if (name === 'RecordExistsError' && content) {
-      // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(content));
-      history.push(`/data/table?${search}`, { search, content });
-    } else {
-      handleErrorSaveLocation({ name, message }, history);
-    }
+  const handleError = useCallback(({ error = {} }) => {
+    const { name } = error;
+    const massagedMsg = util.massageRecordExistsError(error);
+    util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
   // fetch the record from the rid if given
@@ -173,10 +166,10 @@ const RecordView = (props) => {
       onError={handleError}
       onSubmit={handleSubmit}
       onTopClick={
-          hasWriteAccess(context)
-            ? onTopClick
-            : null
-        }
+        hasWriteAccess(context)
+          ? onTopClick
+          : null
+      }
       rid={rid}
       title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
       value={recordContent}

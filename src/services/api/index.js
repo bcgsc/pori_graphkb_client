@@ -33,9 +33,11 @@ const MAX_SUGGESTIONS = 50;
  * @param {Object} payload - PATCH payload.
  */
 const patch = (endpoint, payload, callOptions) => {
+  // strip out the display name to have it force-regenerate
+  const { displayName, ...changes } = payload;
   const init = {
     method: 'PATCH',
-    body: jc.stringify(payload),
+    body: jc.stringify(changes),
   };
   return new ApiCall(endpoint, init, callOptions);
 };

@@ -1,46 +1,41 @@
 @import '../../../../globals';
 @import '../../../../theme';
 
-.advanced-search {
-  .property-filter {
-    border: 1px solid $palette__primary--light;
-    border-radius: 15px;
-    max-width: 100%;
+.property-filter {
+  border: 1px solid $palette__primary--light;
+  border-radius: 15px;
+  max-width: 100%;
 
-    &__title {
-      margin: 10px;
-      position: relative;
-      top: 5px;
-    }
+  &__title {
+    margin: 10px;
+    position: relative;
+    top: 5px;
+  }
 
-    &__add-filter-box {
-      align-items: center;
+  &__add-filter-box {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__add-filter-dropdown {
+    margin: 20px;
+    width: fit-content;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    &__content {
       display: flex;
-      justify-content: center;
+      justify-content: space-around;
+      flex-flow: wrap;
     }
 
-    &__add-filter-dropdown {
-      margin: 20px;
-      width: fit-content;
+    &__property {
+      width: 50%;
     }
 
-    @media (min-width: $breakpoint-lg) {
-      &__content {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      &__property {
-        width: 40%;
-      }
-
-      &__value {
-        width: 40%;
-      }
-
-      &__operator {
-        width: 20%;
-      }
+    &__operator {
+      width: 50%;
     }
   }
 }

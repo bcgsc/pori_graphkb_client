@@ -91,10 +91,15 @@ const Main = () => {
           }}
         />
         <MainAppBar
+          activeLink={activeLink}
           authenticationToken={authenticationToken}
           authorizationToken={authorizationToken}
           drawerOpen={drawerOpen}
           onDrawerChange={setDrawerOpen}
+          onLinkChange={({ isOpen, activeLink: updatedLink }) => {
+            setDrawerOpen(isOpen);
+            setActiveLink(updatedLink);
+          }}
         />
         <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>

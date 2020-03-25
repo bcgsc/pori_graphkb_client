@@ -18,13 +18,12 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  Link,
-} from 'react-router-dom';
 
 import { SecurityContext } from '@/components/SecurityContext';
 import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
 import logo from '@/static/logo.png';
+
+import MenuLink from './MenuLink';
 
 /**
  * @property {object} props
@@ -84,35 +83,6 @@ class MainNav extends React.PureComponent {
     const { isOpen, activeLink } = this.props;
     const { subMenuOpenLink } = this.state;
 
-    /**
-     * Text link with optional icon to navigate through application
-     *
-     * @property {string} route link route name
-     * @property {string} label text label of navigation link
-     * @property {bool} inset if true, text will be indented
-     * @property {string} topLevel indicates if topLevel link i.e Search, Add
-     */
-    const MenuLink = ({
-      route, label, icon = null, inset = false, topLevel,
-    }) => {
-      const selected = (activeLink === route) && (!topLevel);
-
-      return (
-        <Link key={label.toLowerCase()} to={route}>
-          <MenuItem onClick={() => { this.handleClickLink(route, topLevel ? route : null); }}>
-            {icon && <ListItemIcon>{icon}</ListItemIcon>}
-            <ListItemText
-              inset={inset}
-            >
-              <Typography className={`main-nav-drawer__link${selected ? '--selected' : ''}`} color="secondary" variant="body1">
-                {label}
-              </Typography>
-            </ListItemText>
-          </MenuItem>
-        </Link>
-      );
-    };
-
     return (
       <Drawer
         anchor="left"
@@ -130,25 +100,26 @@ class MainNav extends React.PureComponent {
         <Divider />
         <List className="main-nav-drawer__links">
           {isAuthorized(this.context) && (
-            <MenuLink icon={<SearchIcon />} label="Search" route="/query" topLevel />
+            <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<SearchIcon />} label="Search" route="/query" topLevel />
           )}
           {isAuthorized(this.context) && (isOpen && subMenuOpenLink === '/query') && (
             <>
-              <MenuLink inset label="Quick" route="/query" />
-              <MenuLink inset label="Popular" route="/query-popular/gene" />
-              <MenuLink inset label="Advanced" route="/query-advanced" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Quick" route="/query" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Popular" route="/query-popular/gene" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Advanced" route="/query-advanced" />
             </>
           )}
           {hasWriteAccess(this.context) && (
-            <MenuLink icon={<AddIcon />} label="Add new Record" route="/new/ontology" topLevel />
+            <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<AddIcon />} label="Add new Record" route="/new/ontology" topLevel />
           )}
           {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
             <>
-              {isAdmin(this.context) && (<MenuLink inset label="Source*" route="/new/source" />)}
-              <MenuLink inset label="Ontology" route="/new/ontology" />
-              <MenuLink inset label="Variant" route="/new/variant" />
-              <MenuLink inset label="Statement" route="/new/statement" />
-              <MenuLink inset label="Relationship" route="/new/e" />
+              {isAdmin(this.context) && (
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Source*" route="/new/source" />)}
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Ontology" route="/new/ontology" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Variant" route="/new/variant" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Statement" route="/new/statement" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Relationship" route="/new/e" />
             </>
           )}
           {hasWriteAccess(this.context) && (
@@ -159,11 +130,11 @@ class MainNav extends React.PureComponent {
           )}
           {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === 'import') && (
             <>
-              <MenuLink inset label="PubMed" route="/import/pubmed" />
+              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="PubMed" route="/import/pubmed" />
             </>
           )}
-          <MenuLink icon={<TrendingUpIcon />} label="Activity" route="/activity" />
-          <MenuLink icon={<HelpOutlineIcon />} label="About" route="/about" />
+          <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<TrendingUpIcon />} label="Activity" route="/activity" />
+          <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<HelpOutlineIcon />} label="About" route="/about" />
         </List>
         <div className="main-nav-drawer__footer">
           <Divider />

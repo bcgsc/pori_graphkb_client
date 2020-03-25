@@ -28,9 +28,10 @@ import {
   logout,
 } from '@/services/auth';
 
+import MenuLink from './MenuLink';
 
 const MainAppBar = ({
-  authorizationToken, authenticationToken, onDrawerChange, drawerOpen,
+  authorizationToken, authenticationToken, onDrawerChange, drawerOpen, activeLink, onLinkChange,
 }) => {
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
 
@@ -42,6 +43,11 @@ const MainAppBar = ({
   const handleDrawerChange = ({ isOpen }) => {
     onDrawerChange(isOpen);
     setDropdownAnchorEl(null);
+  };
+
+  const handleClickLink = (link) => {
+    handleClose();
+    onLinkChange({ isOpen: drawerOpen, activeLink: link });
   };
 
   return (
@@ -74,7 +80,7 @@ const MainAppBar = ({
               {isAuthenticated({ authorizationToken, authenticationToken })
                 ? getUsername({ authenticationToken, authorizationToken })
                 : 'Logged Out'
-                  }
+              }
             </Typography>
           </Button>
           <Popover
@@ -91,24 +97,26 @@ const MainAppBar = ({
             }}
           >
             <Card className="user-dropdown__content">
-              <Link to="/feedback">
-                <MenuItem onClick={handleClose}>
-                      Feedback
-                </MenuItem>
-              </Link>
+              <MenuLink
+                activeLink={activeLink}
+                handleClickLink={handleClickLink}
+                label="Feedback"
+                route="/feedback"
+              />
               {isAdmin({ authorizationToken }) && (
-                <Link to="/admin">
-                  <MenuItem onClick={handleClose}>
-                        Admin
-                  </MenuItem>
-                </Link>
+                <MenuLink
+                  activeLink={activeLink}
+                  handleClickLink={handleClickLink}
+                  label="Admin"
+                  route="/admin"
+                />
               )}
               <MenuItem onClick={() => logout()}>
                 {
-                isAuthenticated({ authorizationToken, authenticationToken })
-                  ? 'Logout'
-                  : 'Login'
-              }
+                  isAuthenticated({ authorizationToken, authenticationToken })
+                    ? 'Logout'
+                    : 'Login'
+                }
               </MenuItem>
             </Card>
           </Popover>
@@ -119,11 +127,12 @@ const MainAppBar = ({
 };
 
 MainAppBar.propTypes = {
+  activeLink: PropTypes.string.isRequired,
   onDrawerChange: PropTypes.func.isRequired,
+  onLinkChange: PropTypes.func.isRequired,
   authenticationToken: PropTypes.string,
   authorizationToken: PropTypes.string,
   drawerOpen: PropTypes.bool,
-
 };
 
 MainAppBar.defaultProps = {

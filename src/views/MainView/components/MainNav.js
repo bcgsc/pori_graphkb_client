@@ -100,26 +100,27 @@ class MainNav extends React.PureComponent {
         <Divider />
         <List className="main-nav-drawer__links">
           {isAuthorized(this.context) && (
-            <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<SearchIcon />} label="Search" route="/query" topLevel />
+            <MenuLink activeLink={activeLink} icon={<SearchIcon />} label="Search" onClick={this.handleClickLink} route="/query" topLevel />
           )}
           {isAuthorized(this.context) && (isOpen && subMenuOpenLink === '/query') && (
             <>
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Quick" route="/query" />
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Popular" route="/query-popular/gene" />
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Advanced" route="/query-advanced" />
+              <MenuLink activeLink={activeLink} inset label="Quick" onClick={this.handleClickLink} route="/query" />
+              <MenuLink activeLink={activeLink} inset label="Popular" onClick={this.handleClickLink} route="/query-popular/gene" />
+              <MenuLink activeLink={activeLink} inset label="Advanced" onClick={this.handleClickLink} route="/query-advanced" />
             </>
           )}
           {hasWriteAccess(this.context) && (
-            <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<AddIcon />} label="Add new Record" route="/new/ontology" topLevel />
+            <MenuLink activeLink={activeLink} icon={<AddIcon />} label="Add new Record" onClick={this.handleClickLink} route="/new/ontology" topLevel />
           )}
           {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
             <>
               {isAdmin(this.context) && (
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Source*" route="/new/source" />)}
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Ontology" route="/new/ontology" />
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Variant" route="/new/variant" />
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Statement" route="/new/statement" />
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="Relationship" route="/new/e" />
+                <MenuLink activeLink={activeLink} inset label="Source*" onClick={this.handleClickLink} route="/new/source" />
+              )}
+              <MenuLink activeLink={activeLink} inset label="Ontology" onClick={this.handleClickLink} route="/new/ontology" />
+              <MenuLink activeLink={activeLink} inset label="Variant" onClick={this.handleClickLink} route="/new/variant" />
+              <MenuLink activeLink={activeLink} inset label="Statement" onClick={this.handleClickLink} route="/new/statement" />
+              <MenuLink activeLink={activeLink} inset label="Relationship" onClick={this.handleClickLink} route="/new/e" />
             </>
           )}
           {hasWriteAccess(this.context) && (
@@ -130,11 +131,11 @@ class MainNav extends React.PureComponent {
           )}
           {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === 'import') && (
             <>
-              <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} inset label="PubMed" route="/import/pubmed" />
+              <MenuLink activeLink={activeLink} inset label="PubMed" onClick={this.handleClickLink} route="/import/pubmed" />
             </>
           )}
-          <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<TrendingUpIcon />} label="Activity" route="/activity" />
-          <MenuLink activeLink={activeLink} handleClickLink={this.handleClickLink} icon={<HelpOutlineIcon />} label="About" route="/about" />
+          <MenuLink activeLink={activeLink} icon={<TrendingUpIcon />} label="Activity" onClick={this.handleClickLink} route="/activity" />
+          <MenuLink activeLink={activeLink} icon={<HelpOutlineIcon />} label="About" onClick={this.handleClickLink} route="/about" />
         </List>
         <div className="main-nav-drawer__footer">
           <Divider />

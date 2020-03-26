@@ -17,17 +17,17 @@ import {
  * @property {string} label text label of navigation link
  * @property {bool} inset if true, text will be indented
  * @property {boolean} topLevel indicates if topLevel link i.e Search, Add
- * @property {function} handleClickLink callback fn for when this item is clicked
+ * @property {function} onClick callback fn for when this item is clicked
  * @property {string} activeLink the current page(link) the user is on
  */
 const MenuLink = ({
-  route, label, icon, inset, topLevel, handleClickLink, activeLink,
+  route, label, icon, inset, topLevel, onClick, activeLink,
 }) => {
   const selected = (activeLink === route) && (!topLevel);
 
   return (
     <Link key={label.toLowerCase()} to={route}>
-      <MenuItem onClick={() => { handleClickLink(route, topLevel ? route : null); }}>
+      <MenuItem onClick={() => { onClick(route, topLevel ? route : null); }}>
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
         <ListItemText
           inset={inset}
@@ -43,8 +43,8 @@ const MenuLink = ({
 
 MenuLink.propTypes = {
   activeLink: PropTypes.string.isRequired,
-  handleClickLink: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
   route: PropTypes.string.isRequired,
   icon: PropTypes.object,
   inset: PropTypes.bool,

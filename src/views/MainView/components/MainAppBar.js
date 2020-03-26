@@ -99,15 +99,15 @@ const MainAppBar = ({
             <Card className="user-dropdown__content">
               <MenuLink
                 activeLink={activeLink}
-                handleClickLink={handleClickLink}
                 label="Feedback"
+                onClick={handleClickLink}
                 route="/feedback"
               />
               {isAdmin({ authorizationToken }) && (
                 <MenuLink
                   activeLink={activeLink}
-                  handleClickLink={handleClickLink}
                   label="Admin"
+                  onClick={handleClickLink}
                   route="/admin"
                 />
               )}

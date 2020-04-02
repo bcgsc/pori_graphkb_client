@@ -8,7 +8,7 @@ import SentencePreview from '.';
 
 
 const StatementSentence = ({ content: record }) => {
-  const { content, highlighted } = sentenceTemplates.generateStatementSentence(schema.schema, record);
+  const { content, highlighted } = sentenceTemplates.generateStatementSentence(schema.schemaDefn, record);
 
   return (
     <SentencePreview

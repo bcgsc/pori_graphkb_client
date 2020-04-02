@@ -13,6 +13,7 @@ const MAX_LABEL_LENGTH = 50;
  */
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
+    this.schemaDefn = SCHEMA_DEFN;
     this.schema = schema.schema;
     this.has = schema.has.bind(schema);
     this.get = schema.get.bind(schema);
@@ -67,7 +68,7 @@ class Schema {
    * @param {Object} obj - Record to be parsed.
    */
   getPreview(obj) {
-    return this.schema.getPreview(obj);
+    return this.schemaDefn.getPreview(obj);
   }
 
   /**

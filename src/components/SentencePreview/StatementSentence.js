@@ -1,3 +1,4 @@
+import { sentenceTemplates } from '@bcgsc/knowledgebase-schema';
 import React from 'react';
 
 import { StatementPropType } from '@/components/types';
@@ -7,7 +8,7 @@ import SentencePreview from '.';
 
 
 const StatementSentence = ({ content: record }) => {
-  const { content, highlighted } = schema.buildStatementSentence(record);
+  const { content, highlighted } = sentenceTemplates.generateStatementSentence(schema.schemaDefn, record);
 
   return (
     <SentencePreview

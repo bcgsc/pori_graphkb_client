@@ -8,18 +8,12 @@ const { schema: SCHEMA_DEFN } = kbSchema;
 const MAX_LABEL_LENGTH = 50;
 
 
-const naturalListJoin = (words) => {
-  if (words.length > 1) {
-    return `${words.slice(0, words.length - 1).join(', ')}, and ${words[words.length - 1]}`;
-  }
-  return words[0];
-};
-
 /**
  * Knowledgebase schema.
  */
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
+    this.schemaDefn = SCHEMA_DEFN;
     this.schema = schema.schema;
     this.has = schema.has.bind(schema);
     this.get = schema.get.bind(schema);
@@ -74,85 +68,7 @@ class Schema {
    * @param {Object} obj - Record to be parsed.
    */
   getPreview(obj) {
-    if (obj) {
-      if (obj['@class'] === 'Statement') {
-        const { content } = this.buildStatementSentence(obj);
-        return content;
-      }
-
-      if (obj.displayName) {
-        return obj.displayName;
-      }
-      if (obj.name) {
-        return obj.name;
-      }
-      if (obj['@class']) {
-        const label = this.getPreview(this.get(obj));
-
-        if (label) {
-          return label;
-        }
-      }
-      if (obj['@rid']) {
-        return obj['@rid'];
-      }
-      if (Array.isArray(obj)) { // embedded link set
-        return obj.length;
-      }
-      if (obj.target) {
-        // preview pseudo-edge objects
-        return this.getPreview(obj.target);
-      }
-    }
-    return obj;
-  }
-
-  @boundMethod
-  buildStatementSentence(record) {
-    const substitutions = {
-      '{conditions}': '[conditions]',
-      '{subject}': '[subject]',
-      '{relevance}': '[relevance]',
-      '{evidence}': '[evidence]',
-    };
-    const highlighted = [];
-
-    if (record.subject) {
-      const preview = this.getPreview(record.subject);
-      substitutions['{subject}'] = preview;
-      highlighted.push(preview);
-    }
-
-    if (record.relevance) {
-      const preview = this.getPreview(record.relevance);
-      substitutions['{relevance}'] = preview;
-      highlighted.push(preview);
-    }
-
-    if (record.conditions && record.conditions.length) {
-      const words = record.conditions
-        .map(cond => this.getPreview(cond))
-        .filter(word => word !== substitutions['{subject}']);
-      highlighted.push(...words);
-
-      substitutions['{conditions}'] = naturalListJoin(words);
-    }
-
-    if (record.evidence && record.evidence.length) {
-      const words = record.evidence
-        .map(rec => this.getPreview(rec));
-      highlighted.push(...words);
-
-      substitutions['{evidence}'] = words.join(', ');
-    }
-
-
-    let content = record.displayNameTemplate || 'Given {conditions}, {relevance} applies to {subject} ({evidence})';
-
-    Object.keys(substitutions).forEach((key) => {
-      content = content.replace(key, substitutions[key]);
-    });
-    return { content, highlighted };
+    return this.schemaDefn.getPreview(obj);
   }
 
   /**

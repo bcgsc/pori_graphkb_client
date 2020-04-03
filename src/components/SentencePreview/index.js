@@ -41,11 +41,11 @@ const SentencePreview = ({ content, highlighted }) => {
   // find the positions of the highlighted terms by matching words
   const chunks = chunkSentence(content, highlighted);
 
-  const sentence = chunks.map((chunk) => {
+  const sentence = chunks.map((chunk, i) => {
     if (highlighted.includes(chunk)) {
-      return (<mark className="sentence-preview__chunk--highlighted">{chunk}</mark>);
+      return (<mark key={`highlight-${i}`} className="sentence-preview__chunk--highlighted">{chunk}</mark>); // eslint-disable-line react/no-array-index-key
     }
-    return (<span className="sentence-preview__chunk">{chunk}</span>);
+    return (<span key={`word-${i}`} className="sentence-preview__chunk">{chunk}</span>); // eslint-disable-line react/no-array-index-key
   });
 
   return (

@@ -148,7 +148,7 @@ function DetailDrawer(props) {
       }
       if (name === 'displayNameTemplate') {
         name = 'Statement';
-        value = schema.getLabel(node);
+        value = schema.getLabel(node, false);
       }
       return (
         <TextRow

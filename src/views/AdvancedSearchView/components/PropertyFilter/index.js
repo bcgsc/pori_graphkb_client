@@ -147,6 +147,14 @@ const PropertyFilter = ({
               value={property}
             />
           </FieldWrapper>
+          <FieldWrapper className="property-filter__operator">
+            <DropDownSelect
+              disabled={!property || operatorChoices.length < 2}
+              onChange={({ target: { value } }) => setOperator(value)}
+              options={operatorChoices}
+              value={operator}
+            />
+          </FieldWrapper>
           <FormContext.Provider value={form}>
             <FormField
               className="property-filter__value"
@@ -156,14 +164,6 @@ const PropertyFilter = ({
               variant="edit"
             />
           </FormContext.Provider>
-          <FieldWrapper className="property-filter__operator">
-            <DropDownSelect
-              disabled={!property || operatorChoices.length < 2}
-              onChange={({ target: { value } }) => setOperator(value)}
-              options={operatorChoices}
-              value={operator}
-            />
-          </FieldWrapper>
 
         </div>
       </div>

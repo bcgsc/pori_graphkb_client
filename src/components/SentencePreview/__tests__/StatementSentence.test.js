@@ -11,40 +11,42 @@ describe('StatementSentence', () => {
     const { getByText } = render(
       <StatementSentence />,
     );
-    expect(getByText(/\[conditions\]/)).toBeInTheDocument();
-    expect(getByText(/\[relevance\]/)).toBeInTheDocument();
-    expect(getByText(/\[subject\]/)).toBeInTheDocument();
-    expect(getByText(/\[evidence\]/)).toBeInTheDocument();
+    expect(getByText(/\{conditions\}/)).toBeInTheDocument();
+    expect(getByText(/\{relevance\}/)).toBeInTheDocument();
+    expect(getByText(/\{subject\}/)).toBeInTheDocument();
+    expect(getByText(/\{evidence\}/)).toBeInTheDocument();
   });
 
   test('partial content ok', () => {
     const { getByText } = render(
       <StatementSentence
         content={{
-          conditions: [{ displayName: 'condition1' }, { displayName: 'condition2' }],
+          conditions: [
+            { displayName: 'condition1', '@class': 'Variant' },
+            { displayName: 'condition2', '@class': 'Disease' },
+          ],
         }}
       />,
     );
     expect(getByText('condition1')).toBeInTheDocument();
     expect(getByText('condition2')).toBeInTheDocument();
-    expect(getByText(/\[relevance\]/)).toBeInTheDocument();
-    expect(getByText(/\[subject\]/)).toBeInTheDocument();
-    expect(getByText(/\[evidence\]/)).toBeInTheDocument();
+    expect(getByText(/\{relevance\}/)).toBeInTheDocument();
+    expect(getByText(/\{subject\}/)).toBeInTheDocument();
+    expect(getByText(/\{evidence\}/)).toBeInTheDocument();
   });
 
   test('replaces all fields when given', () => {
     const { getByText } = render(
       <StatementSentence
         content={{
-          conditions: [{ displayName: 'KRAS mutation' }],
-          subject: { displayName: 'drugName' },
-          evidence: [{ displayName: 'PMID:1234' }],
-          relevance: { displayName: 'sensitivity' },
+          conditions: [{ displayName: 'KRAS mutation', '@class': 'CategoryVariant', '@rid': '1' }],
+          subject: { displayName: 'drugName', '@class': 'Therapy' },
+          evidence: [{ displayName: 'PMID:1234', '@class': 'Evidence' }],
+          relevance: { displayName: 'sensitivity', '@class': 'Vocabulary' },
         }}
       />,
     );
-    expect(getByText('KRAS')).toBeInTheDocument();
-    expect(getByText('mutation')).toBeInTheDocument();
+    expect(getByText('KRAS mutation')).toBeInTheDocument();
     expect(getByText('sensitivity')).toBeInTheDocument();
     expect(getByText('drugName')).toBeInTheDocument();
     expect(getByText('PMID:1234')).toBeInTheDocument();

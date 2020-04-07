@@ -13,6 +13,7 @@ const MAX_LABEL_LENGTH = 50;
  */
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
+    this.schemaDefn = SCHEMA_DEFN;
     this.schema = schema.schema;
     this.has = schema.has.bind(schema);
     this.get = schema.get.bind(schema);
@@ -38,30 +39,17 @@ class Schema {
    */
   @boundMethod
   getLabel(obj, truncate = true) {
-    let label;
+    let label = this.getPreview(obj);
 
-    if (obj) {
-      if (obj.displayNameTemplate) {
-        label = this.getPreview(obj);
+    if (label && obj['@rid'] && !label.includes(obj['@rid'])) {
+      label = `${label} (${obj['@rid']})`;
+    }
 
-        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
-        }
-        return label;
-      } if (obj.displayName || obj.name) {
-        label = obj.displayName || obj.name;
-
-        if (obj['@rid']) {
-          label = `${label} (${obj['@rid']})`;
-        }
-        return label;
+    if (label) {
+      if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
       }
-      if (obj.target) {
-        return this.getLabel(obj.target);
-      }
-      if (obj['@class']) {
-        return obj['@class'];
-      }
+      return label;
     }
     return obj;
   }
@@ -80,63 +68,7 @@ class Schema {
    * @param {Object} obj - Record to be parsed.
    */
   getPreview(obj) {
-    if (obj) {
-      if (obj.displayNameTemplate) {
-        const statementBuilder = (record) => {
-          if (record === undefined) {
-            return null;
-          }
-          const vals = Array.isArray(record) ? record : [record];
-          let label = '';
-          vals.forEach((val) => {
-            if (val) {
-              label = `${label}${val.displayName} `;
-            }
-          });
-          return label;
-        };
-
-        const implyBy = statementBuilder(obj.conditions);
-        const relevance = statementBuilder(obj.relevance);
-        const subject = statementBuilder(obj.subject);
-        const evidence = statementBuilder(obj.evidence);
-
-        const label = obj.displayNameTemplate
-          .replace('{conditions}', implyBy)
-          .replace('{relevance}', relevance)
-          .replace('{subject}', subject)
-          .replace('{evidence}', evidence);
-
-        return label;
-      }
-
-      if (obj.displayName || obj.name) {
-        let label;
-        label = obj.displayName || obj.name;
-
-        if (label.length > MAX_LABEL_LENGTH) {
-          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
-        }
-        if (obj['@rid']) {
-          label = `${label} (${obj['@rid']})`;
-        }
-        return label;
-      }
-      if (obj['@class']) {
-        const label = this.getPreview(this.get(obj));
-
-        if (label) {
-          return label;
-        }
-      }
-      if (obj['@rid']) {
-        return obj['@rid'];
-      }
-      if (Array.isArray(obj)) { // embedded link set
-        return obj.length;
-      }
-    }
-    return obj;
+    return this.schemaDefn.getPreview(obj);
   }
 
   /**
@@ -452,7 +384,6 @@ class Schema {
       'groups',
       'uuid',
       'displayName',
-      'displayNameTemplate',
     ];
 
     const showNested = [
@@ -464,9 +395,9 @@ class Schema {
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
-          return this.getLabel(data[propName]);
+          return this.getPreview(data[propName]);
         } if (data[propName]) {
-          return this.getLabel(data[propName][subPropName]);
+          return this.getPreview(data[propName][subPropName]);
         }
       }
       return '';
@@ -474,14 +405,13 @@ class Schema {
 
     const defns = [];
 
-    if (modelName !== 'Statement') {
-      defns.push({
-        colId: 'preview',
-        field: 'preview',
-        sortable: false,
-        valueGetter: ({ data }) => this.getLabel(data),
-      });
-    }
+    defns.push({
+      colId: 'preview',
+      field: 'preview',
+      sortable: false,
+      valueGetter: ({ data }) => this.getPreview(data, false),
+      hide: modelName === 'Statement',
+    });
 
     const propModels = Object.values(allProps)
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')

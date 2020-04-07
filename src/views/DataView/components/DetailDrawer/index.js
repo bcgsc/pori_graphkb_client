@@ -148,7 +148,7 @@ function DetailDrawer(props) {
       }
       if (name === 'displayNameTemplate') {
         name = 'Statement';
-        value = schema.getPreview(node);
+        value = schema.getLabel(node, false);
       }
       return (
         <TextRow
@@ -219,7 +219,7 @@ function DetailDrawer(props) {
     let errorMessage;
 
     try {
-      preview = schema.getPreview(node);
+      preview = schema.getLabel(node);
       // Only for kbp nodes so far.
     } catch (e) {
       preview = 'Invalid variant';

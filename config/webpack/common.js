@@ -231,7 +231,7 @@ const createBaseConfig = ({
       publicPath: '/',
     },
     devServer: {
-      host: 'localhost',
+      host: process.env.HOSTNAME || 'localhost',
       port: 3000,
       disableHostCheck: true,
       hot: true,

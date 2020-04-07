@@ -1,16 +1,15 @@
 import './index.scss';
 
 import propTypes from 'prop-types';
-import * as qs from 'qs';
 import React, {
   useCallback,
 } from 'react';
 
 import RecordForm from '@/components/RecordForm';
-import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
+import { FORM_VARIANT } from '@/components/util';
 import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
-import handleErrorSaveLocation from '@/services/util';
+import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
@@ -36,16 +35,10 @@ const NewRecordView = (props) => {
   /**
    * Handles the redirect if an error occurs in the child component
    */
-  const handleError = useCallback(({ error = {}, content = null }) => {
-    const { name, message } = error;
-
-    if (name === 'RecordExistsError' && content) {
-      // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(content));
-      history.push(`/data/table?${search}`, { search, content });
-    } else {
-      handleErrorSaveLocation({ name, message }, history);
-    }
+  const handleError = useCallback(({ error = {} }) => {
+    const { name } = error;
+    const massagedMsg = util.massageRecordExistsError(error);
+    util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
   let innerComponent = null;

@@ -196,7 +196,7 @@ describe('DetailDrawer', () => {
     test('displays title and fields correctly', () => {
       const { getByText } = dom;
 
-      const statementProps = ['statementNode (#12:0)', 'Conditions', 'Source ID', 'Source', 'Metadata', 'Relationships'];
+      const statementProps = ['Conditions', 'Source ID', 'Source', 'Metadata', 'Relationships'];
       statementProps.forEach((prop) => {
         expect(getByText(prop)).toBeInTheDocument();
       });

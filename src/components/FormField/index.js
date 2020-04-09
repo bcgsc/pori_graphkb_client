@@ -202,6 +202,15 @@ const FormField = ({
 
     if (linkedClass && linkedClass.isAbstract) {
       autoProps.linkedClassName = linkedClass.name;
+
+      // special case (KBDEV-790) to improve user inputs
+      if (name === 'conditions' && linkedClass.name === 'Biomarker') {
+        autoProps.filterOptions = [
+          ...schema.schema.Variant.descendantTree(false).map(m => m.name),
+          'Disease',
+        ];
+        autoProps.defaultFilterClassName = 'Variant';
+      }
       propComponent = (
         <FilteredRecordAutocomplete
           {...autoProps}

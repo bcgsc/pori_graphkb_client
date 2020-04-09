@@ -33,6 +33,7 @@ const FilteredRecordAutocomplete = ({
   isMulti,
   DetailChipProps,
   helperText,
+  filterOptions,
   error,
   name,
   ...rest
@@ -75,7 +76,7 @@ const FilteredRecordAutocomplete = ({
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
-            options={[...model.descendantTree(false).map(m => m.name)]}
+            options={filterOptions || [...model.descendantTree(false).map(m => m.name)]}
             value={selectedClassName}
           />
         )}
@@ -94,7 +95,7 @@ const FilteredRecordAutocomplete = ({
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
             : `Search for an Existing ${selectedClassName} Record`
-            }
+          }
           searchHandler={searchHandler}
         />
       </div>
@@ -110,6 +111,7 @@ FilteredRecordAutocomplete.propTypes = {
   defaultFilterClassName: PropTypes.string,
   disabled: PropTypes.bool,
   error: PropTypes.bool,
+  filterOptions: PropTypes.arrayOf(PropTypes.string),
   helperText: PropTypes.string,
   isMulti: PropTypes.bool,
 };
@@ -117,6 +119,7 @@ FilteredRecordAutocomplete.propTypes = {
 FilteredRecordAutocomplete.defaultProps = {
   disabled: false,
   defaultFilterClassName: '',
+  filterOptions: null,
   isMulti: false,
   helperText: '',
   error: false,

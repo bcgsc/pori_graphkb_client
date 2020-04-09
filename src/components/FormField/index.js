@@ -208,6 +208,7 @@ const FormField = ({
         autoProps.filterOptions = [
           ...schema.schema.Variant.descendantTree(false).map(m => m.name),
           'Disease',
+          'CatalogueVariant',
         ];
         autoProps.defaultFilterClassName = 'Variant';
       }

@@ -152,7 +152,6 @@ FormLayout.defaultProps = {
     'reviews',
     'refSeq',
     'email',
-    'signedLicenseAt',
   ],
   disabled: false,
   belowFold: ['deprecated', 'history'],

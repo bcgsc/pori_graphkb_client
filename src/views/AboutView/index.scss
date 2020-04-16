@@ -19,10 +19,11 @@
     h2,
     h3,
     h4 {
-      text-align: center;
       margin-bottom: 20px;
+      text-align: center;
     }
-    > * {
+
+    >* {
       margin-left: auto;
       margin-right: auto;
       max-width: $readable-max;
@@ -42,7 +43,7 @@
       display: flex;
       justify-content: center;
 
-      > * {
+      >* {
         margin-left: 10px;
         margin-right: 10px;
       }
@@ -126,10 +127,12 @@
 
   .pie-chart {
     max-height: calc(100vw - 60px);
+
     text {
       fill: $palette__common--white;
     }
   }
+
   @media (max-width: #{$breakpoint-med}) {
     .pie-chart {
       display: none;

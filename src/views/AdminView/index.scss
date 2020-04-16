@@ -1,7 +1,16 @@
 .admin {
   padding: 20px;
 
-  > * {
+  >* {
     margin-bottom: 20px;
+  }
+
+  &__email-all {
+    display: flex;
+    margin-bottom: 40px;
+
+    >* {
+      margin-left: auto;
+    }
   }
 }

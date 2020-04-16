@@ -4,8 +4,12 @@
 import './index.scss';
 
 import {
+  Button,
   Typography,
 } from '@material-ui/core';
+import {
+  MailOutline,
+} from '@material-ui/icons';
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 
@@ -64,11 +68,23 @@ class AdminView extends Component {
     return (
       <div className="admin">
         <Typography className="admin__headline" variant="h1">Admin</Typography>
+
         <AdminTable
           onChange={this.fetchData}
           records={users}
           variant="User"
         />
+        <div className="admin__email-all">
+          <a
+            href={`mailto:?subject=GraphKB&cc=graphkb@bcgsc.ca&bcc=${
+              users.filter(user => user.email).map(user => user.email).join(',')
+            }`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <Button variant="outlined"> <MailOutline /> &nbsp; mail all users</Button>
+          </a>
+        </div>
         <AdminTable
           onChange={this.fetchData}
           records={userGroups}

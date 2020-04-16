@@ -5,6 +5,12 @@
   height: 100%;
   padding: 0; // move the padding below the tabs
 
+  &__sign-off {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+  }
+
   &__content {
     margin-right: 5%;
     padding: $default-spacing;

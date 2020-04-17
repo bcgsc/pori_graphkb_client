@@ -14,8 +14,8 @@ import singleAutocomplete3 from '@/static/images/single-autocomplete-3.png';
 
 
 const AboutForms = () => (
-  <div className="about-page__content">
-    <Typography id="about-forms" variant="h1">
+  <>
+    <Typography id="about-forms" variant="h2">
         GraphKB Forms
     </Typography>
     <Typography paragraph>
@@ -24,7 +24,7 @@ const AboutForms = () => (
             core field types that you will encounter when interacting with
             GraphKB through this GUI:
     </Typography>
-    <Typography variant="h2">List Fields</Typography>
+    <Typography variant="h3">List Fields</Typography>
     <Typography paragraph>
             List fields are used for properties that are lists of
             strings. To use these, simply type the item you wish to add
@@ -34,7 +34,7 @@ const AboutForms = () => (
 
     </Typography>
     <img alt="List Fields" src={listFields} />
-    <Typography variant="h2">Link Fields</Typography>
+    <Typography variant="h3">Link Fields</Typography>
     <Typography paragraph>
             Some records in GraphKB are dependent on or reference others.
             To express these links in forms, a small query bar is
@@ -61,7 +61,7 @@ const AboutForms = () => (
         <img alt="selected link field" src={singleAutocomplete3} />
       </ListItem>
     </List>
-    <Typography variant="h2">Select Fields</Typography>
+    <Typography variant="h3">Select Fields</Typography>
     <Typography paragraph>
             Select fields are used to select an item from a set of
             options. Most selects are able to be set to a null/empty
@@ -70,7 +70,7 @@ const AboutForms = () => (
     </Typography>
 
     <img alt="Select Fields" src={selectFields} />
-  </div>
+  </>
 );
 
 export default AboutForms;

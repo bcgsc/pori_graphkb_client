@@ -114,15 +114,12 @@
   p,
   .about-version-info {
     font-size: 0.875rem;
+  }
+
+  .about-version-info {
     min-width: $readable-min;
     max-width: $readable-max;
     width: 700px;
-  }
-
-  img,
-  svg {
-    display: block;
-    max-width: $readable-max;
   }
 
 

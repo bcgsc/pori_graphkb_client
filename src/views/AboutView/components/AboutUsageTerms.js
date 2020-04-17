@@ -2,10 +2,6 @@ import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Checkbox,
   FormControlLabel,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Typography,
 } from '@material-ui/core';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,6 +14,8 @@ import ActionButton from '@/components/ActionButton';
 import { SecurityContext } from '@/components/SecurityContext';
 import api from '@/services/api';
 import { getUser } from '@/services/auth';
+
+import TableOfContext from './TableOfContents';
 
 const AboutUsageTerms = () => {
   const security = useContext(SecurityContext);
@@ -73,21 +71,7 @@ const AboutUsageTerms = () => {
       <Typography variant="h2">
         GraphKB Terms of Use
       </Typography>
-      <List>
-        {licenseContent.map((sectionDatum) => {
-          const anchorId = sectionDatum.id;
-          return (
-            <ListItem>
-              <ListItemIcon className="letter-icon">
-                {sectionDatum.label.slice(0, 1)}
-              </ListItemIcon>
-              <ListItemText>
-                <a href={`about/terms#${anchorId}`}> {sectionDatum.label}</a>
-              </ListItemText>
-            </ListItem>
-          );
-        })}
-      </List>
+      <TableOfContext baseRoute="about/terms" sections={licenseContent} />
       {licenseContent.map(sectionDatum => (
         <div>
           <Typography id={sectionDatum.id} variant="h3">

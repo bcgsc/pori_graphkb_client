@@ -12,8 +12,8 @@ import graphResults from '@/static/images/graph-view.png';
 
 
 const AboutGraphView = () => (
-  <div className="about-page__content">
-    <Typography id="about-results-graph" variant="h1">
+  <>
+    <Typography id="about-results-graph" variant="h2">
         Graph View
     </Typography>
     <Typography variant="body1">
@@ -26,7 +26,7 @@ const AboutGraphView = () => (
       alt="Graph"
       src={graphResults}
     />
-    <Typography id="about-results-graph" variant="h2">
+    <Typography id="about-results-graph" variant="h3">
         Graph Node Actions
     </Typography>
     <Typography variant="body1">
@@ -52,7 +52,7 @@ const AboutGraphView = () => (
         </List>
       </Typography>
     </div>
-  </div>
+  </>
 );
 
 export default AboutGraphView;

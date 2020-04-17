@@ -13,8 +13,8 @@ import queryResults from '@/static/images/table-view.png';
 
 
 const AboutQuerying = () => (
-  <div className="about-page__content">
-    <Typography id="about-page__querying" variant="h1">
+  <>
+    <Typography id="about-page__querying" variant="h2">
         Querying
     </Typography>
     <Typography paragraph variant="body2">
@@ -46,7 +46,7 @@ const AboutQuerying = () => (
         <Typography>This view is for advanced users and lets the user build their own queries from scratch. New users should start with one of the other two query views</Typography>
       </ListItem>
     </List>
-    <Typography id="about-results-table" variant="h2">
+    <Typography id="about-results-table" variant="h3">
       Viewing Results (Table)
     </Typography>
     <Typography>
@@ -57,12 +57,12 @@ const AboutQuerying = () => (
       Clicking any row in table view will open the details panel. From the details panel you can
       view or edit the record in a new window
     </Typography>
-    <Typography variant="h3">Configuring Table Options</Typography>
+    <Typography variant="h4">Configuring Table Options</Typography>
     <Typography paragraph>
       Clicking the top-right ellipsis to modify the visible columns or export the current table to a
       document
     </Typography>
-  </div>
+  </>
 );
 
 export default AboutQuerying;

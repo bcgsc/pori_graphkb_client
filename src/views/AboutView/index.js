@@ -15,13 +15,10 @@ import slugify from 'slugify';
 import { LocationPropType } from '@/components/types';
 
 import AboutClasses from './components/AboutClasses';
-import AboutForms from './components/AboutForms';
-import AboutGraphView from './components/AboutGraphView';
 import AboutMain from './components/AboutMain';
-import AboutNotation from './components/AboutNotation';
-import AboutQuerying from './components/AboutQuerying';
-import AboutStatements from './components/AboutStatements';
 import AboutUsageTerms from './components/AboutUsageTerms';
+import GettingStarted from './components/GettingStarted';
+import AboutNotation from './components/Notation';
 
 
 const AboutView = (props) => {
@@ -31,11 +28,8 @@ const AboutView = (props) => {
   const baseUri = '/about';
   const tabsList = [
     { label: 'About', component: AboutMain },
-    { label: 'Statements', component: AboutStatements },
+    { label: 'Getting Started', component: GettingStarted },
     { label: 'Classes', component: AboutClasses },
-    { label: 'Query', component: AboutQuerying },
-    { label: 'Graph View', component: AboutGraphView },
-    { label: 'Input Data', component: AboutForms },
     { label: 'Notation', component: AboutNotation },
     { label: 'Terms', component: AboutUsageTerms },
   ];

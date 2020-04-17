@@ -65,6 +65,7 @@ const AboutUsageTerms = () => {
     await api.post('/license/sign').request();
     snackbar.add('Signed the user agreement');
     setIsSigned(false);
+    setRequiresSigning(false);
   }, [snackbar]);
 
   return (
@@ -102,6 +103,7 @@ const AboutUsageTerms = () => {
           control={(
             <Checkbox
               checked={isSigned}
+              disabled={!requiresSigning}
               onChange={(_, value) => setIsSigned(value)}
             />
                     )}

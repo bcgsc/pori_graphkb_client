@@ -4,19 +4,49 @@ import { Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const chunkSentence = (sentence, words) => {
-  let chunkPositions = new Set([0, sentence.length]);
+  const chunksMap = new Map();
 
   words.forEach((word) => {
-    const index = sentence.indexOf(word);
+    const wordRegex = new RegExp(word, 'gi');
+    const currentIdxs = [];
+    let result;
 
-    if (index >= 0) {
-      chunkPositions.add(index);
-      chunkPositions.add(index + word.length);
+    // eslint-disable-next-line no-cond-assign
+    while (result = wordRegex.exec(sentence)) {
+      currentIdxs.push(result.index);
+    }
+
+    currentIdxs.forEach((index) => {
+      // Check if it already exists
+      if (chunksMap.get(index) === undefined) {
+        chunksMap.set(index, index + word.length); // New chunk
+      } else {
+        const currLength = chunksMap.get(index);
+        const newLength = index + word.length;
+        chunksMap.set(index, currLength < newLength ? newLength : currLength); // Take longest chunk
+      }
+    });
+  });
+
+  const ranges = [...chunksMap.entries()].sort((a, b) => a[0] - b[0]);
+  let lastPos;
+  let chunkPositions = [];
+  ranges.forEach((r) => {
+    if (!lastPos || r[0] > lastPos[1]) {
+      chunkPositions.push(lastPos = r);
+    } else if (r[1] > lastPos[1]) {
+      lastPos[1] = r[1];
     }
   });
-  chunkPositions = Array.from(chunkPositions).sort((a, b) => a - b);
+
+  // Add first and last index if not there
+  if (!chunkPositions.includes(0)) { chunkPositions.unshift(0); }
+  if (!chunkPositions.includes(sentence.length)) { chunkPositions.push([sentence.length]); }
+
+  // Flatten 2d array
+  chunkPositions = [].concat(...chunkPositions);
+
   const chunks = [];
 
   for (let index = 1; index < chunkPositions.length; index++) {

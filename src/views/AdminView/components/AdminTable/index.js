@@ -59,20 +59,28 @@ const AdminTable = ({ onChange, records, variant }) => {
     onChange();
   }, [onChange]);
 
+  const isUserTable = variant === 'User';
+
   const Row = (record) => {
     const {
-      '@rid': rid, name, createdAt, groups,
+      '@rid': rid, name, createdAt, groups, email, signedLicenseAt,
     } = record;
     return (
       <TableRow key={rid}>
         <TableCell padding="dense">{rid}</TableCell>
         <TableCell>{name}</TableCell>
+        {isUserTable && (
+          <>
+            <TableCell>
+              <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>
+            </TableCell>
+            <TableCell>{signedLicenseAt && new Date(signedLicenseAt).toLocaleString()}</TableCell>
+            <TableCell>{groups.map(group => group.name).join(', ')}</TableCell>
+          </>
+        )}
         <TableCell padding="dense">
           {new Date(createdAt).toLocaleString()}
         </TableCell>
-        {variant === 'User' && (
-        <TableCell>{groups.map(group => group.name).join(', ')}</TableCell>
-        )}
         <TableCell padding="checkbox">
           <IconButton onClick={() => handleOpenEditDialog(record)}>
             <EditIcon />
@@ -113,8 +121,14 @@ const AdminTable = ({ onChange, records, variant }) => {
             <TableRow className="admin-table__content-header">
               <TableCell padding="dense">Record ID</TableCell>
               <TableCell>Name</TableCell>
+              {isUserTable && (
+                <>
+                  <TableCell>Email</TableCell>
+                  <TableCell>License Signed At</TableCell>
+                  <TableCell>Groups</TableCell>
+                </>
+              )}
               <TableCell padding="dense">Created At</TableCell>
-              {variant === 'User' && (<TableCell>Groups</TableCell>)}
               <TableCell padding="checkbox" />
             </TableRow>
           </TableHead>

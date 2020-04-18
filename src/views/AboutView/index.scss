@@ -114,30 +114,14 @@
   p,
   .about-version-info {
     font-size: 0.875rem;
+  }
+
+  .about-version-info {
     min-width: $readable-min;
     max-width: $readable-max;
     width: 700px;
   }
 
-  img,
-  svg {
-    display: block;
-    max-width: $readable-max;
-  }
-
-  .pie-chart {
-    max-height: calc(100vw - 60px);
-
-    text {
-      fill: $palette__common--white;
-    }
-  }
-
-  @media (max-width: #{$breakpoint-med}) {
-    .pie-chart {
-      display: none;
-    }
-  }
 
   .record-classes-table__content-header {
     position: sticky;
@@ -150,22 +134,6 @@
       z-index: 1;
     }
   }
-}
-
-.letter-icon {
-  align-items: center;
-  background-color: $palette__secondary--main;
-  border-radius: 50%;
-  color: $palette__common--white;
-  display: flex;
-  font-family: $roboto;
-  font-size: 1rem;
-  font-weight: bold;
-  height: 50px;
-  justify-content: center;
-  margin-right: 16px;
-  min-width: 50px;
-  width: 50px;
 }
 
 .about-page__content {

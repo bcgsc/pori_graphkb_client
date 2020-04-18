@@ -1,0 +1,14 @@
+.getting-started {
+  &__card {
+    margin-bottom: 40px;
+    padding: 10px;
+
+    * {
+      max-width: 100%;
+    }
+
+    >p {
+      margin-bottom: 20px;
+    }
+  }
+}

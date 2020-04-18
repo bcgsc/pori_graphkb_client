@@ -31,17 +31,17 @@ const AboutView = (props) => {
     { label: 'Getting Started', component: GettingStarted },
     { label: 'Classes', component: AboutClasses },
     { label: 'Notation', component: AboutNotation },
-    { label: 'Terms', component: AboutUsageTerms },
+    { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
   ];
 
   const uriLookup = {};
 
   tabsList.forEach((tab, index) => {
     if (tab.slug === undefined) {
-      const slug = index === 0 ? '' : `/${slugify(tab.label).toLowerCase()}`;
-      tab.uri = `${baseUri}${slug}`;
-      uriLookup[tab.uri] = index;
+      tab.slug = index === 0 ? '' : `/${slugify(tab.label).toLowerCase()}`;
     }
+    tab.uri = `${baseUri}${tab.slug}`;
+    uriLookup[tab.uri] = index;
   });
 
   useEffect(() => {

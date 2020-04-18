@@ -32,7 +32,7 @@ const GettingStarted = () => {
   return (
     <div className="about-page__content getting-started">
       <TableOfContents baseRoute="about/getting-started" sections={sections} />
-      <Card className="getting-started__card" elevation={4} id="welcome">
+      <Card className="getting-started__card" elevation={3} id="welcome">
         <CardContent>
           <Typography variant="h2">Welcome to GraphKB</Typography>
           <Typography variant="body1">
@@ -44,7 +44,7 @@ const GettingStarted = () => {
           </Typography>
         </CardContent>
       </Card>
-      <Card className="getting-started__card" elevation={4} id="core-concepts">
+      <Card className="getting-started__card" elevation={3} id="core-concepts">
         <Typography variant="h2">Core Concepts</Typography>
         <Typography variant="body1">
           There are 3 main data types in GraphKB: Statements, Ontologies, and Variants.
@@ -124,16 +124,16 @@ const GettingStarted = () => {
           </ListItem>
         </List>
       </Card>
-      <Card className="getting-started__card" elevation={4} id="statement-examples">
+      <Card className="getting-started__card" elevation={3} id="statement-examples">
         <AboutStatements />
       </Card>
-      <Card className="getting-started__card" elevation={4} id="querying">
+      <Card className="getting-started__card" elevation={3} id="querying">
         <AboutQuerying />
       </Card>
-      <Card className="getting-started__card" elevation={4} id="adding-data">
+      <Card className="getting-started__card" elevation={3} id="adding-data">
         <AboutForms />
       </Card>
-      <Card className="getting-started__card" elevation={4} id="graph-view">
+      <Card className="getting-started__card" elevation={3} id="graph-view">
         <AboutGraphView />
       </Card>
     </div>

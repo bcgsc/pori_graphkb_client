@@ -138,8 +138,21 @@ FormLayout.propTypes = {
 };
 
 FormLayout.defaultProps = {
-  aboveFold: [CLASS_MODEL_PROP, 'displayName', 'name', 'groups', 'journalName', 'out', 'in',
-    'permissions', 'evidenceLevel', 'reviewStatus', 'reviews', 'refSeq'],
+  aboveFold: [
+    CLASS_MODEL_PROP,
+    'displayName',
+    'name',
+    'groups',
+    'journalName',
+    'out',
+    'in',
+    'permissions',
+    'evidenceLevel',
+    'reviewStatus',
+    'reviews',
+    'refSeq',
+    'email',
+  ],
   disabled: false,
   belowFold: ['deprecated', 'history'],
   className: '',

@@ -1,0 +1,18 @@
+@import '../../../../globals';
+@import '../../../../theme';
+
+.letter-icon {
+  align-items: center;
+  background-color: $palette__secondary--main;
+  border-radius: 50%;
+  color: $palette__common--white;
+  display: flex;
+  font-family: $roboto;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 50px;
+  justify-content: center;
+  margin-right: 16px;
+  min-width: 50px;
+  width: 50px;
+}

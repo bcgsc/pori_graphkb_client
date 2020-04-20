@@ -107,7 +107,7 @@ error text: ${message}`;
           {message}
         </Typography>
         <Typography paragraph>
-            Report this error in a {jiraLink} ticket or email us at
+            Report this error in a {jiraLink} ticket or email us at&nbsp;
           <EmailReportError
             body={errorDetails}
             linkText={EMAIL}

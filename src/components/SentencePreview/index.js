@@ -52,6 +52,9 @@ const chunkSentence = (sentence, words) => {
   for (let index = 1; index < chunkPositions.length; index++) {
     const prev = chunkPositions[index - 1];
     const curr = chunkPositions[index];
+
+    if (prev === curr) { continue; }
+
     chunks.push(sentence.slice(prev, curr));
   }
   return chunks;

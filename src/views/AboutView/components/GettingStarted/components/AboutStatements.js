@@ -1,57 +1,20 @@
 import {
-  List,
   ListItem,
   ListItemText,
   Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 
 const AboutStatements = () => (
-  <div className="about-page__content">
+  <>
     <Typography variant="h2">
-        Statements
+        Statement Examples
     </Typography>
-    <Typography paragraph>
-      Statements make up most of the interpretive content of GraphKB. Statements are decomposed sentences
-      which link conditions to a conclusion.There are four main elements to a
-      statement.&nbsp;
-      <Link to="/data/table?class=Statement">
-        Jump to the statements table view&nbsp;
-      </Link>
-      to look through examples of entered statements
-    </Typography>
-    <List>
-      <ListItem>
-        <ListItemText
-          primary="Subject"
-          secondary="This is the element which the relevance of the statement applies to"
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Relevance"
-          secondary="This adds meaning to a statement and applies to the previous element"
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Conditions"
-          secondary="This is the statement context. It is a series of required conditions for the statement to be applicable/true"
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemText
-          primary="Evidence"
-          secondary="One or more pieces of evidence (Literature, DB, etc) which support this statement"
-        />
-      </ListItem>
-    </List>
     <Typography paragraph>
       Somtimes it can be confusing how to decompose the content you want to enter into a statement.
-      Since there are recurring examples of statements being entered, we will go through some in
-      detail below.
+      There are recurring type of statements being entered, we will go through examples of some of
+      these types in detail below.
     </Typography>
     <Typography paragraph>
       Before a statement can be entered, all of the elements of the statement must first exist so that
@@ -91,7 +54,7 @@ const AboutStatements = () => (
         />
       </ListItem>
     </Typography>
-  </div>
+  </>
 );
 
 export default AboutStatements;

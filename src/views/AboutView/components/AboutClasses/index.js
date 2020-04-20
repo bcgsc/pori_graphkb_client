@@ -6,7 +6,7 @@ import React from 'react';
 
 import schema from '@/services/schema';
 
-import ClassDescription from './ClassDescription';
+import ClassDescription from './components/ClassDescription';
 
 
 const AboutClasses = () => {

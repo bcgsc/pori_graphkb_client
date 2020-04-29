@@ -58,6 +58,7 @@ const RecordForm = ({
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [isEdge, setIsEdge] = useState(false);
 
   const [fieldDefs, setFieldDefs] = useState({});
 
@@ -65,6 +66,7 @@ const RecordForm = ({
     if (modelName) {
       const { properties } = schema.get(modelName);
       setFieldDefs(properties);
+      setIsEdge(schema.isEdge(modelName));
     }
   }, [modelName]);
 
@@ -209,8 +211,6 @@ const RecordForm = ({
     setFormIsDirty(true);
   }, [formContent.reviews, setFormIsDirty, updateField]);
 
-  const isEdge = false; // TODO
-
   return (
 
     <Paper className="record-form__wrapper" elevation={4}>
@@ -265,7 +265,7 @@ const RecordForm = ({
         <FormLayout
           {...rest}
           collapseExtra
-          disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
+          disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && isEdge)}
           exclusions={FIELD_EXCLUSIONS}
           modelName={modelName}
           variant={variant}

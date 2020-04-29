@@ -13,9 +13,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -30,69 +29,37 @@ const MIN_WORD_LENGTH = 3;
  *
  * @property {Object} props.history - Application routing history object.
  */
-class QueryView extends Component {
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-  };
+const QueryView = ({ history }) => {
+  const [value, setValue] = useState('');
+  const [hgvs, setHgvs] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [variant, setVariant] = useState(null);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: '',
-      hgvs: false,
-      variantError: '',
-      keyWordError: '',
-      variant: {},
-    };
-  }
+  const searchKeyword = useCallback(() => {
+    if (value && !errorMessage) {
+      const payload = {
+        queryType: 'keyword',
+        target: 'Statement',
+        keyword: value,
+      };
 
-  @boundMethod
-  searchKeyword() {
-    const {
-      value,
-    } = this.state;
-    const { history } = this.props;
+      const searchChipProps = {
+        searchType: 'Quick',
+        keyword: value,
+      };
 
-    if (value) {
-      const trimmed = String(value)
-        .trim()
-        .toLowerCase()
-        .split(/\s+/)
-        .filter(word => word.length >= MIN_WORD_LENGTH);
-
-      if (!trimmed.length) {
-        this.setState({ keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters` });
-      } else {
-        const payload = {
-          queryType: 'keyword',
-          target: 'Statement',
-          keyword: trimmed.join(' '),
-        };
-
-        const searchChipProps = {
-          searchType: 'Quick',
-          keyword: trimmed.join(' '),
-        };
-
-        const search = api.encodeQueryComplexToSearch(payload, 'Statement', searchChipProps);
-        history.push({
-          pathname: '/data/table',
-          search,
-        });
-      }
+      const search = api.encodeQueryComplexToSearch(payload, 'Statement', searchChipProps);
+      history.push({
+        pathname: '/data/table',
+        search,
+      });
     }
-  }
+  }, [errorMessage, history, value]);
 
   /**
    * Stringifies all queryable properties of parsed variant.
    */
-  @boundMethod
-  searchByHGVS() {
-    const {
-      variant, value,
-    } = this.state;
-    const { history } = this.props;
-
+  const searchByHGVS = useCallback(() => {
     const trimmed = String(value)
       .trim()
       .toLowerCase()
@@ -122,64 +89,27 @@ class QueryView extends Component {
         search,
       });
     }
-  }
+  }, [history, value, variant]);
 
   /**
    * Calls submit function for currently active tab.
    */
-  @boundMethod
-  handleSubmit() {
-    const {
-      hgvs, variant, value,
-    } = this.state;
-
+  const handleSubmit = useCallback(() => {
     if (value) {
       if (hgvs) {
         if (variant || !value) {
-          this.searchByHGVS();
+          searchByHGVS();
         }
       } else {
-        this.searchKeyword();
+        searchKeyword();
       }
     }
-  }
+  }, [hgvs, searchByHGVS, searchKeyword, value, variant]);
 
-  /**
-   * Updates state from user input.
-   * @param {Event} event - user input event.
-   */
-  @boundMethod
-  handleChange(event, hgvsChecked = false) {
-    const { hgvs } = this.state;
-    const { target: { value } } = event;
-    let hgvsFlag = hgvsChecked
-      ? !hgvs
-      : hgvs;
 
-    if (value) {
-      // try to parse the variant notation
-      try {
-        const parsed = kbp.variant.parse(value);
-        this.setState({ variant: parsed, variantError: '', keyWordError: '' });
-
-        if (!hgvsChecked) {
-          this.setState({ hgvs: true });
-          hgvsFlag = true;
-        }
-      } catch (err) {
-        // if it was partially parsed use that result
-        if (hgvsFlag) {
-          if (err.content && err.content.parsed) {
-            const { content: { parsed: { variantString, ...parsed } } } = err;
-            this.setState({ variant: parsed, variantError: `${err || err.message}`, keyWordError: '' });
-          } else {
-            this.setState({ variant: null, variantError: `${err || err.message}`, keyWordError: '' });
-          }
-        }
-      }
-    }
-    if (!hgvsFlag) {
-      // check that the words are sufficient length
+  // validate
+  useEffect(() => {
+    if (!hgvs) {
       const trimmed = String(value)
         .trim()
         .toLowerCase()
@@ -187,84 +117,85 @@ class QueryView extends Component {
         .filter(word => word.length >= MIN_WORD_LENGTH);
 
       if (!trimmed.length) {
-        this.setState({
-          keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`,
-          variantError: '',
-        });
+        setErrorMessage(`Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`);
       } else {
-        this.setState({ keyWordError: '', variantError: '' });
+        setErrorMessage('');
+      }
+    } else {
+      try {
+        const parsed = kbp.variant.parse(value);
+        setErrorMessage('');
+        setVariant(parsed);
+      } catch (err) {
+      // if it was partially parsed use that result
+        if (err.content && err.content.parsed) {
+          const { content: { parsed: { variantString, ...parsed } } } = err;
+          setErrorMessage(`${err || err.message}`);
+          setVariant(parsed);
+        } else {
+          setErrorMessage(`${err || err.message}`);
+          setVariant(null);
+        }
       }
     }
+  }, [hgvs, value]);
 
-    this.setState({ value });
-  }
+  const handleClickHgvs = useCallback(() => {
+    setHgvs(!hgvs);
+  }, [hgvs]);
 
-  /**
-   * Handles the user clicking the HGVS checkbox.
-   * Toggles the current state of the flag
-   */
-  @boundMethod
-  handleClickHgvs() {
-    const { hgvs, value } = this.state;
-    this.setState({ hgvs: !hgvs });
+  const handleInputChange = useCallback((event) => {
+    const newValue = event.target.value;
 
-    if (value) {
-      this.handleChange({ target: { value } }, true);
+    if (newValue !== value) {
+      setValue(newValue);
     }
-  }
+  }, [value]);
 
-  render() {
-    const {
-      value,
-      hgvs,
-      variantError,
-      keyWordError,
-    } = this.state;
-
-    return (
-      <div className="search">
-        <div className="search__bar">
-          <div
-            className="search__main"
-            onKeyUp={event => event.keyCode === ENTER_KEYCODE && this.handleSubmit()}
-            role="textbox"
-            tabIndex={0}
-          >
-            <TextField
-              error={(variantError && hgvs) || keyWordError}
-              fullWidth
-              helperText={hgvs
-                ? variantError
-                : keyWordError
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton color="primary" onClick={this.handleSubmit}>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              onChange={this.handleChange}
-              placeholder={hgvs
-                ? 'Search Statements by HGVS Shorthand'
-                : 'Search Statements by Keyword'
-              }
-              value={value}
-            />
-            <FormControlLabel
-              checked={hgvs}
-              color="primary"
-              control={<Checkbox />}
-              label={<Typography className="search__sub-search" variant="h6">HGVS Shorthand</Typography>}
-              onChange={this.handleClickHgvs}
-            />
-          </div>
+  return (
+    <div className="search">
+      <div className="search__bar">
+        <div
+          className="search__main"
+          onKeyUp={event => event.keyCode === ENTER_KEYCODE && handleSubmit()}
+          role="textbox"
+          tabIndex={0}
+        >
+          <TextField
+            error={Boolean(errorMessage)}
+            fullWidth
+            helperText={errorMessage}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment>
+                  <IconButton color="primary" onClick={handleSubmit}>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleInputChange}
+            placeholder={hgvs
+              ? 'Search Statements by HGVS Shorthand'
+              : 'Search Statements by Keyword'
+            }
+            value={value}
+          />
+          <FormControlLabel
+            checked={hgvs}
+            color="primary"
+            control={<Checkbox />}
+            label={<Typography className="search__sub-search" variant="h6">HGVS Shorthand</Typography>}
+            onChange={handleClickHgvs}
+          />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+QueryView.propTypes = {
+  history: PropTypes.object.isRequired,
+};
 
 export default QueryView;

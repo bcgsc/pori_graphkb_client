@@ -37,7 +37,7 @@ const LoginView = lazy(() => import('@/views/LoginView'));
 const NewRecordView = lazy(() => import('@/views/NewRecordView'));
 const NewRecordSelectView = lazy(() => import('@/views/NewRecordSelectView'));
 const PopularSearchView = lazy(() => import('@/views/PopularSearchView'));
-const QueryView = lazy(() => import('@/views/QueryView'));
+const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 
 const {
@@ -109,7 +109,7 @@ const Main = () => {
               <Route component={ErrorView} exact path="/error" />
               <AuthenticatedRoute component={AboutView} path="/about" />
               <AuthenticatedRoute component={ActivityView} path="/activity" />
-              <AuthenticatedRoute component={QueryView} exact path="/query" />
+              <AuthenticatedRoute component={QuickSearch} exact path="/query" />
               <AuthenticatedRoute component={PopularSearchView} path="/query-popular" />
               <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
               <AuthenticatedRoute

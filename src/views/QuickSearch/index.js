@@ -1,5 +1,5 @@
 /**
- * @module /views/QueryView
+ * @module /views/QuickSearch
  */
 import './index.scss';
 
@@ -29,7 +29,7 @@ const MIN_WORD_LENGTH = 3;
  *
  * @property {Object} props.history - Application routing history object.
  */
-const QueryView = ({ history }) => {
+const QuickSearch = ({ history }) => {
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -194,8 +194,8 @@ const QueryView = ({ history }) => {
   );
 };
 
-QueryView.propTypes = {
+QuickSearch.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default QueryView;
+export default QuickSearch;

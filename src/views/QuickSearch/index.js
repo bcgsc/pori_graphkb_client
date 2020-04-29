@@ -4,6 +4,7 @@
 import './index.scss';
 
 import kbp from '@bcgsc/knowledgebase-parser';
+import kbSchema from '@bcgsc/knowledgebase-schema';
 import {
   Checkbox,
   FormControlLabel,
@@ -56,6 +57,7 @@ const QuickSearch = ({ history }) => {
     }
   }, [errorMessage, history, value]);
 
+
   /**
    * Stringifies all queryable properties of parsed variant.
    */
@@ -97,19 +99,25 @@ const QuickSearch = ({ history }) => {
   const handleSubmit = useCallback(() => {
     if (value) {
       if (hgvs) {
-        if (variant || !value) {
+        if (variant) {
           searchByHGVS();
         }
+      } else if (kbSchema.util.looksLikeRID(value)) {
+        history.push({
+          pathname: `/view/${value.replace(/^#/, '')}`,
+        });
       } else {
         searchKeyword();
       }
     }
-  }, [hgvs, searchByHGVS, searchKeyword, value, variant]);
+  }, [hgvs, history, searchByHGVS, searchKeyword, value, variant]);
 
 
   // validate
   useEffect(() => {
-    if (!hgvs) {
+    if (!value) {
+      setErrorMessage('');
+    } else if (!hgvs) {
       const trimmed = String(value)
         .trim()
         .toLowerCase()

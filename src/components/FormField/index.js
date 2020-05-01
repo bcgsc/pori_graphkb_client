@@ -200,7 +200,7 @@ const FormField = ({
       },
     };
 
-    if (linkedClass && linkedClass.isAbstract) {
+    if (linkedClass && linkedClass.isAbstract && !disabled) {
       autoProps.linkedClassName = linkedClass.name;
 
       // special case (KBDEV-790) to improve user inputs

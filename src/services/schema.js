@@ -175,6 +175,10 @@ class Schema {
       && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));
   }
 
+  isEdge(cls) {
+    return this.isSubclass(cls, 'E');
+  }
+
   /**
    * Validates a value against some property model and returns the new property tracking object
    */

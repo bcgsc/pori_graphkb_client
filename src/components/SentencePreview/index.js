@@ -8,13 +8,18 @@ const chunkSentence = (sentence, words) => {
   const chunksMap = new Map();
 
   words.forEach((word) => {
-    const wordRegex = new RegExp(word, 'gi');
     const currentIdxs = [];
-    let result;
+    let startIndex = 0;
 
     // eslint-disable-next-line no-cond-assign
-    while (result = wordRegex.exec(sentence)) {
-      currentIdxs.push(result.index);
+    while (startIndex < sentence.length) {
+      startIndex = sentence.indexOf(word, startIndex);
+
+      if (startIndex < 0) {
+        break;
+      }
+      currentIdxs.push(startIndex);
+      startIndex += 1;
     }
 
     currentIdxs.forEach((index) => {

@@ -125,7 +125,7 @@ const createBaseConfig = ({
       template: path.resolve(SRC_PATH, 'static/index.html'),
       filename: 'index.html',
       inject: true,
-      favicon: path.resolve(SRC_PATH, 'static/favicon.ico'),
+      favicon: path.resolve(SRC_PATH, 'static/favicon/favicon.ico'),
       minify: {
         removeComments: false,
       },

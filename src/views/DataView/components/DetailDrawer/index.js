@@ -267,9 +267,6 @@ function DetailDrawer(props) {
         >
           <ListItemText
             primary={<Typography>Metadata</Typography>}
-            primaryTypographyProps={{
-              color: metadataIsOpen ? 'secondary' : 'default',
-            }}
           />
           {!metadataIsOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </ListItem>

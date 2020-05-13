@@ -18,7 +18,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
@@ -72,7 +71,7 @@ const QuickSearch = ({ history }) => {
       const HGVSQuery = {
         target: 'Statement',
         filters: {
-          conditions: api.buildSearchFromParseVariant(schema, variant),
+          conditions: { queryType: 'keyword', keyword: value, target: 'PositionalVariant' },
           operator: 'CONTAINSANY',
         },
       };

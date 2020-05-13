@@ -595,9 +595,6 @@ class DataTable extends React.Component {
             resizable: true,
             width: 150,
           }}
-          // frameworkComponents={{
-          //   RecordList,
-          // }}
           infiniteInitialRowCount={1}
           maxBlocksInCache={0}
           maxConcurrentDatasourceRequests={1}

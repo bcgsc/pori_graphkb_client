@@ -65,15 +65,12 @@ function RelationshipList(props) {
             >
               <ListItemIcon>
                 <div style={{ display: 'inline-flex' }}>
-                  <LinkIcon color={isOpen ? 'secondary' : 'action'} />
+                  <LinkIcon color="action" />
                 </div>
               </ListItemIcon>
               <ListItemText
                 className="detail-li-text"
                 primary={<Typography variant="subtitle1">{preview}</Typography>}
-                primaryTypographyProps={{
-                  color: isOpen ? 'secondary' : 'default',
-                }}
                 secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
               />
               {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}

@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -112,10 +113,36 @@ const VariantForm = ({
   );
   const snackbar = useContext(SnackbarContext);
   const controllers = useRef([]);
+  const [model, setModel] = useState(null);
 
   const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
   const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS;
+
+  useEffect(() => {
+    const newModel = hasPositions
+      ? {
+        name: PositionalVariant.name,
+        properties: {
+          ...PositionalVariant.properties,
+          break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
+          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
+          refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
+          untemplatedSeq: {
+            ...PositionalVariant.properties.untemplatedSeq,
+            mandatory: isSubstitution,
+          },
+        },
+      }
+      : {
+        name: CategoryVariant.name,
+        properties: {
+          ...CategoryVariant.properties,
+          reference2: { ...CategoryVariant.properties.reference2, mandatory: isFusion },
+        },
+      };
+    setModel(newModel);
+  }, [hasPositions, isSubstitution, isFusion]);
 
   /**
    * Handler for submission of a new (or updates to an existing) record
@@ -161,29 +188,7 @@ const VariantForm = ({
     }
   }, [onError, onSubmit, snackbar]);
 
-  const model = hasPositions
-    ? {
-      name: PositionalVariant.name,
-      properties: {
-        ...PositionalVariant.properties,
-        break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
-        reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
-        refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
-        untemplatedSeq: {
-          ...PositionalVariant.properties.untemplatedSeq,
-          mandatory: isSubstitution,
-        },
-      },
-    }
-    : {
-      name: CategoryVariant.name,
-      properties: {
-        ...CategoryVariant.properties,
-        reference2: { ...CategoryVariant.properties.reference2, mandatory: isFusion },
-      },
-    };
-
-  return (
+  return model && (
     <SteppedForm
       className="new-variant"
       formVariant={formVariant}
@@ -219,6 +224,7 @@ const VariantForm = ({
         <BreakpointForm
           coordinateType={coordinateType}
           end={hasPositions && 'break1End'}
+          model={model}
           reference="reference1"
           start={hasPositions && 'break1Start'}
         />
@@ -231,6 +237,7 @@ const VariantForm = ({
           <BreakpointForm
             coordinateType={coordinateType}
             end={hasPositions && 'break2End'}
+            model={model}
             reference={isFusion && 'reference2'}
             start={hasPositions && 'break2Start'}
           />

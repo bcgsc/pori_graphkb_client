@@ -4,6 +4,7 @@ import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
 import FormContext from '@/components/FormContext';
+import schema from '@/services/schema';
 
 import BreakpointForm from '..';
 
@@ -14,6 +15,7 @@ describe('BreakpointForm', () => {
       <BreakpointForm
         coordinateType="GenomicPosition"
         end="break1End"
+        model={schema.schema.PositionalVariant}
         reference="reference1"
         start="break1Start"
       />,
@@ -29,6 +31,7 @@ describe('BreakpointForm', () => {
         <BreakpointForm
           coordinateType="GenomicPosition"
           end="break1End"
+          model={schema.schema.PositionalVariant}
           reference="reference1"
           start="break1Start"
         />
@@ -46,6 +49,7 @@ describe('BreakpointForm', () => {
         <BreakpointForm
           coordinateType="GenomicPosition"
           end="break1End"
+          model={schema.schema.PositionalVariant}
           reference="reference1"
           start="break1Start"
         />
@@ -61,7 +65,11 @@ describe('BreakpointForm', () => {
 
   test('displays only gene when start not given', () => {
     const { getByText, queryByText } = render(
-      <BreakpointForm coordinateType="GenomicPosition" reference="reference1" />,
+      <BreakpointForm
+        coordinateType="GenomicPosition"
+        model={schema.schema.PositionalVariant}
+        reference="reference1"
+      />,
     );
     expect(getByText(/\breference\b/)).toBeInTheDocument();
     expect(queryByText('position (GenomicPosition)')).not.toBeInTheDocument();

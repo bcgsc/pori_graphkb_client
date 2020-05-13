@@ -47,7 +47,7 @@ const AdminView = () => {
     let controller;
 
     const getData = async () => {
-      controller = api.post('/query', { target: 'UserGroups', neighbors: 2 });
+      controller = api.post('/query', { target: 'UserGroup', neighbors: 2 });
       const result = await controller.request();
       setGroups(result);
       setGroupRefresh(false);

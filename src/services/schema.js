@@ -291,7 +291,7 @@ class Schema {
 
     const defineLinkSetColumn = (name) => {
       const colId = name;
-      const getLinkData = ({ data }) => data && (data[name] || []);
+      const getLinkData = ({ data }) => data && (data[name] || []).map(this.getPreview);
 
       return {
         colId,
@@ -299,7 +299,6 @@ class Schema {
         sortable: false,
         valueGetter: getLinkData,
         width: linkChipWidth,
-        cellRenderer: 'RecordList',
       };
     };
 
@@ -314,6 +313,9 @@ class Schema {
           && !val['@class'].toLowerCase().includes('disease')
           && (!data.subject || (data.subject['@rid'] !== val['@rid']))
         ));
+      }
+      if (values) {
+        return values.map(v => this.getPreview(v));
       }
       return values;
     };
@@ -333,7 +335,6 @@ class Schema {
           valueGetter: getCondition(cls),
           sortable: false,
           width: cls === 'other' ? 150 : linkChipWidth,
-          cellRenderer: 'RecordList',
         };
 
         conditionsDefn.children.push(colDef);
@@ -354,7 +355,7 @@ class Schema {
         colId = this.get(colId).reverseName;
       }
 
-      const getEdgeData = ({ data }) => data && (data[name] || []).map(edge => edge[target]);
+      const getEdgeData = ({ data }) => data && (data[name] || []).map(edge => this.getPreview(edge[target]));
 
       return {
         colId,
@@ -362,7 +363,6 @@ class Schema {
         sortable: false,
         valueGetter: getEdgeData,
         width: linkChipWidth,
-        cellRenderer: 'RecordList',
       };
     };
 

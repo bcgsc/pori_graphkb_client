@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import RecordIdLink from '@/components/RecordIdLink';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -75,7 +76,9 @@ function LinkEmbeddedPropList(props) {
                         {util.antiCamelCase(item)}
                       </Typography>
                       <Typography>
-                        {value[identifiers[index]]}
+                        {item === '@rid'
+                          ? <RecordIdLink recordClass={value['@class']} recordId={value[item]} />
+                          : value[identifiers[index]]}
                       </Typography>
                     </div>
                   </ListItemText>

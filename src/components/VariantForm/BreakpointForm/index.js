@@ -10,8 +10,6 @@ import FormField from '@/components/FormField';
 import schema from '@/services/schema';
 
 
-const { schema: { PositionalVariant: { properties: { reference1, break1Start } } } } = schema;
-
 /**
  * Handles the form for a single breakpoint (start and end) with the reference element it is
  * associated with
@@ -26,7 +24,7 @@ const { schema: { PositionalVariant: { properties: { reference1, break1Start } }
  * @param {bool} props.required flag to indicate this field is required
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, required,
+  coordinateType, reference, start, end, required, model,
 }) => {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -45,7 +43,7 @@ const BreakpointForm = ({
         <FormField
           initialFilterClass="Feature"
           label="reference"
-          model={{ ...reference1, required, name: reference }}
+          model={{ ...model.properties.reference1, required, name: reference }}
         />
       )}
       {start && (
@@ -66,7 +64,7 @@ const BreakpointForm = ({
             clearable={false}
             label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
             model={{
-              ...break1Start,
+              ...model.properties.break1Start,
               name: start,
               mandatory: required,
               linkedClass: schema.get(coordinateType),
@@ -79,7 +77,7 @@ const BreakpointForm = ({
             clearable={false}
             label={`end (${coordinateType})`}
             model={{
-              ...break1Start,
+              ...model.properties.break1Start,
               name: end,
               mandatory: required,
               linkedClass: schema.get(coordinateType),
@@ -95,6 +93,9 @@ const BreakpointForm = ({
 
 BreakpointForm.propTypes = {
   coordinateType: PropTypes.string.isRequired,
+  model: PropTypes.shape({
+    properties: PropTypes.object.isRequired,
+  }).isRequired,
   reference: PropTypes.string.isRequired,
   end: PropTypes.string,
   required: PropTypes.bool,

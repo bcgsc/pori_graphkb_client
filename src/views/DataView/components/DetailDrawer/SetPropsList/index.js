@@ -14,6 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import RecordIdLink from '@/components/RecordIdLink';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -67,10 +68,10 @@ function SetPropsList(props) {
               <div className="nested-spacer" />
               <ListItemText className="detail-li-text">
                 <div className="detail-identifiers-linkset">
-                  <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                  <Typography color="textSecondary">
                     {util.antiCamelCase(item['@class'])}
                   </Typography>
-                  <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                  <Typography color="textSecondary">
                     {schema.getLabel(item)}
                   </Typography>
                 </div>
@@ -87,7 +88,9 @@ function SetPropsList(props) {
                           {util.antiCamelCase(propName)}
                         </Typography>
                         <Typography variant="h6">
-                          {item[propName]}
+                          {propName === '@rid'
+                            ? <RecordIdLink recordClass={item['@class']} recordId={item[propName]} />
+                            : item[propName]}
                         </Typography>
                       </div>
                     </ListItemText>

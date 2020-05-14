@@ -211,6 +211,12 @@ const FormField = ({
           'CatalogueVariant',
         ];
         autoProps.defaultFilterClassName = 'Variant';
+      } if (name === 'reference1') {
+        autoProps.filterOptions = [
+          'Signature',
+          'Feature',
+        ];
+        autoProps.defaultFilterClassName = 'Feature';
       }
       propComponent = (
         <FilteredRecordAutocomplete

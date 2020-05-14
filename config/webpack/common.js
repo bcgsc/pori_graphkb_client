@@ -228,6 +228,7 @@ const createBaseConfig = ({
     output: {
       path: outputPath,
       filename: 'static/js/[name].bundle.js',
+      chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
       publicPath: '/',
     },
     devServer: {

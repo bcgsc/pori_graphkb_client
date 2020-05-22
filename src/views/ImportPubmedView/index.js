@@ -2,6 +2,7 @@ import './index.scss';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
+  CircularProgress,
   Typography,
 } from '@material-ui/core';
 import { titleCase } from 'change-case';
@@ -10,6 +11,7 @@ import React, {
   useCallback, useContext,
   useEffect, useRef, useState,
 } from 'react';
+import { useDebounce } from 'use-debounce';
 
 import handleErrorSaveLocation from '@/services/util';
 
@@ -38,7 +40,10 @@ const ImportPubmedView = (props) => {
   const { history } = props;
   const snackbar = useContext(SnackbarContext);
   const [errorText, setErrorText] = useState('');
-  const [pmid, setPmid] = useState('');
+  const [text, setText] = useState('');
+  const [externalRecord, setExternalRecord] = useState(null);
+  const [pmid] = useDebounce(text, 1000);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [currentRecords, setCurrentRecords] = useState([]);
   const [source, setSource] = useState('');
@@ -70,8 +75,8 @@ const ImportPubmedView = (props) => {
     let call;
 
     const fetchRecords = async () => {
-      if (pmid) {
-        call = createPubmedQuery(pmid);
+      if (text) {
+        call = createPubmedQuery(text);
 
         try {
           const records = await call.request();
@@ -85,7 +90,20 @@ const ImportPubmedView = (props) => {
     fetchRecords();
 
     return () => call && call.abort();
-  }, [history, pmid]);
+  }, [history, text]);
+
+  // fetch details from PUBMED
+  useEffect(() => {
+    const getContent = async () => {
+      const call = api.get(`/extensions/pubmed/${pmid}`);
+      controllers.current.push(call);
+      const record = await call.request();
+      setExternalRecord(record);
+      setIsLoading(false);
+    };
+    getContent();
+  }, [pmid]);
+
 
   useEffect(() => {
     controllers.current.forEach(c => c && c.abort());
@@ -93,12 +111,9 @@ const ImportPubmedView = (props) => {
 
   // fetch records that do not already exist in GraphKB
   const handleImport = useCallback(async () => {
-    if (pmid && currentRecords && currentRecords.length === 0) {
+    if (externalRecord) {
       try {
-        const call = api.get(`/extensions/pubmed/${pmid}`);
-        controllers.current.push(call);
-        const record = await call.request();
-        const newCall = api.post('/publications', { ...record, source });
+        const newCall = api.post('/publications', { ...externalRecord, source });
         controllers.current.push(newCall);
         const result = await newCall.request();
         snackbar.add(`created the new publication record ${result['@rid']}`);
@@ -107,16 +122,21 @@ const ImportPubmedView = (props) => {
         handleErrorSaveLocation(err, history);
       }
     }
-  }, [pmid, currentRecords, source, snackbar, history]);
+  }, [externalRecord, source, snackbar, history]);
 
-  const handleTextChange = (value) => {
+  const handleTextChange = useCallback((value) => {
+    if (text) {
+      setIsLoading(true);
+    }
+    setExternalRecord(null);
+
     if (/^\d*$/.exec(`${value}`)) {
       setErrorText('');
-      setPmid(value);
+      setText(value);
     } else {
       setErrorText('PubMed IDs must be only numbers');
     }
-  };
+  }, [text]);
 
   return (
     <div className="import-view">
@@ -129,7 +149,7 @@ const ImportPubmedView = (props) => {
         helperText={errorText}
         onChange={handleTextChange}
         placeholder="Enter a PubMed ID ex. 1234"
-        value={pmid}
+        value={text}
       />
       {currentRecords.map(rec => (
         <PubmedCard
@@ -141,11 +161,16 @@ const ImportPubmedView = (props) => {
           title={titleCase(rec.name)}
         />
       ))}
-      {(!currentRecords || !currentRecords.length) && pmid && (
+      {isLoading && <CircularProgress className="import-view__progress" />}
+      {(!currentRecords || !currentRecords.length) && externalRecord && (
         <PubmedCard
-          key={pmid}
+          key={text}
+          abstract={externalRecord.description}
+          journalName={externalRecord.journalName}
           onClick={handleImport}
-          sourceId={pmid}
+          sourceId={text}
+          title={titleCase(externalRecord.name)}
+
         />
       )}
     </div>

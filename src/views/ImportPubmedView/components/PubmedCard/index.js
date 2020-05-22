@@ -12,10 +12,8 @@ import { Link } from 'react-router-dom';
 
 import schema from '@/services/schema';
 
-import IFrame from '../IFrameLink';
 
-
-const PUBMED_BASE_URL = 'https://www.ncbi.nlm.nih.gov/pubmed';
+const PUBMED_BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov';
 
 /**
  * @param {Object} props
@@ -33,18 +31,14 @@ const PubmedCard = ({
       <Typography color="textSecondary">
         PMID:{sourceId}
       </Typography>
+      <a href={`${PUBMED_BASE_URL}/${sourceId}`} rel="noopener noreferrer" target="_blank">
+        {`${PUBMED_BASE_URL}/${sourceId}`}
+      </a>
       {title && (<Typography className="pubmed-card__title" variant="h2">{title}</Typography>)}
       {journalName && (
         <Typography variant="subtitle1">
           {journalName}
         </Typography>
-      )}
-      {!recordId && (
-        <IFrame
-          className="pubmed-iframe"
-          title={`Article Preview for ${sourceId}`}
-          url={`${PUBMED_BASE_URL}/${sourceId}`}
-        />
       )}
     </CardContent>
     <CardActions className="pubmed-card__actions">

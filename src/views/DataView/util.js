@@ -101,19 +101,9 @@ const getPopularChipsPropsAndSearch = async (searchProps, modelName) => {
   } = searchProps;
   const selectedOption = SEARCH_OPTS[variant][searchIndex];
 
-  if (selectedOption.buildSearch) {
-    await selectedOption.buildSearch(value, optionalValue);
-  }
-
-  const { search: rawSearch, searchChipProps } = selectedOption;
-  const search = api.encodeQueryComplexToSearch(rawSearch, modelName);
-
-  const chipProps = {};
-
-  Object.keys(searchChipProps).forEach((key) => {
-    chipProps[key] = searchChipProps[key];
-  });
-
+  const chipProps = selectedOption.searchChipProps(value, optionalValue);
+  const query = selectedOption.search(value, optionalValue);
+  const search = api.encodeQueryComplexToSearch(query, modelName);
   return { search, chipProps };
 };
 

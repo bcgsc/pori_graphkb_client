@@ -94,7 +94,7 @@ function SearchInput(props) {
           size="large"
           variant="contained"
         >
-              Search
+          Search
         </ActionButton>
       </div>
 

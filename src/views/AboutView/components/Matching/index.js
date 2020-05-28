@@ -202,7 +202,7 @@ const MatchView = (props) => {
 
   return (
     <div className="match-view">
-      <Typography className="match-view__title" variant="h1">
+      <Typography className="match-view__title" variant="h2">
         Visualize GraphKB (python) Matching
       </Typography>
       <Typography className="match-view__description" variant="subtitle1">

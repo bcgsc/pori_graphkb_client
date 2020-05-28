@@ -4,13 +4,13 @@
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { CssBaseline } from '@material-ui/core';
 import {
-  createMuiTheme,
+  createGenerateClassName, createMuiTheme,
+  jssPreset,
   MuiThemeProvider,
+  StylesProvider,
 } from '@material-ui/core/styles';
-import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/styles';
 import { create } from 'jss';
 import React from 'react';
-import JssProvider from 'react-jss/lib/JssProvider';
 import { BrowserRouter } from 'react-router-dom';
 
 import * as cssTheme from './_theme.scss';
@@ -71,17 +71,15 @@ const jss = create({
  */
 function App() {
   return (
-    <StylesProvider injectFirst>
+    <StylesProvider generateClassName={generateClassName} injectFirst jss={jss}>
       <CssBaseline />
-      <JssProvider generateClassName={generateClassName} jss={jss}>
-        <MuiThemeProvider theme={theme}>
-          <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-            <BrowserRouter>
-              <MainView />
-            </BrowserRouter>
-          </SnackbarProvider>
-        </MuiThemeProvider>
-      </JssProvider>
+      <MuiThemeProvider theme={theme}>
+        <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+          <BrowserRouter>
+            <MainView />
+          </BrowserRouter>
+        </SnackbarProvider>
+      </MuiThemeProvider>
     </StylesProvider>
   );
 }

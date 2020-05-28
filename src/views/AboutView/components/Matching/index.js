@@ -244,7 +244,7 @@ const MatchView = (props) => {
             >
               {alertText}
             </Alert>
-            {matches.length && (
+            {matches.length > 0 && (
             <Button
               className="match-view__graph-view"
               data-testid="graph-view"

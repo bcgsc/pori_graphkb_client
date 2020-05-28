@@ -283,7 +283,7 @@ function DetailDrawer(props) {
         {!isEdge && (
           <>
             <ListSubheader className="detail-drawer__relationships-subheader">
-                Relationships
+              Relationships
             </ListSubheader>
             {!isEdge ? (
               <RelationshipList

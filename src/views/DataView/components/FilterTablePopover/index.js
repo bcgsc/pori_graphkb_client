@@ -26,7 +26,7 @@ function FilterTablePopover(props) {
           aria-label="Filter Group Icon"
           className="filter-row__avatar"
         >
-            FG
+          FG
         </Avatar>
       </div>
       <div className="filter-row__chips">

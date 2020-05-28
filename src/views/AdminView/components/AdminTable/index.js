@@ -107,7 +107,7 @@ const AdminTable = ({ onChange, records, variant }) => {
       />
       <div className="admin-table__header">
         <Typography variant="h2">
-            Current {variant}s ({records.length})
+          Current {variant}s ({records.length})
         </Typography>
         <div>
           <IconButton onClick={handleOpenNewDialog}>

@@ -450,7 +450,7 @@ class DataView extends React.Component {
           )}
           {URLContainsTable && (
             <Typography className="footer__total-rows" variant="body2">
-            Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
+              Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
             </Typography>
           )}
         </div>

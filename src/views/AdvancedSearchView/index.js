@@ -183,7 +183,7 @@ function AdvancedSearchView({ history }) {
       <Card className="advanced-search__filter-groups">
         <div className="filter-groups__header">
           <Typography variant="h5">
-          Active Filter Groups
+            Active Filter Groups
           </Typography>
         </div>
         <div className="filter-groups__content">
@@ -199,7 +199,7 @@ function AdvancedSearchView({ history }) {
             onClick={handleSubmit}
             requireConfirm={false}
           >
-           Search
+            Search
           </ActionButton>
         </div>
       </Card>

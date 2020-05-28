@@ -55,7 +55,7 @@ describe('ReviewDialog', () => {
   });
 
   test('displays comment box', () => {
-    expect(getByText('comment')).toBeInTheDocument();
+    expect(queryByText('comment')).toBeInTheDocument();
   });
 
   test('does not display createdBy input box', () => {

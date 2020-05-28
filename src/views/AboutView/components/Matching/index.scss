@@ -1,0 +1,36 @@
+@import '../../../../globals';
+@import '../../../../theme';
+
+.match-view {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $readable-max;
+  padding: $default-spacing;
+
+  &__description,
+  &__input,
+  &__matches-count-bar {
+    margin-bottom: $default-spacing;
+  }
+
+  &__matches-count-bar {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__graph-view {
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  &__matches {
+    display: flex;
+    flex-flow: wrap;
+    max-width: 100%;
+
+    &>* {
+      margin: 10px;
+    }
+  }
+}

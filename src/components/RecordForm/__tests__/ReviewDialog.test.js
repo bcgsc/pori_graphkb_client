@@ -26,6 +26,7 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
 describe('ReviewDialog', () => {
   let getByText;
   let queryByText;
+  let getAllByText;
 
   const onSubmitSpy = jest.fn();
   const onCancelSpy = jest.fn();
@@ -36,7 +37,7 @@ describe('ReviewDialog', () => {
   });
 
   beforeEach(() => {
-    ({ getByText, queryByText } = render(
+    ({ getByText, queryByText, getAllByText } = render(
       <SecurityContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
@@ -55,7 +56,10 @@ describe('ReviewDialog', () => {
   });
 
   test('displays comment box', () => {
-    expect(queryByText('comment')).toBeInTheDocument();
+    const commentNodes = getAllByText('comment');
+    expect(commentNodes).toHaveLength(2);
+    expect(commentNodes[0]).toBeInTheDocument();
+    expect(commentNodes[1]).toBeInTheDocument();
   });
 
   test('does not display createdBy input box', () => {

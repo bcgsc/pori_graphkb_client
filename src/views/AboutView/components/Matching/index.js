@@ -100,7 +100,7 @@ const ROOT_TERM_MAPPING = {
 const MatchView = (props) => {
   const { history } = props;
   const snackbar = useContext(SnackbarContext);
-  const [text, setText] = useState('amplification');
+  const [text, setText] = useState('');
   const [term] = useDebounce(text, 1000);
   const [termType, setTermType] = useState('Vocabulary');
   const [rootText, setRootText] = useState('');
@@ -254,7 +254,7 @@ const MatchView = (props) => {
               <TimelineIcon
                 color="primary"
               />
-               Graph View
+              Graph View
             </Button>
             )}
           </div>

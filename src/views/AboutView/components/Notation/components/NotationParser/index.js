@@ -36,7 +36,7 @@ const NotationParser = () => {
   const content = {};
 
   Object.keys(parsed || {}).forEach((col) => {
-    if (typeof parsed[col] === 'object') {
+    if (typeof parsed[col] === 'object' && parsed[col] !== null) {
       Object.keys(parsed[col]).forEach((key) => {
         content[`${col}.${key}`] = parsed[col][key];
       });

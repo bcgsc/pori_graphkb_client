@@ -9,59 +9,16 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DetailChip from '@/components/DetailChip';
 import OptionsMenu from '@/components/OptionsMenu';
 import DataCache from '@/services/api/dataCache';
 import { getUsername } from '@/services/auth';
 import schema from '@/services/schema';
 
-import { SelectionTracker } from './SelectionTracker';
+import { SelectionTracker } from '../SelectionTracker';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
 const CACHE_BLOCK_SIZE = 50;
 
-/**
- * Cell renderer for linked records in Datatable.
- *
- * @property {ArrayOf<Objects>} props.value linked records to be displayed
- */
-const RecordList = (props) => {
-  const { value: records } = props;
-
-  if (!records) {
-    return null;
-  }
-  return (
-    <div className="data-table__record-list">
-      {records.map((record) => {
-        const label = schema.getLabel(record);
-        return (
-          <DetailChip
-            key={label}
-            details={record}
-            getLink={schema.getLink}
-            label={label}
-            title={schema.getLabel(record, false)}
-
-            valueToString={(v) => {
-              if (Array.isArray(v)) {
-                return `Array(${v.length})`;
-              }
-              if (v && typeof v === 'object' && v['@rid']) {
-                return schema.getLabel(v, false);
-              }
-              return `${v}`;
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-RecordList.propTypes = {
-  value: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 class DataTable extends React.Component {
   static propTypes = {

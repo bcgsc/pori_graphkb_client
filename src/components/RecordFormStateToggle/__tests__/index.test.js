@@ -1,67 +1,43 @@
-import { mount } from 'enzyme';
+import '@testing-library/jest-dom/extend-expect';
+
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import ToggleButtonGroup from '..';
-import ConfirmActionDialog from '../../ActionButton/ConfirmActionDialog';
+import RecordFormStateToggle from '..';
 
-describe('ToggleButtonGroup', () => {
-  test('mounts without crashing and burning', () => {
-    const wrapper = mount((
-      <ToggleButtonGroup
+describe('RecordFormStateToggle', () => {
+  let getByText;
+  const clickSpy = jest.fn();
+
+  beforeEach(() => {
+    ({ getByText } = render((
+      <RecordFormStateToggle
         message="Changes you will lose"
-        onClick={jest.fn()}
-        options={['view', 'edit']}
+        onClick={clickSpy}
+        value="view"
       />
-    ));
-
-    expect(wrapper.find(ToggleButtonGroup)).toBeDefined();
+    )));
   });
 
-  test('displays correct number of options', () => {
-    const wrapper = mount((
-      <ToggleButtonGroup
-        message="Changes you will lose"
-        onClick={jest.fn()}
-        options={['view', 'edit']}
-      />
-    ));
-
-    expect(wrapper.find(ToggleButtonGroup)).toBeDefined();
-    expect(wrapper.find('button').length).toBe(2);
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('changes selected toggle button on click', () => {
-    const wrapper = mount((
-      <ToggleButtonGroup
-        message="Changes you will lose"
-        onClick={jest.fn()}
-        options={['view', 'edit']}
-      />
-    ));
-
-    expect(wrapper.find(ToggleButtonGroup)).toBeDefined();
-    expect(wrapper.find('button').length).toBe(2);
-
-    const editBtn = wrapper.find('button').at(1);
-    const editSpan = wrapper.find('span').at(3);
-    expect(editSpan.hasClass('toggle-button__label--selected')).toEqual(false);
-    editBtn.simulate('click');
-
-    const updatedEditSpan = wrapper.find('span').at(3);
-    expect(updatedEditSpan.hasClass('toggle-button__label--selected')).toEqual(true);
+  test('shows graph button', () => {
+    expect(getByText('Graph')).toBeInTheDocument();
   });
 
-  test('displays ConfirmActionDialog when confirmation is required', () => {
-    const wrapper = mount((
-      <ToggleButtonGroup
-        message="Changes you will lose"
-        onClick={jest.fn()}
-        options={['view', 'edit']}
-      />
-    ));
+  test('shows edit button', () => {
+    expect(getByText('Edit')).toBeInTheDocument();
+  });
 
-    expect(wrapper.find(ToggleButtonGroup)).toBeDefined();
-    expect(wrapper.find('button').length).toBe(2);
-    expect(wrapper.find(ConfirmActionDialog)).toBeDefined();
+  test('shows view button', () => {
+    expect(getByText('View')).toBeInTheDocument();
+  });
+
+  test('onClick handler returns new state', () => {
+    const edit = getByText('Edit');
+    fireEvent.click(edit);
+    expect(clickSpy).toHaveBeenCalledWith('edit');
   });
 });

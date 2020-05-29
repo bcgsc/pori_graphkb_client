@@ -68,6 +68,7 @@ function RecordFormStateToggle({
         <ToggleButton
           aria-label="graph"
           className="record-form-state-toggle__option toggle-option__graph"
+          data-testid="graph-view"
           value="graph"
         >
           <GraphIcon /> Graph

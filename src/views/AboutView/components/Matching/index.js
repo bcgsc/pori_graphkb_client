@@ -193,11 +193,11 @@ const MatchView = (props) => {
   let alertText = '';
 
   if (hasTooManyRecords) {
-    alertText = `too many matches, only showing ${matches.length} matched terms`;
+    alertText = `too many matches; only showing ${matches.length} matched terms`;
   } else if (matches.length) {
     alertText = `matches ${matches.length} terms`;
   } else {
-    alertText = 'no matches found, must be an exact match by name';
+    alertText = 'no matches found; must be an exact match by name';
   }
 
   return (

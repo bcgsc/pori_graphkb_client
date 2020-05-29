@@ -63,6 +63,8 @@ const jss = create({
   ...jssPreset(),
   // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
   insertionPoint: 'jss-insertion-point',
+  injectFirst: true,
+  generateClassName,
 });
 
 
@@ -71,7 +73,7 @@ const jss = create({
  */
 function App() {
   return (
-    <StylesProvider generateClassName={generateClassName} injectFirst jss={jss}>
+    <StylesProvider jss={jss}>
       <CssBaseline />
       <MuiThemeProvider theme={theme}>
         <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>

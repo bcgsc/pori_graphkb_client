@@ -181,7 +181,7 @@ const MatchView = (props) => {
     setIsLoading(true);
     setRootText('');
     setMatches([]);
-    setText(value);
+    setText(value.trim());
   }, []);
 
   const handleJumpToGraph = useCallback(() => {
@@ -193,11 +193,11 @@ const MatchView = (props) => {
   let alertText = '';
 
   if (hasTooManyRecords) {
-    alertText = `matches more than ${MATCH_LIMIT} terms, only showing ${matches.length} terms`;
+    alertText = `too many matches, only showing ${matches.length} matched terms`;
   } else if (matches.length) {
     alertText = `matches ${matches.length} terms`;
   } else {
-    alertText = 'No matches found, must be an exact match by name';
+    alertText = 'no matches found, must be an exact match by name';
   }
 
   return (
@@ -264,7 +264,7 @@ const MatchView = (props) => {
         {matches.map(match => (
           <DetailChip
             key={match['@rid']}
-            details={match}
+            details={{ ...match, source: match.source.displayName }}
             label={`${match.displayName} (${match['@rid']})`}
           />
         ))}

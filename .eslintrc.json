@@ -42,7 +42,7 @@
             }
         ],
         "max-len": [
-            "warn",
+            "off",
             {
                 "code": 100,
                 "ignoreStrings": true,

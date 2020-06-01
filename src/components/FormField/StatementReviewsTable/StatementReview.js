@@ -55,7 +55,7 @@ const StatementReview = ({
                 aria-label="Statement Review"
                 className="review-card__avatar"
               >
-                  SR
+                SR
               </Avatar>
           )}
             subheader={`created by ${username || getUsername(context)}`}
@@ -79,7 +79,7 @@ const StatementReview = ({
               size="medium"
               variant="contained"
             >
-                  Delete
+              Delete
               <DeleteIcon />
             </ActionButton>
             )}

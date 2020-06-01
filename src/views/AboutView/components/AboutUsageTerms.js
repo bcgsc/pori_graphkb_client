@@ -102,7 +102,7 @@ const AboutUsageTerms = () => {
         </ActionButton>
       </div>
       <Typography>
-          page last updated {formatDistanceToNow(licenseEnactedAt)} ago
+        page last updated {formatDistanceToNow(licenseEnactedAt)} ago
       </Typography>
     </div>
   );

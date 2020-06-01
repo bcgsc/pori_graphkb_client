@@ -1,19 +1,21 @@
 @import '../../globals';
 
 .detail-chip {
-  &__root {
-    > div {
-      margin-left: -1px;
+  .detail-chip {
+    &__root {
+      >div {
+        margin-left: -1px;
+      }
     }
-  }
 
-  &__avatar {
-    height: 32px;
-    width: 32px;
-  }
+    &__avatar {
+      height: 32px;
+      width: 32px;
+    }
 
-  &__outlined &__avatar{
-    margin-left: 0;
+    &__outlined &__avatar {
+      margin-left: 0;
+    }
   }
 }
 

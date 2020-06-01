@@ -9,7 +9,7 @@ import React from 'react';
 const AboutStatements = () => (
   <>
     <Typography variant="h2">
-        Statement Examples
+      Statement Examples
     </Typography>
     <Typography paragraph>
       Somtimes it can be confusing how to decompose the content you want to enter into a statement.

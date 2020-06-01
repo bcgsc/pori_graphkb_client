@@ -83,7 +83,7 @@ function RelationshipList(props) {
               >
                 <Divider />
                 <ListSubheader color="primary" disableSticky>
-                    Linked Record
+                  Linked Record
                 </ListSubheader>
                 {formatOtherProps(isIn ? edge.out : edge.in, true)}
                 {formatMetadata(isIn ? edge.out : edge.in, true)}

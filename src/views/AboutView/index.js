@@ -18,6 +18,7 @@ import AboutClasses from './components/AboutClasses';
 import AboutMain from './components/AboutMain';
 import AboutUsageTerms from './components/AboutUsageTerms';
 import GettingStarted from './components/GettingStarted';
+import Matching from './components/Matching';
 import AboutNotation from './components/Notation';
 
 
@@ -31,6 +32,7 @@ const AboutView = (props) => {
     { label: 'Getting Started', component: GettingStarted },
     { label: 'Classes', component: AboutClasses },
     { label: 'Notation', component: AboutNotation },
+    { label: 'Matching', component: Matching },
     { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
   ];
 

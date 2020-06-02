@@ -42,17 +42,6 @@
         float: right;
       }
 
-      &--edit {
-
-        /* edit state in mobile view should hide graph button */
-        .toggle-option__graph {
-          display: none;
-
-          @media (min-width: $breakpoint-med) {
-            display: default;
-          }
-        }
-      }
     }
 
     .header__review-action {

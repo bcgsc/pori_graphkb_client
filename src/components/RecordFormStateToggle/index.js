@@ -1,8 +1,8 @@
 import './index.scss';
 
 import EditIcon from '@material-ui/icons/Create';
-import ViewIcon from '@material-ui/icons/Pageview';
 import GraphIcon from '@material-ui/icons/Timeline';
+import ViewIcon from '@material-ui/icons/Visibility';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -67,25 +67,22 @@ function RecordFormStateToggle({
       >
         <ToggleButton
           aria-label="graph"
-          className="record-form-state-toggle__option toggle-option__graph"
           data-testid="graph-view"
           value="graph"
         >
-          <GraphIcon /> Graph
+          <GraphIcon /><span className="toggle-option__text">Graph</span>
         </ToggleButton>
         <ToggleButton
           aria-label="view"
-          className="record-form-state-toggle__option"
           value="view"
         >
-          <ViewIcon /> View
+          <ViewIcon /><span className="toggle-option__text">View</span>
         </ToggleButton>
         <ToggleButton
           aria-label="edit"
-          className="record-form-state-toggle__option"
           value="edit"
         >
-          <EditIcon /> Edit
+          <EditIcon /><span className="toggle-option__text">Edit</span>
         </ToggleButton>
       </ToggleButtonGroup>
       {requireConfirm && (

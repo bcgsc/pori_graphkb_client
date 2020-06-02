@@ -1,9 +1,19 @@
 @import '../../theme';
+@import '../../globals';
 
 .record-form-state-toggle {
-  &__option {
-    svg {
-      margin-right: 5px;
+  .toggle-option {
+    &__text {
+      display: none;
+    }
+
+    @media (min-width: #{$breakpoint-med}) {
+
+      // allow 2 columns for large dislays
+      &__text {
+        display: initial;
+        margin-left: 5px;
+      }
     }
   }
 }

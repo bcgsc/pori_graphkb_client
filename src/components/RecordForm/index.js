@@ -25,6 +25,8 @@ import schema from '@/services/schema';
 
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
+import RelatedStatementsTable from './RelatedStatementsTable';
+import RelatedVariantsTable from './RelatedVariantsTable';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
@@ -219,11 +221,23 @@ const RecordForm = ({
     }
   }, [formContent, navigateToGraph, onTopClick, variant]);
 
-  return (
+  let pageTitle = title;
 
+  if (variant === FORM_VARIANT.VIEW && formContent) {
+    if (formContent.displayName) {
+      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+    } else {
+      pageTitle = formContent['@rid'];
+    }
+  }
+
+  return (
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
-        <Typography className="title" variant="h1">{title}</Typography>
+        <span className="title">
+          <Typography variant="h1">{pageTitle}</Typography>
+          {title !== pageTitle && (<Typography variant="subtitle">{title}</Typography>)}
+        </span>
         <div className={`header__actions header__actions--${variant}`}>
           {(modelName === 'Statement' && variant === FORM_VARIANT.EDIT && (
           <Button
@@ -265,11 +279,16 @@ const RecordForm = ({
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && (
-        <div className="record-form__related-records">
-          <Typography variant="h4">Related Records</Typography>
-          <EdgeTable value={formContent} />
-        </div>
+      {variant === FORM_VARIANT.VIEW && schema.get(modelName).inherits.includes('V') && (
+        <>
+          <EdgeTable recordId={form.formContent['@rid']} />
+          {modelName !== 'Statement' && (
+            <RelatedStatementsTable recordId={form.formContent['@rid']} />
+          )}
+          {schema.get(modelName).inherits.includes('Ontology') && (
+            <RelatedVariantsTable recordId={form.formContent['@rid']} />
+          )}
+        </>
       )}
       <div className="record-form__action-buttons">
         {variant === FORM_VARIANT.EDIT

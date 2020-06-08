@@ -151,6 +151,7 @@ FormLayout.defaultProps = {
     'reviewStatus',
     'reviews',
     'refSeq',
+    'recruitmentStatus',
     'email',
   ],
   disabled: false,
@@ -158,7 +159,7 @@ FormLayout.defaultProps = {
   className: '',
   collapseExtra: false,
   groups: [
-    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
+    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
     ['relevance', 'subject'],
     ['refSeq', 'untemplatedSeq'],
     ['reviewStatus', 'reviews'],

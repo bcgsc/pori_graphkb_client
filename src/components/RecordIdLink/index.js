@@ -6,14 +6,29 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 
-const RecordIdLink = ({ recordId, recordClass }) => (
-  <Link className="record-link" target="_blank" to={`/view/${recordClass}/${recordId.replace(/^#/, '')}`}>
-    <span>
-      {recordId}
-    </span>
-    <OpenInNew />
-  </Link>
-);
+const RecordIdLink = ({ recordId, recordClass }) => {
+  if (!recordId || !recordClass) {
+    return null;
+  }
+  if (!recordClass) {
+    return (
+      <Link className="record-link" target="_blank" to={`/view/${recordId.replace(/^#/, '')}`}>
+        <span>
+          {recordId}
+        </span>
+        <OpenInNew />
+      </Link>
+    );
+  }
+  return (
+    <Link className="record-link" target="_blank" to={`/view/${recordClass}/${recordId.replace(/^#/, '')}`}>
+      <span>
+        {recordId}
+      </span>
+      <OpenInNew />
+    </Link>
+  );
+};
 
 RecordIdLink.propTypes = {
   recordClass: PropTypes.string.isRequired,

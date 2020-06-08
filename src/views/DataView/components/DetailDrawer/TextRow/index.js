@@ -14,7 +14,7 @@ import React from 'react';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
-const DATE_KEYS = ['createdAt', 'deletedAt'];
+const DATE_KEYS = ['createdAt', 'deletedAt', 'updatedAt'];
 const MAX_STRING_LENGTH = 64;
 
 

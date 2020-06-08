@@ -67,13 +67,13 @@ const ActivityView = () => {
         target: 'V',
         filters: [
           {
-            createdAt: cutOff.current,
+            updatedAt: cutOff.current,
             operator: '>=',
           },
         ],
         orderBy: ['createdAt'],
         orderByDirection: 'DESC',
-        returnProperties: ['@rid', '@class', 'createdBy.name', 'createdAt', 'displayName'],
+        returnProperties: ['@rid', '@class', 'updatedBy.name', 'updatedAt', 'displayName'],
       });
       controllers.push(controller);
       const records = await controller.request();
@@ -111,12 +111,14 @@ const ActivityView = () => {
         },
         {
           headerName: 'last updated by',
-          valueGetter: ({ data: record }) => record.createdBy.name,
+          valueGetter: ({ data: record }) => (record.updatedBy
+            ? record.updatedBy.name
+            : record.createdBy.name),
           sortable: true,
         },
         {
           headerName: 'last updated at',
-          field: 'createdAt',
+          valueGetter: ({ data: record }) => record.updatedAt || record.createdAt,
           sortable: true,
           valueFormatter: ({ value }) => `${formatDistanceToNow(value)} ago`,
         },

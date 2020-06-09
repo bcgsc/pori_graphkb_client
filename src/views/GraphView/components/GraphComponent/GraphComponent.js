@@ -100,7 +100,16 @@ const initialGraphData = {
  */
 function GraphComponent(props) {
   const snackbar = useContext(SnackbarContext);
-  const { data: initialData } = props;
+  const {
+    data: initialData,
+    getRecord,
+    handleError,
+    handleDetailDrawerOpen,
+    handleGraphStateSave,
+    edgeTypes,
+    handleDetailDrawerClose,
+    detail,
+  } = props;
 
   const {
     content: graphValues,
@@ -157,8 +166,7 @@ function GraphComponent(props) {
    * number of nodes that can be shared. Also reheats simulation and changes
    * node coloring to avoid sending full graph state over limited URL.
    */
-  const saveGraphStatetoURL = (graphNodes) => {
-    const { handleGraphStateSave, handleError } = props;
+  const saveGraphStatetoURL = useCallback((graphNodes) => {
     const withoutStatementData = [];
 
     /* Because properties types like linkset are uni-directional, we need to
@@ -185,7 +193,7 @@ function GraphComponent(props) {
     } catch (err) {
       handleError(err);
     }
-  };
+  });
 
   /**
    * Initializes simulation rules and properties. Updates simulation component state.
@@ -277,7 +285,6 @@ function GraphComponent(props) {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
-    const { edgeTypes } = props;
     let {
       nodes, // eslint-disable-line no-shadow
       links, // eslint-disable-line no-shadow
@@ -444,7 +451,7 @@ function GraphComponent(props) {
       links,
       graphObjects,
     };
-  }, [addGraphObject, data, props, updateColumnProps]);
+  }, [addGraphObject, data, edgeTypes, updateColumnProps]);
 
   /**
    * Renders nodes and links to the graph.
@@ -510,10 +517,10 @@ function GraphComponent(props) {
   const coloringKeyCheck = (pMap, colorPalette = {}, key, type) => {
     const properties = pMap[`${type}Props`];
     const tooManyUniques = (Object.keys(colorPalette).length > PALLETE_SIZE
-        && Object.keys(properties).length !== 1);
+      && Object.keys(properties).length !== 1);
     const noUniques = properties[key]
-        && (properties[key].length === 0
-          || (properties[key].length === 1 && properties[key].includes('null')));
+      && (properties[key].length === 0
+        || (properties[key].length === 1 && properties[key].includes('null')));
     const notDefined = key && !properties[key];
 
     const isColoringKeyBad = (tooManyUniques || noUniques || notDefined);
@@ -627,12 +634,11 @@ function GraphComponent(props) {
       graphOpts = seedGraphOptions;
     }
 
-    const { handleDetailDrawerClose } = props;
     updateColors(gNodes, gLinks, graphOpts);
     drawGraph(gNodes, gLinks, sim, graphOpts);
     sim.alpha(1).restart();
     handleDetailDrawerClose();
-  }, [drawGraph, graphOptions, links, nodes, props, simulation, updateColors]);
+  }, [drawGraph, graphOptions, handleDetailDrawerClose, links, nodes, simulation, updateColors]);
 
   /**
    * Resizes svg window and reinitializes the simulation.
@@ -648,7 +654,6 @@ function GraphComponent(props) {
    * Initializes event listener for window resize.
    */
   useEffect(() => {
-    const { data: seedData } = props;
     handleResize();
     window.addEventListener('resize', handleResize);
 
@@ -659,9 +664,9 @@ function GraphComponent(props) {
         links,
         graphObjects,
         expandable,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       } = processData(
-        seedData[rid],
+        initialData[rid],
         util.positionInit(wrapper.current.clientWidth / 2, wrapper.current.clientHeight / 2, index, nodeRIDs.length),
         false,
         {
@@ -683,7 +688,7 @@ function GraphComponent(props) {
     refresh(initialSeed);
 
     update({
-      nodes, links, graphObjects, expandable, data: seedData,
+      nodes, links, graphObjects, expandable, data: initialData,
     });
 
     return () => {
@@ -781,9 +786,9 @@ function GraphComponent(props) {
    * Pauses d3 force simulation by making simulation 'tick' event handler a
    * noop.
    */
-  const pauseGraph = () => {
+  const pauseGraph = useCallback(() => {
     simulation.on('tick', null);
-  };
+  });
 
   /**
    * Determines whether to quickly selected load node neighbors or open the
@@ -809,11 +814,9 @@ function GraphComponent(props) {
     }
   };
 
-  const handleExpandNode = async ({ data: node }) => {
-    const { cache, handleError } = props;
-
+  const handleExpandNode = useCallback(async ({ data: node }) => {
     try {
-      const record = await cache.getRecord(node);
+      const record = await getRecord(node['@rid']);
 
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
@@ -822,15 +825,14 @@ function GraphComponent(props) {
     } catch (err) {
       handleError(err);
     }
-  };
+  }, [data, getRecord, handleError, update]);
 
   /**
    * Handles node clicks from user. If node is unspecified, graph is refreshed.
    * @param {Object} node - Clicked simulation node.
    */
-  const handleClick = async (node) => {
+  const handleClick = useCallback(async (node) => {
     if (node) {
-      const { handleDetailDrawerOpen } = props;
       // Prematurely loads neighbor data.
       await handleExpandNode(node);
 
@@ -843,7 +845,7 @@ function GraphComponent(props) {
     } else {
       refresh();
     }
-  };
+  }, [handleDetailDrawerOpen, handleExpandNode, pauseGraph, refresh, update]);
 
   /**
    * Updates graph options, re-initializes simulation, and re-renders objects.
@@ -893,22 +895,18 @@ function GraphComponent(props) {
    * Handles link clicks from user.
    * @param {Object} link - Clicked simulation link.
    */
-  const handleLinkClick = (link) => {
-    const { handleDetailDrawerOpen } = props;
-
+  const handleLinkClick = useCallback((link) => {
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(link, false, true);
 
     // Sets clicked object as actions node.
     update({ actionsNode: link });
-  };
+  }, [handleDetailDrawerOpen, update]);
 
   /**
    * Hides link from the graph view.
    */
-  const handleLinkHide = () => {
-    const { handleDetailDrawerClose } = props;
-
+  const handleLinkHide = useCallback(() => {
     const i = links.indexOf(actionsNode);
     links.splice(i, 1);
     delete graphObjects[actionsNode.data['@rid']];
@@ -922,14 +920,12 @@ function GraphComponent(props) {
     update({
       links, graphObjects, expandable, actionsNode: null,
     });
-  };
+  }, [actionsNode, expandable, graphObjects, graphOptions, handleDetailDrawerClose, links, nodes, update, updateColors]);
 
   /**
    * Removes node and all corresponding edges/links from the graph.
    */
-  const handleNodeHide = () => {
-    const { edgeTypes, handleDetailDrawerClose } = props;
-
+  const handleNodeHide = useCallback(() => {
     if (nodes.length === 1) return;
     const i = nodes.indexOf(actionsNode);
 
@@ -987,7 +983,7 @@ function GraphComponent(props) {
     update({
       nodes, links: updatedLinks, expandable, graphObjects, actionsNode: null,
     });
-  };
+  }, [actionsNode, allProps, edgeTypes, expandable, graphObjects, graphOptions, handleDetailDrawerClose, links, nodes, saveGraphStatetoURL, update, updateColors]);
 
   /**
    * Toggles a specified edge ID from the exclusions list.
@@ -1032,29 +1028,24 @@ function GraphComponent(props) {
     update({ expandExclusions: updatedExpandExclusions });
   };
 
-  const {
-    detail,
-    handleDetailDrawerOpen,
-  } = props;
-
   const linkLegendDisabled = (
     links.length === 0
-      || !links.some((l) => {
-        let source;
-        let target;
+    || !links.some((l) => {
+      let source;
+      let target;
 
-        if (typeof l.source === 'object') {
-          source = l.source.data['@rid'];
-        } else {
-          ({ source } = l);
-        }
-        if (typeof l.target === 'object') {
-          target = l.target.data['@rid'];
-        } else {
-          ({ target } = l);
-        }
-        return source !== target;
-      })
+      if (typeof l.source === 'object') {
+        source = l.source.data['@rid'];
+      } else {
+        ({ source } = l);
+      }
+      if (typeof l.target === 'object') {
+        target = l.target.data['@rid'];
+      } else {
+        ({ target } = l);
+      }
+      return source !== target;
+    })
   );
 
   // edges dont have an x or y position
@@ -1213,20 +1204,20 @@ function GraphComponent(props) {
 }
 
 GraphComponent.propTypes = {
-  cache: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
+  detail: PropTypes.object,
+  edgeTypes: PropTypes.arrayOf(PropTypes.string),
+  getRecord: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleError: PropTypes.func.isRequired,
-  detail: PropTypes.object,
-  edgeTypes: PropTypes.arrayOf(PropTypes.string),
   handleGraphStateSave: PropTypes.func,
 };
 
 GraphComponent.defaultProps = {
   detail: null,
   edgeTypes: [],
-  handleGraphStateSave: () => {},
+  handleGraphStateSave: () => { },
 };
 
 export default GraphComponent;

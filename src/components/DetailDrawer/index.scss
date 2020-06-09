@@ -1,5 +1,4 @@
-@import '../../../../globals';
-@import '../../index.scss';
+@import '../../globals';
 
 .detail-drawer {
   max-width: 100%; // use full screen for ipad/mobile
@@ -56,6 +55,7 @@
   &__nested-subheader {
     margin-left: 32px;
     z-index: 0;
+
     @media (min-width: $breakpoint-sm) {
       margin-left: 56px;
     }
@@ -66,6 +66,7 @@
       display: none;
     }
   }
+
   .detail-identifiers-linkset,
   .detail-identifiers {
     display: grid;
@@ -79,7 +80,7 @@
       margin-left: 32px;
     }
 
-    > *:nth-child(even) {
+    >*:nth-child(even) {
       grid-column-start: 3;
       margin: auto 0;
     }
@@ -92,6 +93,7 @@
 
 .detail-closed {
   width: 0;
+
   @media (max-width: $breakpoint-sm) {
     min-width: 0;
   }

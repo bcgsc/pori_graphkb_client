@@ -10,7 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { SecurityContext } from '@/components/SecurityContext';
 
-import DetailDrawer from '../DetailDrawer';
+import DetailDrawer from '..';
 
 const ontologyNode = {
   '@class': 'Ontology',

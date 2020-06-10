@@ -40,9 +40,22 @@ const generateOperatorOptions = () => {
  */
 const OPERATORS = generateOperatorOptions();
 
-const BLACKLISTED_PROPERTIES = ['deletedAt', 'deletedBy', 'createdBy',
-  'createdAt', 'history', 'uuid', 'groupRestrictions', 'comment', 'description',
-  '@class', 'reviews', 'displayNameTemplate'];
+const BLACKLISTED_PROPERTIES = [
+  'deletedAt',
+  'deletedBy',
+  'createdAt',
+  'createdBy',
+  'updatedAt',
+  'updatedBy',
+  'history',
+  'uuid',
+  'groupRestrictions',
+  'comment',
+  'description',
+  '@class',
+  'reviews',
+  'displayNameTemplate',
+];
 
 export {
   OPERATORS,

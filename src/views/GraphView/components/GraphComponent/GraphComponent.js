@@ -823,6 +823,7 @@ function GraphComponent(props) {
         update({ data });
       }
     } catch (err) {
+      console.error(err);
       handleError(err);
     }
   }, [data, getRecord, handleError, update]);

@@ -107,13 +107,13 @@ error text: ${message}`;
           {message}
         </Typography>
         <Typography paragraph>
-            Report this error in a {jiraLink} ticket or email us at&nbsp;
+          Report this error in a {jiraLink} ticket or email us at&nbsp;
           <EmailReportError
             body={errorDetails}
             linkText={EMAIL}
             subject={`${name}: ${message}`}
           />
-            .
+          .
         </Typography>
         {stacktrace
           && (
@@ -143,7 +143,7 @@ error text: ${message}`;
           )}
         <Link to="/">
           <Button color="primary" variant="contained">
-              Home
+            Home
           </Button>
         </Link>
       </div>

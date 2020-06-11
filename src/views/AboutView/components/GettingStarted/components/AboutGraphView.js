@@ -14,7 +14,7 @@ import graphResults from '@/static/images/graph-view.png';
 const AboutGraphView = () => (
   <>
     <Typography id="about-results-graph" variant="h2">
-        Graph View
+      Graph View
     </Typography>
     <Typography variant="body1">
       The Graph view can be used to view clusters of records and their
@@ -27,11 +27,11 @@ const AboutGraphView = () => (
       src={graphResults}
     />
     <Typography id="about-results-graph" variant="h3">
-        Graph Node Actions
+      Graph Node Actions
     </Typography>
     <Typography variant="body1">
-        After clicking a graph node or link, you will see this actions ring
-        appear, which will allow you to
+      After clicking a graph node or link, you will see this actions ring
+      appear, which will allow you to
     </Typography>
     <div className="about-page__column-image">
       <img

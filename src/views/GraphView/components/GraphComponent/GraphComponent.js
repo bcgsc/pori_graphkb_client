@@ -1205,12 +1205,12 @@ function GraphComponent(props) {
 
 GraphComponent.propTypes = {
   data: PropTypes.object.isRequired,
-  detail: PropTypes.object,
-  edgeTypes: PropTypes.arrayOf(PropTypes.string),
   getRecord: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleError: PropTypes.func.isRequired,
+  detail: PropTypes.object,
+  edgeTypes: PropTypes.arrayOf(PropTypes.string),
   handleGraphStateSave: PropTypes.func,
 };
 

@@ -45,7 +45,7 @@ const TableOptions = ({
     if (allGroups[colId]) {
       return (
         <fieldset key={colId}>
-          <caption>
+          <legend>
             <FormControlLabel
               control={(
                 <Checkbox
@@ -55,7 +55,7 @@ const TableOptions = ({
               )}
               label={colId}
             />
-          </caption>
+          </legend>
           {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}
         </fieldset>
       );

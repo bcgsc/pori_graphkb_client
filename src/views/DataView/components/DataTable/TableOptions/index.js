@@ -19,6 +19,7 @@ const TableOptions = ({
   getColumnLabel,
   onExportToTsv,
   onToggleColumn,
+  onToggleGroup,
   anchorEl,
   onClose,
   selectionTracker,
@@ -49,7 +50,7 @@ const TableOptions = ({
               control={(
                 <Checkbox
                   checked={activeGroups.has(colId)}
-                  onChange={() => this.handleToggleGroup(colId)}
+                  onChange={() => onToggleGroup(colId)}
                 />
               )}
               label={colId}
@@ -121,11 +122,13 @@ TableOptions.propTypes = {
   onClose: PropTypes.func,
   onExportToTsv: PropTypes.func,
   onToggleColumn: PropTypes.func,
+  onToggleGroup: PropTypes.func,
 };
 
 TableOptions.defaultProps = {
   onExportToTsv: () => { },
   onToggleColumn: () => { },
+  onToggleGroup: () => { },
   getColumnLabel: colId => colId,
   anchorEl: null,
   onClose: () => {},

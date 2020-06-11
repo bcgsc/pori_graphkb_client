@@ -5,7 +5,8 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
 
 import DetailChip from '@/components/DetailChip';
 import api from '@/services/api';
@@ -18,32 +19,20 @@ import schema from '@/services/schema';
  * @param {string} props.description the class description
  */
 const ClassDescription = ({ name, description }) => {
-  const [example, setExample] = useState(null);
-  const [count, setCount] = useState('');
-  const [inProgress, setInProgress] = useState(false);
-
-  // get the example
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      setInProgress(true);
-      controller = api.post('/query', { target: name, neighbors: 1, limit: 1 });
+  const { status: exampleStatus, data: example } = useQuery(
+    [{ target: name, neighbors: 1, limit: 1 }],
+    async () => {
+      const controller = api.post('/query', { target: name, neighbors: 1, limit: 1 });
       const [result] = await controller.request();
-      setInProgress(false);
-      setExample(result);
-    };
+      return result;
+    },
+    { staleTime: Infinity },
+  );
 
-    getData();
-    return () => controller && controller.abort();
-  }, [name]);
-
-  // get the count
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.get(`/stats?classList=${name}`);
+  const { status: countStatus, data: count } = useQuery(
+    `/stats?classList=${name}`,
+    async () => {
+      const controller = api.get(`/stats?classList=${name}`);
       const { [name]: value } = await controller.request();
       let newCount = value;
 
@@ -54,11 +43,12 @@ const ClassDescription = ({ name, description }) => {
       } else {
         newCount = `${value}`;
       }
-      setCount(newCount);
-    };
-    getData();
-    return () => controller && controller.abort();
-  }, [name]);
+      return newCount;
+    },
+    { staleTime: Infinity },
+  );
+
+  const inProgress = exampleStatus === 'loading' || countStatus === 'loading';
 
   return (
     <React.Fragment key={name}>

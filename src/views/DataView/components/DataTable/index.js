@@ -1,67 +1,20 @@
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import {
-  Checkbox, FormControlLabel, Popover,
-} from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DetailChip from '@/components/DetailChip';
-import OptionsMenu from '@/components/OptionsMenu';
 import DataCache from '@/services/api/dataCache';
 import { getUsername } from '@/services/auth';
 import schema from '@/services/schema';
 
-import { SelectionTracker } from './SelectionTracker';
+import { SelectionTracker } from '../SelectionTracker';
+import TableOptions from './TableOptions';
 
-const MAX_FULL_EXPORTS_ROWS = 1000;
 const CACHE_BLOCK_SIZE = 50;
 
-/**
- * Cell renderer for linked records in Datatable.
- *
- * @property {ArrayOf<Objects>} props.value linked records to be displayed
- */
-const RecordList = (props) => {
-  const { value: records } = props;
-
-  if (!records) {
-    return null;
-  }
-  return (
-    <div className="data-table__record-list">
-      {records.map((record) => {
-        const label = schema.getLabel(record);
-        return (
-          <DetailChip
-            key={label}
-            details={record}
-            getLink={schema.getLink}
-            label={label}
-            title={schema.getLabel(record, false)}
-
-            valueToString={(v) => {
-              if (Array.isArray(v)) {
-                return `Array(${v.length})`;
-              }
-              if (v && typeof v === 'object' && v['@rid']) {
-                return schema.getLabel(v, false);
-              }
-              return `${v}`;
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-RecordList.propTypes = {
-  value: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 class DataTable extends React.Component {
   static propTypes = {
@@ -493,82 +446,23 @@ class DataTable extends React.Component {
     } = this.state;
 
     const { optionsMenuAnchor, optionsMenuOnClose, totalRowsSelected } = this.props;
-    const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
-    const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
-    const ColumnCheckBox = (colId, groupId = null) => (
-      <FormControlLabel
-        key={colId}
-        control={(
-          <Checkbox
-            checked={activeColumns.has(colId)}
-            onChange={() => this.handleToggleColumn(colId, groupId)}
-          />
-        )}
-        label={this.gridColumnApi.getColumn(colId).colDef.field}
+    return (
+      <TableOptions
+        activeColumns={activeColumns}
+        activeGroups={activeGroups}
+        allColumns={allColumns}
+        allGroups={allGroups}
+        anchorEl={optionsMenuAnchor}
+        getColumnLabel={colId => this.gridColumnApi.getColumn(colId).colDef.field}
+        onClose={optionsMenuOnClose}
+        onExportToTsv={selectedOnly => this.handleExportTsv(selectedOnly)}
+        onToggleColumn={(colId, groupId) => this.handleToggleColumn(colId, groupId)}
+        onToggleGroup={groupId => this.handleToggleGroup(groupId)}
+        selectionTracker={selectionTracker}
+        totalRowsSelected={totalRowsSelected}
       />
     );
-
-    const columnControl = allColumns.sort().map((colId) => {
-      if (allGroups[colId]) {
-        return (
-          <fieldset key={colId}>
-            <caption>
-              <FormControlLabel
-                control={(
-                  <Checkbox
-                    checked={activeGroups.has(colId)}
-                    onChange={() => this.handleToggleGroup(colId)}
-                  />
-              )}
-                label={colId}
-              />
-            </caption>
-            {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}
-          </fieldset>
-        );
-      }
-      return ColumnCheckBox(colId);
-    });
-
-    const menuContents = [
-      {
-        label: 'Configure Visible Columns',
-        content: columnControl,
-      },
-    ];
-
-    if (totalRowsSelected < MAX_FULL_EXPORTS_ROWS) {
-      menuContents.push({
-        label: 'Export All to TSV',
-        handler: () => this.handleExportTsv(false),
-      });
-    }
-
-    if (selectionCount) {
-      menuContents.push({
-        label: `Export Selected Rows (${selectionCount}) to TSV`,
-        handler: () => this.handleExportTsv(true),
-      });
-    }
-
-    const result = (
-      <Popover
-        anchorEl={optionsMenuAnchor}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        onClose={optionsMenuOnClose}
-        open={optionsMenuAnchor !== null}
-      >
-        <OptionsMenu
-          className="data-view__options-menu"
-          options={menuContents}
-        />
-      </Popover>
-    );
-    return result;
   }
 
   render() {

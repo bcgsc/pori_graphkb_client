@@ -235,9 +235,9 @@ const navigateToGraph = (nodeRIDs, history, onErrorCallback) => {
 /**
  * parses through URL and decodes it to return an array of node RIDs.
  */
-const getNodeRIDsFromURL = () => {
-  const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
-  const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
+const getNodeRIDsFromURL = (href) => {
+  const URLBeforeNodeEncoding = href.split('nodes')[0];
+  const encodedData = href.split(URLBeforeNodeEncoding)[1];
   const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
 
   const decodedContent = decodeURIComponent(nodes);

@@ -13,21 +13,19 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import DetailDrawer from '@/components/DetailDrawer';
 import { HistoryPropType, LocationPropType } from '@/components/types';
-import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
+import { navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
 import util from '../../services/util';
 import DataTable from './components/DataTable';
-import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
-import GraphComponent from './components/GraphComponent';
 import {
   getFilterTableProps,
   getPopularChipsPropsAndSearch,
-  hashRecordsByRID,
 } from './util';
 
 /**
@@ -67,7 +65,6 @@ class DataView extends React.Component {
       searchType: 'Quick',
       isExportingData: false,
       totalRowsSelected: 0,
-      graphData: null,
     };
     this.controllers = [];
   }
@@ -255,20 +252,6 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  async loadSavedStateFromURL() {
-    const { cache } = this.state;
-
-    try {
-      const decodedNodes = getNodeRIDsFromURL();
-      const records = await cache.getRecords(decodedNodes);
-      const data = hashRecordsByRID(records);
-      this.setState({ graphData: data });
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
-  @boundMethod
   handleFilterTableToggle(event, openState) {
     if (openState === 'open') {
       this.setState({ filterTableAnchorEl: event.currentTarget, filterTableOpen: true });
@@ -281,40 +264,6 @@ class DataView extends React.Component {
   handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history } = this.props;
     navigateToGraph(nodeRIDs, history, this.handleError);
-  }
-
-  @boundMethod
-  renderGraphView() {
-    const {
-      detailPanelRow,
-      cache,
-      graphData,
-    } = this.state;
-
-    const edges = schema.getEdges();
-    const expandedEdgeTypes = util.expandEdges(edges);
-
-    if (!graphData) {
-      this.loadSavedStateFromURL();
-      return (
-        <div className="circular-progress">
-          <CircularProgress color="secondary" size="4rem" />
-        </div>
-      );
-    }
-    return (
-      <GraphComponent
-        cache={cache}
-        data={graphData || {}}
-        detail={detailPanelRow}
-        edgeTypes={expandedEdgeTypes}
-        handleDetailDrawerClose={this.handleToggleDetailPanel}
-        handleDetailDrawerOpen={this.handleToggleDetailPanel}
-        handleError={this.handleError}
-        handleGraphStateSave={this.handleGraphStateSaveIntoURL}
-        onRecordClicked={this.handleToggleDetailPanel}
-      />
-    );
   }
 
   @boundMethod
@@ -362,9 +311,6 @@ class DataView extends React.Component {
     } = this.state;
 
 
-    const { history } = this.props;
-    const URLContainsTable = String(history.location.pathname).includes('table');
-
     const detailPanelIsOpen = Boolean(detailPanelRow);
     return (
       <div className={
@@ -372,47 +318,42 @@ class DataView extends React.Component {
           ? 'data-view--squished'
           : ''}`}
       >
-        <div className={`data-view__header${!URLContainsTable ? '--graph-view' : ''}`}>
-          {URLContainsTable && (
+        <div className="data-view__header">
+          <>
+            <Typography variant="h5">{searchType} Search</Typography>
+            <FilterChips {...filters} />
+            {(searchType === 'Advanced') && (
             <>
-              <Typography variant="h5">{searchType} Search</Typography>
-              <FilterChips {...filters} />
-              {(searchType === 'Advanced') && (
-                <>
-                  <Tooltip title="click here to see active filter groups">
-                    <IconButton
-                      disabled={!filterGroups}
-                      onClick={event => this.handleFilterTableToggle(event, 'open')}
-                    >
-                      <FilterListIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {(filterGroups) && (
-                    <FilterTablePopover
-                      anchorEl={filterTableAnchorEl}
-                      filterGroups={filterGroups}
-                      handleToggle={event => this.handleFilterTableToggle(event, 'close')}
-                      isOpen={filterTableOpen}
-                    />
-                  )}
-                </>
+              <Tooltip title="click here to see active filter groups">
+                <IconButton
+                  disabled={!filterGroups}
+                  onClick={event => this.handleFilterTableToggle(event, 'open')}
+                >
+                  <FilterListIcon />
+                </IconButton>
+              </Tooltip>
+              {(filterGroups) && (
+              <FilterTablePopover
+                anchorEl={filterTableAnchorEl}
+                filterGroups={filterGroups}
+                handleToggle={event => this.handleFilterTableToggle(event, 'close')}
+                isOpen={filterTableOpen}
+              />
               )}
             </>
-          )}
-          {URLContainsTable && (
-            <Tooltip title="click here for table and export options">
-              <IconButton className="data-view__edit-filters" onClick={this.handleToggleOptionsMenu}>
-                <MoreHorizIcon color="action" />
-              </IconButton>
-            </Tooltip>
-          )}
+            )}
+          </>
+          <Tooltip title="click here for table and export options">
+            <IconButton className="data-view__edit-filters" onClick={this.handleToggleOptionsMenu}>
+              <MoreHorizIcon color="action" />
+            </IconButton>
+          </Tooltip>
         </div>
-        <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>
+        <div className="data-view__content">
           {cache && (
             <>
-              {URLContainsTable
-                ? this.renderDataTable()
-                : this.renderGraphView()}
+              {
+                 this.renderDataTable()}
               <DetailDrawer
                 node={detailPanelRow}
                 onClose={this.handleToggleDetailPanel}
@@ -422,23 +363,19 @@ class DataView extends React.Component {
         </div>
         <div className="data-view__footer">
           <div className="footer__selected-records">
-            {URLContainsTable && (
-              <>
-                <Typography variant="body2">
-                  {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
-                </Typography>
-                <Tooltip title="click here for graph view">
-                  <IconButton
-                    disabled={selectedRecords.length === 0}
-                    onClick={this.handleSwapToGraph}
-                  >
-                    <TimelineIcon
-                      color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
-                    />
-                  </IconButton>
-                </Tooltip>
-              </>
-            )}
+            <Typography variant="body2">
+              {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
+            </Typography>
+            <Tooltip title="click here for graph view">
+              <IconButton
+                disabled={selectedRecords.length === 0}
+                onClick={this.handleSwapToGraph}
+              >
+                <TimelineIcon
+                  color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
+                />
+              </IconButton>
+            </Tooltip>
           </div>
           {statusMessage && (
             <div className="footer__loader">
@@ -448,11 +385,10 @@ class DataView extends React.Component {
               </Typography>
             </div>
           )}
-          {URLContainsTable && (
-            <Typography className="footer__total-rows" variant="body2">
-              Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-            </Typography>
-          )}
+          <Typography className="footer__total-rows" variant="body2">
+            Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
+          </Typography>
+
         </div>
 
       </div>

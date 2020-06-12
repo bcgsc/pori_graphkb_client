@@ -457,6 +457,7 @@ class DataTable extends React.Component {
         onClose={optionsMenuOnClose}
         onExportToTsv={selectedOnly => this.handleExportTsv(selectedOnly)}
         onToggleColumn={(colId, groupId) => this.handleToggleColumn(colId, groupId)}
+        onToggleGroup={groupId => this.handleToggleGroup(groupId)}
         selectionTracker={selectionTracker}
         totalRowsSelected={totalRowsSelected}
       />

@@ -813,7 +813,7 @@ function GraphComponent(props) {
     const { handleError, getRecord } = props;
 
     try {
-      const record = await getRecord(node);
+      const record = await getRecord(node['@rid']);
 
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;

@@ -19,22 +19,20 @@ import schema from '@/services/schema';
  * @param {string} props.description the class description
  */
 const ClassDescription = ({ name, description }) => {
-  const exampleQuery = { target: name, neighbors: 1, limit: 1 };
   const { isFetching: exampleIsFetching, data: example } = useQuery(
-    [exampleQuery],
-    async () => {
-      const controller = api.post('/query', exampleQuery);
+    ['/query', { target: name, neighbors: 1, limit: 1 }],
+    async (url, body) => {
+      const controller = api.post(url, body);
       const [result] = await controller.request();
       return result;
     },
     { staleTime: Infinity },
   );
 
-  const countQuery = `/stats?classList=${name}`;
   const { isFetching: countIsFetching, data: count } = useQuery(
-    countQuery,
-    async () => {
-      const controller = api.get(countQuery);
+    `/stats?classList=${name}`,
+    async (url) => {
+      const controller = api.get(url);
       const { [name]: value } = await controller.request();
       let newCount = value;
 

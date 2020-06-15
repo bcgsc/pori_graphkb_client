@@ -13,11 +13,10 @@ import api from '@/services/api';
 const AboutMain = () => {
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
-  const charDataUrl = '/stats?classList=Statement&groupBy=source';
   const { data: chartData } = useQuery(
-    charDataUrl,
-    async () => {
-      const controller = api.get(charDataUrl);
+    '/stats?classList=Statement&groupBy=source',
+    async (url) => {
+      const controller = api.get(url);
       const { Statement: result } = await controller.request();
       const data = [['source', 'count']];
       Object.entries(result).forEach(([label, value]) => {
@@ -35,12 +34,12 @@ const AboutMain = () => {
 
   const { data: versions } = useQuery(
     '/version',
-    async () => {
-      const controller = api.get('/version');
+    async (url) => {
+      const controller = api.get(url);
       return controller.request();
     },
+    { staleTime: Infinity },
   );
-
 
   return (
     <div className="about-page__content">

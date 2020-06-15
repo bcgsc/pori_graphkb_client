@@ -19,20 +19,22 @@ import schema from '@/services/schema';
  * @param {string} props.description the class description
  */
 const ClassDescription = ({ name, description }) => {
-  const { status: exampleStatus, data: example } = useQuery(
-    [{ target: name, neighbors: 1, limit: 1 }],
+  const exampleQuery = { target: name, neighbors: 1, limit: 1 };
+  const { isFetching: exampleIsFetching, data: example } = useQuery(
+    [exampleQuery],
     async () => {
-      const controller = api.post('/query', { target: name, neighbors: 1, limit: 1 });
+      const controller = api.post('/query', exampleQuery);
       const [result] = await controller.request();
       return result;
     },
     { staleTime: Infinity },
   );
 
-  const { status: countStatus, data: count } = useQuery(
-    `/stats?classList=${name}`,
+  const countQuery = `/stats?classList=${name}`;
+  const { isFetching: countIsFetching, data: count } = useQuery(
+    countQuery,
     async () => {
-      const controller = api.get(`/stats?classList=${name}`);
+      const controller = api.get(countQuery);
       const { [name]: value } = await controller.request();
       let newCount = value;
 
@@ -48,7 +50,6 @@ const ClassDescription = ({ name, description }) => {
     { staleTime: Infinity },
   );
 
-  const inProgress = exampleStatus === 'loading' || countStatus === 'loading';
 
   return (
     <React.Fragment key={name}>
@@ -63,7 +64,7 @@ const ClassDescription = ({ name, description }) => {
       </ListItem>
       <ListItem>
         <ListItemText inset>
-          {inProgress && (<CircularProgress size={20} />)}
+          {(exampleIsFetching || countIsFetching) && (<CircularProgress size={20} />)}
           {example && (
             <DetailChip
               className="record-autocomplete__chip record-autocomplete__chip--single"

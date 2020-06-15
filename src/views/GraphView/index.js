@@ -48,12 +48,9 @@ const GraphView = ({
   useEffect(() => {
     const fetchRecords = async () => {
       const fullRecords = await queryCache.prefetchQuery(
-        [{ target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
-        async () => {
-          const controller = api.post('/query', {
-            target: recordIds,
-            neighbors: DEFAULT_NEIGHBORS,
-          });
+        ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
+        async (url, body) => {
+          const controller = api.post(url, body);
           const promise = controller.request();
           promise.cancel = () => controller.abort();
           return promise;
@@ -88,9 +85,9 @@ const GraphView = ({
     } else {
       try {
         const [fullRecord] = await queryCache.prefetchQuery(
-          [{ target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async () => {
-            const controller = api.post('/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS });
+          ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
+          async (url, body) => {
+            const controller = api.post(url, body);
             const promise = controller.request();
             promise.cancel = () => controller.abort();
             return promise;
@@ -124,8 +121,8 @@ const GraphView = ({
 
   const handleExpandRecord = async (recordId) => {
     const [fullRecord] = await queryCache.prefetchQuery(
-      [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-      async () => api.post('/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }).request(),
+      ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+      async (url, body) => api.post(url, body).request(),
       { staleTime: STALE_TIME, throwOnError: true },
     );
     return fullRecord;

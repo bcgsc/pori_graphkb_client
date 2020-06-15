@@ -13,10 +13,11 @@ import api from '@/services/api';
 const AboutMain = () => {
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
+  const charDataUrl = '/stats?classList=Statement&groupBy=source';
   const { data: chartData } = useQuery(
-    '/stats?classList=Statement&groupBy=source',
+    charDataUrl,
     async () => {
-      const controller = api.get('/stats?classList=Statement&groupBy=source');
+      const controller = api.get(charDataUrl);
       const { Statement: result } = await controller.request();
       const data = [['source', 'count']];
       Object.entries(result).forEach(([label, value]) => {

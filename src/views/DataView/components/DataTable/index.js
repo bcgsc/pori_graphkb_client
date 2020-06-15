@@ -6,7 +6,6 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DataCache from '@/services/api/dataCache';
 import { getUsername } from '@/services/auth';
 import schema from '@/services/schema';
 
@@ -18,7 +17,7 @@ const CACHE_BLOCK_SIZE = 50;
 
 class DataTable extends React.Component {
   static propTypes = {
-    cache: PropTypes.instanceOf(DataCache).isRequired,
+    cache: PropTypes.object.isRequired,
     isExportingData: PropTypes.func.isRequired,
     onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,

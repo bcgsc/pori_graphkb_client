@@ -19,6 +19,7 @@ const TableOptions = ({
   getColumnLabel,
   onExportToTsv,
   onToggleColumn,
+  onToggleGroup,
   anchorEl,
   onClose,
   selectionTracker,
@@ -44,17 +45,17 @@ const TableOptions = ({
     if (allGroups[colId]) {
       return (
         <fieldset key={colId}>
-          <caption>
+          <legend>
             <FormControlLabel
               control={(
                 <Checkbox
                   checked={activeGroups.has(colId)}
-                  onChange={() => this.handleToggleGroup(colId)}
+                  onChange={() => onToggleGroup(colId)}
                 />
               )}
               label={colId}
             />
-          </caption>
+          </legend>
           {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}
         </fieldset>
       );
@@ -121,11 +122,13 @@ TableOptions.propTypes = {
   onClose: PropTypes.func,
   onExportToTsv: PropTypes.func,
   onToggleColumn: PropTypes.func,
+  onToggleGroup: PropTypes.func,
 };
 
 TableOptions.defaultProps = {
   onExportToTsv: () => { },
   onToggleColumn: () => { },
+  onToggleGroup: () => { },
   getColumnLabel: colId => colId,
   anchorEl: null,
   onClose: () => {},

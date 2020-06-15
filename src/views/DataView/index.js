@@ -99,10 +99,7 @@ const DataView = ({
       }
     }
     setStatusMessage(msg);
-
-    if (rowCount !== undefined && rowCount !== null) {
-      setTotalRows(rowCount);
-    }
+    setTotalRows(rowCount);
   }, [isExportingData, search]);
 
   const handleError = useCallback((err) => {

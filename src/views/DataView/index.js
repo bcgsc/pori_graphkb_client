@@ -156,13 +156,10 @@ const DataView = ({
    * Opens the options menu. The trigger is defined on this component but
    * the menu contents are handled by the data element (ex DataTable)
    */
-  const handleToggleOptionsMenu = useCallback(({ currentTarget }) => {
-    if (optionsMenuAnchor) {
-      setOptionsMenuAnchor(null);
-    } else {
-      setOptionsMenuAnchor(currentTarget);
-    }
-  }, [optionsMenuAnchor]);
+  const handleOpenOptionsMenu = useCallback(({ currentTarget }) => {
+    setOptionsMenuAnchor(currentTarget);
+  }, []);
+
 
   const handleRecordSelection = useCallback(async (newSelectedRecords) => {
     try {
@@ -231,7 +228,7 @@ const DataView = ({
           )}
         </>
         <Tooltip title="click here for table and export options">
-          <IconButton className="data-view__edit-filters" onClick={handleToggleOptionsMenu}>
+          <IconButton className="data-view__edit-filters" onClick={handleOpenOptionsMenu}>
             <MoreHorizIcon color="action" />
           </IconButton>
         </Tooltip>
@@ -246,7 +243,7 @@ const DataView = ({
             onRecordsSelected={handleRecordSelection}
             onRowSelected={handleNewRowSelection}
             optionsMenuAnchor={optionsMenuAnchor}
-            optionsMenuOnClose={handleToggleOptionsMenu}
+            optionsMenuOnClose={() => setOptionsMenuAnchor(null)}
             rowBuffer={bufferSize}
             search={search}
             totalRows={totalRows}

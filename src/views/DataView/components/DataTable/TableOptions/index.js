@@ -1,72 +1,32 @@
 import './index.scss';
 
 import {
-  Checkbox, FormControlLabel, Popover,
+  Popover,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import OptionsMenu from '@/components/OptionsMenu';
+
+import ColumnConfiguration from './ColumnConfiguration';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
 
 
 const TableOptions = ({
-  activeColumns,
-  activeGroups,
-  allColumns,
-  allGroups,
-  getColumnLabel,
   onExportToTsv,
-  onToggleColumn,
-  onToggleGroup,
   anchorEl,
   onClose,
   selectionTracker,
   totalRowsSelected,
 }) => {
-  const ignorePreviewColumns = colId => !colId.endsWith('.preview');
-
+  const [columnControlIsOpen, setColumnControlIsOpen] = useState(false);
   const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
-  const ColumnCheckBox = (colId, groupId = null) => (
-    <FormControlLabel
-      key={colId}
-      control={(
-        <Checkbox
-          checked={activeColumns.has(colId)}
-          onChange={() => onToggleColumn(colId, groupId)}
-        />
-      )}
-      label={getColumnLabel(colId)}
-    />
-  );
-
-  const columnControl = allColumns.sort().map((colId) => {
-    if (allGroups[colId]) {
-      return (
-        <fieldset key={colId}>
-          <legend>
-            <FormControlLabel
-              control={(
-                <Checkbox
-                  checked={activeGroups.has(colId)}
-                  onChange={() => onToggleGroup(colId)}
-                />
-              )}
-              label={colId}
-            />
-          </legend>
-          {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}
-        </fieldset>
-      );
-    }
-    return ColumnCheckBox(colId);
-  });
 
   const menuContents = [
     {
       label: 'Configure Visible Columns',
-      content: columnControl,
+      handler: () => setColumnControlIsOpen(true),
     },
   ];
 
@@ -92,21 +52,32 @@ const TableOptions = ({
     });
   }
 
+  const handleCloseColumnControl = useCallback(() => {
+    setColumnControlIsOpen(false);
+    onClose();
+  }, [onClose]);
+
   const result = (
-    <Popover
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-      }}
-      onClose={onClose}
-      open={anchorEl !== null}
-    >
-      <OptionsMenu
-        className="data-view__options-menu"
-        options={menuContents}
+    <>
+      <Popover
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        onClose={onClose}
+        open={anchorEl !== null}
+      >
+        <OptionsMenu
+          className="data-view__options-menu"
+          options={menuContents}
+        />
+      </Popover>
+      <ColumnConfiguration
+        isOpen={columnControlIsOpen}
+        onClose={handleCloseColumnControl}
       />
-    </Popover>
+    </>
   );
   return result;
 };

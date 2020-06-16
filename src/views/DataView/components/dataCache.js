@@ -2,8 +2,6 @@
  * Wrapper for api, handles all requests and special functions.
  * @module /services/api
  */
-import qs from 'qs';
-
 import api from '@/services/api';
 import {
   getQueryFromSearch,
@@ -186,12 +184,12 @@ const recordApiCall = ({ record }) => {
 const blockApiCall = ({
   search, sortModel, skip, limit, count = false,
 }) => {
-  const { queryParams, routeName, payload } = getQueryFromSearch({
+  const { routeName, payload } = getQueryFromSearch({
     schema,
     search,
     count,
   });
-  const content = payload || queryParams;
+  const content = payload || {};
 
   if (count) {
     content.count = true;
@@ -207,14 +205,7 @@ const blockApiCall = ({
     }
   }
 
-  let call;
-
-  if (payload) {
-    call = api.post(routeName, payload);
-  } else {
-    call = api.get(`${routeName}?${qs.stringify(queryParams)}`);
-  }
-  return call;
+  return api.post(routeName, content);
 };
 
 class PaginationDataCache {

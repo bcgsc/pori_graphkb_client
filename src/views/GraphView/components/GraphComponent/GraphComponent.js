@@ -820,6 +820,7 @@ function GraphComponent(props) {
         update({ data });
       }
     } catch (err) {
+      console.error(err);
       handleError(err);
     }
   };

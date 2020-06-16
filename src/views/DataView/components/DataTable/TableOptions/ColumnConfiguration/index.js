@@ -39,8 +39,17 @@ const detectColumns = (gridColumnApi) => {
 };
 
 
-const getColumnLabel = (gridColumnApi, colId) => {
-  const { colDef } = gridColumnApi.getColumn(colId);
+const getColumnLabel = (gridColumnApi, colId, isGroup = false) => {
+  let colDef;
+
+  try {
+    colDef = isGroup
+      ? gridColumnApi.getColumnGroup(colId).getColGroupDef()
+      : gridColumnApi.getColumn(colId).colDef;
+  } catch (err) {
+    colDef = { field: colId }; // non-visible column group error
+  }
+
   return colDef.headerName || titleCase(colDef.field);
 };
 
@@ -110,7 +119,7 @@ const ColumnConfiguration = ({
       icon={activeColumns.has(colId)
         ? (<CheckBoxIcon color="secondary" />)
         : (<CheckBoxOutlineBlankIcon />)}
-      label={getColumnLabel(gridColumnApi, colId)}
+      label={getColumnLabel(gridColumnApi, colId, false)}
       nodeId={colId}
       onIconClick={() => handleToggleColumn(colId, groupId)}
     />
@@ -124,7 +133,7 @@ const ColumnConfiguration = ({
           className="column-configuration__item"
           collapseIcon={<ExpandMoreIcon />}
           expandIcon={<ChevronRightIcon />}
-          label={colId}
+          label={getColumnLabel(gridColumnApi, colId, true)}
           nodeId={colId}
         >
           {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}

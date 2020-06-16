@@ -6,6 +6,7 @@ import {
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
+import { queryCache } from 'react-query';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import { HistoryPropType, LocationPropType } from '@/components/types';
@@ -22,6 +23,7 @@ import {
 
 
 const { DEFAULT_NEIGHBORS } = config;
+const STALE_TIME = 10000;
 
 /**
  * Shows the search result filters and an edit button
@@ -30,8 +32,8 @@ const GraphView = ({
   location: { search }, history,
 }) => {
   const [detailPanelRow, setDetailPanelRow] = useState(null);
+  const [recordIds, setRecordIds] = useState([]);
   const [graphData, setGraphData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
@@ -39,42 +41,59 @@ const GraphView = ({
 
 
   useEffect(() => {
-    let controller;
+    const decodedNodes = getNodeRIDsFromURL(window.location.href);
+    setRecordIds(decodedNodes);
+  }, [handleError]);
 
-    const loadSavedStateFromURL = async () => {
-      try {
-        const decodedNodes = getNodeRIDsFromURL(window.location.href);
-        controller = api.post('/query', { target: decodedNodes, neighbors: DEFAULT_NEIGHBORS });
-        const data = hashRecordsByRID(await controller.request());
-        setGraphData(data);
-      } catch (err) {
-        console.error(err);
-        handleError(err);
-      }
-      setIsLoading(false);
+  useEffect(() => {
+    const fetchRecords = async () => {
+      const fullRecords = await queryCache.prefetchQuery(
+        ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
+        async (url, body) => {
+          const controller = api.post(url, body);
+          const promise = controller.request();
+          promise.cancel = () => controller.abort();
+          return promise;
+        },
+        { staleTime: STALE_TIME, throwOnError: true },
+      );
+
+      const recordHash = hashRecordsByRID(fullRecords);
+      Object.keys(recordHash).forEach((recordId) => {
+        queryCache.setQueryData(
+          [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+          [recordHash[recordId]],
+        );
+      });
+      setGraphData(recordHash);
     };
 
-    loadSavedStateFromURL();
-
-    return () => controller && controller.abort();
-  }, [handleError]);
+    if (recordIds.length) {
+      fetchRecords();
+    }
+  }, [recordIds, recordIds.length]);
 
   /**
    * Opens the right-hand panel that shows details of a given record
    */
   const handleToggleDetailPanel = useCallback(async (opt = {}) => {
-    const { data } = opt;
+    const { data: detailData } = opt;
 
     // no data or clicked link is a link property without a class model
-    if (!data || data.isLinkProp) {
+    if (!detailData || detailData.isLinkProp) {
       setDetailPanelRow(null);
     } else {
       try {
-        const controller = api.post('/query', {
-          target: [data['@rid']],
-          neighbors: DEFAULT_NEIGHBORS,
-        });
-        const [fullRecord] = await controller.request();
+        const [fullRecord] = await queryCache.prefetchQuery(
+          ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
+          async (url, body) => {
+            const controller = api.post(url, body);
+            const promise = controller.request();
+            promise.cancel = () => controller.abort();
+            return promise;
+          },
+          { staleTime: STALE_TIME, throwOnError: true },
+        );
 
         if (!fullRecord) {
           setDetailPanelRow(null);
@@ -101,8 +120,11 @@ const GraphView = ({
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
   const handleExpandRecord = async (recordId) => {
-    const controller = api.post('/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS });
-    const [fullRecord] = await controller.request();
+    const [fullRecord] = await queryCache.prefetchQuery(
+      ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+      async (url, body) => api.post(url, body).request(),
+      { staleTime: STALE_TIME, throwOnError: true },
+    );
     return fullRecord;
   };
 
@@ -116,7 +138,7 @@ const GraphView = ({
         {graphData && (
           <>
             <GraphComponent
-              data={graphData || {}}
+              data={graphData}
               detail={detailPanelRow}
               edgeTypes={expandedEdgeTypes}
               getRecord={handleExpandRecord}
@@ -136,7 +158,7 @@ const GraphView = ({
         )}
       </div>
       <div className="data-view__footer">
-        {isLoading && (
+        {queryCache.isFetching === 'loading' && (
           <div className="footer__loader">
             <CircularProgress />
           </div>

@@ -10,6 +10,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TreeItem from '@material-ui/lab/TreeItem';
 import TreeView from '@material-ui/lab/TreeView';
+import { titleCase } from 'change-case';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useState,
@@ -38,7 +39,10 @@ const detectColumns = (gridColumnApi) => {
 };
 
 
-const getColumnLabel = (gridColumnApi, colId) => gridColumnApi.getColumn(colId).colDef.field;
+const getColumnLabel = (gridColumnApi, colId) => {
+  const { colDef } = gridColumnApi.getColumn(colId);
+  return colDef.headerName || titleCase(colDef.field);
+};
 
 
 const ColumnConfiguration = ({

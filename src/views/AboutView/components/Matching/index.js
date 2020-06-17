@@ -16,6 +16,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { queryCache } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';
@@ -86,46 +87,52 @@ const exludeRootTermsQuery = (ontologyClass, rootTerm) => ({
 
 
 const ROOT_TERM_MAPPING = {
-  amplification: 'copy variant',
-  'copy gain': 'copy variant',
-  'copy loss': 'copy variant',
-  'deep deletion': 'copy variant',
-  'low level copy gain': 'copy variant',
-  'shallow deletion': 'copy variant',
-  'increased expression': 'expression variant',
-  'reduced expression': 'expression variant',
+  'copy variant': 'structural variant',
+  amplification: 'structural variant',
+  'copy gain': 'structural variant',
+  'copy loss': 'structural variant',
+  'deep deletion': 'structural variant',
+  'low level copy gain': 'structural variant',
+  'shallow deletion': 'structural variant',
+  'increased expression': 'biological',
+  'reduced expression': 'biological',
 };
+
+const DEBOUNCE_MS = 100;
 
 
 const MatchView = (props) => {
   const { history } = props;
   const snackbar = useContext(SnackbarContext);
   const [text, setText] = useState('');
-  const [term] = useDebounce(text, 1000);
+  const [term] = useDebounce(text, DEBOUNCE_MS);
   const [termType, setTermType] = useState('Vocabulary');
   const [rootText, setRootText] = useState('');
-  const [rootTerm] = useDebounce(rootText, 1000);
+  const [rootTerm] = useDebounce(rootText, DEBOUNCE_MS);
   const [isLoading, setIsLoading] = useState(false);
   const [matches, setMatches] = useState([]);
   const [hasTooManyRecords, setHasTooManyRecords] = useState(false);
 
   useEffect(() => {
-    const controllers = [];
-
     const fetchData = async () => {
       setMatches([]);
-      controllers.push(...[
-        api.post('/query', termTreeQuery(termType, term)),
-        api.post('/query', equivalentTermsQuery(termType, term)),
-      ]);
+      const queries = [
+        termTreeQuery(termType, term),
+        equivalentTermsQuery(termType, term),
+      ];
+
 
       if (rootTerm) {
-        controllers.push(api.post('/query', exludeRootTermsQuery(termType, rootTerm)));
+        queries.push(exludeRootTermsQuery(termType, rootTerm));
       }
 
       try {
         const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
-          controllers.map(async controller => controller.request()),
+          queries.map(async query => queryCache.prefetchQuery(
+            ['/query', query],
+            async (key, bodykey) => api.post(key, bodykey).request(),
+            { staleTime: Infinity },
+          )),
         );
 
         const terms = {};
@@ -139,9 +146,7 @@ const MatchView = (props) => {
 
         if (excludedParentTerms) {
           excludedParentTerms.forEach((currentTerm) => {
-            if (currentTerm.name !== rootTerm) {
-              delete terms[currentTerm['@rid']];
-            }
+            delete terms[currentTerm['@rid']];
           });
         }
         setMatches(Object.values(terms));
@@ -156,8 +161,6 @@ const MatchView = (props) => {
     } else {
       setIsLoading(false);
     }
-
-    return () => controllers.map(controller => controller.abort());
   }, [history, rootTerm, term, termType]);
 
   useEffect(() => {

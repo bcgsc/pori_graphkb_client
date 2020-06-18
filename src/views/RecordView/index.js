@@ -104,7 +104,7 @@ const RecordView = (props) => {
       } else if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid) {
         // If not a new form then should have existing content
         try {
-          call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
+          call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true });
           const result = await call.request();
 
           if (result && result.length) {

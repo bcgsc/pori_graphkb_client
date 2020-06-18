@@ -26,7 +26,7 @@ const ClassDescription = ({ name, description }) => {
       const [result] = await controller.request();
       return result;
     },
-    { staleTime: Infinity },
+    { staleTime: Infinity, throwOnError: false },
   );
 
   const { isFetching: countIsFetching, data: count } = useQuery(
@@ -45,7 +45,7 @@ const ClassDescription = ({ name, description }) => {
       }
       return newCount;
     },
-    { staleTime: Infinity },
+    { staleTime: Infinity, throwOnError: false },
   );
 
 

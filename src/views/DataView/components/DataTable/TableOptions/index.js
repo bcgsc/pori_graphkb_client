@@ -83,24 +83,14 @@ const TableOptions = ({
 };
 
 TableOptions.propTypes = {
-  activeColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-  activeGroups: PropTypes.arrayOf(PropTypes.string).isRequired,
-  allColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-  allGroups: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
   totalRowsSelected: PropTypes.number.isRequired,
   anchorEl: PropTypes.element,
-  getColumnLabel: PropTypes.func,
   onClose: PropTypes.func,
   onExportToTsv: PropTypes.func,
-  onToggleColumn: PropTypes.func,
-  onToggleGroup: PropTypes.func,
 };
 
 TableOptions.defaultProps = {
   onExportToTsv: () => { },
-  onToggleColumn: () => { },
-  onToggleGroup: () => { },
-  getColumnLabel: colId => colId,
   anchorEl: null,
   onClose: () => {},
 };

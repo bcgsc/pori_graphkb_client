@@ -22,9 +22,11 @@ class CacheRequest {
     this.result = null;
     this.isLoading = true;
     this.createdAt = (new Date()).valueOf();
+    this.aborted = false;
   }
 
   abort() {
+    this.aborted = true;
     this.call.abort();
   }
 
@@ -314,7 +316,7 @@ class PaginationDataCache {
 
     while (maxCycleCount >= 0) {
       // check if all blocks are complete
-      const incomplete = requests.some(req => !this.cache[req.key()] && !req.isEmpty);
+      const incomplete = requests.some(req => !this.cache[req.key()] && !req.isEmpty && !req.aborted);
 
       // if they are return
       if (!incomplete) {
@@ -322,7 +324,8 @@ class PaginationDataCache {
       }
       // if there is nothing active break and error
       if (this.active.length === 0) {
-        throw new Error(`blocks are incomplete (${requests.map(req => req.key()).join(' ')}) but no blocks are active`);
+        // counld have been cancelled by the user when navigating to a different page
+        console.error(`blocks are incomplete (${requests.map(req => req.key()).join(' ')}) but no blocks are active`);
       }
 
       // otherwise wait for the current running requests to complete

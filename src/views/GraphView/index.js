@@ -23,7 +23,6 @@ import {
 
 
 const { DEFAULT_NEIGHBORS } = config;
-const STALE_TIME = 10000;
 
 /**
  * Shows the search result filters and an edit button

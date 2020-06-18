@@ -23,12 +23,12 @@ class DataTable extends React.Component {
     onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
-    totalRows: PropTypes.number.isRequired,
     totalRowsSelected: PropTypes.number.isRequired,
     onRecordClicked: PropTypes.func,
     onRecordsSelected: PropTypes.func,
     rowBuffer: PropTypes.number,
     search: PropTypes.string,
+    totalRows: PropTypes.number,
   };
 
   static defaultProps = {
@@ -36,6 +36,7 @@ class DataTable extends React.Component {
     rowBuffer: 200,
     onRecordClicked: null,
     onRecordsSelected: null,
+    totalRows: null,
   };
 
   constructor(props) {

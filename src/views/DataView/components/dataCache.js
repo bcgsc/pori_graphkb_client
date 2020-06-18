@@ -1,3 +1,18 @@
+/**
+ * Wrapper for api, handles all requests and special functions.
+ * @module /services/api
+ */
+import api from '@/services/api';
+import {
+  getQueryFromSearch,
+} from '@/services/api/search';
+import schema from '@/services/schema';
+import config from '@/static/config';
+
+
+const {
+  DEFAULT_NEIGHBORS,
+} = config;
 
 class CacheRequest {
   constructor({ search, call, cache }) {
@@ -7,9 +22,11 @@ class CacheRequest {
     this.result = null;
     this.isLoading = true;
     this.createdAt = (new Date()).valueOf();
+    this.aborted = false;
   }
 
   abort() {
+    this.aborted = true;
     this.call.abort();
   }
 
@@ -137,6 +154,62 @@ class CacheBlockRequest extends CacheRequest {
   }
 }
 
+
+const recordApiCall = ({ record }) => {
+  const { '@rid': rid = record } = record;
+  const { routeName = '/v' } = schema.get(record) || {};
+  return api.get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+};
+
+
+/**
+ * @typedef {Object} SortModel
+ *
+ * @property {string} colId the column being sorted on
+ * @property {string} sort the direction to sort by (asc or desc)
+ */
+
+
+/**
+ * Create an API call for retrieving a block/page of rows/records
+ *
+ * @param {object} opt
+ * @param {string} opt.search the query string
+ * @param {Schema} opt.schema
+ * @param {Array.<SortModel>} opt.sortModel the sort model
+ * @param {number} opt.skip the number of records to skip on return
+ * @param {number} opt.limit the maximum number of records to return
+ * @param {boolean} opt.count count the records instead of returning them
+ *
+ * @returns {ApiCall} the api call for retriving the requested data
+ */
+const blockApiCall = ({
+  search, sortModel, skip, limit, count = false,
+}) => {
+  const { routeName, payload } = getQueryFromSearch({
+    schema,
+    search,
+    count,
+  });
+  const content = payload || {};
+
+  if (count) {
+    content.count = true;
+    delete content.neighbors;
+  } else {
+    content.skip = skip;
+    content.limit = limit;
+
+    if (sortModel.length) {
+      const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
+      content.orderBy = orderBy;
+      content.orderByDirection = orderByDirection.toUpperCase();
+    }
+  }
+
+  return api.post(routeName, content);
+};
+
 class PaginationDataCache {
   /**
    * @param {object} opt
@@ -152,25 +225,19 @@ class PaginationDataCache {
     blockSize = 100,
     cacheBlocks = 10,
     cacheExpiryMs = null,
-    schema,
     onLoadCallback = () => { },
     countFirst = true,
-    concurrencyLimit = 1,
-    blockApiCall,
-    recordApiCall,
+    concurrencyLimit = 2,
     onErrorCallback = () => { },
   } = {}) {
     this.blockSize = blockSize;
     this.cacheBlocks = cacheBlocks;
     this.cacheExpiryMs = cacheExpiryMs;
     this.counts = {}; // by search
-    this.schema = schema;
     this.onLoadCallback = onLoadCallback;
     this.onErrorCallback = onErrorCallback;
     this.countFirst = countFirst;
     this.concurrencyLimit = concurrencyLimit;
-    this.blockApiCall = blockApiCall;
-    this.recordApiCall = recordApiCall;
     this.queued = []; // pending requests
     this.active = []; // currently running requests
     this.cache = {}; // finished and cached blocks by key
@@ -249,7 +316,7 @@ class PaginationDataCache {
 
     while (maxCycleCount >= 0) {
       // check if all blocks are complete
-      const incomplete = requests.some(req => !this.cache[req.key()] && !req.isEmpty);
+      const incomplete = requests.some(req => !this.cache[req.key()] && !req.isEmpty && !req.aborted);
 
       // if they are return
       if (!incomplete) {
@@ -257,7 +324,8 @@ class PaginationDataCache {
       }
       // if there is nothing active break and error
       if (this.active.length === 0) {
-        throw new Error(`blocks are incomplete (${requests.map(req => req.key()).join(' ')}) but no blocks are active`);
+        // counld have been cancelled by the user when navigating to a different page
+        console.error(`blocks are incomplete (${requests.map(req => req.key()).join(' ')}) but no blocks are active`);
       }
 
       // otherwise wait for the current running requests to complete
@@ -394,7 +462,7 @@ class PaginationDataCache {
     if (this.countFirst && this.counts[search] === undefined) {
       const count = new CacheCountRequest({
         search,
-        call: this.blockApiCall({
+        call: blockApiCall({
           search,
           schema: this.schema,
           count: true,
@@ -409,7 +477,7 @@ class PaginationDataCache {
       startRow,
       orderBy,
       orderByDirection,
-      call: this.blockApiCall({
+      call: blockApiCall({
         search,
         schema: this.schema,
         skip: startRow,
@@ -487,7 +555,7 @@ class PaginationDataCache {
     const requests = [];
     records.forEach((record) => {
       const block = new CacheRecordRequest({
-        call: this.recordApiCall({ schema: this.schema, record }),
+        call: recordApiCall({ schema: this.schema, record }),
         record,
         cache: this,
       });
@@ -511,7 +579,7 @@ class PaginationDataCache {
    */
   async getRecord(record) {
     const block = new CacheRecordRequest({
-      call: this.recordApiCall({ schema: this.schema, record }),
+      call: recordApiCall({ schema: this.schema, record }),
       record,
       cache: this,
     });
@@ -528,6 +596,5 @@ class PaginationDataCache {
     return result;
   }
 }
-
 
 export default PaginationDataCache;

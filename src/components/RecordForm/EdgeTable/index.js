@@ -55,7 +55,6 @@ const EdgeTable = ({ recordId }) => {
       });
       return newEdges;
     },
-    { staleTime: 5000, refetchOnWindowFocus: false },
   );
 
   const getRelationshipType = useCallback(

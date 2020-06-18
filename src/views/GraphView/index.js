@@ -55,7 +55,6 @@ const GraphView = ({
           promise.cancel = () => controller.abort();
           return promise;
         },
-        { staleTime: STALE_TIME, throwOnError: true },
       );
 
       const recordHash = hashRecordsByRID(fullRecords);
@@ -92,7 +91,6 @@ const GraphView = ({
             promise.cancel = () => controller.abort();
             return promise;
           },
-          { staleTime: STALE_TIME, throwOnError: true },
         );
 
         if (!fullRecord) {
@@ -123,7 +121,6 @@ const GraphView = ({
     const [fullRecord] = await queryCache.prefetchQuery(
       ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
       async (url, body) => api.post(url, body).request(),
-      { staleTime: STALE_TIME, throwOnError: true },
     );
     return fullRecord;
   };

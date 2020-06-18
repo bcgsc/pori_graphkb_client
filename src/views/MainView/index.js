@@ -11,6 +11,7 @@ import React, {
   lazy,
   Suspense, useEffect, useState,
 } from 'react';
+import { ReactQueryConfigProvider } from 'react-query';
 import {
   Redirect,
   Route,
@@ -82,66 +83,75 @@ const Main = () => {
       authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
     }}
     >
-      <div className="main-view">
-        <MainNav
-          activeLink={activeLink}
-          isOpen={drawerOpen}
-          onChange={({ isOpen, activeLink: updatedLink }) => {
-            setDrawerOpen(isOpen);
-            setActiveLink(updatedLink);
-          }}
-        />
-        <MainAppBar
-          activeLink={activeLink}
-          authenticationToken={authenticationToken}
-          authorizationToken={authorizationToken}
-          drawerOpen={drawerOpen}
-          onDrawerChange={setDrawerOpen}
-          onLinkChange={({ isOpen, activeLink: updatedLink }) => {
-            setDrawerOpen(isOpen);
-            setActiveLink(updatedLink);
-          }}
-        />
-        <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
-          <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <Switch>
-              <AuthenticatedRoute component={FeedbackView} path="/feedback" />
-              <Route component={LoginView} path="/login" />
-              <Route component={ErrorView} exact path="/error" />
-              <AuthenticatedRoute component={AboutView} path="/about" />
-              <AuthenticatedRoute component={ActivityView} path="/activity" />
-              <AuthenticatedRoute component={QuickSearch} exact path="/query" />
-              <AuthenticatedRoute component={PopularSearchView} path="/query-popular" />
-              <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
-              <AuthenticatedRoute
-                admin
-                component={RecordView}
-                path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
-              />
-              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:modelName/:rid" />
-              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:rid" />
-              <AuthenticatedRoute
-                admin
-                component={NewRecordView}
-                path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
-              />
-              <AuthenticatedRoute
-                component={NewRecordSelectView}
-                path={`/:variant(new)/:modelName(${
-                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map(m => m.toLowerCase())].join('|')
-                })`}
-              />
-              <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
-              <Redirect exact path="/query/advanced" to="/search/v" />
-              <AuthenticatedRoute component={DataView} path="/data/table" />
-              <AuthenticatedRoute component={GraphView} path="/data/graph" />
-              <AuthenticatedRoute admin component={AdminView} path="/admin" />
-              <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
-              <Redirect from="/" to="/query" />
-            </Switch>
-          </Suspense>
-        </section>
-      </div>
+      <ReactQueryConfigProvider config={{
+        staleTime: 15 * 60 * 1000, // 15m
+        refetchAllOnWindowFocus: false,
+        refetchOnWindowFocus: false,
+        throwOnError: true,
+        refetchOnMount: false,
+      }}
+      >
+        <div className="main-view">
+          <MainNav
+            activeLink={activeLink}
+            isOpen={drawerOpen}
+            onChange={({ isOpen, activeLink: updatedLink }) => {
+              setDrawerOpen(isOpen);
+              setActiveLink(updatedLink);
+            }}
+          />
+          <MainAppBar
+            activeLink={activeLink}
+            authenticationToken={authenticationToken}
+            authorizationToken={authorizationToken}
+            drawerOpen={drawerOpen}
+            onDrawerChange={setDrawerOpen}
+            onLinkChange={({ isOpen, activeLink: updatedLink }) => {
+              setDrawerOpen(isOpen);
+              setActiveLink(updatedLink);
+            }}
+          />
+          <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
+            <Suspense fallback={(<CircularProgress color="secondary" />)}>
+              <Switch>
+                <AuthenticatedRoute component={FeedbackView} path="/feedback" />
+                <Route component={LoginView} path="/login" />
+                <Route component={ErrorView} exact path="/error" />
+                <AuthenticatedRoute component={AboutView} path="/about" />
+                <AuthenticatedRoute component={ActivityView} path="/activity" />
+                <AuthenticatedRoute component={QuickSearch} exact path="/query" />
+                <AuthenticatedRoute component={PopularSearchView} path="/query-popular" />
+                <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
+                <AuthenticatedRoute
+                  admin
+                  component={RecordView}
+                  path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+                />
+                <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:modelName/:rid" />
+                <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:rid" />
+                <AuthenticatedRoute
+                  admin
+                  component={NewRecordView}
+                  path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
+                />
+                <AuthenticatedRoute
+                  component={NewRecordSelectView}
+                  path={`/:variant(new)/:modelName(${
+                    [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map(m => m.toLowerCase())].join('|')
+                  })`}
+                />
+                <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
+                <Redirect exact path="/query/advanced" to="/search/v" />
+                <AuthenticatedRoute component={DataView} path="/data/table" />
+                <AuthenticatedRoute component={GraphView} path="/data/graph" />
+                <AuthenticatedRoute admin component={AdminView} path="/admin" />
+                <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
+                <Redirect from="/" to="/query" />
+              </Switch>
+            </Suspense>
+          </section>
+        </div>
+      </ReactQueryConfigProvider>
     </SecurityContext.Provider>
   );
 };

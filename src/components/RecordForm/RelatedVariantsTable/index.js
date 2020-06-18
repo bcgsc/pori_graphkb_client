@@ -64,7 +64,7 @@ const RelatedVariantsTable = ({ recordId }) => {
 
   const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
 
-  if (isFetching && (!variants || variants.length === 0)) {
+  if (!isFetching && (!variants || variants.length === 0)) {
     return null;
   }
   return (
@@ -114,7 +114,7 @@ const RelatedVariantsTable = ({ recordId }) => {
 };
 
 RelatedVariantsTable.propTypes = {
-  recordId: PropTypes.object.isRequired,
+  recordId: PropTypes.string.isRequired,
 };
 
 

@@ -3,6 +3,7 @@
  */
 import {
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -26,8 +27,13 @@ import useObject from './useObject';
 const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false, variant = '' } = {}) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
+  const [formVariant, setFormVariant] = useState(variant);
 
   const [fieldDefs, setFieldDefs] = useState(initialFieldDefs);
+
+  useEffect(() => {
+    setFormVariant(variant);
+  }, [variant]);
 
   useDeepCompareEffect(() => {
     setFieldDefs(initialFieldDefs);
@@ -107,7 +113,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
     update,
     updateField,
     updateFieldEvent,
-    formVariant: variant,
+    formVariant,
   };
 };
 

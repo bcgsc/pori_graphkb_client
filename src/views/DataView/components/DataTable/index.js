@@ -128,12 +128,6 @@ class DataTable extends React.Component {
     const { search } = this.props;
 
     this.gridApi.setColumnDefs([
-      {
-        colId: 'ID',
-        field: '#',
-        valueGetter: 'node.id',
-        width: 75,
-      },
       ...schema.defineGridColumns(search),
     ]);
 

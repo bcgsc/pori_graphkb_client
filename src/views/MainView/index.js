@@ -30,6 +30,7 @@ const ActivityView = lazy(() => import('@/views/ActivityView'));
 const AdminView = lazy(() => import('@/views/AdminView'));
 const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
 const DataView = lazy(() => import('@/views/DataView'));
+const GraphView = lazy(() => import('@/views/GraphView'));
 const ErrorView = lazy(() => import('@/views/ErrorView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
@@ -132,7 +133,8 @@ const Main = () => {
               />
               <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
               <Redirect exact path="/query/advanced" to="/search/v" />
-              <AuthenticatedRoute component={DataView} path="/data" />
+              <AuthenticatedRoute component={DataView} path="/data/table" />
+              <AuthenticatedRoute component={GraphView} path="/data/graph" />
               <AuthenticatedRoute admin component={AdminView} path="/admin" />
               <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
               <Redirect from="/" to="/query" />

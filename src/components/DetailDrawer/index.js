@@ -1,7 +1,7 @@
 /**
  * @module /components/OntologyDetailComponent
  */
-import './DetailDrawer.scss';
+import './index.scss';
 
 import {
   Collapse,

@@ -2,25 +2,21 @@ import {
   Chip,
   CircularProgress, Typography,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Chart from 'react-google-charts';
+import { useQuery } from 'react-query';
 
 import * as cssTheme from '@/_theme.scss';
 import api from '@/services/api';
 
 
 const AboutMain = () => {
-  const [chartData, setChartData] = useState(null);
-  const [apiVersion, setApiVersion] = useState('');
-  const [dbVersion, setDbVersion] = useState('');
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
-  // get the stats for the pie chart
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.get('/stats?classList=Statement&groupBy=source');
+  const { data: chartData } = useQuery(
+    '/stats?classList=Statement&groupBy=source',
+    async (url) => {
+      const controller = api.get(url);
       const { Statement: result } = await controller.request();
       const data = [['source', 'count']];
       Object.entries(result).forEach(([label, value]) => {
@@ -31,26 +27,19 @@ const AboutMain = () => {
           value,
         ]);
       });
-      setChartData(data);
-    };
-    getData();
-    return () => controller && controller.abort();
-  }, []);
+      return data;
+    },
+    { staleTime: Infinity },
+  );
 
-  // get the version information
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.get('/version');
-      const result = await controller.request();
-      setApiVersion(result.api);
-      setDbVersion(result.db);
-    };
-    getData();
-    return () => controller && controller.abort();
-  }, []);
-
+  const { data: versions } = useQuery(
+    '/version',
+    async (url) => {
+      const controller = api.get(url);
+      return controller.request();
+    },
+    { staleTime: Infinity },
+  );
 
   return (
     <div className="about-page__content">
@@ -62,16 +51,25 @@ const AboutMain = () => {
           variant information and the expermientally collected data.
         </Typography>
         <div className="about-page__version-chips">
-          <Chip
-            color="primary"
-            label={`DB ${dbVersion}`}
-            variant="outline"
-          />
-          <Chip
-            color="primary"
-            label={`API v${apiVersion}`}
-            variant="outline"
-          />
+          {versions && (
+            <>
+              <Chip
+                color="primary"
+                label={`DB ${versions.db}`}
+                variant="outline"
+              />
+              <Chip
+                color="primary"
+                label={`API v${versions.api}`}
+                variant="outline"
+              />
+              <Chip
+                color="primary"
+                label={`Schema v${versions.schema}`}
+                variant="outline"
+              />
+            </>
+          )}
           <Chip
             color="primary"
             label={`Client v${guiVersion}`}

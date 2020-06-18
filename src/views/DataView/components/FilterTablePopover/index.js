@@ -19,7 +19,7 @@ function FilterTablePopover(props) {
     handleToggle, isOpen, anchorEl, filterGroups,
   } = props;
 
-  const renderRow = filters => (
+  const Row = ({ filters }) => (
     <div className="filter-row">
       <div className="filter-row__icon">
         <Avatar
@@ -43,6 +43,9 @@ function FilterTablePopover(props) {
       </div>
     </div>
   );
+  Row.propTypes = {
+    filters: PropTypes.arrayOf(PropTypes.string).isRequired,
+  };
 
   const title = filterGroups.length ? 'Advanced Search Filter Groups' : 'No Filters Applied';
 
@@ -68,7 +71,9 @@ function FilterTablePopover(props) {
               <Typography variant="h5">{title}</Typography>
             </div>
             <div className="filter-table__content">
-              {filterGroups.map(renderRow)}
+              {filterGroups.map((filters, index) => (
+                <Row key={index} filters={filters} /> // eslint-disable-line
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -78,10 +83,14 @@ function FilterTablePopover(props) {
 }
 
 FilterTablePopover.propTypes = {
-  anchorEl: PropTypes.object.isRequired,
   filterGroups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
   handleToggle: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  anchorEl: PropTypes.object,
+};
+
+FilterTablePopover.defaultProps = {
+  anchorEl: null,
 };
 
 export default FilterTablePopover;

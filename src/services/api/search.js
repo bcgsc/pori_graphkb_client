@@ -96,7 +96,6 @@ const getQueryFromSearch = ({ schema, search, count }) => {
   let routeName = '/query';
 
   let payload = null;
-  let queryParams = null;
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search
@@ -105,24 +104,20 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
     payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
   } else {
-    queryParams = {
+    payload = {
+      target: modelName,
       limit,
       neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
     };
 
     if (keyword) {
       routeName = '/query';
-      payload = {
-        queryType: 'keyword',
-        keyword,
-        target: modelName,
-      };
-    } else {
-      queryParams = Object.assign({}, params, queryParams);
+      payload.queryType = 'keyword';
+      payload.keyword = keyword;
     }
   }
   return {
-    routeName, queryParams, payload, modelName, searchProps,
+    routeName, payload, modelName, searchProps,
   };
 };
 

@@ -423,6 +423,7 @@ class DataTable extends React.Component {
           rowModelType="infinite"
           rowSelection="multiple"
           suppressHorizontalScroll={false}
+          suppressMultiSort
         />
       </div>
     );

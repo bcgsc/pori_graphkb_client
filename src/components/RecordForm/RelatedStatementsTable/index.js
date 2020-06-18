@@ -5,10 +5,11 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
-import { CircularProgress, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
@@ -29,64 +30,44 @@ const RelatedStatementsTable = ({ recordId }) => {
     onGridReady, gridApi, gridReady,
   } = useGrid();
 
-  const [statements, setStatements] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    let controller;
-
-    const getRecords = async () => {
-      controller = api.post('/query', {
-        target: 'Statement',
-        filters: {
-          OR: [
-            {
-              conditions: recordId,
-              operator: 'CONTAINS',
-            },
-            {
-              evidence: recordId,
-              operator: 'CONTAINS',
-            },
-          ],
-        },
-        returnProperties: [
-          '@rid',
-          '@class',
-          'relevance.displayName',
-          'conditions.displayName',
-          'evidence.displayName',
-          'subject.displayName',
+  const { data: statements, isFetching } = useQuery(
+    ['/query', {
+      target: 'Statement',
+      filters: {
+        OR: [
+          {
+            conditions: recordId,
+            operator: 'CONTAINS',
+          },
+          {
+            evidence: recordId,
+            operator: 'CONTAINS',
+          },
         ],
-      });
-
-      const result = await controller.request();
-      setStatements(result);
-    };
-
-    if (recordId) {
-      setIsLoading(true);
-      getRecords();
-    }
-    setIsLoading(false);
-    return () => controller && controller.abort();
-  }, [recordId]);
-
+      },
+      returnProperties: [
+        '@rid',
+        '@class',
+        'relevance.displayName',
+        'conditions.displayName',
+        'evidence.displayName',
+        'subject.displayName',
+      ],
+    }], async (route, body) => api.post(route, body).request(),
+    { staleTime: 5000, refetchOnWindowFocus: false },
+  );
 
   useEffect(() => {
-    if (gridReady && statements && statements.length > 0) {
+    if (gridReady && statements && !isFetching) {
       gridApi.setRowData(statements);
       gridApi.sizeColumnsToFit();
     }
-  }, [gridApi, gridReady, statements]);
+  }, [gridApi, gridReady, isFetching, statements]);
 
-  if (isLoading) {
-    return (<CircularProgress />);
-  }
 
   const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
 
-  if (!statements || statements.length === 0) {
+  if (!isFetching && (!statements || statements.length === 0)) {
     return null;
   }
   return (

@@ -8,7 +8,8 @@ import './index.scss';
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
@@ -40,32 +41,22 @@ const EdgeTable = ({ recordId }) => {
     onGridReady, gridApi, gridReady,
   } = useGrid();
 
-  const [edges, setEdges] = useState([]);
-
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.post('/query', {
-        target: [recordId],
-        neighbors: 3,
-      });
-      const [result] = await controller.request();
-
+  const { data: edges, isFetching } = useQuery(
+    ['/query', {
+      target: [recordId],
+      neighbors: 3,
+    }], async (route, body) => {
+      const [result] = await api.post(route, body).request();
       const newEdges = [];
       Object.keys(result || {}).forEach((propName) => {
         if (propName.startsWith('out_') || propName.startsWith('in_')) {
           newEdges.push(...result[propName]);
         }
       });
-      setEdges(newEdges);
-    };
-
-    if (recordId) {
-      getData();
-    }
-    return () => controller && controller.abort();
-  }, [recordId]);
+      return newEdges;
+    },
+    { staleTime: 5000, refetchOnWindowFocus: false },
+  );
 
   const getRelationshipType = useCallback(
     ({ data }) => {
@@ -78,11 +69,11 @@ const EdgeTable = ({ recordId }) => {
   );
 
   useEffect(() => {
-    if (edges && gridReady) {
+    if (edges && gridReady && !isFetching) {
       gridApi.setRowData(edges);
       gridApi.sizeColumnsToFit();
     }
-  }, [edges, gridApi, gridReady]);
+  }, [edges, gridApi, gridReady, isFetching]);
 
   const getTarget = useCallback(({ data }) => {
     const target = isReversed(recordId, data)
@@ -93,7 +84,7 @@ const EdgeTable = ({ recordId }) => {
 
   const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink {...cellValue} /></>); // eslint-disable-line react/prop-types
 
-  if (!edges || edges.length === 0) {
+  if (!isFetching && (!edges || edges.length === 0)) {
     return null;
   }
   return (

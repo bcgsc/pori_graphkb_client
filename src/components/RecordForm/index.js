@@ -227,7 +227,7 @@ const RecordForm = ({
     if (formContent.displayName) {
       pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
     } else {
-      pageTitle = formContent['@rid'];
+      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
     }
   }
 

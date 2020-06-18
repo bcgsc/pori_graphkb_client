@@ -52,7 +52,6 @@ const RelatedVariantsTable = ({ recordId }) => {
         'displayName',
       ],
     }], async (route, body) => api.post(route, body).request(),
-    { staleTime: 5000, refetchOnWindowFocus: false },
   );
 
   useEffect(() => {

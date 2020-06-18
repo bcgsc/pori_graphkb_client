@@ -256,13 +256,15 @@ const SEARCH_OPTS = {
     {
       label: 'Given a variant, find all statements associated with sensitivity for Disease(s)',
       requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
+        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12D',
       },
       additionalInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer', optional: true,
       },
       search: (variant, disease) => {
         const filters = [
+
+          { conditions: keywordSearchGenerator('Variant', variant), operator: CONTAINSANY },
           {
             relevance: {
               queryType: 'ancestors',
@@ -271,7 +273,6 @@ const SEARCH_OPTS = {
             },
             operator: 'IN',
           },
-          { conditions: keywordSearchGenerator('Variant', variant), operator: CONTAINSANY },
         ];
 
         if (disease) {

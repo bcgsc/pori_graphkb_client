@@ -60,7 +60,6 @@ const FormLayout = ({
 
   const isEdge = model && model.isEdge;
 
-
   const isStatement = model && model.name === 'Statement';
 
   return (

@@ -305,7 +305,7 @@ FormField.propTypes = {
     ])),
     default: PropTypes.string,
     description: PropTypes.string,
-    example: PropTypes.string,
+    example: PropTypes.any,
     generateDefault: PropTypes.func,
     linkedClass: PropTypes.shape({
       name: PropTypes.string,

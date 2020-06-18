@@ -43,6 +43,16 @@ const RelatedStatementsTable = ({ recordId }) => {
             evidence: recordId,
             operator: 'CONTAINS',
           },
+          {
+            relevance: recordId,
+          },
+          {
+            subject: recordId,
+          },
+          {
+            evidenceLevel: recordId,
+            operator: 'CONTAINS',
+          },
         ],
       },
       returnProperties: [

@@ -209,12 +209,14 @@ const DataView = ({
           {(searchType === 'Advanced') && (
             <>
               <Tooltip title="click here to see active filter groups">
-                <IconButton
-                  disabled={!filterGroups}
-                  onClick={event => handleFilterTableToggle(event, 'open')}
-                >
-                  <FilterListIcon />
-                </IconButton>
+                <span>
+                  <IconButton
+                    disabled={!filterGroups}
+                    onClick={event => handleFilterTableToggle(event, 'open')}
+                  >
+                    <FilterListIcon />
+                  </IconButton>
+                </span>
               </Tooltip>
               {(filterGroups) && (
               <FilterTablePopover
@@ -262,14 +264,16 @@ const DataView = ({
             {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
           </Typography>
           <Tooltip title="click here for graph view">
-            <IconButton
-              disabled={selectedRecords.length === 0}
-              onClick={handleSwapToGraph}
-            >
-              <TimelineIcon
-                color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
-              />
-            </IconButton>
+            <span>
+              <IconButton
+                disabled={selectedRecords.length === 0}
+                onClick={handleSwapToGraph}
+              >
+                <TimelineIcon
+                  color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
+                />
+              </IconButton>
+            </span>
           </Tooltip>
         </div>
         {statusMessage && (

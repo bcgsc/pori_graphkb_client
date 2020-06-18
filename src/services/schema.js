@@ -1,5 +1,6 @@
 import kbSchema, { Property } from '@bcgsc/knowledgebase-schema';
 import { boundMethod } from 'autobind-decorator';
+import { titleCase } from 'change-case';
 
 import { getQueryFromSearch } from './api/search';
 
@@ -296,6 +297,7 @@ class Schema {
       return {
         colId,
         field: colId,
+        headerName: titleCase(colId),
         sortable: false,
         valueGetter: getLinkData,
         width: linkChipWidth,
@@ -332,6 +334,7 @@ class Schema {
         const colDef = {
           field: cls,
           colId: cls,
+          headerName: titleCase(cls),
           valueGetter: getCondition(cls),
           sortable: false,
           width: cls === 'other' ? 150 : linkChipWidth,
@@ -360,6 +363,7 @@ class Schema {
       return {
         colId,
         field: colId,
+        headerName: titleCase(colId),
         sortable: false,
         valueGetter: getEdgeData,
         width: linkChipWidth,
@@ -433,12 +437,13 @@ class Schema {
       } else if (prop.linkedClass) {
         // build a column group
         const groupDefn = {
-          headerName: prop.name,
+          headerName: titleCase(prop.name),
           groupId: prop.name,
           openByDefault: false,
           children: [{
             field: 'displayName',
             colId: `${prop.name}.displayName`,
+            headerName: titleCase('displayName'),
             valueGetter: valueGetter(prop.name, 'displayName'),
             columnGroupShow: '',
             sortable: true,
@@ -453,6 +458,7 @@ class Schema {
             const colDef = ({
               field: subProp.name,
               colId: `${prop.name}.${subProp.name}`,
+              headerName: titleCase(subProp.name),
               valueGetter: valueGetter(prop.name, subProp.name),
               columnGroupShow: 'open',
               sortable: true,
@@ -466,6 +472,7 @@ class Schema {
         // individual column
         defns.push({
           field: prop.name,
+          headerName: titleCase(prop.name),
           hide,
           colId: prop.name,
         });

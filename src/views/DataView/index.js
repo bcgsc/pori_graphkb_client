@@ -56,7 +56,7 @@ const parseFilters = async (cache, search) => {
   }
 
   return {
-    '@class': modelName, ...queryParams, ...chipProps, filterGroups, newSearch,
+    '@class': modelName, ...queryParams, ...chipProps, filterGroups, search: newSearch,
   };
 };
 

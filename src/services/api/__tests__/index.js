@@ -108,8 +108,8 @@ describe('api methods test', () => {
       expect(actualSearch).toEqual({
         payload,
         routeName: '/query',
-        queryParams: null,
         modelName: 'disease',
+        searchProps: undefined,
       });
     });
 
@@ -139,7 +139,6 @@ describe('api methods test', () => {
 
       expect(result.payload).toMatchObject(payload);
       expect(result.routeName).toEqual('/query');
-      expect(result.queryParams).toEqual(null);
     });
   });
 });

@@ -125,7 +125,7 @@ const RelatedStatementsTable = ({ recordId }) => {
 };
 
 RelatedStatementsTable.propTypes = {
-  recordId: PropTypes.object.isRequired,
+  recordId: PropTypes.string.isRequired,
 };
 
 

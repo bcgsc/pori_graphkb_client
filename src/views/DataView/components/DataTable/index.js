@@ -21,11 +21,11 @@ class DataTable extends React.Component {
     cache: PropTypes.object.isRequired,
     isExportingData: PropTypes.func.isRequired,
     onRowSelected: PropTypes.func.isRequired,
-    optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
     totalRowsSelected: PropTypes.number.isRequired,
     onRecordClicked: PropTypes.func,
     onRecordsSelected: PropTypes.func,
+    optionsMenuAnchor: PropTypes.object,
     rowBuffer: PropTypes.number,
     search: PropTypes.string,
     totalRows: PropTypes.number,
@@ -36,6 +36,7 @@ class DataTable extends React.Component {
     rowBuffer: 200,
     onRecordClicked: null,
     onRecordsSelected: null,
+    optionsMenuAnchor: null,
     totalRows: null,
   };
 

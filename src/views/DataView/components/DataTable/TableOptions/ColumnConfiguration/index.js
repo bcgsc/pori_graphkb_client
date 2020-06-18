@@ -50,7 +50,7 @@ const getColumnLabel = (gridColumnApi, colId, isGroup = false) => {
     colDef = { field: colId }; // non-visible column group error
   }
 
-  return colDef.headerName || titleCase(colDef.field);
+  return colDef.headerName || titleCase(colDef.field) || colDef.field;
 };
 
 
@@ -122,6 +122,7 @@ const ColumnConfiguration = ({
       label={getColumnLabel(gridColumnApi, colId, false)}
       nodeId={colId}
       onIconClick={() => handleToggleColumn(colId, groupId)}
+      onLabelClick={() => handleToggleColumn(colId, groupId)}
     />
   );
 

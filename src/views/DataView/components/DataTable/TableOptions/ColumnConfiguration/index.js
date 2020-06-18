@@ -122,6 +122,7 @@ const ColumnConfiguration = ({
       label={getColumnLabel(gridColumnApi, colId, false)}
       nodeId={colId}
       onIconClick={() => handleToggleColumn(colId, groupId)}
+      onLabelClick={() => handleToggleColumn(colId, groupId)}
     />
   );
 

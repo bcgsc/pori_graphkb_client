@@ -81,7 +81,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all variants associated with therapeutic sensitivity',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -105,7 +105,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all variants associated with resistance',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -129,7 +129,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all variants with pharmacogenomic information',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -158,7 +158,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all high-level evidence statements',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',

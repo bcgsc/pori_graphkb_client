@@ -1,71 +1,24 @@
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import {
-  Checkbox, FormControlLabel, Popover,
-} from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DetailChip from '@/components/DetailChip';
-import OptionsMenu from '@/components/OptionsMenu';
-import DataCache from '@/services/api/dataCache';
 import { getUsername } from '@/services/auth';
 import schema from '@/services/schema';
 
-import { SelectionTracker } from './SelectionTracker';
+import { SelectionTracker } from '../SelectionTracker';
+import GridContext from './GridContext';
+import TableOptions from './TableOptions';
 
-const MAX_FULL_EXPORTS_ROWS = 1000;
 const CACHE_BLOCK_SIZE = 50;
 
-/**
- * Cell renderer for linked records in Datatable.
- *
- * @property {ArrayOf<Objects>} props.value linked records to be displayed
- */
-const RecordList = (props) => {
-  const { value: records } = props;
-
-  if (!records) {
-    return null;
-  }
-  return (
-    <div className="data-table__record-list">
-      {records.map((record) => {
-        const label = schema.getLabel(record);
-        return (
-          <DetailChip
-            key={label}
-            details={record}
-            getLink={schema.getLink}
-            label={label}
-            title={schema.getLabel(record, false)}
-
-            valueToString={(v) => {
-              if (Array.isArray(v)) {
-                return `Array(${v.length})`;
-              }
-              if (v && typeof v === 'object' && v['@rid']) {
-                return schema.getLabel(v, false);
-              }
-              return `${v}`;
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-RecordList.propTypes = {
-  value: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 class DataTable extends React.Component {
   static propTypes = {
-    cache: PropTypes.instanceOf(DataCache).isRequired,
+    cache: PropTypes.object.isRequired,
     isExportingData: PropTypes.func.isRequired,
     onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
@@ -91,10 +44,7 @@ class DataTable extends React.Component {
     this.columnApi = null;
     this.state = {
       // active columns
-      allColumns: [],
-      activeColumns: new Set(),
-      allGroups: {},
-      activeGroups: new Set(),
+      gridReady: false,
       pingedIndices: new Set(),
       selectionTracker: new SelectionTracker(),
       prevNodeID: null,
@@ -118,9 +68,11 @@ class DataTable extends React.Component {
     this.gridApi = gridApi;
     this.gridColumnApi = columnApi;
 
+
     this.gridApi.addEventListener('rowClicked', this.handleSelectionChange);
 
     this.initializeGrid();
+    this.setState({ gridReady: true });
   }
 
   async getTableData({
@@ -185,7 +137,6 @@ class DataTable extends React.Component {
       ...schema.defineGridColumns(search),
     ]);
 
-    this.detectColumns();
 
     const dataSource = {
       rowCount: null,
@@ -203,85 +154,6 @@ class DataTable extends React.Component {
     this.gridApi.setDatasource(dataSource);
   }
 
-  detectColumns() {
-    const activeColumns = this.gridColumnApi.getAllDisplayedColumns()
-      .map(col => col.colId);
-    const allColumns = [];
-    const allGroups = {};
-    const activeGroups = this.gridColumnApi.getAllDisplayedColumnGroups()
-      .map(col => col.colId);
-
-    this.gridColumnApi.columnController.columnDefs.forEach((col) => {
-      if (col.groupId) {
-        allGroups[col.groupId] = col.children.map(childCol => childCol.colId);
-      }
-      allColumns.push(col.colId || col.groupId);
-    });
-    this.setState({
-      allColumns, activeColumns: new Set(activeColumns), allGroups, activeGroups: new Set(activeGroups),
-    });
-  }
-
-  openColumnGroup(groupId, open = true) {
-    const columnGroupState = this.gridColumnApi.getColumnGroupState();
-
-    for (let i = 0; i < columnGroupState.length; i++) {
-      if (columnGroupState[i].groupId === groupId) {
-        columnGroupState[i] = { ...columnGroupState[i], open };
-        break;
-      }
-    }
-    this.gridColumnApi.setColumnGroupState(columnGroupState);
-  }
-
-  handleToggleGroup(groupId) {
-    const { allGroups, activeGroups, activeColumns } = this.state;
-    const isActive = activeGroups.has(groupId);
-    const newActiveGroups = new Set(activeGroups);
-    const newActiveColumns = new Set(activeColumns);
-
-    const closedColumnName = `${groupId}.preview`;
-    this.openColumnGroup(groupId, false); // close the group
-
-    // remove all the other columns from the active columns
-    allGroups[groupId].forEach((colId) => {
-      newActiveColumns.delete(colId);
-      this.gridColumnApi.setColumnVisible(colId, false);
-    });
-
-    if (isActive) {
-      // hiding the group
-      newActiveGroups.delete(groupId);
-      this.gridColumnApi.setColumnVisible(closedColumnName, false);
-    } else {
-      // display the group as closed
-      newActiveGroups.add(groupId);
-      this.gridColumnApi.setColumnVisible(closedColumnName, true);
-    }
-
-    this.setState({ activeGroups: newActiveGroups, activeColumns: newActiveColumns });
-  }
-
-  handleToggleColumn(colId, groupId = null) {
-    const { activeColumns, activeGroups } = this.state;
-    const isActive = activeColumns.has(colId);
-    this.gridColumnApi.setColumnVisible(colId, !isActive);
-
-    const newActiveColumns = new Set(activeColumns);
-    const newActiveGroups = new Set(activeGroups);
-
-    if (isActive) {
-      newActiveColumns.delete(colId);
-    } else {
-      newActiveColumns.add(colId);
-
-      // if a group Id is given, toggle the group open
-      if (groupId) {
-        this.openColumnGroup(groupId, true);
-      }
-    }
-    this.setState({ activeColumns: newActiveColumns, activeGroups: newActiveGroups });
-  }
 
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
@@ -489,86 +361,23 @@ class DataTable extends React.Component {
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups, selectionTracker,
+      selectionTracker,
+      gridReady,
     } = this.state;
 
     const { optionsMenuAnchor, optionsMenuOnClose, totalRowsSelected } = this.props;
-    const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
-    const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
-    const ColumnCheckBox = (colId, groupId = null) => (
-      <FormControlLabel
-        key={colId}
-        control={(
-          <Checkbox
-            checked={activeColumns.has(colId)}
-            onChange={() => this.handleToggleColumn(colId, groupId)}
-          />
-        )}
-        label={this.gridColumnApi.getColumn(colId).colDef.field}
-      />
-    );
-
-    const columnControl = allColumns.sort().map((colId) => {
-      if (allGroups[colId]) {
-        return (
-          <fieldset key={colId}>
-            <caption>
-              <FormControlLabel
-                control={(
-                  <Checkbox
-                    checked={activeGroups.has(colId)}
-                    onChange={() => this.handleToggleGroup(colId)}
-                  />
-              )}
-                label={colId}
-              />
-            </caption>
-            {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}
-          </fieldset>
-        );
-      }
-      return ColumnCheckBox(colId);
-    });
-
-    const menuContents = [
-      {
-        label: 'Configure Visible Columns',
-        content: columnControl,
-      },
-    ];
-
-    if (totalRowsSelected < MAX_FULL_EXPORTS_ROWS) {
-      menuContents.push({
-        label: 'Export All to TSV',
-        handler: () => this.handleExportTsv(false),
-      });
-    }
-
-    if (selectionCount) {
-      menuContents.push({
-        label: `Export Selected Rows (${selectionCount}) to TSV`,
-        handler: () => this.handleExportTsv(true),
-      });
-    }
-
-    const result = (
-      <Popover
-        anchorEl={optionsMenuAnchor}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        onClose={optionsMenuOnClose}
-        open={optionsMenuAnchor !== null}
-      >
-        <OptionsMenu
-          className="data-view__options-menu"
-          options={menuContents}
+    return (
+      <GridContext.Provider value={{ gridApi: this.gridApi, colApi: this.gridColumnApi, gridReady }}>
+        <TableOptions
+          anchorEl={optionsMenuAnchor}
+          onClose={optionsMenuOnClose}
+          onExportToTsv={selectedOnly => this.handleExportTsv(selectedOnly)}
+          selectionTracker={selectionTracker}
+          totalRowsSelected={totalRowsSelected}
         />
-      </Popover>
+      </GridContext.Provider>
     );
-    return result;
   }
 
   render() {
@@ -595,6 +404,7 @@ class DataTable extends React.Component {
             resizable: true,
             width: 150,
           }}
+          groupHeaderHeight={30}
           infiniteInitialRowCount={1}
           maxBlocksInCache={0}
           maxConcurrentDatasourceRequests={1}

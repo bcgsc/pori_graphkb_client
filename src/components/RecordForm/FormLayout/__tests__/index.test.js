@@ -29,7 +29,7 @@ describe('FormLayout', () => {
 
   test('view variant shows generated fields', () => {
     const { getByText, getByTestId } = render(
-      <FormContext.Provider value={{ formContent: { '@rid': '#3:4' }, formVariant: 'view', updateFieldEvent: jest.fn() }}>
+      <FormContext.Provider value={{ formContent: { '@rid': '#3:4', name: 'name' }, formVariant: 'view', updateFieldEvent: jest.fn() }}>
         <FormLayout
           modelName="User"
         />
@@ -44,7 +44,7 @@ describe('FormLayout', () => {
 
   test('exclusion works', () => {
     const { getByText, queryByText } = render(
-      <FormContext.Provider value={{ formContent: { '@rid': '#3:4' }, formVariant: 'view', updateFieldEvent: jest.fn() }}>
+      <FormContext.Provider value={{ formContent: { '@rid': '#3:4', name: 'user' }, formVariant: 'view', updateFieldEvent: jest.fn() }}>
         <FormLayout
           exclusions={['@rid']}
           modelName="User"

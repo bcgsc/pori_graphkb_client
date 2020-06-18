@@ -9,455 +9,300 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import TimelineIcon from '@material-ui/icons/Timeline';
-import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 
+import DetailDrawer from '@/components/DetailDrawer';
 import { HistoryPropType, LocationPropType } from '@/components/types';
-import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
+import { navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
 import util from '../../services/util';
+import PaginationDataCache from './components/dataCache';
 import DataTable from './components/DataTable';
-import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
-import GraphComponent from './components/GraphComponent';
 import {
   getFilterTableProps,
   getPopularChipsPropsAndSearch,
-  hashRecordsByRID,
 } from './util';
+
+
+const parseFilters = async (cache, search) => {
+  const {
+    queryParams, modelName, searchProps, searchProps: { searchType }, payload,
+  } = api.getQueryFromSearch({ search, schema });
+
+  let chipProps = searchProps;
+  let newSearch = null;
+
+  if (searchType === 'Popular') {
+    const {
+      search: encodedSearch,
+      chipProps: popChipProps,
+    } = await getPopularChipsPropsAndSearch(searchProps, modelName);
+    newSearch = encodedSearch;
+    chipProps = popChipProps;
+  }
+
+  let filterGroups = [];
+
+  if (searchType === 'Advanced') {
+    const { filters } = payload;
+    filterGroups = await getFilterTableProps(filters, cache);
+  }
+
+  return {
+    '@class': modelName, ...queryParams, ...chipProps, filterGroups, newSearch,
+  };
+};
 
 /**
  * Shows the search result filters and an edit button
  */
-class DataView extends React.Component {
-  static propTypes = {
-    history: HistoryPropType.isRequired,
-    location: LocationPropType.isRequired,
-    blockSize: PropTypes.number,
-    bufferSize: PropTypes.number,
-    cacheBlocks: PropTypes.number,
-  };
+const DataView = ({
+  location: { search: initialSearch }, cacheBlocks, blockSize, history, bufferSize,
+}) => {
+  const cache = useRef(null);
+  const [statusMessage, setStatusMessage] = useState('loading data...');
+  const [isExportingData, setIsExportingData] = useState(false);
+  const [totalRows, setTotalRows] = useState(null);
+  const [search, setSearch] = useState(initialSearch);
+  const [searchType, setSearchType] = useState('Quick');
+  const [totalRowsSelected, setTotalRowsSelected] = useState(0);
+  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [filters, setFilters] = useState({});
+  const [filterGroups, setFilterGroups] = useState({});
+  const [detailPanelRow, setDetailPanelRow] = useState(null);
+  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
+  const [filterTableAnchorEl, setFilterTableAnchorEl] = useState(null);
 
-  static defaultProps = {
-    cacheBlocks: 10,
-    blockSize: 100,
-    bufferSize: 200,
-  };
+  const handleLoadingChange = useCallback(() => {
+    if (!cache.current) {
+      return;
+    }
+    const rowCount = cache.current.rowCount(search);
+    const [start, end] = cache.current.pendingRows(search);
 
-  constructor(props) {
-    super(props);
-    const { location: { search } } = this.props;
-    // cache for api requests
-    this.state = {
-      cache: null,
-      statusMessage: 'loading data...',
-      totalRows: null,
-      detailPanelRow: null,
-      optionsMenuAnchor: null,
-      selectedRecords: [],
-      filters: {},
-      filterGroups: null,
-      filterTableOpen: false,
-      filterTableAnchorEl: null,
-      search,
-      searchType: 'Quick',
-      isExportingData: false,
-      totalRowsSelected: 0,
-      graphData: null,
-    };
-    this.controllers = [];
-  }
+    let msg;
 
-  async componentDidMount() {
-    const {
-      cacheBlocks, blockSize, history, location: { search },
-    } = this.props;
-    const cache = api.getNewCache({
+    if (start !== null) {
+      msg = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
+
+      if (rowCount !== undefined) {
+        msg = `${msg} of ${rowCount} rows`;
+      } else {
+        msg = `${msg} rows ....`;
+      }
+    }
+    setStatusMessage(msg);
+    setTotalRows(rowCount);
+  }, [isExportingData, search]);
+
+  const handleError = useCallback((err) => {
+    util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
+  }, [history, search]);
+
+  useEffect(() => {
+    cache.current = new PaginationDataCache({
       schema,
       cacheBlocks,
       blockSize,
-      onLoadCallback: this.handleLoadingChange,
-      onErrorCallback: this.handleError,
+      onLoadCallback: handleLoadingChange,
+      onErrorCallback: handleError,
     });
 
-    const URLContainsTable = String(history.location.pathname).includes('table');
+    return () => cache && cache.current && cache.current.abortAll();
+  }, [blockSize, cacheBlocks, handleError, handleLoadingChange]);
 
-    if (URLContainsTable) {
-      const {
-        searchType, limit, neighbors, filterGroups, newSearch, ...filters
-      } = await this.parseFilters(cache);
+  useEffect(() => {
+    const reParseFilters = async () => {
+      const parsed = await parseFilters(cache.current, search);
+      setSearchType(parsed.searchType);
+      setFilters(parsed.filters);
+      setFilterGroups(parsed.filterGroups);
 
-      this.setState({
-        cache, filters, searchType, filterGroups, search: newSearch || search,
-      });
-    } else {
-      this.setState({ cache });
-    }
-  }
-
-  componentWillUnmount() {
-    const { cache } = this.state;
-
-    if (cache) {
-      cache.abortAll();
-    }
-  }
-
-  /**
-   * Grab filters from search which are used to display search chips shown at the
-   * top of the data table. Also updates the search if it is a popular search to
-   * generate a shorter URL.
-   */
-  async parseFilters(cache) {
-    const { search } = this.state;
-
-
-    try {
-      const {
-        queryParams, modelName, searchProps, searchProps: { searchType }, payload,
-      } = api.getQueryFromSearch({ search, schema });
-
-      let chipProps = searchProps;
-      let newSearch = null;
-
-      if (searchType === 'Popular') {
-        const {
-          search: encodedSearch,
-          chipProps: popChipProps,
-        } = await getPopularChipsPropsAndSearch(searchProps, modelName);
-        newSearch = encodedSearch;
-        chipProps = popChipProps;
+      if (parsed.search) {
+        setSearch(parsed.search);
       }
+    };
+    reParseFilters();
+  }, [search]);
 
-      let filterGroups = [];
 
-      if (searchType === 'Advanced') {
-        const { filters } = payload;
-        filterGroups = await getFilterTableProps(filters, cache);
-      }
-
-      return {
-        '@class': modelName, ...queryParams, ...chipProps, filterGroups, newSearch,
-      };
-    } catch (err) {
-      return this.handleError(err);
-    }
-  }
-
-  /**
-   * Opens the right-hand panel that shows details of a given record
-   */
-  @boundMethod
-  async handleToggleDetailPanel(opt = {}) {
-    const { data } = opt;
-    const { cache } = this.state;
-
+  const handleToggleDetailPanel = useCallback(async ({ data } = {}) => {
     // no data or clicked link is a link property without a class model
     if (!data || data.isLinkProp) {
-      this.setState({ detailPanelRow: null });
+      setDetailPanelRow(null);
     } else {
       try {
-        const fullRecord = await cache.getRecord(data);
+        const fullRecord = await cache.current.getRecord(data);
 
         if (!fullRecord) {
-          this.setState({ detailPanelRow: null });
+          setDetailPanelRow(null);
         } else {
-          this.setState({ detailPanelRow: fullRecord });
+          setDetailPanelRow(fullRecord);
         }
       } catch (err) {
-        this.handleError(err);
+        handleError(err);
       }
     }
-  }
+  }, [handleError]);
 
   /**
    * Opens the options menu. The trigger is defined on this component but
    * the menu contents are handled by the data element (ex DataTable)
    */
-  @boundMethod
-  handleToggleOptionsMenu({ currentTarget }) {
-    const { optionsMenuAnchor } = this.state;
+  const handleOpenOptionsMenu = useCallback(({ currentTarget }) => {
+    setOptionsMenuAnchor(currentTarget);
+  }, []);
 
-    if (optionsMenuAnchor) {
-      this.setState({ optionsMenuAnchor: null });
-    } else {
-      this.setState({ optionsMenuAnchor: currentTarget });
-    }
-  }
 
-  @boundMethod
-  async handleRecordSelection(selectedRecords) {
-    const { cache } = this.state;
-
+  const handleRecordSelection = useCallback(async (newSelectedRecords) => {
     try {
-      const fullRecords = await cache.getRecords(selectedRecords);
-      this.setState({ selectedRecords: fullRecords });
+      const fullRecords = await cache.current.getRecords(newSelectedRecords);
+      setSelectedRecords(fullRecords);
     } catch (err) {
-      this.handleError(err);
+      handleError(err);
     }
-  }
+  }, [handleError]);
 
-  @boundMethod
-  handleSwapToGraph() {
-    const { selectedRecords } = this.state;
+  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
+    navigateToGraph(nodeRIDs, history, handleError);
+  }, [handleError, history]);
+
+  const handleSwapToGraph = useCallback(() => {
     const nodeRIDs = selectedRecords.map(node => node['@rid']);
-    this.handleGraphStateSaveIntoURL(nodeRIDs);
-  }
+    handleGraphStateSaveIntoURL(nodeRIDs);
+  }, [handleGraphStateSaveIntoURL, selectedRecords]);
 
-  @boundMethod
-  handleError(err) {
-    const { history } = this.props;
-    const { search } = this.state;
+  const handleExportLoader = (boolean) => {
+    setIsExportingData(boolean);
+  };
 
-    util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
-  }
+  const handleNewRowSelection = (newTotal) => {
+    setTotalRowsSelected(newTotal);
+  };
 
-  @boundMethod
-  handleExportLoader(boolean) {
-    this.setState({ isExportingData: boolean });
-  }
-
-  @boundMethod
-  handleNewRowSelection(totalRows) {
-    this.setState({ totalRowsSelected: totalRows });
-  }
-
-  /**
-   * Called in response to records being requested or loaded
-   * Responsible for giving the user information while waiting for things to load
-   */
-  @boundMethod
-  handleLoadingChange() {
-    const { cache, search, isExportingData } = this.state;
-
-    if (!cache) {
-      return;
-    }
-    const rowCount = cache.rowCount(search);
-    const [start, end] = cache.pendingRows(search);
-
-    let statusMessage;
-
-    if (start !== null) {
-      statusMessage = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
-
-      if (rowCount !== undefined) {
-        statusMessage = `${statusMessage} of ${rowCount} rows`;
-      } else {
-        statusMessage = `${statusMessage} rows ....`;
-      }
-    }
-    this.setState({ statusMessage, totalRows: rowCount });
-  }
-
-  @boundMethod
-  async loadSavedStateFromURL() {
-    const { cache } = this.state;
-
-    try {
-      const decodedNodes = getNodeRIDsFromURL();
-      const records = await cache.getRecords(decodedNodes);
-      const data = hashRecordsByRID(records);
-      this.setState({ graphData: data });
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
-  @boundMethod
-  handleFilterTableToggle(event, openState) {
+  const handleFilterTableToggle = (event, openState) => {
     if (openState === 'open') {
-      this.setState({ filterTableAnchorEl: event.currentTarget, filterTableOpen: true });
+      setFilterTableAnchorEl(event.currentTarget);
     } else {
-      this.setState({ filterTableAnchorEl: null, filterTableOpen: false });
+      setFilterTableAnchorEl(null);
     }
-  }
+  };
 
-  @boundMethod
-  handleGraphStateSaveIntoURL(nodeRIDs) {
-    const { history } = this.props;
-    navigateToGraph(nodeRIDs, history, this.handleError);
-  }
-
-  @boundMethod
-  renderGraphView() {
-    const {
-      detailPanelRow,
-      cache,
-      graphData,
-    } = this.state;
-
-    const edges = schema.getEdges();
-    const expandedEdgeTypes = util.expandEdges(edges);
-
-    if (!graphData) {
-      this.loadSavedStateFromURL();
-      return (
-        <div className="circular-progress">
-          <CircularProgress color="secondary" size="4rem" />
-        </div>
-      );
-    }
-    return (
-      <GraphComponent
-        cache={cache}
-        data={graphData || {}}
-        detail={detailPanelRow}
-        edgeTypes={expandedEdgeTypes}
-        handleDetailDrawerClose={this.handleToggleDetailPanel}
-        handleDetailDrawerOpen={this.handleToggleDetailPanel}
-        handleError={this.handleError}
-        handleGraphStateSave={this.handleGraphStateSaveIntoURL}
-        onRecordClicked={this.handleToggleDetailPanel}
-      />
-    );
-  }
-
-  @boundMethod
-  renderDataTable() {
-    const {
-      cache,
-      optionsMenuAnchor,
-      search,
-      totalRowsSelected,
-      totalRows,
-    } = this.state;
-
-    const { bufferSize } = this.props;
-
-    return (
-      <DataTable
-        cache={cache}
-        isExportingData={this.handleExportLoader}
-        onRecordClicked={this.handleToggleDetailPanel}
-        onRecordsSelected={this.handleRecordSelection}
-        onRowSelected={this.handleNewRowSelection}
-        optionsMenuAnchor={optionsMenuAnchor}
-        optionsMenuOnClose={this.handleToggleOptionsMenu}
-        rowBuffer={bufferSize}
-        search={search}
-        totalRows={totalRows}
-        totalRowsSelected={totalRowsSelected}
-      />
-    );
-  }
-
-  render() {
-    const {
-      cache,
-      statusMessage,
-      totalRows,
-      detailPanelRow,
-      totalRowsSelected,
-      filters,
-      filterGroups,
-      filterTableOpen,
-      filterTableAnchorEl,
-      searchType,
-      selectedRecords,
-    } = this.state;
-
-
-    const { history } = this.props;
-    const URLContainsTable = String(history.location.pathname).includes('table');
-
-    const detailPanelIsOpen = Boolean(detailPanelRow);
-    return (
-      <div className={
+  const detailPanelIsOpen = Boolean(detailPanelRow);
+  return (
+    <div className={
         `data-view ${detailPanelIsOpen
           ? 'data-view--squished'
           : ''}`}
-      >
-        <div className={`data-view__header${!URLContainsTable ? '--graph-view' : ''}`}>
-          {URLContainsTable && (
+    >
+      <div className="data-view__header">
+        <>
+          <Typography variant="h5">{searchType} Search</Typography>
+          <FilterChips {...filters} />
+          {(searchType === 'Advanced') && (
             <>
-              <Typography variant="h5">{searchType} Search</Typography>
-              <FilterChips {...filters} />
-              {(searchType === 'Advanced') && (
-                <>
-                  <Tooltip title="click here to see active filter groups">
-                    <IconButton
-                      disabled={!filterGroups}
-                      onClick={event => this.handleFilterTableToggle(event, 'open')}
-                    >
-                      <FilterListIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {(filterGroups) && (
-                    <FilterTablePopover
-                      anchorEl={filterTableAnchorEl}
-                      filterGroups={filterGroups}
-                      handleToggle={event => this.handleFilterTableToggle(event, 'close')}
-                      isOpen={filterTableOpen}
-                    />
-                  )}
-                </>
+              <Tooltip title="click here to see active filter groups">
+                <IconButton
+                  disabled={!filterGroups}
+                  onClick={event => handleFilterTableToggle(event, 'open')}
+                >
+                  <FilterListIcon />
+                </IconButton>
+              </Tooltip>
+              {(filterGroups) && (
+              <FilterTablePopover
+                anchorEl={filterTableAnchorEl}
+                filterGroups={filterGroups}
+                handleToggle={event => handleFilterTableToggle(event, 'close')}
+                isOpen={Boolean(filterTableAnchorEl)}
+              />
               )}
             </>
           )}
-          {URLContainsTable && (
-            <Tooltip title="click here for table and export options">
-              <IconButton className="data-view__edit-filters" onClick={this.handleToggleOptionsMenu}>
-                <MoreHorizIcon color="action" />
-              </IconButton>
-            </Tooltip>
-          )}
-        </div>
-        <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>
-          {cache && (
-            <>
-              {URLContainsTable
-                ? this.renderDataTable()
-                : this.renderGraphView()}
-              <DetailDrawer
-                node={detailPanelRow}
-                onClose={this.handleToggleDetailPanel}
+        </>
+        <Tooltip title="click here for table and export options">
+          <IconButton className="data-view__edit-filters" onClick={handleOpenOptionsMenu}>
+            <MoreHorizIcon color="action" />
+          </IconButton>
+        </Tooltip>
+      </div>
+      <div className="data-view__content">
+        {cache.current && (
+        <>
+          <DataTable
+            cache={cache.current}
+            isExportingData={handleExportLoader}
+            onRecordClicked={handleToggleDetailPanel}
+            onRecordsSelected={handleRecordSelection}
+            onRowSelected={handleNewRowSelection}
+            optionsMenuAnchor={optionsMenuAnchor}
+            optionsMenuOnClose={() => setOptionsMenuAnchor(null)}
+            rowBuffer={bufferSize}
+            search={search}
+            totalRows={totalRows}
+            totalRowsSelected={totalRowsSelected}
+          />
+          <DetailDrawer
+            node={detailPanelRow}
+            onClose={handleToggleDetailPanel}
+          />
+        </>
+        )}
+      </div>
+      <div className="data-view__footer">
+        <div className="footer__selected-records">
+          <Typography variant="body2">
+            {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
+          </Typography>
+          <Tooltip title="click here for graph view">
+            <IconButton
+              disabled={selectedRecords.length === 0}
+              onClick={handleSwapToGraph}
+            >
+              <TimelineIcon
+                color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
               />
-            </>
-          )}
+            </IconButton>
+          </Tooltip>
         </div>
-        <div className="data-view__footer">
-          <div className="footer__selected-records">
-            {URLContainsTable && (
-              <>
-                <Typography variant="body2">
-                  {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
-                </Typography>
-                <Tooltip title="click here for graph view">
-                  <IconButton
-                    disabled={selectedRecords.length === 0}
-                    onClick={this.handleSwapToGraph}
-                  >
-                    <TimelineIcon
-                      color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
-                    />
-                  </IconButton>
-                </Tooltip>
-              </>
-            )}
-          </div>
-          {statusMessage && (
-            <div className="footer__loader">
-              <CircularProgress />
-              <Typography variant="body2">
-                {statusMessage}
-              </Typography>
-            </div>
-          )}
-          {URLContainsTable && (
-            <Typography className="footer__total-rows" variant="body2">
-              Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-            </Typography>
-          )}
+        {statusMessage && (
+        <div className="footer__loader">
+          <CircularProgress />
+          <Typography variant="body2">
+            {statusMessage}
+          </Typography>
         </div>
+        )}
+        <Typography className="footer__total-rows" variant="body2">
+          Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
+        </Typography>
 
       </div>
-    );
-  }
-}
+
+    </div>
+  );
+};
+
+
+DataView.propTypes = {
+  history: HistoryPropType.isRequired,
+  location: LocationPropType.isRequired,
+  blockSize: PropTypes.number,
+  bufferSize: PropTypes.number,
+  cacheBlocks: PropTypes.number,
+};
+
+DataView.defaultProps = {
+  cacheBlocks: 10,
+  blockSize: 100,
+  bufferSize: 200,
+};
 
 export default DataView;

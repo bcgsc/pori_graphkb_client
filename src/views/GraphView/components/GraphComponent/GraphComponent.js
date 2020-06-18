@@ -810,16 +810,17 @@ function GraphComponent(props) {
   };
 
   const handleExpandNode = async ({ data: node }) => {
-    const { cache, handleError } = props;
+    const { handleError, getRecord } = props;
 
     try {
-      const record = await cache.getRecord(node);
+      const record = await getRecord(node['@rid']);
 
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
         update({ data });
       }
     } catch (err) {
+      console.error(err);
       handleError(err);
     }
   };
@@ -1213,8 +1214,8 @@ function GraphComponent(props) {
 }
 
 GraphComponent.propTypes = {
-  cache: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
+  getRecord: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleError: PropTypes.func.isRequired,

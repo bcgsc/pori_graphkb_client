@@ -11,7 +11,6 @@ import config from '@/static/config';
 
 import schema from '../schema';
 import { ApiCall } from './call';
-import DataCache from './dataCache';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
@@ -19,7 +18,6 @@ import {
 
 const {
   API_BASE_URL,
-  DEFAULT_NEIGHBORS,
 } = config;
 
 const ID_PROP = '@rid';
@@ -141,86 +139,6 @@ const defaultSuggestionHandler = (model, opt = {}) => {
 
 
 /**
- * @typedef {Object} SortModel
- *
- * @property {string} colId the column being sorted on
- * @property {string} sort the direction to sort by (asc or desc)
- */
-
-
-/**
- * Create an API call for retrieving a block/page of rows/records
- *
- * @param {object} opt
- * @param {string} opt.search the query string
- * @param {Schema} opt.schema
- * @param {Array.<SortModel>} opt.sortModel the sort model
- * @param {number} opt.skip the number of records to skip on return
- * @param {number} opt.limit the maximum number of records to return
- * @param {boolean} opt.count count the records instead of returning them
- *
- * @returns {ApiCall} the api call for retriving the requested data
- */
-const querySearchBlock = ({
-  search, sortModel, skip, limit, count = false,
-}) => {
-  const { queryParams, routeName, payload } = getQueryFromSearch({
-    schema,
-    search,
-    count,
-  });
-  const content = payload || queryParams;
-
-  if (count) {
-    content.count = true;
-    delete content.neighbors;
-  } else {
-    content.skip = skip;
-    content.limit = limit;
-
-    if (sortModel.length) {
-      const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
-      content.orderBy = orderBy;
-      content.orderByDirection = orderByDirection.toUpperCase();
-    }
-  }
-
-  let call;
-
-  if (payload) {
-    call = post(routeName, payload);
-  } else {
-    call = get(`${routeName}?${qs.stringify(queryParams)}`);
-  }
-  return call;
-};
-
-
-/**
- * Grab an individual record
- *
- * @param {object} opt
- * @param {object|string} opt.record the record or record ID
- * @param {Schema} opt.schema
- *
- * @returns {ApiCall} the api call for retriving the requested data
- */
-const recordApiCall = ({ record }) => {
-  const { '@rid': rid = record } = record;
-  return post('/query', { target: [rid], neighbors: DEFAULT_NEIGHBORS });
-};
-
-
-const getNewCache = (opt) => {
-  const cache = new DataCache({
-    ...opt,
-    recordApiCall,
-    blockApiCall: querySearchBlock,
-  });
-  return cache;
-};
-
-/**
  * encodes complex/payload for POST query request. Returns search with encoded complex.
  *
  * @param {object} content is the payload or query object to be sent with request
@@ -249,7 +167,6 @@ const encodeQueryComplexToSearch = (content, modelName = 'V', searchProps) => {
 
 export default {
   encodeQueryComplexToSearch,
-  getNewCache,
   getQueryFromSearch,
   getSearchFromQuery,
   API_BASE_URL,

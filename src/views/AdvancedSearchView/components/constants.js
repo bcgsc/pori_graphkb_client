@@ -43,6 +43,10 @@ const OPERATORS = generateOperatorOptions();
 const BLACKLISTED_PROPERTIES = [
   'deletedAt',
   'deletedBy',
+  'createdAt',
+  'createdBy',
+  'updatedAt',
+  'updatedBy',
   'history',
   'uuid',
   'groupRestrictions',

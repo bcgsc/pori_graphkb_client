@@ -1,7 +1,7 @@
 /**
  * @module /components/OntologyDetailComponent
  */
-import './DetailDrawer.scss';
+import './index.scss';
 
 import {
   Collapse,
@@ -283,7 +283,7 @@ function DetailDrawer(props) {
         {!isEdge && (
           <>
             <ListSubheader className="detail-drawer__relationships-subheader">
-                Relationships
+              Relationships
             </ListSubheader>
             {!isEdge ? (
               <RelationshipList

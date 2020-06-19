@@ -10,6 +10,8 @@ const sensitivitySubquery = {
   filters: { name: 'targetable' },
 };
 
+const CONTAINSANY = 'CONTAINSANY';
+
 const highEvidenceLevelSubquery = {
   target: 'EvidenceLevel',
   filters: {
@@ -79,7 +81,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all variants associated with therapeutic sensitivity',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -103,7 +105,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all variants associated with resistance',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -127,7 +129,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all variants with pharmacogenomic information',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -156,7 +158,7 @@ const SEARCH_OPTS = {
     {
       label: 'Given a drug, find all high-level evidence statements',
       requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. oxaliplatin',
       },
       search: drug => ({
         target: 'Statement',
@@ -166,7 +168,7 @@ const SEARCH_OPTS = {
               subject: keywordSearchGenerator('Therapy', drug), operator: 'IN',
             },
             {
-              evidenceLevel: highEvidenceLevelSubquery, operator: 'CONTAINSANY',
+              evidenceLevel: highEvidenceLevelSubquery, operator: CONTAINSANY,
             },
           ],
         },
@@ -189,7 +191,7 @@ const SEARCH_OPTS = {
         filters: {
           AND: [
             {
-              conditions: keywordSearchGenerator('Disease', disease), operator: 'CONTAINSANY',
+              conditions: keywordSearchGenerator('Disease', disease), operator: CONTAINSANY,
             },
             {
               relevance: sensitivitySubquery, operator: 'IN',
@@ -213,7 +215,7 @@ const SEARCH_OPTS = {
         filters: {
           AND: [
             {
-              conditions: keywordSearchGenerator('Disease', disease), operator: 'CONTAINSANY',
+              conditions: keywordSearchGenerator('Disease', disease), operator: CONTAINSANY,
             },
             {
               relevance: resistanceSubquery, operator: 'IN',
@@ -238,7 +240,7 @@ const SEARCH_OPTS = {
           AND: [
             {
               conditions: keywordSearchGenerator('Disease', disease),
-              operator: 'CONTAINSANY',
+              operator: CONTAINSANY,
             },
           ],
         },
@@ -254,13 +256,15 @@ const SEARCH_OPTS = {
     {
       label: 'Given a variant, find all statements associated with sensitivity for Disease(s)',
       requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
+        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12D',
       },
       additionalInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer', optional: true,
       },
       search: (variant, disease) => {
         const filters = [
+
+          { conditions: keywordSearchGenerator('Variant', variant), operator: CONTAINSANY },
           {
             relevance: {
               queryType: 'ancestors',
@@ -269,11 +273,10 @@ const SEARCH_OPTS = {
             },
             operator: 'IN',
           },
-          keywordSearchGenerator('Variant', variant),
         ];
 
         if (disease) {
-          filters.push(keywordSearchGenerator('Disease', disease));
+          filters.push({ conditions: keywordSearchGenerator('Disease', disease), operator: CONTAINSANY });
         }
         return {
           target: 'Statement',
@@ -305,11 +308,11 @@ const SEARCH_OPTS = {
             },
             operator: 'IN',
           },
-          keywordSearchGenerator('Variant', variant),
+          { conditions: keywordSearchGenerator('Variant', variant), operator: CONTAINSANY },
         ];
 
         if (disease) {
-          filters.push(keywordSearchGenerator('Disease', disease));
+          filters.push({ conditions: keywordSearchGenerator('Disease', disease), operator: CONTAINSANY });
         }
         return {
           target: 'Statement',
@@ -333,7 +336,7 @@ const SEARCH_OPTS = {
         filters: [
           {
             conditions: keywordSearchGenerator('Variant', variant),
-            operator: 'CONTAINSANY',
+            operator: CONTAINSANY,
 
           },
           { relevance: diagnosticSubquery, operator: 'IN' },
@@ -355,7 +358,7 @@ const SEARCH_OPTS = {
       search: gene => ({
         target: 'Statement',
         filters: {
-          conditions: keywordSearchGenerator('Variant', gene), operator: 'CONTAINSANY',
+          conditions: keywordSearchGenerator('Variant', gene), operator: CONTAINSANY,
         },
       }),
       searchChipProps: gene => ({
@@ -377,10 +380,10 @@ const SEARCH_OPTS = {
         filters: {
           AND: [
             {
-              conditions: keywordSearchGenerator('Variant', gene), operator: 'CONTAINSANY',
+              conditions: keywordSearchGenerator('Variant', gene), operator: CONTAINSANY,
             },
             {
-              conditions: keywordSearchGenerator('Disease', disease), operator: 'CONTAINSANY',
+              conditions: keywordSearchGenerator('Disease', disease), operator: CONTAINSANY,
             },
           ],
         },
@@ -402,7 +405,7 @@ const SEARCH_OPTS = {
         filters: {
           AND: [
             {
-              conditions: keywordSearchGenerator('Variant', gene), operator: 'CONTAINSANY',
+              conditions: keywordSearchGenerator('Variant', gene), operator: CONTAINSANY,
             },
             {
               relevance: {

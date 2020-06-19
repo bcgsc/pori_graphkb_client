@@ -110,7 +110,7 @@ const AddReviewDialog = ({
             size="large"
             variant="contained"
           >
-              ADD REVIEW
+            ADD REVIEW
           </ActionButton>
         </div>
       </div>

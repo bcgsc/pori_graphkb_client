@@ -26,6 +26,18 @@ const exclusionFilter = (orderingList, exclusionList) => {
   return newOrdering;
 };
 
+const filterNullFields = (orderingList, formContent) => {
+  const newOrdering = [];
+  orderingList.forEach((field) => {
+    if (Array.isArray(field)) {
+      newOrdering.push(filterNullFields(field, formContent));
+    } else if (formContent[field] === 0 || formContent[field]) {
+      newOrdering.push(field);
+    }
+  });
+  return newOrdering;
+};
+
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
  *
@@ -42,7 +54,7 @@ const exclusionFilter = (orderingList, exclusionList) => {
 const FieldGroup = ({
   model, ordering, exclusions, disabled,
 }) => {
-  const { formVariant } = useContext(FormContext);
+  const { formVariant, formContent } = useContext(FormContext);
   const { properties: { out, in: tgt, ...properties } } = model;
 
   // get the form content
@@ -71,9 +83,10 @@ const FieldGroup = ({
 
   if ((formVariant === FORM_VARIANT.EDIT || formVariant === FORM_VARIANT.NEW)) {
     filteredOrdering = filterGeneratedFields(ordering);
+  } else if (formVariant === FORM_VARIANT.VIEW) {
+    filteredOrdering = filterNullFields(filteredOrdering, formContent);
   }
   filteredOrdering = exclusionFilter(filteredOrdering, exclusions);
-
 
   filteredOrdering.forEach((item) => {
     if (Array.isArray(item)) { // subgrouping

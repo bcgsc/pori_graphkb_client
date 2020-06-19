@@ -3,11 +3,9 @@ import './index.scss';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Button, CircularProgress,
-  IconButton,
-  Paper, Tooltip, Typography,
+  Paper, Typography,
 } from '@material-ui/core';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
-import TimelineIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useRef,
@@ -17,8 +15,8 @@ import React, {
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
+import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { SecurityContext } from '@/components/SecurityContext';
-import ToggleButtonGroup from '@/components/ToggleButtonGroup';
 import { GeneralRecordPropType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
@@ -27,6 +25,8 @@ import schema from '@/services/schema';
 
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
+import RelatedStatementsTable from './RelatedStatementsTable';
+import RelatedVariantsTable from './RelatedVariantsTable';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
@@ -70,7 +70,7 @@ const RecordForm = ({
     }
   }, [modelName]);
 
-  const form = useSchemaForm(fieldDefs, initialValue);
+  const form = useSchemaForm(fieldDefs, initialValue, { variant });
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
   } = form;
@@ -211,14 +211,37 @@ const RecordForm = ({
     setFormIsDirty(true);
   }, [formContent.reviews, setFormIsDirty, updateField]);
 
-  return (
+  const handleToggleState = useCallback((newState) => {
+    if (newState !== variant) {
+      if (newState === 'graph') {
+        navigateToGraph();
+      } else {
+        onTopClick(formContent);
+      }
+    }
+  }, [formContent, navigateToGraph, onTopClick, variant]);
 
+  let pageTitle = title;
+
+  if (variant === FORM_VARIANT.VIEW && formContent) {
+    if (formContent.displayName) {
+      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+    } else {
+      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
+    }
+  }
+
+  return (
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
-        <Typography className="title" variant="h1">{title}</Typography>
-        <div className="header-action-buttons">
+        <span className="title">
+          <Typography variant="h1">{pageTitle}</Typography>
+          {title !== pageTitle && (<Typography variant="subtitle">{title}</Typography>)}
+        </span>
+        <div className={`header__actions header__actions--${variant}`}>
           {(modelName === 'Statement' && variant === FORM_VARIANT.EDIT && (
           <Button
+            className="header__review-action"
             disabled={actionInProgress}
             onClick={() => setReviewDialogOpen(true)}
             variant="outlined"
@@ -229,27 +252,12 @@ const RecordForm = ({
             Add Review
           </Button>
           ))}
-          {variant === FORM_VARIANT.VIEW && (
-            <div className="header-action-buttons__graphview">
-              <Tooltip title="click here for graphview">
-                <IconButton
-                  data-testid="graph-view"
-                  onClick={navigateToGraph}
-                >
-                  <TimelineIcon
-                    color="secondary"
-                  />
-                </IconButton>
-              </Tooltip>
-            </div>
-          )}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-          <ToggleButtonGroup
+          <RecordFormStateToggle
             message="Are you sure? You will lose your changes."
-            onClick={() => onTopClick(formContent)}
-            options={['view', 'edit']}
-            requireConfirm
-            variant={variant}
+            onClick={handleToggleState}
+            requireConfirm={variant === 'edit' && formIsDirty}
+            value={variant}
           />
           )}
         </div>
@@ -271,11 +279,16 @@ const RecordForm = ({
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && (
-        <div className="record-form__related-records">
-          <Typography variant="h4">Related Records</Typography>
-          <EdgeTable value={formContent} />
-        </div>
+      {variant === FORM_VARIANT.VIEW && schema.get(modelName).inherits.includes('V') && (
+        <>
+          <EdgeTable recordId={form.formContent['@rid']} />
+          {modelName !== 'Statement' && (
+            <RelatedStatementsTable recordId={form.formContent['@rid']} />
+          )}
+          {schema.get(modelName).inherits.includes('Ontology') && (
+            <RelatedVariantsTable recordId={form.formContent['@rid']} />
+          )}
+        </>
       )}
       <div className="record-form__action-buttons">
         {variant === FORM_VARIANT.EDIT

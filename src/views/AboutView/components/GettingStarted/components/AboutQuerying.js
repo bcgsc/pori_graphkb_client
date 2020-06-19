@@ -15,7 +15,7 @@ import queryResults from '@/static/images/table-view.png';
 const AboutQuerying = () => (
   <>
     <Typography id="about-page__querying" variant="h2">
-        Querying
+      Querying
     </Typography>
     <Typography paragraph variant="body2">
       There are 3 ways to query GraphKB. These can be found by clicking on the search icon in the left-hand side bar.

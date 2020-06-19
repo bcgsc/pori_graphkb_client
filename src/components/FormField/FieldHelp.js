@@ -33,7 +33,7 @@ const FieldHelp = ({ example, description }) => {
 
 FieldHelp.propTypes = {
   description: PropTypes.string,
-  example: PropTypes.string,
+  example: PropTypes.any,
 };
 
 FieldHelp.defaultProps = {

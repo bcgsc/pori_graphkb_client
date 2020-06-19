@@ -33,10 +33,10 @@ const AboutClasses = () => {
       </List>
 
       <Typography variant="h2">
-          Relationship (Edge) Classes
+        Relationship (Edge) Classes
       </Typography>
       <Typography paragraph>
-          Relationship classes are types of edge records that can be used to relate records to one another
+        Relationship classes are types of edge records that can be used to relate records to one another
       </Typography>
       <List>
         {links.map(ClassDescription)}

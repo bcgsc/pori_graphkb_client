@@ -14,6 +14,7 @@ import ModelSelect from '@/components/ModelSelect';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords } from '@/components/util';
 import api from '@/services/api';
+import schema from '@/services/schema';
 
 import FilterGroup from './components/FilterGroup';
 import PropertyFilter from './components/PropertyFilter';
@@ -139,13 +140,29 @@ function AdvancedSearchView({ history }) {
       },
     };
 
+    const model = schema.get(modelName);
     searchFilters.forEach((fg) => {
-      const filterGroupComparisons = content.filters.OR;
-
       if (fg.filters.length) {
-        filterGroupComparisons.push({
-          AND: fg.filters.map(filter => ({ [filter.attr]: filter.value, operator: filter.operator })),
+        const conditions = [];
+        fg.filters.forEach((filter) => {
+          if (
+            filter.value
+            && model.properties[filter.attr].linkedClass
+            && model.properties[filter.attr].linkedClass.embedded
+          ) {
+            Object.keys(filter.value).forEach((embeddedAttr) => {
+              if (filter.value[embeddedAttr] !== undefined) {
+                conditions.push({
+                  [`${filter.attr}.${embeddedAttr}`]: filter.value[embeddedAttr],
+                  operator: filter.operator,
+                });
+              }
+            });
+          } else {
+            conditions.push({ [filter.attr]: filter.value, operator: filter.operator });
+          }
         });
+        content.filters.OR.push({ AND: conditions });
       }
     });
 
@@ -183,7 +200,7 @@ function AdvancedSearchView({ history }) {
       <Card className="advanced-search__filter-groups">
         <div className="filter-groups__header">
           <Typography variant="h5">
-          Active Filter Groups
+            Active Filter Groups
           </Typography>
         </div>
         <div className="filter-groups__content">
@@ -199,7 +216,7 @@ function AdvancedSearchView({ history }) {
             onClick={handleSubmit}
             requireConfirm={false}
           >
-           Search
+            Search
           </ActionButton>
         </div>
       </Card>

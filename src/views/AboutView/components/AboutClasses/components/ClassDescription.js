@@ -5,7 +5,8 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
 
 import DetailChip from '@/components/DetailChip';
 import api from '@/services/api';
@@ -18,32 +19,20 @@ import schema from '@/services/schema';
  * @param {string} props.description the class description
  */
 const ClassDescription = ({ name, description }) => {
-  const [example, setExample] = useState(null);
-  const [count, setCount] = useState('');
-  const [inProgress, setInProgress] = useState(false);
-
-  // get the example
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      setInProgress(true);
-      controller = api.post('/query', { target: name, neighbors: 1, limit: 1 });
+  const { isFetching: exampleIsFetching, data: example } = useQuery(
+    ['/query', { target: name, neighbors: 1, limit: 1 }],
+    async (url, body) => {
+      const controller = api.post(url, body);
       const [result] = await controller.request();
-      setInProgress(false);
-      setExample(result);
-    };
+      return result;
+    },
+    { staleTime: Infinity, throwOnError: false },
+  );
 
-    getData();
-    return () => controller && controller.abort();
-  }, [name]);
-
-  // get the count
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.get(`/stats?classList=${name}`);
+  const { isFetching: countIsFetching, data: count } = useQuery(
+    `/stats?classList=${name}`,
+    async (url) => {
+      const controller = api.get(url);
       const { [name]: value } = await controller.request();
       let newCount = value;
 
@@ -54,11 +43,11 @@ const ClassDescription = ({ name, description }) => {
       } else {
         newCount = `${value}`;
       }
-      setCount(newCount);
-    };
-    getData();
-    return () => controller && controller.abort();
-  }, [name]);
+      return newCount;
+    },
+    { staleTime: Infinity, throwOnError: false },
+  );
+
 
   return (
     <React.Fragment key={name}>
@@ -73,7 +62,7 @@ const ClassDescription = ({ name, description }) => {
       </ListItem>
       <ListItem>
         <ListItemText inset>
-          {inProgress && (<CircularProgress size={20} />)}
+          {(exampleIsFetching || countIsFetching) && (<CircularProgress size={20} />)}
           {example && (
             <DetailChip
               className="record-autocomplete__chip record-autocomplete__chip--single"

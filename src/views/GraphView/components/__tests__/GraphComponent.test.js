@@ -117,7 +117,7 @@ describe('<GraphComponent />', () => {
     fireEvent.click(container.querySelector('div.svg-wrapper svg'));
     await act(() => fireEvent.click(graphNode));
 
-    expect(handleDetailDrawerOpen).toHaveBeenCalledTimes(3);
+    expect(handleDetailDrawerOpen).toHaveBeenCalledTimes(4);
     expect(handleDetailDrawerClose).toHaveBeenCalledTimes(2);
   });
 

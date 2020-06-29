@@ -132,6 +132,12 @@ const PropertyFilter = ({
     });
   }, [filterGroup, formContent.value, onSubmit, operator, property]);
 
+  let format = '';
+
+  if (['createdAt', 'deletedAt', 'updatedAt'].includes(property)) {
+    format = 'date';
+  }
+
   return (
     <>
       <div className={`property-filter ${className}`}>
@@ -160,7 +166,7 @@ const PropertyFilter = ({
               className="property-filter__value"
               disabled={!property}
               innerProps={{ 'data-testid': 'value-select' }}
-              model={valueModel}
+              model={{ ...valueModel, format }}
               variant="edit"
             />
           </FormContext.Provider>

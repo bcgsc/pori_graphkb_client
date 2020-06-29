@@ -47,9 +47,8 @@ function FilterGroup(props) {
           }
 
           return (
-            <div className="filter-chip" data-testid={`filter-chip${index}`}>
+            <div key={`${filter.attr}.${filter.value}`} className="filter-chip" data-testid={`filter-chip${index}`}>
               <Chip
-                key={`${filter.attr}.${filter.value}`}
                 default="outlined"
                 label={`${filter.attr} ${filter.operator} '${filterValue}'`}
               />

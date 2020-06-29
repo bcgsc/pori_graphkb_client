@@ -29,12 +29,14 @@ class ApiCall {
   constructor(endpoint, requestOptions, callOptions) {
     const {
       forceListReturn = false,
+      forceRecordReturn = false,
       name = null,
     } = callOptions || {};
     this.endpoint = endpoint;
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;
+    this.forceRecordReturn = forceRecordReturn;
     this.name = name || endpoint;
   }
 
@@ -113,6 +115,11 @@ class ApiCall {
 
       if (this.forceListReturn && !Array.isArray(result)) {
         result = [result];
+      } else if (Array.isArray(result) && this.forceRecordReturn) {
+        if (result.length > 1) {
+          throw new BadRequestError(`expected a single record but found multiple (${result.length})`);
+        }
+        [result] = result;
       }
       return result;
     }

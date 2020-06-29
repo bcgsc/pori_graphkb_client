@@ -39,6 +39,7 @@ const leftoverPositionalProps = omit(
     'untemplatedSeq',
     'untemplatedSeqSize',
     'zygosity',
+    'displayName',
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
@@ -52,6 +53,7 @@ const leftoverCategoryProps = omit(
     'reference2',
     'type',
     'zygosity',
+    'displayName',
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(

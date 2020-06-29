@@ -59,7 +59,7 @@ class Schema {
   getLink(obj) {
     if (obj && obj['@rid']) {
       const { name } = this.get(obj) || this.get('V');
-      return `/view/${name}/${obj['@rid'].slice(1)}`;
+      return `/view/${name}/${obj['@rid'].replace(/^#/, '')}`;
     }
     return '';
   }

@@ -8,8 +8,8 @@ import './index.scss';
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect } from 'react';
-import { queryCache, useQuery } from 'react-query';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
@@ -40,23 +40,29 @@ const EdgeTable = ({ recordId }) => {
   const {
     onGridReady, gridApi, gridReady,
   } = useGrid();
+  const [edges, setEdges] = useState([]);
 
-  const { data: edges, isFetching } = useQuery(
+  const { data: record, isFetching } = useQuery(
     ['/query', {
       target: [recordId],
       neighbors: 3,
-    }, 'edges'], async (route, body) => {
-      const [result] = await api.post(route, body).request();
-      queryCache.setQueryData([route, body], [result]);
-      const newEdges = [];
-      Object.keys(result || {}).forEach((propName) => {
-        if (propName.startsWith('out_') || propName.startsWith('in_')) {
-          newEdges.push(...result[propName]);
-        }
-      });
-      return newEdges;
+    }], async (route, body) => {
+      const result = await api.post(route, body).request();
+      return result;
     },
   );
+
+  useEffect(() => {
+    if (!isFetching) {
+      const newEdges = [];
+      Object.keys(record[0] || {}).forEach((propName) => {
+        if (propName.startsWith('out_') || propName.startsWith('in_')) {
+          newEdges.push(...record[0][propName]);
+        }
+      });
+      setEdges(newEdges);
+    }
+  }, [isFetching, record]);
 
   const getRelationshipType = useCallback(
     ({ data }) => {

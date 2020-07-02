@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { queryCache, useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
@@ -45,8 +45,9 @@ const EdgeTable = ({ recordId }) => {
     ['/query', {
       target: [recordId],
       neighbors: 3,
-    }], async (route, body) => {
+    }, 'edges'], async (route, body) => {
       const [result] = await api.post(route, body).request();
+      queryCache.setQueryData([route, body], [result]);
       const newEdges = [];
       Object.keys(result || {}).forEach((propName) => {
         if (propName.startsWith('out_') || propName.startsWith('in_')) {

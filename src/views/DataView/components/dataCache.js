@@ -158,7 +158,7 @@ class CacheBlockRequest extends CacheRequest {
 const recordApiCall = ({ record }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
-  return api.get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+  return api.get(`${routeName}/${rid.replace(/^#/, '')}?neighbors=${DEFAULT_NEIGHBORS}`);
 };
 
 

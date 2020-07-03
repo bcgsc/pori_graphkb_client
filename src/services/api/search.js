@@ -70,13 +70,10 @@ const buildSearchFromParseVariant = (schema, variant) => {
  * @param {Schema} opt.schema
  * @param {string} opt.search the search string portion of the URL displayed by this app
  */
-const getQueryFromSearch = ({ schema, search, count }) => {
+const getQueryFromSearch = ({ schema, search }) => {
   const {
-    neighbors = TABLE_DEFAULT_NEIGHBORS,
-    limit = DEFAULT_LIMIT,
     keyword,
     complex,
-    searchProps,
     ...params
   } = qs.parse(search.replace(/^\?/, ''));
 
@@ -93,9 +90,9 @@ const getQueryFromSearch = ({ schema, search, count }) => {
   if (!schema.get(modelName)) {
     throw new Error(`Failed to find the expected model (${modelName})`);
   }
-  let routeName = '/query';
+  const routeName = '/query';
 
-  let payload = null;
+  let payload = {};
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search
@@ -103,21 +100,9 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     payload = JSON.parse(atob(decodeURIComponent(complex)));
     payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
     payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
-  } else {
-    payload = {
-      target: modelName,
-      limit,
-      neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
-    };
-
-    if (keyword) {
-      routeName = '/query';
-      payload.queryType = 'keyword';
-      payload.keyword = keyword;
-    }
   }
   return {
-    routeName, payload, modelName, searchProps,
+    routeName, payload, modelName,
   };
 };
 
@@ -132,12 +117,12 @@ const getQueryFromSearch = ({ schema, search, count }) => {
    * @param {object} opt.payload the body/payload
    */
 const getSearchFromQuery = ({
-  schema, routeName, queryParams: queryParamsIn = {}, payload = null,
+  schema, routeName, queryParams: queryParamsIn = {}, payload = null, ...opt
 }) => {
   const queryParams = { ...queryParamsIn };
-  let modelName;
+  let { modelName } = opt;
 
-  if (queryParams) {
+  if (queryParams && !modelName) {
     // to make URL more readable class is sometimes used in place of @class
     // these are used to determine the route name and should not also appear as query params
     modelName = queryParams.class || queryParams['@class'];

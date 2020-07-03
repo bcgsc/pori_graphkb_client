@@ -17,9 +17,6 @@ import util from '@/services/util';
 import config from '@/static/config';
 
 import GraphComponent from './components/GraphComponent';
-import {
-  hashRecordsByRID,
-} from './util';
 
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -56,7 +53,7 @@ const GraphView = ({
         },
       );
 
-      const recordHash = hashRecordsByRID(fullRecords);
+      const recordHash = util.hashRecordsByRID(fullRecords);
       Object.keys(recordHash).forEach((recordId) => {
         queryCache.setQueryData(
           [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],

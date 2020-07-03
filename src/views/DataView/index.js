@@ -6,7 +6,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
@@ -19,46 +18,12 @@ import { HistoryPropType, LocationPropType } from '@/components/types';
 import { navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
+import util from '@/services/util';
 
-import util from '../../services/util';
+import ActiveFilters from './components/ActiveFilters';
 import PaginationDataCache from './components/dataCache';
 import DataTable from './components/DataTable';
-import FilterChips from './components/FilterChips';
-import FilterTablePopover from './components/FilterTablePopover';
-import {
-  getFilterTableProps,
-  getPopularChipsPropsAndSearch,
-} from './util';
 
-
-const parseFilters = async (cache, search) => {
-  const {
-    queryParams, modelName, searchProps, searchProps: { searchType }, payload,
-  } = api.getQueryFromSearch({ search, schema });
-
-  let chipProps = searchProps;
-  let newSearch = null;
-
-  if (searchType === 'Popular') {
-    const {
-      search: encodedSearch,
-      chipProps: popChipProps,
-    } = await getPopularChipsPropsAndSearch(searchProps, modelName);
-    newSearch = encodedSearch;
-    chipProps = popChipProps;
-  }
-
-  let filterGroups = [];
-
-  if (searchType === 'Advanced') {
-    const { filters } = payload;
-    filterGroups = await getFilterTableProps(filters, cache);
-  }
-
-  return {
-    '@class': modelName, ...queryParams, ...chipProps, filterGroups, search: newSearch,
-  };
-};
 
 /**
  * Shows the search result filters and an edit button
@@ -71,14 +36,18 @@ const DataView = ({
   const [isExportingData, setIsExportingData] = useState(false);
   const [totalRows, setTotalRows] = useState(null);
   const [search, setSearch] = useState(initialSearch);
-  const [searchType, setSearchType] = useState('Quick');
   const [totalRowsSelected, setTotalRowsSelected] = useState(0);
   const [selectedRecords, setSelectedRecords] = useState([]);
-  const [filters, setFilters] = useState({});
-  const [filterGroups, setFilterGroups] = useState([]);
   const [detailPanelRow, setDetailPanelRow] = useState(null);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
-  const [filterTableAnchorEl, setFilterTableAnchorEl] = useState(null);
+
+  useEffect(() => {
+    // normalize the input query
+    const newSearch = api.getSearchFromQuery({
+      ...api.getQueryFromSearch({ search: initialSearch, schema }), schema,
+    });
+    setSearch(newSearch);
+  }, [initialSearch]);
 
   const handleLoadingChange = useCallback(() => {
     if (!cache.current) {
@@ -117,20 +86,6 @@ const DataView = ({
 
     return () => cache && cache.current && cache.current.abortAll();
   }, [blockSize, cacheBlocks, handleError, handleLoadingChange]);
-
-  useEffect(() => {
-    const reParseFilters = async () => {
-      const parsed = await parseFilters(cache.current, search);
-      setSearchType(parsed.searchType);
-      setFilters(parsed.filters);
-      setFilterGroups(parsed.filterGroups);
-
-      if (parsed.search) {
-        setSearch(parsed.search);
-      }
-    };
-    reParseFilters();
-  }, [search]);
 
 
   const handleToggleDetailPanel = useCallback(async ({ data } = {}) => {
@@ -187,14 +142,6 @@ const DataView = ({
     setTotalRowsSelected(newTotal);
   };
 
-  const handleFilterTableToggle = (event, openState) => {
-    if (openState === 'open') {
-      setFilterTableAnchorEl(event.currentTarget);
-    } else {
-      setFilterTableAnchorEl(null);
-    }
-  };
-
   const detailPanelIsOpen = Boolean(detailPanelRow);
   return (
     <div className={
@@ -203,32 +150,7 @@ const DataView = ({
           : ''}`}
     >
       <div className="data-view__header">
-        <>
-          <Typography variant="h5">{searchType} Search</Typography>
-          <FilterChips {...filters} />
-          {(searchType === 'Advanced') && (
-            <>
-              <Tooltip title="click here to see active filter groups">
-                <span>
-                  <IconButton
-                    disabled={!filterGroups}
-                    onClick={event => handleFilterTableToggle(event, 'open')}
-                  >
-                    <FilterListIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              {(filterGroups) && (
-              <FilterTablePopover
-                anchorEl={filterTableAnchorEl}
-                filterGroups={filterGroups}
-                handleToggle={event => handleFilterTableToggle(event, 'close')}
-                isOpen={Boolean(filterTableAnchorEl)}
-              />
-              )}
-            </>
-          )}
-        </>
+        <ActiveFilters search={search} />
         <Tooltip title="click here for table and export options">
           <IconButton className="data-view__edit-filters" onClick={handleOpenOptionsMenu}>
             <MoreHorizIcon color="action" />

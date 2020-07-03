@@ -146,7 +146,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  * @param {object} searchProps props passed to query specifically for search parsing
  * generated at the top of dataview
  */
-const encodeQueryComplexToSearch = (content, modelName = 'V', searchProps) => {
+const encodeQueryComplexToSearch = (content, modelName = 'V') => {
   const payload = {};
   payload['@class'] = modelName;
 
@@ -157,9 +157,6 @@ const encodeQueryComplexToSearch = (content, modelName = 'V', searchProps) => {
     payload.complex = encodedContent;
   }
 
-  if (searchProps) {
-    payload.searchProps = searchProps;
-  }
   const search = qs.stringify(payload);
   return search;
 };

@@ -9,7 +9,6 @@ import React from 'react';
 import { getUsername } from '@/services/auth';
 import schema from '@/services/schema';
 
-import { SelectionTracker } from '../SelectionTracker';
 import GridContext from './GridContext';
 import TableOptions from './TableOptions';
 
@@ -20,11 +19,8 @@ class DataTable extends React.Component {
   static propTypes = {
     cache: PropTypes.object.isRequired,
     isExportingData: PropTypes.func.isRequired,
-    onRowSelected: PropTypes.func.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
-    totalRowsSelected: PropTypes.number.isRequired,
     onRecordClicked: PropTypes.func,
-    onRecordsSelected: PropTypes.func,
     optionsMenuAnchor: PropTypes.object,
     rowBuffer: PropTypes.number,
     search: PropTypes.string,
@@ -35,7 +31,6 @@ class DataTable extends React.Component {
     search: '',
     rowBuffer: 200,
     onRecordClicked: null,
-    onRecordsSelected: null,
     optionsMenuAnchor: null,
     totalRows: null,
   };
@@ -48,8 +43,6 @@ class DataTable extends React.Component {
       // active columns
       gridReady: false,
       pingedIndices: new Set(),
-      selectionTracker: new SelectionTracker(),
-      prevNodeID: null,
     };
   }
 
@@ -61,18 +54,10 @@ class DataTable extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.gridApi.removeEventListener('rowClicked', this.handleSelectionChange);
-  }
-
   @boundMethod
   onGridReady({ api: gridApi, columnApi }) {
     this.gridApi = gridApi;
     this.gridColumnApi = columnApi;
-
-
-    this.gridApi.addEventListener('rowClicked', this.handleSelectionChange);
-
     this.initializeGrid();
     this.setState({ gridReady: true });
   }
@@ -91,40 +76,6 @@ class DataTable extends React.Component {
     return [result, cache.rowCount(search)];
   }
 
-  selectNodeRowsInTable = (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.selection;
-    const { length } = selectedRecords;
-    gridApi.forEachNode((node) => {
-      const currNodeID = parseInt(node.id, 10);
-
-      for (let i = 0; i < length; i++) {
-        const currRange = selectedRecords[i];
-
-        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
-          node.setSelected(true);
-        }
-      }
-    });
-  };
-
-  /**
-   * Selects all nodes that are in the current selection tracking on the
-   * current displayed cache page.
-   */
-  selectFetchedRowNodes = async (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.selection;
-    gridApi.forEachNode((node) => {
-      const currNodeID = parseInt(node.id, 10);
-
-      for (let i = 0; i < selectedRecords.length; i++) {
-        const currRange = selectedRecords[i];
-
-        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
-          node.setSelected(true);
-        }
-      }
-    });
-  };
 
   initializeGrid() {
     const { search } = this.props;
@@ -152,8 +103,7 @@ class DataTable extends React.Component {
 
 
   @boundMethod
-  async handleExportTsv(selectionOnly = false) {
-    const { selectionTracker } = this.state;
+  async handleExportTsv() {
     const { isExportingData, totalRows } = this.props;
     isExportingData(true);
 
@@ -177,8 +127,6 @@ class DataTable extends React.Component {
       columnSeparator: '\t',
       suppressQuotes: true,
       customHeader: header,
-      onlySelected: selectionOnly,
-      onlySelectedAllPages: selectionOnly,
       processCellCallback: ({ value }) => {
         if (Array.isArray(value)) {
           return value.map(formatValue).join(';');
@@ -187,58 +135,29 @@ class DataTable extends React.Component {
       },
     };
 
-    if (!selectionOnly) {
-      gridOptions.cacheBlockSize = totalRows; // in preparation to fetch entire dataset
+    gridOptions.cacheBlockSize = totalRows; // in preparation to fetch entire dataset
 
-      const tempDataSource = {
-        rowCount: null,
-        getRows: async ({
-          successCallback, failCallback, ...params
-        }) => {
-          params.endRow = totalRows; // fetches entire data set with this adjustment
+    const tempDataSource = {
+      rowCount: null,
+      getRows: async ({
+        successCallback, failCallback, ...params
+      }) => {
+        params.endRow = totalRows; // fetches entire data set with this adjustment
 
-          try {
-            const [rows, lastRow] = await this.getTableData(params);
-            successCallback(rows, lastRow);
-            await this.gridApi.exportDataAsCsv(exportParams);
-            await this.resetDefaultGridOptions();
-            isExportingData(false);
-          } catch (err) {
-            console.error(err);
-            failCallback();
-          }
-        },
-      };
+        try {
+          const [rows, lastRow] = await this.getTableData(params);
+          successCallback(rows, lastRow);
+          await this.gridApi.exportDataAsCsv(exportParams);
+          await this.resetDefaultGridOptions();
+          isExportingData(false);
+        } catch (err) {
+          console.error(err);
+          failCallback();
+        }
+      },
+    };
 
-      this.gridApi.setDatasource(tempDataSource);
-    } else {
-      const lastIndex = selectionTracker.selection.length - 1;
-      const maxSelectedRow = selectionTracker.selection[lastIndex].maxVal;
-      gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
-
-      const tempDataSource = {
-        rowCount: null,
-        getRows: async ({
-          successCallback, failCallback, ...params
-        }) => {
-          params.endRow = maxSelectedRow; // fetches entire data set with this adjustment
-
-          try {
-            const [rows, lastRow] = await this.getTableData(params);
-            successCallback(rows, lastRow);
-            await this.selectFetchedRowNodes(this.gridApi, selectionTracker);
-            await this.gridApi.exportDataAsCsv(exportParams);
-            await this.resetDefaultGridOptions();
-            isExportingData(false);
-          } catch (err) {
-            console.error(err);
-            failCallback();
-          }
-        },
-      };
-
-      this.gridApi.setDatasource(tempDataSource);
-    }
+    this.gridApi.setDatasource(tempDataSource);
   }
 
   @boundMethod
@@ -266,75 +185,6 @@ class DataTable extends React.Component {
     }
   }
 
-  /**
-   * Handles selection of records in DataTable. Maintains selectionTracker which is an array
-   * of Selection Ranges to represent the selected Rows. Ex. if rows 0-20 and 30-34 are selected,
-   * selectionTracker will contain two selection ranges. selectionTracker = [SR(0, 20), SR(30, 34)]
-   * This is used instead of Ag-grids default selection API to handle infinite scrolling selection
-   * of rows that are not displayed.
-   */
-  @boundMethod
-  handleSelectionChange(event) {
-    const {
-      event: {
-        type, key, ctrlKey, shiftKey,
-      },
-      node: rowNode, rowIndex,
-      node: { id },
-    } = event;
-
-    const nodeID = parseInt(id, 10);
-    let { prevNodeID } = this.state;
-    const { onRowSelected } = this.props;
-    const { selectionTracker } = this.state;
-
-    let newSelectionTracker;
-
-    if (type === 'click') {
-      // 1. first time selecting a row OR just a regular ole click
-      if (prevNodeID === null || (!ctrlKey && !shiftKey)) {
-        newSelectionTracker = new SelectionTracker(nodeID, nodeID);
-      } else if (shiftKey) {
-      // 2. shift key extends a the previously selected range or resets selection range
-        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
-
-        if (isCurrNodeInSelection) {
-          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
-        } else {
-          newSelectionTracker = SelectionTracker.extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker);
-        }
-      } else if (ctrlKey) {
-      // 3. ctrl key adds a new Range to selection unless it has already been selected
-        newSelectionTracker = selectionTracker.checkAndUpdate(nodeID, selectionTracker);
-      }
-      prevNodeID = nodeID;
-
-      this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-      this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
-      const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
-      onRowSelected(totalNumOfRows);
-    } else if (type === 'keydown') {
-      if (key === 'Shift') {
-        rowNode.setSelected(true);
-        newSelectionTracker = selectionTracker.checkAndUpdate(nodeID, selectionTracker);
-        prevNodeID = nodeID;
-
-        this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-        const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
-        onRowSelected(totalNumOfRows);
-      } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
-        const direction = key === 'ArrowDown'
-          ? +1
-          : -1;
-        const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
-
-        if (nextRow) {
-          nextRow.setSelected(true);
-        }
-      }
-    }
-  }
-
   async resetDefaultGridOptions() {
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
     const dataSource = {
@@ -355,29 +205,11 @@ class DataTable extends React.Component {
     gridOptions.cacheBlockSize = CACHE_BLOCK_SIZE;
   }
 
-  renderOptionsMenu() {
+  render() {
     const {
-      selectionTracker,
       gridReady,
     } = this.state;
-
-    const { optionsMenuAnchor, optionsMenuOnClose, totalRowsSelected } = this.props;
-
-    return (
-      <GridContext.Provider value={{ gridApi: this.gridApi, colApi: this.gridColumnApi, gridReady }}>
-        <TableOptions
-          anchorEl={optionsMenuAnchor}
-          onClose={optionsMenuOnClose}
-          onExportToTsv={selectedOnly => this.handleExportTsv(selectedOnly)}
-          selectionTracker={selectionTracker}
-          totalRowsSelected={totalRowsSelected}
-        />
-      </GridContext.Provider>
-    );
-  }
-
-  render() {
-    const { onRecordClicked, onRecordsSelected } = this.props;
+    const { onRecordClicked, optionsMenuAnchor, optionsMenuOnClose } = this.props;
 
     return (
       <div
@@ -390,7 +222,13 @@ class DataTable extends React.Component {
           height: '100%',
         }}
       >
-        {this.renderOptionsMenu()}
+        <GridContext.Provider value={{ gridApi: this.gridApi, colApi: this.gridColumnApi, gridReady }}>
+          <TableOptions
+            anchorEl={optionsMenuAnchor}
+            onClose={optionsMenuOnClose}
+            onExportToTsv={() => this.handleExportTsv()}
+          />
+        </GridContext.Provider>
         <AgGridReact
           blockLoadDebounceMillis={100}
           cacheBlockSize={CACHE_BLOCK_SIZE}
@@ -411,14 +249,7 @@ class DataTable extends React.Component {
               onRecordClicked(rowNode);
             }
           }}
-          onCellKeyDown={this.handleSelectionChange}
           onGridReady={this.onGridReady}
-          onSelectionChanged={() => {
-            if (onRecordsSelected) {
-              const rows = this.gridApi.getSelectedRows();
-              onRecordsSelected(rows);
-            }
-          }}
           paginationPageSize={25}
           reactNext
           // allow the user to select using the arrow keys and shift

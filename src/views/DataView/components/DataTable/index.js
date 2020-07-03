@@ -9,8 +9,8 @@ import React from 'react';
 import { getUsername } from '@/services/auth';
 import schema from '@/services/schema';
 
-import GridContext from './GridContext';
-import TableOptions from './TableOptions';
+import GridContext from '../GridContext';
+import TableOptions from '../TableOptions';
 
 const CACHE_BLOCK_SIZE = 50;
 

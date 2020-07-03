@@ -170,12 +170,8 @@ function AdvancedSearchView({ history }) {
       delete content.filters;
     }
 
-    // search chip props need to be added here due to how search is constructed
-    const searchChipProps = {};
-    searchChipProps.searchType = 'Advanced';
-
     try {
-      const search = api.encodeQueryComplexToSearch(content, modelName, searchChipProps);
+      const search = api.encodeQueryComplexToSearch(content, modelName);
       history.push(`/data/table?${search}`, { search, content });
     } catch (err) {
       console.error(err);

@@ -1,7 +1,7 @@
 import './index.scss';
 
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import api from '@/services/api';
 
@@ -50,23 +50,17 @@ function BasePopularSearch(props) {
 
   const isDisabled = inputCheck();
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     // pass search chip params to identify correct search option
-    try {
-      const searchChipProps = {
-        searchIndex,
-        searchType: 'Popular',
-        optionalValue,
-        value,
-        variant,
-      };
+    const payload = SEARCH_OPTS[variant][searchIndex].search(value, optionalValue);
 
-      const search = api.encodeQueryComplexToSearch(null, 'Statement', searchChipProps);
+    try {
+      const search = api.encodeQueryComplexToSearch(payload, 'Statement');
       onSubmit(search);
     } catch (err) {
       onError(err);
     }
-  };
+  }, [onError, onSubmit, optionalValue, searchIndex, value, variant]);
 
   return (
     <div className="popular-search__contents">

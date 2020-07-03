@@ -3,17 +3,6 @@ import api from '@/services/api';
 import SEARCH_OPTS from '../PopularSearchView/components/util';
 
 
-const hashRecordsByRID = (data) => {
-  const newData = {};
-  data.forEach((obj) => {
-    if (obj) {
-      newData[obj['@rid']] = obj;
-    }
-  });
-  return newData;
-};
-
-
 /* URL decoding module to build new search, search chips and filter table props */
 
 /**
@@ -121,7 +110,6 @@ const getFilterTableProps = async (filters, cache) => {
 };
 
 export {
-  hashRecordsByRID,
   getFilterTableProps,
   getPopularChipsPropsAndSearch,
 };

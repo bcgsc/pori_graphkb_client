@@ -1,13 +1,10 @@
 import './index.scss';
 
 import {
-  CircularProgress,
   IconButton,
-  Typography,
 } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import TimelineIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useRef, useState,
@@ -15,7 +12,6 @@ import React, {
 
 import DetailDrawer from '@/components/DetailDrawer';
 import { HistoryPropType, LocationPropType } from '@/components/types';
-import { navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
@@ -23,6 +19,7 @@ import util from '@/services/util';
 import ActiveFilters from './components/ActiveFilters';
 import PaginationDataCache from './components/dataCache';
 import DataTable from './components/DataTable';
+import Footer from './components/Footer';
 
 
 /**
@@ -125,15 +122,6 @@ const DataView = ({
     }
   }, [handleError]);
 
-  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
-    navigateToGraph(nodeRIDs, history, handleError);
-  }, [handleError, history]);
-
-  const handleSwapToGraph = useCallback(() => {
-    const nodeRIDs = selectedRecords.map(node => node['@rid']);
-    handleGraphStateSaveIntoURL(nodeRIDs);
-  }, [handleGraphStateSaveIntoURL, selectedRecords]);
-
   const handleExportLoader = (boolean) => {
     setIsExportingData(boolean);
   };
@@ -180,38 +168,13 @@ const DataView = ({
         </>
         )}
       </div>
-      <div className="data-view__footer">
-        <div className="footer__selected-records">
-          <Typography variant="body2">
-            {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
-          </Typography>
-          <Tooltip title="click here for graph view">
-            <span>
-              <IconButton
-                disabled={selectedRecords.length === 0}
-                onClick={handleSwapToGraph}
-              >
-                <TimelineIcon
-                  color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
-                />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </div>
-        {statusMessage && (
-        <div className="footer__loader">
-          <CircularProgress />
-          <Typography variant="body2">
-            {statusMessage}
-          </Typography>
-        </div>
-        )}
-        <Typography className="footer__total-rows" variant="body2">
-          Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-        </Typography>
-
-      </div>
-
+      <Footer
+        history={history}
+        onError={handleError}
+        selectedRecords={selectedRecords}
+        statusMessage={statusMessage}
+        totalRows={totalRows}
+      />
     </div>
   );
 };

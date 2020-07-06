@@ -89,7 +89,7 @@ describe('AdvancedSearchView', () => {
     expect(getByText('ADD FILTER')).toBeInTheDocument();
     expect(getByText('ADD FILTER')).not.toBeDisabled();
     await fireEvent.click(getByText('ADD FILTER'));
-    expect(getByText('relevance = \'value (1:1)\'')).toBeInTheDocument();
+    expect(getByText('relevance = value (1:1)')).toBeInTheDocument();
   });
 
   test('fires new search correctly', async () => {

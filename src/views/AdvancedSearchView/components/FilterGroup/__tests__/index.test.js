@@ -155,6 +155,6 @@ describe('FilterGroup ', () => {
       />,
     );
 
-    expect(queryByText("fake prop = 'linked record name'")).toBeInTheDocument();
+    expect(queryByText('fake prop = linked record name')).toBeInTheDocument();
   });
 });

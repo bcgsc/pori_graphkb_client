@@ -40,9 +40,7 @@ function BasePopularSearch(props) {
    * should be disabled.
    */
   const inputCheck = () => {
-    const hasTwoRequiredFields = selectedOption.additionalInput
-      ? !selectedOption.additionalInput.optional
-      : false;
+    const hasTwoRequiredFields = Boolean(selectedOption.additionalInput && selectedOption.additionalInput.required);
     const requiredValCheck = (!value || value.length < MIN_VAL_LENGTH);
     const additionalValCheck = (hasTwoRequiredFields && (!optionalValue || optionalValue.length < MIN_VAL_LENGTH));
     return (requiredValCheck || additionalValCheck);

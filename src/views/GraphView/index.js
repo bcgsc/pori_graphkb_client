@@ -50,9 +50,8 @@ const GraphView = ({
         ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
         async (url, body) => {
           const controller = api.post(url, body);
-          const promise = controller.request();
-          promise.cancel = () => controller.abort();
-          return promise;
+          const result = await controller.request();
+          return result;
         },
       );
 
@@ -63,6 +62,7 @@ const GraphView = ({
           [recordHash[recordId]],
         );
       });
+
       setGraphData(recordHash);
     };
 
@@ -86,9 +86,8 @@ const GraphView = ({
           ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
           async (url, body) => {
             const controller = api.post(url, body);
-            const promise = controller.request();
-            promise.cancel = () => controller.abort();
-            return promise;
+            const result = await controller.request();
+            return result;
           },
         );
 

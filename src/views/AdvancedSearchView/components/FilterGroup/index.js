@@ -2,10 +2,13 @@ import './index.scss';
 
 import { Chip, IconButton, Typography } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import schema from '@/services/schema';
+
+import { DATE_FIELDS } from '../constants';
 
 /**
  * Displays Filter Groups and filter chips.
@@ -44,13 +47,20 @@ function FilterGroup(props) {
           } else if (Array.isArray(filterValue)) {
             const filterValueArr = [...filterValue];
             filterValue = (filterValueArr.map(val => schema.getLabel(val))).join(' ');
+          } else if (filterValue && DATE_FIELDS.includes(filter.attr)) {
+            filterValue = format(new Date(filterValue), 'yyyy-MM-dd\'T\'HH:mm');
+          } else if (typeof filterValue === 'string') {
+            filterValue = `'${filterValue}'`;
           }
-
           return (
-            <div key={`${filter.attr}.${filter.value}`} className="filter-chip" data-testid={`filter-chip${index}`}>
+            <div
+              key={`${filter.attr}.${filter.value}`}
+              className="filter-chip"
+              data-testid={`filter-chip${index}`}
+            >
               <Chip
                 default="outlined"
-                label={`${filter.attr} ${filter.operator} '${filterValue}'`}
+                label={`${filter.attr} ${filter.operator} ${filterValue}`}
               />
             </div>
           );

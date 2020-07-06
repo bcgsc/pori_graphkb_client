@@ -53,7 +53,12 @@ const BLACKLISTED_PROPERTIES = [
   'displayNameTemplate',
 ];
 
+const DATE_FIELDS = [
+  'createdAt', 'deletedAt', 'updatedAt',
+];
+
 export {
   OPERATORS,
   BLACKLISTED_PROPERTIES,
+  DATE_FIELDS,
 };

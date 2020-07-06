@@ -19,7 +19,7 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
 
-import { BLACKLISTED_PROPERTIES, OPERATORS } from '../constants';
+import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 
 
 const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal) => {
@@ -134,7 +134,7 @@ const PropertyFilter = ({
 
   let format = '';
 
-  if (['createdAt', 'deletedAt', 'updatedAt'].includes(property)) {
+  if (DATE_FIELDS.includes(property)) {
     format = 'date';
   }
 

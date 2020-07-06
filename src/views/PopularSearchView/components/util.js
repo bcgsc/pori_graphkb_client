@@ -224,7 +224,7 @@ const SEARCH_OPTS = {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12D',
       },
       additionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer', optional: true,
+        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
       search: (variant, disease) => {
         const filters = [
@@ -255,7 +255,7 @@ const SEARCH_OPTS = {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
       additionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer', optional: true,
+        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
       search: (variant, disease) => {
         const filters = [
@@ -316,7 +316,7 @@ const SEARCH_OPTS = {
         label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
       },
       additionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Melanoma', optional: false,
+        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Melanoma', required: true,
       },
       search: (gene, disease) => ({
         target: 'Statement',

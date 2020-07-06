@@ -143,7 +143,6 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  *
  * @param {object} content is the payload or query object to be sent with request
  * @param {string} modelName target class that is expected to be returned
- * @param {object} searchProps props passed to query specifically for search parsing
  * generated at the top of dataview
  */
 const encodeQueryComplexToSearch = (content, modelName = 'V') => {

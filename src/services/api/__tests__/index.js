@@ -72,23 +72,7 @@ describe('api methods test', () => {
       getFromRoute: () => ({ name: 'disease' }),
     };
 
-    test('keyword search', () => {
-      const search = 'keyword=kras&class=Disease';
-      const result = api.getQueryFromSearch({
-        search,
-        schema,
-      });
-      const expectedPayload = {
-        keyword: 'kras',
-        queryType: 'keyword',
-        target: 'Disease',
-      };
-      expect(result.payload).toMatchObject(expectedPayload);
-      expect(result.routeName).toEqual('/query');
-      expect(result.payload.keyword).toEqual('kras');
-    });
-
-    test('complex search', () => {
+    test('search', () => {
       const payload = {
         target: 'Disease',
         filters: {
@@ -109,7 +93,6 @@ describe('api methods test', () => {
         payload,
         routeName: '/query',
         modelName: 'disease',
-        searchProps: undefined,
       });
     });
 

@@ -1,136 +1,210 @@
+
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import {
-  CircularProgress,
   IconButton,
-  Typography,
 } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import TimelineIcon from '@material-ui/icons/Timeline';
+import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useState,
 } from 'react';
+import { queryCache } from 'react-query';
 
 import DetailDrawer from '@/components/DetailDrawer';
+import useGrid from '@/components/hooks/useGrid';
 import { HistoryPropType, LocationPropType } from '@/components/types';
-import { navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
+import util from '@/services/util';
+import config from '@/static/config';
 
-import util from '../../services/util';
-import PaginationDataCache from './components/dataCache';
-import DataTable from './components/DataTable';
-import FilterChips from './components/FilterChips';
-import FilterTablePopover from './components/FilterTablePopover';
-import {
-  getFilterTableProps,
-  getPopularChipsPropsAndSearch,
-} from './util';
+import ActiveFilters from './components/ActiveFilters';
+import Footer from './components/Footer';
+import GridContext from './components/GridContext';
+import TableOptions from './components/TableOptions';
 
+const CACHE_BLOCK_SIZE = 50;
+const { DEFAULT_NEIGHBORS, MAX_EXPORT_SIZE } = config;
 
-const parseFilters = async (cache, search) => {
-  const {
-    queryParams, modelName, searchProps, searchProps: { searchType }, payload,
-  } = api.getQueryFromSearch({ search, schema });
+/**
+ * Create an API call for retrieving a block/page of rows/records
+ *
+ * @param {object} opt
+ * @param {string} opt.search the query string
+ * @param {Schema} opt.schema
+ * @param {Array.<SortModel>} opt.sortModel the sort model
+ * @param {number} opt.skip the number of records to skip on return
+ * @param {number} opt.limit the maximum number of records to return
+ * @param {boolean} opt.count count the records instead of returning them
+ *
+ * @returns {ApiCall} the api call for retriving the requested data
+ */
+const getQueryPayload = ({
+  search, sortModel, skip, limit, count = false,
+}) => {
+  const { payload } = api.getQueryFromSearch({
+    schema,
+    search,
+    count,
+  });
+  const content = payload || { neighbors: DEFAULT_NEIGHBORS };
 
-  let chipProps = searchProps;
-  let newSearch = null;
+  if (count) {
+    content.count = true;
+    delete content.neighbors;
+  } else {
+    content.skip = skip;
+    content.limit = limit;
 
-  if (searchType === 'Popular') {
-    const {
-      search: encodedSearch,
-      chipProps: popChipProps,
-    } = await getPopularChipsPropsAndSearch(searchProps, modelName);
-    newSearch = encodedSearch;
-    chipProps = popChipProps;
+    if (sortModel.length) {
+      const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
+      content.orderBy = orderBy;
+      content.orderByDirection = orderByDirection.toUpperCase();
+    }
   }
 
-  let filterGroups = [];
-
-  if (searchType === 'Advanced') {
-    const { filters } = payload;
-    filterGroups = await getFilterTableProps(filters, cache);
-  }
-
-  return {
-    '@class': modelName, ...queryParams, ...chipProps, filterGroups, search: newSearch,
-  };
+  return content;
 };
+
+/**
+ * Get rows from cached blocks
+ */
+const getRowsFromBlocks = async ({
+  startRow,
+  endRow, // exclusive
+  sortModel,
+  search,
+  blockSize,
+}) => {
+  const firstBlock = Math.floor(startRow / blockSize) * blockSize;
+  const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
+
+  const blockRequests = [];
+
+  for (let block = firstBlock; block <= lastBlock; block += blockSize) {
+    const payload = getQueryPayload({
+      search, skip: block, limit: blockSize, sortModel,
+    });
+
+    blockRequests.push(queryCache.prefetchQuery(
+      ['/query', payload],
+      async (route, body) => {
+        const result = await api.post(route, body).request();
+        return result;
+      },
+    ));
+  }
+  const data = [];
+  (await Promise.all(blockRequests)).forEach(block => data.push(...block));
+
+  data.forEach((record) => {
+    queryCache.setQueryData(
+      ['/query', { target: [record['@rid']], neighbors: DEFAULT_NEIGHBORS }],
+      [record],
+    );
+  });
+  return data.slice(startRow - firstBlock, endRow - firstBlock);
+};
+
 
 /**
  * Shows the search result filters and an edit button
  */
 const DataView = ({
-  location: { search: initialSearch }, cacheBlocks, blockSize, history, bufferSize,
+  location: { search: initialSearch }, blockSize, history,
 }) => {
-  const cache = useRef(null);
-  const [statusMessage, setStatusMessage] = useState('loading data...');
   const [isExportingData, setIsExportingData] = useState(false);
   const [totalRows, setTotalRows] = useState(null);
+  const [isLoading, setIsLoading] = useState(0);
   const [search, setSearch] = useState(initialSearch);
-  const [searchType, setSearchType] = useState('Quick');
-  const [totalRowsSelected, setTotalRowsSelected] = useState(0);
   const [selectedRecords, setSelectedRecords] = useState([]);
-  const [filters, setFilters] = useState({});
-  const [filterGroups, setFilterGroups] = useState([]);
   const [detailPanelRow, setDetailPanelRow] = useState(null);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
-  const [filterTableAnchorEl, setFilterTableAnchorEl] = useState(null);
+  const {
+    gridApi, colApi, onGridReady, gridReady,
+  } = useGrid();
 
-  const handleLoadingChange = useCallback(() => {
-    if (!cache.current) {
-      return;
+  const initializeGrid = useCallback(() => {
+    gridApi.setColumnDefs([
+      ...schema.defineGridColumns(search),
+    ]);
+
+    const dataSource = {
+      rowCount: null,
+      getRows: ({
+        successCallback, failCallback, ...params
+      }) => {
+        const getTableData = async ({
+          startRow,
+          endRow, // exclusive
+          sortModel,
+        }) => {
+          const result = await getRowsFromBlocks({
+            startRow, endRow, sortModel, search, blockSize,
+          });
+          return [result, totalRows];
+        };
+
+        getTableData(params)
+          .then(([rows, lastRow]) => {
+            // update filters
+            successCallback(rows, lastRow);
+          }).catch(() => failCallback());
+      },
+    };
+      // update the model
+    gridApi.setDatasource(dataSource);
+  }, [blockSize, gridApi, search, totalRows]);
+
+  useEffect(() => {
+    // normalize the input query
+    const newSearch = api.getSearchFromQuery({
+      ...api.getQueryFromSearch({ search: initialSearch, schema }), schema,
+    });
+    setSearch(newSearch);
+  }, [initialSearch]);
+
+  useEffect(() => {
+    // count the number of expected rows
+    const fetchTotalRowCount = async () => {
+      const payload = getQueryPayload({
+        search, count: true,
+      });
+      const [{ count }] = await queryCache.prefetchQuery(
+        ['/query', payload],
+        async (route, body) => api.post(route, body).request(),
+      );
+      setTotalRows(count);
+    };
+
+    setTotalRows(null);
+    fetchTotalRowCount();
+  }, [search]);
+
+  // set up infinitite row model data source
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const newSelection = gridApi.getSelectedRows();
+      setSelectedRecords(newSelection);
+    };
+
+    if (gridReady) {
+      initializeGrid();
+      gridApi.addEventListener('selectionChanged', handleSelectionChange);
     }
-    const rowCount = cache.current.rowCount(search);
-    const [start, end] = cache.current.pendingRows(search);
+  }, [blockSize, gridApi, gridReady, initializeGrid, search, totalRows]);
 
-    let msg;
-
-    if (start !== null) {
-      msg = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
-
-      if (rowCount !== undefined) {
-        msg = `${msg} of ${rowCount} rows`;
-      } else {
-        msg = `${msg} rows ....`;
-      }
-    }
-    setStatusMessage(msg);
-    setTotalRows(rowCount);
-  }, [isExportingData, search]);
+  // reset loading state on cache load change
+  queryCache.subscribe(() => setIsLoading(queryCache.isFetching));
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
-
-  useEffect(() => {
-    cache.current = new PaginationDataCache({
-      schema,
-      cacheBlocks,
-      blockSize,
-      onLoadCallback: handleLoadingChange,
-      onErrorCallback: handleError,
-    });
-
-    return () => cache && cache.current && cache.current.abortAll();
-  }, [blockSize, cacheBlocks, handleError, handleLoadingChange]);
-
-  useEffect(() => {
-    const reParseFilters = async () => {
-      const parsed = await parseFilters(cache.current, search);
-      setSearchType(parsed.searchType);
-      setFilters(parsed.filters);
-      setFilterGroups(parsed.filterGroups);
-
-      if (parsed.search) {
-        setSearch(parsed.search);
-      }
-    };
-    reParseFilters();
-  }, [search]);
 
 
   const handleToggleDetailPanel = useCallback(async ({ data } = {}) => {
@@ -139,7 +213,10 @@ const DataView = ({
       setDetailPanelRow(null);
     } else {
       try {
-        const fullRecord = await cache.current.getRecord(data);
+        const [fullRecord] = await queryCache.prefetchQuery(
+          ['/query', { target: [data['@rid']], neighbors: DEFAULT_NEIGHBORS }],
+          async (route, body) => api.post(route, body).request(),
+        );
 
         if (!fullRecord) {
           setDetailPanelRow(null);
@@ -156,46 +233,91 @@ const DataView = ({
    * Opens the options menu. The trigger is defined on this component but
    * the menu contents are handled by the data element (ex DataTable)
    */
-  const handleOpenOptionsMenu = useCallback(({ currentTarget }) => {
+  const handleOpenOptionsMenu = useCallback(({ currentTarget = null } = {}) => {
     setOptionsMenuAnchor(currentTarget);
   }, []);
 
 
-  const handleRecordSelection = useCallback(async (newSelectedRecords) => {
-    try {
-      const fullRecords = await cache.current.getRecords(newSelectedRecords);
-      setSelectedRecords(fullRecords);
-    } catch (err) {
-      handleError(err);
+  const handleClickExport = useCallback(async () => {
+    const username = ''; // getUsername(context);
+    const header = `## Exported from GraphKB at ${new Date()} by ${username}
+## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
+## Please review the appropriate agreements prior to use (see usage under sources)`;
+
+    const formatValue = (value) => {
+      if (typeof value === 'object' && value !== null) {
+        return schema.getLabel(value, false);
+      }
+      return value === undefined
+        ? null
+        : value;
+    };
+
+    const exportParams = {
+      columnGroups: true,
+      fileName: `graphkb_export_${(new Date()).valueOf()}.tsv`,
+      columnSeparator: '\t',
+      suppressQuotes: true,
+      customHeader: header,
+      processCellCallback: ({ value }) => {
+        if (Array.isArray(value)) {
+          return value.map(formatValue).join(';');
+        }
+        return formatValue(value);
+      },
+    };
+
+    if (!isExportingData) {
+      setIsExportingData(true);
+
+      const maxExportSize = Math.min(MAX_EXPORT_SIZE, totalRows);
+
+      const allRows = await getRowsFromBlocks({
+        startRow: 0,
+        endRow: maxExportSize,
+        sortModel: gridApi.getSortModel(),
+        search,
+        blockSize,
+      });
+      const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
+      gridOptions.cacheBlockSize = maxExportSize; // in preparation to fetch entire dataset
+
+      const tempDataSource = {
+        rowCount: totalRows,
+        getRows: async ({
+          successCallback, failCallback,
+        }) => {
+          try {
+            successCallback(allRows, allRows.length);
+            await gridApi.exportDataAsCsv(exportParams);
+            setIsExportingData(false);
+            initializeGrid();
+          } catch (err) {
+            console.error(err);
+            failCallback();
+          }
+        },
+      };
+
+      gridApi.setDatasource(tempDataSource);
     }
-  }, [handleError]);
-
-  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
-    navigateToGraph(nodeRIDs, history, handleError);
-  }, [handleError, history]);
-
-  const handleSwapToGraph = useCallback(() => {
-    const nodeRIDs = selectedRecords.map(node => node['@rid']);
-    handleGraphStateSaveIntoURL(nodeRIDs);
-  }, [handleGraphStateSaveIntoURL, selectedRecords]);
-
-  const handleExportLoader = (boolean) => {
-    setIsExportingData(boolean);
-  };
-
-  const handleNewRowSelection = (newTotal) => {
-    setTotalRowsSelected(newTotal);
-  };
-
-  const handleFilterTableToggle = (event, openState) => {
-    if (openState === 'open') {
-      setFilterTableAnchorEl(event.currentTarget);
-    } else {
-      setFilterTableAnchorEl(null);
-    }
-  };
+  }, [blockSize, gridApi, initializeGrid, isExportingData, search, totalRows]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
+
+  let statusMessage = '';
+
+  if (isExportingData || isLoading) {
+    statusMessage = isExportingData
+      ? 'exporting'
+      : 'loading more';
+
+    if (totalRows !== null) {
+      statusMessage = `${statusMessage} of ${totalRows} rows`;
+    } else {
+      statusMessage = `${statusMessage} rows ....`;
+    }
+  }
   return (
     <div className={
         `data-view ${detailPanelIsOpen
@@ -203,32 +325,7 @@ const DataView = ({
           : ''}`}
     >
       <div className="data-view__header">
-        <>
-          <Typography variant="h5">{searchType} Search</Typography>
-          <FilterChips {...filters} />
-          {(searchType === 'Advanced') && (
-            <>
-              <Tooltip title="click here to see active filter groups">
-                <span>
-                  <IconButton
-                    disabled={!filterGroups}
-                    onClick={event => handleFilterTableToggle(event, 'open')}
-                  >
-                    <FilterListIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              {(filterGroups) && (
-              <FilterTablePopover
-                anchorEl={filterTableAnchorEl}
-                filterGroups={filterGroups}
-                handleToggle={event => handleFilterTableToggle(event, 'close')}
-                isOpen={Boolean(filterTableAnchorEl)}
-              />
-              )}
-            </>
-          )}
-        </>
+        <ActiveFilters search={search} />
         <Tooltip title="click here for table and export options">
           <IconButton className="data-view__edit-filters" onClick={handleOpenOptionsMenu}>
             <MoreHorizIcon color="action" />
@@ -236,60 +333,66 @@ const DataView = ({
         </Tooltip>
       </div>
       <div className="data-view__content">
-        {cache.current && (
-        <>
-          <DataTable
-            cache={cache.current}
-            isExportingData={handleExportLoader}
-            onRecordClicked={handleToggleDetailPanel}
-            onRecordsSelected={handleRecordSelection}
-            onRowSelected={handleNewRowSelection}
-            optionsMenuAnchor={optionsMenuAnchor}
-            optionsMenuOnClose={() => setOptionsMenuAnchor(null)}
-            rowBuffer={bufferSize}
-            search={search}
-            totalRows={totalRows}
-            totalRowsSelected={totalRowsSelected}
+        <div
+          className="ag-theme-material data-table"
+          role="presentation"
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <GridContext.Provider value={{
+            gridReady, gridApi, colApi,
+          }}
+          >
+            <TableOptions
+              anchorEl={optionsMenuAnchor}
+              onClose={() => setOptionsMenuAnchor(null)}
+              onExportToTsv={(totalRows !== null) && handleClickExport}
+            />
+          </GridContext.Provider>
+          <AgGridReact
+            blockLoadDebounceMillis={100}
+            cacheBlockSize={CACHE_BLOCK_SIZE}
+            cacheOverflowSize={1}
+            defaultColDef={{
+              sortable: true,
+              resizable: true,
+              width: 150,
+            }}
+            groupHeaderHeight={30}
+            infiniteInitialRowCount={1}
+            maxBlocksInCache={0}
+            maxConcurrentDatasourceRequests={1}
+              // onBodyScroll={detectFetchTrigger}
+            onCellFocused={({ rowIndex }) => {
+              if (rowIndex !== null) {
+                const rowNode = gridApi.getDisplayedRowAtIndex(rowIndex);
+                handleToggleDetailPanel(rowNode);
+              }
+            }}
+            onGridReady={onGridReady}
+            paginationPageSize={25}
+            reactNext
+          // allow the user to select using the arrow keys and shift
+            rowModelType="infinite"
+            rowSelection="multiple"
+            suppressHorizontalScroll={false}
+            suppressMultiSort
           />
-          <DetailDrawer
-            node={detailPanelRow}
-            onClose={handleToggleDetailPanel}
-          />
-        </>
-        )}
-      </div>
-      <div className="data-view__footer">
-        <div className="footer__selected-records">
-          <Typography variant="body2">
-            {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
-          </Typography>
-          <Tooltip title="click here for graph view">
-            <span>
-              <IconButton
-                disabled={selectedRecords.length === 0}
-                onClick={handleSwapToGraph}
-              >
-                <TimelineIcon
-                  color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
-                />
-              </IconButton>
-            </span>
-          </Tooltip>
         </div>
-        {statusMessage && (
-        <div className="footer__loader">
-          <CircularProgress />
-          <Typography variant="body2">
-            {statusMessage}
-          </Typography>
-        </div>
-        )}
-        <Typography className="footer__total-rows" variant="body2">
-          Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-        </Typography>
-
+        <DetailDrawer
+          node={detailPanelRow}
+          onClose={handleToggleDetailPanel}
+        />
       </div>
-
+      <Footer
+        history={history}
+        onError={handleError}
+        selectedRecords={selectedRecords}
+        statusMessage={statusMessage}
+        totalRows={totalRows}
+      />
     </div>
   );
 };
@@ -299,14 +402,10 @@ DataView.propTypes = {
   history: HistoryPropType.isRequired,
   location: LocationPropType.isRequired,
   blockSize: PropTypes.number,
-  bufferSize: PropTypes.number,
-  cacheBlocks: PropTypes.number,
 };
 
 DataView.defaultProps = {
-  cacheBlocks: 10,
   blockSize: 100,
-  bufferSize: 200,
 };
 
 export default DataView;

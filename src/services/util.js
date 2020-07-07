@@ -442,7 +442,18 @@ const massageRecordExistsError = (error) => {
   return message;
 };
 
+const hashRecordsByRID = (data) => {
+  const newData = {};
+  data.forEach((obj) => {
+    if (obj) {
+      newData[obj['@rid']] = obj;
+    }
+  });
+  return newData;
+};
+
 export default {
+  hashRecordsByRID,
   antiCamelCase,
   expandEdges,
   getTSVRepresentation,

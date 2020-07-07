@@ -79,7 +79,7 @@ describe('AdvancedSearchView', () => {
   test('search button fires correctly', () => {
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D&searchProps%5BsearchType%5D=Advanced');
+    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D');
   });
 
 
@@ -98,6 +98,6 @@ describe('AdvancedSearchView', () => {
     await fireEvent.click(getByText('ADD FILTER'));
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7Ik9SIjpbeyJBTkQiOlt7InJlbGV2YW5jZSI6IjE6MSIsIm9wZXJhdG9yIjoiPSJ9XX1dfX0%253D&searchProps%5BsearchType%5D=Advanced');
+    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7Ik9SIjpbeyJBTkQiOlt7InJlbGV2YW5jZSI6IjE6MSIsIm9wZXJhdG9yIjoiPSJ9XX1dfX0%253D');
   });
 });

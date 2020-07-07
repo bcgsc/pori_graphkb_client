@@ -24,10 +24,10 @@ const detectColumns = (gridColumnApi) => {
     .map(col => col.colId);
   const allColumns = [];
   const allGroups = {};
-  const activeGroups = gridColumnApi.getAllDisplayedColumnGroups()
+  const activeGroups = (gridColumnApi.getAllDisplayedColumnGroups() || [])
     .map(col => col.colId);
 
-  gridColumnApi.columnController.columnDefs.forEach((col) => {
+  (gridColumnApi.columnController.columnDefs || []).forEach((col) => {
     if (col.groupId) {
       allGroups[col.groupId] = col.children.map(childCol => childCol.colId);
     }
@@ -75,6 +75,7 @@ const ColumnConfiguration = ({
   useEffect(() => {
     if (gridReady && gridColumnApi) {
       update();
+      gridApi.addEventListener('gridColumnsChanged', update);
       gridApi.addEventListener('columnGroupOpened', update);
     }
   }, [gridApi, gridColumnApi, gridReady, update]);

@@ -1,0 +1,12 @@
+@import '../../../../theme';
+
+.active-filters-card {
+  &__content {
+    border-bottom: 2px solid $palette__grey--300;
+    border-top: 2px solid $palette__grey--300;
+  }
+
+  &__actions {
+    justify-content: flex-end;
+  }
+}

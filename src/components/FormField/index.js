@@ -20,6 +20,7 @@ import PermissionsTable from './PermissionsTable';
 import PositionForm from './PositionForm';
 import StatementReviewsTable from './StatementReviewsTable';
 import TextArrayField from './TextArrayField';
+import Timestamp from './Timestamp';
 
 const POSITION_CLASSES = [
   'Position',
@@ -60,6 +61,7 @@ const FormField = ({
     type,
     nullable,
     iterable,
+    format,
   } = model;
 
   const inputValue = formContent[name];
@@ -262,6 +264,24 @@ const FormField = ({
         />
       );
     }
+  } else if (type === 'long' && (['createdAt', 'deletedAt', 'updatedAt'].includes(name) || format === 'date')) {
+    // timestamp type compoennt
+    propComponent = (
+      <Timestamp
+        {...innerProps}
+        className="text-field"
+        disabled={generated || disabled}
+        error={errorFlag}
+        helperText={helperText || ' '}
+        InputLabelProps={{ shrink: !!value }}
+        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
+        label={name}
+        name={label || name}
+        onChange={updateFieldEvent}
+        required={mandatory}
+        value={value || ''}
+      />
+    );
   }
 
   if (!propComponent) {
@@ -294,6 +314,7 @@ const FormField = ({
 
 FormField.propTypes = {
   model: PropTypes.shape({
+    format: PropTypes.string,
     choices: PropTypes.arrayOf(PropTypes.oneOfType([
       PropTypes.shape({
         key: PropTypes.string,

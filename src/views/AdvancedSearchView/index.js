@@ -202,6 +202,7 @@ function AdvancedSearchView({ history }) {
         <div className="filter-groups__content">
           {filterGroups.map(filterGroup => (
             <FilterGroup
+              key={filterGroup.name}
               filterGroup={filterGroup}
               handleDelete={handleFilterGroupDelete}
             />

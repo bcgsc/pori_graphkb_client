@@ -84,7 +84,7 @@ const ActivityView = () => {
       }).request(),
     ]);
     const result = [...records, ...edges]
-      .sort((rec1, rec2) => (rec1.updatedAt || rec1.createdAt) - (rec2.updatedAt || rec2.createdAt));
+      .sort((rec1, rec2) => (rec2.updatedAt || rec2.createdAt) - (rec1.updatedAt || rec1.createdAt));
     return result;
   });
 

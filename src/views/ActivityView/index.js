@@ -11,14 +11,13 @@ import { AgGridReact } from 'ag-grid-react';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 import React, {
-  useContext, useEffect, useRef, useState,
+  useEffect, useRef,
 } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import useGrid from '@/components/hooks/useGrid';
-import { SecurityContext } from '@/components/SecurityContext';
 import api from '@/services/api';
-import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
 
@@ -51,19 +50,13 @@ const ActivityView = () => {
     onGridReady, gridApi, gridReady,
   } = useGrid();
 
-  const securityContext = useContext(SecurityContext);
-  const user = getUser(securityContext);
-  const [recentRecords, setRecentRecords] = useState([]);
-
   const currentTime = new Date().getTime(); // current time stamp in seconds
   const cutOff = useRef(currentTime - TWO_WEEK_MILLISECONDS);
 
   // fetch recent records data
-  useEffect(() => {
-    const controllers = [];
-
-    const getData = async () => {
-      let controller = api.post('/query', {
+  const { data: recentRecords } = useQuery('recent', async () => {
+    const [records, edges] = await Promise.all([
+      api.post('/query', {
         target: 'V',
         filters: [
           {
@@ -74,12 +67,10 @@ const ActivityView = () => {
         orderBy: ['createdAt'],
         orderByDirection: 'DESC',
         returnProperties: ['@rid', '@class', 'updatedBy.name', 'updatedAt', 'displayName'],
-      });
-      controllers.push(controller);
-      const records = await controller.request();
+      }).request(),
 
       // get recent Edge records
-      controller = api.post('/query', {
+      api.post('/query', {
         target: 'E',
         filters: [
           {
@@ -90,53 +81,22 @@ const ActivityView = () => {
         orderBy: ['createdAt'],
         orderByDirection: 'DESC',
         returnProperties: ['@rid', '@class', 'createdBy.name', 'createdAt'],
-      });
-      controllers.push(controller);
-      const edges = await controller.request();
-      setRecentRecords([...records, ...edges]);
-    };
-    getData();
-    return () => controllers.forEach(controller => controller.abort());
-  }, [cutOff, user.name]);
+      }).request(),
+    ]);
+    const result = [...records, ...edges]
+      .sort((rec1, rec2) => (rec1.updatedAt || rec1.createdAt) - (rec2.updatedAt || rec2.createdAt));
+    return result;
+  });
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {
     if (gridReady) {
-      gridApi.setRowData(recentRecords);
-      gridApi.setColumnDefs([
-        {
-          headerName: 'class',
-          field: '@class',
-          sortable: true,
-        },
-        {
-          headerName: 'last updated by',
-          valueGetter: ({ data: record }) => (record.updatedBy
-            ? record.updatedBy.name
-            : record.createdBy.name),
-          sortable: true,
-        },
-        {
-          headerName: 'last updated at',
-          valueGetter: ({ data: record }) => record.updatedAt || record.createdAt,
-          sortable: true,
-          valueFormatter: ({ value }) => `${formatDistanceToNow(value)} ago`,
-        },
-        {
-          headerName: 'name',
-          field: 'displayName',
-          sortable: true,
-        },
-        {
-          headerName: 'record',
-          field: '@rid',
-          cellRenderer: 'JumpToRecord',
-          sortable: true,
-        },
-      ]);
       gridApi.sizeColumnsToFit();
     }
-  }, [recentRecords, gridReady, gridApi]);
+    if (recentRecords) {
+      gridApi.setRowData(recentRecords);
+    }
+  }, [gridReady, gridApi, recentRecords]);
 
   return (
     <div className="activity-view">
@@ -151,6 +111,38 @@ const ActivityView = () => {
         }}
       >
         <AgGridReact
+          columnDefs={[
+            {
+              headerName: 'class',
+              field: '@class',
+              sortable: true,
+            },
+            {
+              headerName: 'last updated by',
+              valueGetter: ({ data: record }) => (record.updatedBy
+                ? record.updatedBy.name
+                : record.createdBy.name),
+              sortable: true,
+            },
+            {
+              headerName: 'last updated at',
+              valueGetter: ({ data: record }) => record.updatedAt || record.createdAt,
+              sortable: true,
+              valueFormatter: ({ value }) => `${formatDistanceToNow(value)} ago`,
+            },
+            {
+              headerName: 'name',
+              field: 'displayName',
+              sortable: true,
+            },
+            {
+              headerName: 'record',
+              field: '@rid',
+              cellRenderer: 'JumpToRecord',
+              sortable: true,
+            },
+          ]}
+          data={recentRecords}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={data => data['@rid']}

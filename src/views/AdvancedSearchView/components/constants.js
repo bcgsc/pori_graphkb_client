@@ -43,10 +43,6 @@ const OPERATORS = generateOperatorOptions();
 const BLACKLISTED_PROPERTIES = [
   'deletedAt',
   'deletedBy',
-  'createdAt',
-  'createdBy',
-  'updatedAt',
-  'updatedBy',
   'history',
   'uuid',
   'groupRestrictions',
@@ -57,7 +53,12 @@ const BLACKLISTED_PROPERTIES = [
   'displayNameTemplate',
 ];
 
+const DATE_FIELDS = [
+  'createdAt', 'deletedAt', 'updatedAt',
+];
+
 export {
   OPERATORS,
   BLACKLISTED_PROPERTIES,
+  DATE_FIELDS,
 };

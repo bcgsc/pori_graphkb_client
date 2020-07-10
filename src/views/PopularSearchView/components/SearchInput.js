@@ -79,7 +79,7 @@ function SearchInput(props) {
             label={additionalInput.label}
             margin="normal"
             onChange={e => handleChange(e, true)}
-            required={!additionalInput.optional}
+            required={additionalInput.required}
             value={optionalValue}
             variant="outlined"
           />
@@ -88,6 +88,7 @@ function SearchInput(props) {
       <div className="search-input__action-button">
         <ActionButton
           color="primary"
+          data-testid="submit-seach"
           disabled={disabled}
           onClick={handleSubmit}
           requireConfirm={false}

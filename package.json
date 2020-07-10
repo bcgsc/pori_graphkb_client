@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "3.8.0",
+  "version": "3.9.0",
   "private": true,
   "bugs": {
     "email": "graphkb@bcgsc.ca"
@@ -23,6 +23,7 @@
     "ag-grid-react": "^21.2.1",
     "autobind-decorator": "^2.4.0",
     "change-case": "^3.1.0",
+    "copy-to-clipboard": "^3.3.1",
     "d3-drag": "^1.2.5",
     "d3-force": "^1.1.2",
     "d3-selection": "^1.4.1",
@@ -42,7 +43,6 @@
     "prop-types": "^15.6.2",
     "qs": "^6.9.4",
     "react": "^16.13.1",
-    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
     "react-google-charts": "^3.0.15",
     "react-query": "^1.5.7",

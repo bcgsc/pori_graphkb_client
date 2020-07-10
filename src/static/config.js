@@ -100,6 +100,7 @@ export default {
   },
   TABLE_DEFAULT_NEIGHBORS: 2,
   DEFAULT_NEIGHBORS: 3,
+  MAX_EXPORT_SIZE: 5000,
   ONTOLOGY_QUERY_PARAMS: [
     {
       name: 'neighbors',

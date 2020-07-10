@@ -43,12 +43,7 @@ const QuickSearch = ({ history }) => {
         keyword: value,
       };
 
-      const searchChipProps = {
-        searchType: 'Quick',
-        keyword: value,
-      };
-
-      const search = api.encodeQueryComplexToSearch(payload, 'Statement', searchChipProps);
+      const search = api.encodeQueryComplexToSearch(payload, 'Statement');
       history.push({
         pathname: '/data/table',
         search,
@@ -61,12 +56,6 @@ const QuickSearch = ({ history }) => {
    * Stringifies all queryable properties of parsed variant.
    */
   const searchByHGVS = useCallback(() => {
-    const trimmed = String(value)
-      .trim()
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(word => word.length >= MIN_WORD_LENGTH);
-
     if (variant) {
       const HGVSQuery = {
         target: 'Statement',
@@ -79,10 +68,6 @@ const QuickSearch = ({ history }) => {
       const search = api.encodeQueryComplexToSearch(
         HGVSQuery,
         'Statement',
-        {
-          searchType: 'HGVS Quick',
-          keyword: trimmed.join(' '),
-        },
       );
 
       history.push({

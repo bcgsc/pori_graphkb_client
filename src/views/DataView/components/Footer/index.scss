@@ -1,0 +1,28 @@
+.data-view__footer {
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  padding-left: 10px;
+  padding-right: 20px;
+
+  .footer {
+    &__loader {
+      align-items: center;
+      display: flex;
+
+      >* {
+        margin-left: 10px;
+      }
+    }
+
+    &__selected-records {
+      align-items: center;
+      display: flex;
+
+      >button {
+        margin-left: 10px;
+      }
+    }
+  }
+}

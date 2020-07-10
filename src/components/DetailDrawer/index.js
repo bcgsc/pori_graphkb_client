@@ -207,7 +207,7 @@ function DetailDrawer(props) {
   let content = null;
 
   if (drawerIsOpen) {
-    const recordId = node['@rid'].slice(1);
+    const recordId = node['@rid'].replace(/^#/, '');
     const recordClass = node['@class'];
 
     const otherProps = formatOtherProps(node);

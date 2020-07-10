@@ -7,48 +7,35 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import OptionsMenu from '@/components/OptionsMenu';
+import config from '@/static/config';
 
 import ColumnConfiguration from './ColumnConfiguration';
 
-const MAX_FULL_EXPORTS_ROWS = 1000;
-
+const { MAX_EXPORT_SIZE } = config;
 
 const TableOptions = ({
   onExportToTsv,
   anchorEl,
   onClose,
-  selectionTracker,
-  totalRowsSelected,
 }) => {
   const [columnControlIsOpen, setColumnControlIsOpen] = useState(false);
-  const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
+
+  const handleExportAllToTsv = useCallback(() => {
+    onExportToTsv(false);
+  }, [onExportToTsv]);
 
   const menuContents = [
     {
       label: 'Configure Visible Columns',
       handler: () => setColumnControlIsOpen(true),
     },
+
   ];
 
-  const handleExportAllToTsv = useCallback(() => {
-    onExportToTsv(false);
-  }, [onExportToTsv]);
-
-  const handleExportSelectionToTsv = useCallback(() => {
-    onExportToTsv(true);
-  }, [onExportToTsv]);
-
-  if (totalRowsSelected < MAX_FULL_EXPORTS_ROWS) {
+  if (onExportToTsv) {
     menuContents.push({
-      label: 'Export All to TSV',
+      label: `Export to TSV (max ${MAX_EXPORT_SIZE} rows)`,
       handler: handleExportAllToTsv,
-    });
-  }
-
-  if (selectionCount) {
-    menuContents.push({
-      label: `Export Selected Rows (${selectionCount}) to TSV`,
-      handler: handleExportSelectionToTsv,
     });
   }
 
@@ -83,7 +70,6 @@ const TableOptions = ({
 };
 
 TableOptions.propTypes = {
-  totalRowsSelected: PropTypes.number.isRequired,
   anchorEl: PropTypes.element,
   onClose: PropTypes.func,
   onExportToTsv: PropTypes.func,

@@ -8,7 +8,7 @@ import './index.scss';
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
@@ -40,38 +40,35 @@ const EdgeTable = ({ recordId }) => {
   const {
     onGridReady, gridApi, gridReady,
   } = useGrid();
-  const [edges, setEdges] = useState([]);
 
-  const { data: record, isFetching } = useQuery(
+  const { data: edges, isFetching } = useQuery(
     ['/query', {
       target: [recordId],
       neighbors: 3,
-    }], async (route, body) => {
-      const result = await api.post(route, body).request();
-      return result;
-    },
-  );
-
-  useEffect(() => {
-    if (!isFetching) {
+    }, 'edges'], async (route, body) => {
+      const [record] = await api.post(route, body).request();
       const newEdges = [];
-      Object.keys(record[0] || {}).forEach((propName) => {
-        if (propName.startsWith('out_') || propName.startsWith('in_')) {
-          newEdges.push(...record[0][propName]);
+      Object.entries(record).forEach(([propName, value]) => {
+        if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
+          value.forEach((edge) => {
+            const model = schema.get(edge);
+            const reversed = isReversed(recordId, edge);
+
+            newEdges.push({
+              ...edge,
+              reversed,
+              relationshipType: reversed
+                ? model.reverseName
+                : model.name,
+              target: reversed
+                ? edge.out
+                : edge.in,
+            });
+          });
         }
       });
-      setEdges(newEdges);
-    }
-  }, [isFetching, record]);
-
-  const getRelationshipType = useCallback(
-    ({ data }) => {
-      const model = schema.get(data);
-      return isReversed(recordId, data)
-        ? model.reverseName
-        : model.name;
+      return newEdges;
     },
-    [recordId],
   );
 
   useEffect(() => {
@@ -81,18 +78,13 @@ const EdgeTable = ({ recordId }) => {
     }
   }, [edges, gridApi, gridReady, isFetching]);
 
-  const getTarget = useCallback(({ data }) => {
-    const target = isReversed(recordId, data)
-      ? data.out
-      : data.in;
-    return target;
-  }, [recordId]);
 
   const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink {...cellValue} /></>); // eslint-disable-line react/prop-types
 
   if (!isFetching && (!edges || edges.length === 0)) {
     return null;
   }
+
   return (
     <div className="edge-table">
       <Typography variant="h4">Related Records</Typography>
@@ -108,29 +100,26 @@ const EdgeTable = ({ recordId }) => {
           columnDefs={[
             {
               headerName: 'Relationship',
-              valueGetter: getRelationshipType,
+              field: 'relationshipType',
             },
             {
               headerName: 'Class',
-              valueGetter: row => getTarget(row)['@class'],
+              field: 'target.@class',
             },
             {
               headerName: 'Target',
-              valueGetter: row => getTarget(row).displayName || getTarget(row).name,
+              valueGetter: ({ data }) => data.target.displayName || data.target.name,
             },
             {
               headerName: 'Actions',
-              valueGetter: row => ({ recordClass: getTarget(row)['@class'], recordId: getTarget(row)['@rid'] }),
+              valueGetter: ({ data }) => ({ recordClass: data.target['@class'], recordId: data.target['@rid'] }),
               cellRenderer: 'renderCellRenderer',
               pinned: 'right',
-              resizable: false,
               sortable: false,
               maxWidth: 150,
             },
           ]}
-          data={edges}
           defaultColDef={{ resizable: true, sortable: true }}
-          deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={data => data['@rid']}
           onGridReady={onGridReady}

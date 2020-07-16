@@ -434,7 +434,7 @@ class Schema {
         defns.push(defineConditionsColumn());
       } else if (prop.type === 'linkset') {
         defns.push(defineLinkSetColumn(prop.name));
-      } else if (prop.linkedClass) {
+      } else if (prop.type === 'link' || prop.linkedClass) {
         // build a column group
         const groupDefn = {
           headerName: titleCase(prop.name),
@@ -453,7 +453,7 @@ class Schema {
             hide,
           }],
         };
-        Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
+        Object.values((prop.linkedClass || this.schema.V).queryProperties).forEach((subProp) => {
           if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
             const colDef = ({
               field: subProp.name,

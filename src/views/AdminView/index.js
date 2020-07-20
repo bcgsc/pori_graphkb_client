@@ -31,7 +31,21 @@ const AdminView = () => {
     let controller;
 
     const getData = async () => {
-      controller = api.post('/query', { target: 'User', neighbors: 2 });
+      controller = api.post('/query', {
+        target: 'User',
+        neighbors: 2,
+        returnProperties: [
+          '@class',
+          '@rid',
+          'createdAt',
+          'email',
+          'groups.@class',
+          'groups.@rid',
+          'groups.name',
+          'name',
+          'signedLicenseAt',
+        ],
+      });
       const result = await controller.request();
       setUsers(result);
       setUserRefresh(false);

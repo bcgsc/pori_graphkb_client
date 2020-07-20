@@ -1,34 +1,8 @@
 @import '../../../../globals';
 
 .admin-table {
-  max-height: $readable-max;
-  min-height: $readable-min;
-
-  &__content {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-
-  &__content-header {
-    position: sticky;
-    top: -1px;
-
-    th {
-      background: $palette__background--default;
-      position: sticky;
-      top: -1px;
-      z-index: 1;
-    }
-  }
-
-  &__header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
-  }
-
-  .admin-badge {
-    animation: fade-in(0.1s);
+  & &__content,
+  & &__content .ag-header {
+    background-color: inherit;
   }
 }

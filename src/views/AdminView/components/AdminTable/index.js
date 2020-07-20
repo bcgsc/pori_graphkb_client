@@ -1,16 +1,14 @@
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import {
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Typography,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
@@ -59,38 +57,73 @@ const AdminTable = ({ onChange, records, variant }) => {
     onChange();
   }, [onChange]);
 
-  const isUserTable = variant === 'User';
+  const colDefs = [
+    {
+      headerName: 'record ID',
+      field: '@rid',
 
-  const Row = (record) => {
-    const {
-      '@rid': rid, name, createdAt, groups, email, signedLicenseAt,
-    } = record;
-    return (
-      <TableRow key={rid}>
-        <TableCell padding="dense">{rid}</TableCell>
-        <TableCell>{name}</TableCell>
-        {isUserTable && (
-          <>
-            <TableCell>
-              <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>
-            </TableCell>
-            <TableCell>{signedLicenseAt && new Date(signedLicenseAt).toLocaleString()}</TableCell>
-            <TableCell>{groups.map(group => group.name).join(', ')}</TableCell>
-          </>
-        )}
-        <TableCell padding="dense">
-          {new Date(createdAt).toLocaleString()}
-        </TableCell>
-        <TableCell padding="checkbox">
-          <IconButton onClick={() => handleOpenEditDialog(record)}>
-            <EditIcon />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    );
+    },
+    {
+      headerName: 'name',
+      field: 'name',
+      filter: 'agTextColumnFilter',
+    },
+  ];
+
+  if (variant === 'User') {
+    colDefs.push(...[
+      {
+        headerName: 'email',
+        field: 'email',
+        cellRenderer: 'EmailLink',
+        filter: 'agTextColumnFilter',
+        width: 200,
+      },
+      {
+        headerName: 'License Signed At',
+        field: 'signedLicenseAt',
+        width: 200,
+        valueFormatter: ({ value }) => value && new Date(value).toLocaleString(),
+      }, {
+        headerName: 'groups',
+        field: 'groups',
+        flex: true,
+        valueGetter: ({ data: { groups } }) => groups.map(group => group.name).join(', '),
+      },
+    ]);
+  }
+  colDefs.push(...[
+    {
+      headerName: 'Created At',
+      field: 'createdAt',
+      width: 200,
+      valueFormatter: ({ value }) => new Date(value).toLocaleString(),
+    },
+    {
+      headerName: 'Actions',
+      cellRenderer: 'Actions',
+      pinned: 'right',
+      sortable: false,
+      width: 100,
+    },
+  ]);
+
+  const Actions = ({ data: record }) => (
+    <IconButton onClick={() => handleOpenEditDialog(record)}>
+      <EditIcon />
+    </IconButton>
+  );
+  Actions.propTypes = {
+    data: PropTypes.object.isRequired,
   };
 
-  const sortByName = (rec1, rec2) => rec1.name.localeCompare(rec2.name);
+  const EmailLink = ({ value: email }) => (
+    <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>
+  );
+
+  EmailLink.propTypes = {
+    value: PropTypes.string.isRequired,
+  };
 
   return (
     <div className="admin-table">
@@ -115,27 +148,29 @@ const AdminTable = ({ onChange, records, variant }) => {
           </IconButton>
         </div>
       </div>
-      <div className="admin-table__content">
-        <Table>
-          <TableHead>
-            <TableRow className="admin-table__content-header">
-              <TableCell padding="dense">Record ID</TableCell>
-              <TableCell>Name</TableCell>
-              {isUserTable && (
-                <>
-                  <TableCell>Email</TableCell>
-                  <TableCell>License Signed At</TableCell>
-                  <TableCell>Groups</TableCell>
-                </>
-              )}
-              <TableCell padding="dense">Created At</TableCell>
-              <TableCell padding="checkbox" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {records.sort(sortByName).map(record => Row(record))}
-          </TableBody>
-        </Table>
+      <div
+        className="admin-table__content ag-theme-material"
+        role="presentation"
+        style={{
+          width: '100%',
+          height: '352px',
+        }}
+      >
+        <AgGridReact
+          columnDefs={colDefs}
+          defaultColDef={{
+            sortable: true,
+            resizable: true,
+            width: 150,
+          }}
+          frameworkComponents={{ EmailLink, Actions }}
+          pagination
+          paginationAutoPageSize
+          reactNext
+          rowData={records}
+          sizeColumnsToFit
+          suppressHorizontalScroll={false}
+        />
       </div>
     </div>
   );
@@ -149,7 +184,7 @@ AdminTable.propTypes = {
 };
 
 AdminTable.defaultProps = {
-  records: [],
+  records: null,
   variant: 'User',
 };
 

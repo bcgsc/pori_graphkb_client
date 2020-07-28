@@ -3,6 +3,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import {
+  Button,
   IconButton,
   Typography,
 } from '@material-ui/core';
@@ -143,9 +144,9 @@ const AdminTable = ({ onChange, records, variant }) => {
           Current {variant}s ({records.length})
         </Typography>
         <div>
-          <IconButton onClick={handleOpenNewDialog}>
-            <AddIcon />
-          </IconButton>
+          <Button onClick={handleOpenNewDialog}>
+            <AddIcon /> Add new {variant}
+          </Button>
         </div>
       </div>
       <div

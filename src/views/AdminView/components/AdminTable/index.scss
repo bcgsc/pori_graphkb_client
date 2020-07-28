@@ -5,4 +5,9 @@
   & &__content .ag-header {
     background-color: inherit;
   }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
 }

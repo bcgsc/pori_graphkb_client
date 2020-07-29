@@ -27,7 +27,7 @@ const ValueView = ({
   <div>
     <Indent {...rest} />
     <span>
-      {name}: <ValueComponent value={value} />
+      {name && (`${name}: `)} <ValueComponent value={value} />
     </span>
   </div>
 );

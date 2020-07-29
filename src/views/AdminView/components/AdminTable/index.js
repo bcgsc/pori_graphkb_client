@@ -144,7 +144,7 @@ const AdminTable = ({ onChange, records, variant }) => {
           Current {variant}s ({records.length})
         </Typography>
         <div>
-          <Button onClick={handleOpenNewDialog}>
+          <Button color="primary" onClick={handleOpenNewDialog} variant="outlined">
             <AddIcon /> Add new {variant}
           </Button>
         </div>

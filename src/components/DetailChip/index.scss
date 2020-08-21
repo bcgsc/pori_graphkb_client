@@ -1,6 +1,7 @@
 @import '../../globals';
 
 .detail-chip {
+  max-width: 100%;
   .detail-chip {
     &__root {
       >div {

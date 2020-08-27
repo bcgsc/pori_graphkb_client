@@ -152,6 +152,8 @@ FormLayout.defaultProps = {
     'refSeq',
     'recruitmentStatus',
     'email',
+    'source',
+    'sourceId',
   ],
   disabled: false,
   belowFold: ['deprecated', 'history'],

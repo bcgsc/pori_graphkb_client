@@ -106,20 +106,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       };
       return post('/query', body, callOptions);
     }
-    if (model.inherits.includes('Variant') || model.name === 'Variant') {
-      try {
-        const parsed = kbp.variant.parse(textInput);
-        body = {
-          ...buildSearchFromParseVariant(schema, parsed),
-          limit: MAX_SUGGESTIONS,
-          neighbors: 1,
-        };
-        return post('/query', body, callOptions);
-      } catch (err) {
-        console.error(err);
-        // assume it was not hgvs if the parser fails
-      }
-    }
+
     body = {
       queryType: 'keyword',
       target: `${model.name}`,

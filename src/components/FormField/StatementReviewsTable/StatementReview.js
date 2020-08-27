@@ -13,12 +13,12 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useEffect, useState } from 'react';
+import { queryCache } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
-import { SecurityContext } from '@/components/SecurityContext';
-import { getUsername } from '@/services/auth';
+import api from '@/services/api';
 
 /**
  * Displays a linked record row + detail chip in EmbeddedListTable.
@@ -35,15 +35,27 @@ const StatementReview = ({
   onDelete,
   label,
 }) => {
-  const context = useContext(SecurityContext);
-
   const {
-    status, createdBy: { name: username }, createdBy, comment,
+    status, createdBy, comment,
   } = value;
 
-  const previewStr = username
-    ? `${username} (${createdBy['@rid']})`
-    : `${getUsername(context)} (#${createdBy})`;
+  const [author, setAuthor] = useState(createdBy);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await queryCache.prefetchQuery(
+        ['/query', { target: [createdBy] }],
+        (url, body) => api.post(url, body).request(),
+      );
+      setAuthor(user[0]);
+    };
+
+    if (!createdBy['@rid']) {
+      fetchUser();
+    }
+  }, [createdBy]);
+
+  const previewStr = `${author.name} (${author['@rid']})`;
 
   const ReviewComponent = () => (
     <div className="review-card">
@@ -58,7 +70,7 @@ const StatementReview = ({
                 SR
               </Avatar>
           )}
-            subheader={`created by ${username || getUsername(context)}`}
+            subheader={`created by ${author.name}`}
             title="Statement Review"
           />
         </div>

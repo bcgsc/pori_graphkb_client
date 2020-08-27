@@ -136,25 +136,6 @@ describe('RecordForm', () => {
     });
   });
 
-  test('edit statement shows add review for statements', () => {
-    const { getByText } = render(
-      <SecurityContext.Provider value={{ }}>
-        <SnackbarProvider value={{ add: snackbarSpy }}>
-          <RecordForm
-            modelName="Statement"
-            onError={onErrorSpy}
-            onSubmit={onSubmitSpy}
-            onTopClick={onTopClickSpy}
-            title="blargh monkeys"
-            value={{ }}
-            variant="edit"
-          />
-        </SnackbarProvider>
-      </SecurityContext.Provider>,
-    );
-    expect(getByText('Add Review')).toBeInTheDocument();
-  });
-
   describe('edit variant', () => {
     let getByText;
     let getByTestId;
@@ -255,54 +236,6 @@ describe('RecordForm', () => {
       expect(getByText('SUBMIT')).toBeDisabled();
       expect(snackbarSpy).toHaveBeenCalled();
       expect(snackbarSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
-    });
-  });
-
-  describe('Statement Add', () => {
-    let getByText;
-    let getByTestId;
-
-    beforeEach(() => {
-      ({ getByText, getByTestId } = render(
-        <SnackbarProvider value={{ add: snackbarSpy }}>
-          <SecurityContext.Provider value={{ }}>
-            <RecordForm
-              modelName="Statement"
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
-              title="blargh monkeys"
-              value={{ }}
-              variant="new"
-            />
-          </SecurityContext.Provider>
-        </SnackbarProvider>,
-      ));
-    });
-
-
-    test('sets reviewStatus as initial and adds empty review if left blank', async () => {
-      await fireEvent.change(getByTestId('conditions-select'), { target: { value: ['11:11'] } });
-      await fireEvent.change(getByTestId('evidence-select'), { target: { value: ['12:23'] } });
-      await fireEvent.change(getByTestId('relevance-select'), { target: { value: '90:32' } });
-      await fireEvent.change(getByTestId('subject-select'), { target: { value: 'man' } });
-
-      const submitBtn = getByText('SUBMIT');
-      await fireEvent.click(submitBtn);
-      const expectedPayload = {
-        '@class': 'Statement',
-        conditions: ['11:11'],
-        evidence: ['12:23'],
-        relevance: '90:32',
-        subject: '20:20',
-        reviewStatus: 'initial',
-        reviews: [{
-          status: 'initial',
-          comment: '',
-          createdBy: '23:9',
-        }],
-      };
-      expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
     });
   });
 });

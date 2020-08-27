@@ -13,6 +13,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import RecordForm from '@/components/RecordForm';
 import { SecurityContext } from '@/components/SecurityContext';
+import StatementForm from '@/components/StatementForm';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
 import VariantForm from '@/components/VariantForm';
@@ -157,6 +158,24 @@ const RecordView = (props) => {
           value={recordContent}
         />
       </div>
+    );
+  }
+  if (modelName.toLowerCase() === 'statement') {
+    return (
+      <StatementForm
+        navigateToGraph={navigateToGraphView}
+        onError={handleError}
+        onSubmit={handleSubmit}
+        onTopClick={
+        hasWriteAccess(context)
+          ? onTopClick
+          : null
+      }
+        rid={rid}
+        title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
+        value={recordContent}
+        variant={variant}
+      />
     );
   }
   return (

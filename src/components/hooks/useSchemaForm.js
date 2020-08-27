@@ -12,7 +12,6 @@ import schema from '@/services/schema';
 
 import useObject from './useObject';
 
-
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
@@ -91,11 +90,24 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
     setFormFieldContent(propName, value);
     setFormFieldError(propName, error);
 
+    // re-build the display name template for the statement
+    // TODO: add flag to property to auto regenerating defaults
+    if (
+      ['subject', 'conditions', 'relevance'].includes(propName)
+      && fieldDefs.displayNameTemplate
+      && fieldDefs.displayNameTemplate.generateDefault
+      && formContent.displayNameTemplate
+    ) {
+      const { displayNameTemplate, ...rest } = formContent;
+      const newTemplate = fieldDefs.displayNameTemplate.generateDefault({ ...rest, [propName]: value });
+      setFormFieldContent('displayNameTemplate', newTemplate);
+    }
+
     if (error) {
       setFormHasErrors(true);
     }
     setFormIsDirty(true);
-  }, [formValidator, setFormFieldContent, setFormFieldError]);
+  }, [fieldDefs.displayNameTemplate, formContent, formValidator, setFormFieldContent, setFormFieldError]);
 
   const updateFieldEvent = useCallback(({ target }) => {
     // add the new value to the field

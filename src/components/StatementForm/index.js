@@ -65,8 +65,6 @@ const StatementForm = ({
 
   useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
-  useEffect(() => {});
-
   const statementReviewCheck = useCallback((currContent, content) => {
     const updatedContent = { ...content };
 

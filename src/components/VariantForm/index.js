@@ -13,8 +13,8 @@ import React, {
   useState,
 } from 'react';
 
+import FieldGroup from '@/components/FormLayout/FieldGroup';
 import RadioSelect from '@/components/RadioSelect';
-import FieldGroup from '@/components/RecordForm/FormLayout/FieldGroup';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
 import api from '@/services/api';
 

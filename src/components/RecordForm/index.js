@@ -13,6 +13,7 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
+import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordPropType } from '@/components/types';
@@ -21,7 +22,6 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import EdgeTable from './EdgeTable';
-import FormLayout from './FormLayout';
 import RelatedStatementsTable from './RelatedStatementsTable';
 import RelatedVariantsTable from './RelatedVariantsTable';
 

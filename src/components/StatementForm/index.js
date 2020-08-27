@@ -7,11 +7,13 @@ import {
   Paper, Typography,
 } from '@material-ui/core';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import { Alert } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useRef,
   useState,
 } from 'react';
+import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
@@ -49,6 +51,36 @@ const StatementForm = ({
   navigateToGraph,
   ...rest
 }) => {
+  const { data: diagnosticData } = useQuery(['/query', {
+    queryType: 'similarTo',
+    target: {
+      queryType: 'ancestors',
+      target: 'Vocabulary',
+      filters: { name: 'diagnostic indicator' },
+    },
+    returnProperties: ['name'],
+  }], async (route, body) => api.post(route, body).request());
+
+  const { data: therapeuticData } = useQuery(['/query', {
+    queryType: 'similarTo',
+    target: {
+      queryType: 'ancestors',
+      target: 'Vocabulary',
+      filters: { name: 'therapeutic efficacy' },
+    },
+    returnProperties: ['name'],
+  }], async (route, body) => api.post(route, body).request());
+
+  const { data: prognosticData } = useQuery(['/query', {
+    queryType: 'similarTo',
+    target: {
+      queryType: 'ancestors',
+      target: 'Vocabulary',
+      filters: { name: 'prognostic indicator' },
+    },
+    returnProperties: ['name'],
+  }], async (route, body) => api.post(route, body).request());
+
   const snackbar = useContext(SnackbarContext);
   const context = useContext(SecurityContext);
   const model = schemaDefn.schema.Statement;
@@ -58,9 +90,48 @@ const StatementForm = ({
   const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
-  const form = useSchemaForm(fieldDefs, initialValue, { variant });
+  const checkLogicalStatement = useCallback((formContent) => {
+    try {
+      const {
+        relevance: { name: relevanceName },
+        subject: { '@class': subjectClass, name: subjectName },
+      } = formContent;
+
+      if (relevanceName === 'eligibility') {
+        if (subjectClass !== 'ClinicalTrial') {
+          return 'eligibility statements should have a ClinicalTrial subject';
+        }
+      } else if (diagnosticData.some(r => r.name === relevanceName)) {
+        if (subjectClass !== 'Disease') {
+          return 'diagnostic statements should have a Disease subject';
+        }
+      } else if (therapeuticData.some(r => r.name === relevanceName)) {
+        if (subjectClass !== 'Therapy') {
+          return 'therapeutic statements should have a Therapy subject';
+        }
+      } else if (prognosticData.some(r => r.name === relevanceName)) {
+        if (subjectName !== 'patient') {
+          return 'prognostic statements should have the Vocabulary record "patient" for the subject';
+        }
+      }
+    } catch (err) {} // eslint-disable-line no-empty
+    return '';
+  }, [diagnosticData, prognosticData, therapeuticData]);
+
+  const form = useSchemaForm(
+    fieldDefs, initialValue, {
+      variant,
+      additionalValidationFn: checkLogicalStatement,
+    },
+  );
   const {
-    formIsDirty, setFormIsDirty, formContent, formErrors, updateField, formHasErrors,
+    formIsDirty,
+    setFormIsDirty,
+    formContent,
+    formErrors,
+    updateField,
+    formHasErrors,
+    additionalValidationError,
   } = form;
 
   useEffect(() => () => controllers.current.map(c => c.abort()), []);
@@ -271,6 +342,9 @@ const StatementForm = ({
           }
         {actionInProgress && (
         <CircularProgress size={50} />
+        )}
+        {additionalValidationError && (
+          <Alert severity="error">{additionalValidationError}</Alert>
         )}
         {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT
           ? (

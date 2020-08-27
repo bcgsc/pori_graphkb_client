@@ -15,8 +15,8 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
+import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
-import FormLayout from '@/components/RecordForm/FormLayout';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { SecurityContext } from '@/components/SecurityContext';
 import { GeneralRecordPropType } from '@/components/types';

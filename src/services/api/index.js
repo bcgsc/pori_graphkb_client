@@ -2,14 +2,12 @@
  * Wrapper for api, handles all requests and special functions.
  * @module /services/api
  */
-import kbp from '@bcgsc/knowledgebase-parser';
 import kbSchema from '@bcgsc/knowledgebase-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 
 import config from '@/static/config';
 
-import schema from '../schema';
 import { ApiCall } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,

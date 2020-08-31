@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 
 import RecordForm from '@/components/RecordForm';
+import StatementForm from '@/components/StatementForm';
 import { FORM_VARIANT } from '@/components/util';
 import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
@@ -51,6 +52,16 @@ const NewRecordView = (props) => {
       <NewVariant
         onError={handleError}
         onSubmit={handleSubmit}
+      />
+    );
+  } else if (modelName.toLowerCase() === 'statement') {
+    innerComponent = (
+      <StatementForm
+        onError={handleError}
+        onSubmit={handleSubmit}
+        onTopClick={null}
+        title="Create a new Statement Record"
+        variant={FORM_VARIANT.NEW}
       />
     );
   } else {

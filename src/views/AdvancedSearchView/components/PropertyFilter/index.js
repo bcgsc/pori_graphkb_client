@@ -22,6 +22,22 @@ import schema from '@/services/schema';
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 
 
+const propertySort = ({ label: prop1 }, { label: prop2 }) => {
+  if (prop1.startsWith('break1') && prop2.startsWith('break1')) {
+    prop1 = prop1.replace('break1', '');
+    prop2 = prop2.replace('break1', '');
+    const order = ['Start.@class', 'End.@class', 'Repr'];
+    return order.indexOf(prop1) - order.indexOf(prop2);
+  } if (prop1.startsWith('break2') && prop2.startsWith('break2')) {
+    prop1 = prop1.replace('break2', '');
+    prop2 = prop2.replace('break2', '');
+    const order = ['Start.@class', 'End.@class', 'Repr'];
+    return order.indexOf(prop1) - order.indexOf(prop2);
+  }
+  return prop1.localeCompare(prop2);
+};
+
+
 const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal) => {
   // check if property is iterable and set corresponding option values
   if (iterable) {
@@ -48,8 +64,6 @@ const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal) => 
   return options;
 };
 
-const NEW_FILTER_GROUP = 'Add to new Filter Group';
-
 /**
  * Form to choose a filter to add (property, value, operator)
  *
@@ -57,86 +71,126 @@ const NEW_FILTER_GROUP = 'Add to new Filter Group';
  * @property {object} props.history history router object to navigate to different views
  */
 const PropertyFilter = ({
-  modelName, filterGroups, onSubmit, className,
+  modelName, onSubmit, className,
 }) => {
-  const model = schema.get(modelName);
-
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState([]);
+  const [propertyModel, setPropertyModel] = useState({
+    type: 'string', name: 'value', mandatory: true, generated: false,
+  });
   const [operatorChoices, setOperatorChoices] = useState(['=']);
   const [operator, setOperator] = useState(operatorChoices[0]);
 
-  useEffect(() => {
-    const choices = Object.values(schema.get(modelName).queryProperties)
-      .filter(p => !BLACKLISTED_PROPERTIES.includes(p.name))
-      .map(p => ({
-        label: p.name, value: p.name, key: p.name, caption: p.description,
-      }));
-    setPropertyChoices(choices);
-
-    if (choices.length) {
-      setProperty(choices[0].value);
-    }
-  }, [modelName]);
-
-  const valueModel = {
-    ...model.queryProperties[property] || { type: 'string' },
-    name: 'value',
-    mandatory: true,
-    generated: false,
-  };
-
-  if (valueModel.type === 'link') {
-    valueModel.type = 'linkset';
-    valueModel.iterable = true;
-  }
-
   // use a schema form so that validation runs on the value based on the property selected
-  const form = useSchemaForm({ value: valueModel }, {}, { variant: FORM_VARIANT.SEARCH });
+  const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
   const {
     formContent,
     formHasErrors,
   } = form;
 
+  useEffect(() => {
+    const choices = [];
+    Object.values(schema.get(modelName).queryProperties)
+      .filter(p => !BLACKLISTED_PROPERTIES.includes(p.name))
+      .forEach((prop) => {
+        if (prop.type.includes('embedded')) {
+          if (prop.linkedClass) {
+            Object.values(prop.linkedClass.properties).forEach((subProp) => {
+              const key = `${prop.name}.${subProp.name}`;
+              choices.push({
+                label: key, value: key, key, caption: subProp.description,
+              });
+            });
+          }
+        } else {
+          choices.push({
+            label: prop.name, value: prop.name, key: prop.name, caption: prop.description,
+          });
+        }
+      });
+    choices.sort(propertySort);
+    setPropertyChoices(choices);
+
+    if (choices.length) {
+      let defaultProperty = choices[0].value;
+
+      if (modelName === 'Statement') {
+        defaultProperty = 'relevance';
+      } if (['PositionalVariant', 'CategoryVariant'].includes(modelName)) {
+        defaultProperty = 'reference1';
+      } else if (choices.find(c => c.label === 'name')) {
+        defaultProperty = 'name';
+      }
+      setProperty(defaultProperty);
+    }
+  }, [modelName]);
+
+  useEffect(() => {
+    if (property) {
+      const [prop, subProp] = property.split('.');
+      let newPropertyModel = schema.get(modelName).properties[prop];
+
+      if (newPropertyModel && subProp) {
+        if (newPropertyModel.linkedClass && newPropertyModel.linkedClass.embedded) {
+          const parentPropModel = newPropertyModel;
+          newPropertyModel = newPropertyModel.linkedClass.properties[subProp];
+
+          if (subProp === '@class') {
+            const choices = parentPropModel.linkedClass.subclasses.map(m => m.name);
+
+            if (!parentPropModel.linkedClass.isAbstract) {
+              choices.push(parentPropModel.linkedClass.name);
+            }
+            newPropertyModel.choices = choices;
+          }
+        } else {
+          newPropertyModel = null;
+        }
+      }
+
+      if (newPropertyModel) {
+        setPropertyModel({ ...newPropertyModel, mandatory: true });
+      }
+    }
+  }, [property, modelName]);
+
   // limit the choices for operators to select based on the property selected and the current value
   useEffect(() => {
     if (property) {
-      const { queryProperties } = schema.get(modelName);
-      const choices = constructOperatorOptions(queryProperties[property], formContent.value);
+      const choices = constructOperatorOptions(propertyModel, formContent[property]);
       setOperatorChoices(choices);
 
       if (choices.length === 1) {
         setOperator(choices[0].value);
+      } else if (choices.find(c => c.label === 'CONTAINSTEXT')) {
+        setOperator('CONTAINSTEXT');
       }
     }
-  }, [formContent.value, modelName, property]);
-
-
-  const [filterGroup, setFilterGroup] = useState(NEW_FILTER_GROUP);
-
-  // update the choices for filter groups when the user deletes all groups
-  useEffect(() => {
-    if (!filterGroups.includes(filterGroup)) {
-      setFilterGroup(NEW_FILTER_GROUP);
-    }
-  }, [filterGroup, filterGroups]);
+  }, [formContent, property, propertyModel]);
 
   const handleAddFilter = useCallback(() => {
+    const [, subProp] = property.split('.');
     onSubmit({
       attr: property,
-      value: formContent.value,
+      value: subProp
+        ? formContent[subProp]
+        : formContent[property],
       operator,
-      group: filterGroup === NEW_FILTER_GROUP
-        ? ''
-        : filterGroup,
+      query: {
+        operator,
+        [property]: subProp
+          ? formContent[subProp]
+          : formContent[property],
+      },
     });
-  }, [filterGroup, formContent.value, onSubmit, operator, property]);
+  }, [formContent, onSubmit, operator, property]);
 
   let format = '';
 
   if (DATE_FIELDS.includes(property)) {
     format = 'date';
   }
+
 
   return (
     <>
@@ -148,7 +202,7 @@ const PropertyFilter = ({
           <FieldWrapper className="property-filter__property">
             <DropDownSelect
               innerProps={{ 'data-testid': 'prop-select' }}
-              onChange={({ target: { value } }) => setProperty(value)}
+              onChange={({ target: { value: newValue } }) => setProperty(newValue)}
               options={propertyChoices}
               value={property}
             />
@@ -156,38 +210,33 @@ const PropertyFilter = ({
           <FieldWrapper className="property-filter__operator">
             <DropDownSelect
               disabled={!property || operatorChoices.length < 2}
-              onChange={({ target: { value } }) => setOperator(value)}
+              onChange={({ target: { value: newValue } }) => setOperator(newValue)}
               options={operatorChoices}
               value={operator}
             />
           </FieldWrapper>
-          <FormContext.Provider value={form}>
+          <FormContext.Provider
+            value={form}
+          >
             <FormField
               className="property-filter__value"
               disabled={!property}
               innerProps={{ 'data-testid': 'value-select' }}
-              model={{ ...valueModel, format }}
+              model={{ ...propertyModel, format }}
               variant="edit"
             />
           </FormContext.Provider>
 
         </div>
       </div>
-      <div className="property-filter__add-filter-box">
-        <div className="property-filter__add-filter-dropdown">
-          <DropDownSelect
-            onChange={({ target: { value } }) => setFilterGroup(value)}
-            options={[NEW_FILTER_GROUP, ...filterGroups]}
-            value={filterGroup}
-          />
-        </div>
+      <div className="property-filter__actions">
         <ActionButton
           disabled={!property || formHasErrors || !operator}
           onClick={handleAddFilter}
           requireConfirm={false}
           variant="outlined"
         >
-          ADD FILTER
+          add to selected group
         </ActionButton>
       </div>
     </>
@@ -198,11 +247,9 @@ PropertyFilter.propTypes = {
   modelName: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
   className: PropTypes.string,
-  filterGroups: PropTypes.arrayOf(PropTypes.string),
 };
 
 PropertyFilter.defaultProps = {
-  filterGroups: [],
   className: '',
 };
 

@@ -13,15 +13,15 @@
       top: 5px;
     }
 
-    &__add-filter-box {
+    &__actions {
       align-items: center;
       display: flex;
       justify-content: center;
-    }
+      margin-top: 10px;
 
-    &__add-filter-dropdown {
-      margin: 20px;
-      width: fit-content;
+      > * {
+        margin-left: 10px;
+      }
     }
 
     @media (min-width: $breakpoint-lg) {

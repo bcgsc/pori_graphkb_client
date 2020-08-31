@@ -36,18 +36,23 @@ function RelationshipList(props) {
   // Checks subclasses
   const edges = schema.getEdges(record);
 
+  const rid = rec => rec['@rid'] || rec;
+
   if (!edges || edges.length === 0) return null;
   return (
     <List>
       {edges.map((edge) => {
-        const isOpen = linkOpen === edge['@rid'];
+        const isOpen = linkOpen === rid(edge);
         let isIn = false;
 
         if (edge.in !== undefined) {
-          isIn = edge.in && edge.in['@rid'] === record['@rid'];
+          isIn = edge.in && rid(edge.in) === rid(record);
         }
         const targetNode = isIn ? edge.out : edge.in;
-        if (targetNode['@rid'] === record['@rid']) return null;
+
+        if (rid(targetNode) === rid(record)) {
+          return null;
+        }
         let preview;
 
         try {
@@ -56,12 +61,12 @@ function RelationshipList(props) {
           preview = 'Invalid variant';
         }
         return (
-          <React.Fragment key={edge['@rid']}>
+          <React.Fragment key={rid(edge)}>
             <ListItem
               button
               className="detail-link-wrapper"
               dense
-              onClick={() => handleLinkExpand(edge['@rid'])}
+              onClick={() => handleLinkExpand(rid(edge))}
             >
               <ListItemIcon>
                 <div style={{ display: 'inline-flex' }}>

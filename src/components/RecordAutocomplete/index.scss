@@ -1,8 +1,10 @@
 .record-autocomplete {
   flex-grow: 1;
+  max-width: 100%;
 
   &__chip {
     margin: 4px;
+    max-width: calc(100% - 8px);
   }
 
   &__dropdown {

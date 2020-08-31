@@ -76,7 +76,11 @@ const ActiveFilters = ({ search }) => {
         );
         const hash = {};
         result.forEach((rec) => {
-          hash[rec['@rid']] = schema.getPreview(rec);
+          if (rec['@class'] === 'Statement') {
+            hash[rec['@rid']] = 'Statement';
+          } else {
+            hash[rec['@rid']] = schema.getPreview(rec);
+          }
         });
         setRecordHash(hash);
       }

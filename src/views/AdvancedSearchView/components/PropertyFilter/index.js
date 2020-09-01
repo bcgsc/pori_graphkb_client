@@ -128,9 +128,9 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel = schema.get(modelName).properties[prop];
+      let newPropertyModel = { ...schema.get(modelName).properties[prop], mandatory: true };
 
-      if (newPropertyModel && subProp) {
+      if (subProp) {
         if (newPropertyModel.linkedClass && newPropertyModel.linkedClass.embedded) {
           const parentPropModel = newPropertyModel;
           newPropertyModel = newPropertyModel.linkedClass.properties[subProp];
@@ -146,18 +146,22 @@ const PropertyFilter = ({
         } else {
           newPropertyModel = null;
         }
+      } else if (newPropertyModel.type === 'link') {
+        newPropertyModel.type = 'linkset';
+        newPropertyModel.iterable = true;
       }
 
-      if (newPropertyModel) {
-        setPropertyModel({ ...newPropertyModel, mandatory: true });
-      }
+      setPropertyModel({ ...newPropertyModel, mandatory: true });
     }
   }, [property, modelName]);
 
   // limit the choices for operators to select based on the property selected and the current value
   useEffect(() => {
     if (property) {
-      const choices = constructOperatorOptions(propertyModel, formContent[property]);
+      const choices = constructOperatorOptions(
+        schema.get(modelName).properties[property],
+        formContent[property],
+      );
       setOperatorChoices(choices);
 
       if (choices.length === 1) {
@@ -166,7 +170,7 @@ const PropertyFilter = ({
         setOperator('CONTAINSTEXT');
       }
     }
-  }, [formContent, property, propertyModel]);
+  }, [formContent, modelName, property]);
 
   const handleAddFilter = useCallback(() => {
     const [, subProp] = property.split('.');

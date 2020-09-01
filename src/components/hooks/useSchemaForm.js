@@ -20,15 +20,20 @@ import useObject from './useObject';
  * @param {Object} props extra options
  * @param {boolean} props.ignoreMandatoryErrors do not throw errors when required fields are missing
  * @param {string} props.variant the form type/variant (ex. view)
+ * @param {function} props.additionalValidationFn a function which should return an error message if failed and empty string if passed. Accepts the formContent as input
  *
  * @returns {FormContext} the form context values
  */
-const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false, variant = '' } = {}) => {
+const useSchemaForm = (
+  initialFieldDefs,
+  initialValue = {},
+  { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null } = {},
+) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
   const [formVariant, setFormVariant] = useState(variant);
-
   const [fieldDefs, setFieldDefs] = useState(initialFieldDefs);
+  const [additionalValidationError, setAdditionalValidationError] = useState('');
 
   useEffect(() => {
     setFormVariant(variant);
@@ -64,8 +69,15 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
 
   useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some(err => err);
-    setFormHasErrors(errorState);
-  }, [formErrors || {}]);
+    setFormHasErrors(errorState || additionalValidationError);
+  }, [formErrors || {}, additionalValidationError]);
+
+  useDeepCompareEffect(() => {
+    if (additionalValidationFn) {
+      setAdditionalValidationError(additionalValidationFn(formContent));
+    }
+  }, [formContent || {}, additionalValidationFn]);
+
 
   // check the initial content for errors
   useDeepCompareEffect(() => {
@@ -126,6 +138,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
     updateField,
     updateFieldEvent,
     formVariant,
+    additionalValidationError,
   };
 };
 

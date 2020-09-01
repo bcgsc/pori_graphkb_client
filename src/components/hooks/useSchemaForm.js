@@ -20,7 +20,7 @@ import useObject from './useObject';
  * @param {Object} props extra options
  * @param {boolean} props.ignoreMandatoryErrors do not throw errors when required fields are missing
  * @param {string} props.variant the form type/variant (ex. view)
- * @param {function}
+ * @param {function} props.additionalValidationFn a function which should return an error message if failed and empty string if passed. Accepts the formContent as input
  *
  * @returns {FormContext} the form context values
  */

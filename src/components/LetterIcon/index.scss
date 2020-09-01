@@ -1,0 +1,36 @@
+@import '../../globals';
+@import '../../theme';
+
+.letter-icon {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  font-family: $roboto;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 50px;
+  justify-content: center;
+  margin-right: 16px;
+  min-width: 50px;
+  width: 50px;
+
+  &--primary.letter-icon--contained {
+    background-color: $palette__primary--main;
+    color: $palette__common--white;
+  }
+
+  &--primary.letter-icon--outlined {
+    border: 1px solid  $palette__primary--dark;
+    color: $palette__primary--dark;
+  }
+
+  &--secondary.letter-icon--contained {
+    background-color: $palette__secondary--main;
+    color: $palette__common--white;
+  }
+
+  &--secondary.letter-icon--outlined {
+    border: 1px solid  $palette__secondary--dark;
+    color: $palette__secondary--dark;
+  }
+}

@@ -42,13 +42,18 @@ const useObject = (initialValue = {}) => {
     setContent({ type: 'replace', payload: newContent });
   }, [setContent]);
 
+  const removeField = useCallback((name) => {
+    const { [name]: removed, ...rest } = content;
+    setContent({ type: 'replace', payload: rest });
+  }, [content]);
+
 
   useDeepCompareEffect(() => {
     replace(initialValue || {});
   }, [initialValue || {}]);
 
   return {
-    content, updateField, replace, update,
+    content, updateField, replace, update, removeField,
   };
 };
 

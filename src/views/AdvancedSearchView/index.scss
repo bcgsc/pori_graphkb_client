@@ -13,7 +13,7 @@
     }
   }
 
-  &__filter-groups,
+  &__filters,
   &__property-filter {
     margin-left: auto;
     margin-right: auto;
@@ -24,37 +24,11 @@
     }
   }
 
-  &__filter-groups {
+  &__search, &__add-group {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
 
-    &__dropdown {
-      margin: 20px 0;
-      width: fit-content;
-    }
-
-    .action-button {
-      margin-top: 42px;
-    }
-
-    .search-btn {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-
-      @media (min-width: $breakpoint-mobile) {
-        .action-button {
-          margin-left: auto;
-          margin-right: 20px;
-        }
-      }
-    }
-
-    @media (min-width: $breakpoint-mobile) {
-      &__dropdown {
-        margin: 20px;
-      }
+    > * {
+      margin-left: auto;
     }
   }
 }

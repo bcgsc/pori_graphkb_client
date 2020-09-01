@@ -1,0 +1,10 @@
+
+@import '../../../../theme';
+@import '../../../../globals';
+
+.add-filter-group {
+  border: 1px dashed $palette__grey--300;
+  border-radius: 4px;
+  margin-bottom: $default-spacing;
+  width: 100%;
+}

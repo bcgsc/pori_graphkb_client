@@ -17,7 +17,7 @@ const useFilterGroups = () => {
 
   const reset = useCallback(() => {
     replaceGroups({ [START_GROUP]: [] });
-  });
+  }, [replaceGroups]);
 
 
   const addGroup = useCallback(() => {

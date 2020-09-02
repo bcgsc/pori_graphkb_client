@@ -1,10 +1,14 @@
 import './index.scss';
 
+import { IconButton } from '@material-ui/core';
 import TreeIcon from '@material-ui/icons/AccountTree';
+import HelpIcon from '@material-ui/icons/HelpOutline';
 import ShareIcon from '@material-ui/icons/Share';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+
+import HelpDialog from './HelpDialog';
 
 /**
  * Toggle Button Navigation to switch between modes or settings.
@@ -21,6 +25,7 @@ function RecordFormStateToggle({
   disabled,
 }) {
   const [value, setValue] = useState(inputValue);
+  const [helpIsOpen, setHelpIsOpen] = useState(false);
 
   useEffect(() => {
     setValue(inputValue);
@@ -33,13 +38,16 @@ function RecordFormStateToggle({
     }
   }, [onChange, value]);
 
+  const toggleHelp = useCallback(() => {
+    setHelpIsOpen(!helpIsOpen);
+  }, [helpIsOpen]);
+
 
   return (
-    <>
+    <div>
       <ToggleButtonGroup
-        aria-label="form state toggle"
-        className="record-form-state-toggle"
-
+        aria-label="subquery toggle"
+        className="subquery-toggle"
         exclusive
         label="subquery type"
         onChange={handleChange}
@@ -68,7 +76,9 @@ function RecordFormStateToggle({
           <ShareIcon /><span className="toggle-option__text">keyword</span>
         </ToggleButton>
       </ToggleButtonGroup>
-    </>
+      <IconButton><HelpIcon onClick={toggleHelp} /></IconButton>
+      <HelpDialog isOpen={helpIsOpen} onClose={() => setHelpIsOpen(false)} />
+    </div>
   );
 }
 

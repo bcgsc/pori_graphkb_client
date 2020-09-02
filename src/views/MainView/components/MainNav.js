@@ -12,6 +12,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HomeIcon from '@material-ui/icons/Home';
 import InputIcon from '@material-ui/icons/Input';
 import SearchIcon from '@material-ui/icons/Search';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
@@ -19,7 +20,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 
 import { SecurityContext } from '@/components/SecurityContext';
-import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
+import { hasWriteAccess, isAdmin } from '@/services/auth';
 import logo from '@/static/gsclogo.svg';
 
 import MenuLink from './MenuLink';
@@ -70,16 +71,8 @@ const MainNav = ({ isOpen, activeLink, onChange }) => {
       </div>
       <Divider />
       <List className="main-nav-drawer__links">
-        {isAuthorized(context) && (
-        <MenuLink activeLink={activeLink} icon={<SearchIcon />} label="Search" onClick={handleClickLink} route="/query" topLevel />
-        )}
-        {isAuthorized(context) && (isOpen && subMenuOpenLink === '/query') && (
-        <>
-          <MenuLink activeLink={activeLink} inset label="Quick" onClick={handleClickLink} route="/query" />
-          <MenuLink activeLink={activeLink} inset label="Popular" onClick={handleClickLink} route="/query-popular/gene" />
-          <MenuLink activeLink={activeLink} inset label="Advanced" onClick={handleClickLink} route="/query-advanced" />
-        </>
-        )}
+        <MenuLink activeLink={activeLink} icon={<HomeIcon />} label="Quick Search" onClick={handleClickLink} route="/query" topLevel />
+        <MenuLink activeLink={activeLink} icon={<SearchIcon />} label="Advanced Search" onClick={handleClickLink} route="/query-advanced" topLevel />
         {hasWriteAccess(context) && (
         <MenuLink activeLink={activeLink} icon={<AddIcon />} label="Add new Record" onClick={handleClickLink} route="/new/ontology" topLevel />
         )}

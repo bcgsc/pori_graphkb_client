@@ -9,6 +9,8 @@ import ShareIcon from '@material-ui/icons/Share';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import treeDiagram from '@/static/images/tree.png';
+
 /**
    * Component for simple dialog that prompts the user before deleting a record.
    * @param {object} props
@@ -36,7 +38,7 @@ const HelpDialog = (props) => {
         <section className="subquery-help__section">
           <div className="subquery-help__section-header">
             <TreeIcon />
-            <Typography variant="h4">Tree Subquery</Typography>
+            <Typography variant="h4">Subclass Tree Subquery</Typography>
           </div>
           <Typography variant="body2">
             The tree subquery is used to get all subclasses (and their subclasses, etc.) of a term.
@@ -45,6 +47,10 @@ const HelpDialog = (props) => {
             subclass tree instead. The subquery will automatically resolve the aliases, deprecated forms,
             and cross reference relationships to grab all the equivalent representations
           </Typography>
+          <figure className="subquery-help__tree-diagram">
+            <img alt="tree diagram" src={treeDiagram} />
+            <figcaption>Example of a tree query on the term &quot;therapeutic efficacy&quot;</figcaption>
+          </figure>
         </section>
         <section className="subquery-help__section">
           <div className="subquery-help__section-header">

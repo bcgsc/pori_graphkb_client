@@ -54,19 +54,12 @@ function RecordFormStateToggle({
         value={value}
       >
         <ToggleButton
-          aria-label="graph"
+          aria-label="exact"
           data-testid="graph-view"
           disabled={disabled}
           value=""
         >
-          <span className="toggle-option__text">no subquery</span>
-        </ToggleButton>
-        <ToggleButton
-          aria-label="tree"
-          disabled={disabled}
-          value="tree"
-        >
-          <TreeIcon /><span className="toggle-option__text">Tree</span>
+          <span className="toggle-option__backup-icon">E</span><span className="toggle-option__text">exact match</span>
         </ToggleButton>
         <ToggleButton
           aria-label="keyword"
@@ -74,6 +67,13 @@ function RecordFormStateToggle({
           value="keyword"
         >
           <ShareIcon /><span className="toggle-option__text">keyword</span>
+        </ToggleButton>
+        <ToggleButton
+          aria-label="tree"
+          disabled={disabled}
+          value="tree"
+        >
+          <TreeIcon /><span className="toggle-option__text">Subclass Tree</span>
         </ToggleButton>
       </ToggleButtonGroup>
       <IconButton onClick={toggleHelp}><HelpIcon /></IconButton>

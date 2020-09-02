@@ -76,7 +76,7 @@ function RecordFormStateToggle({
           <ShareIcon /><span className="toggle-option__text">keyword</span>
         </ToggleButton>
       </ToggleButtonGroup>
-      <IconButton><HelpIcon onClick={toggleHelp} /></IconButton>
+      <IconButton onClick={toggleHelp}><HelpIcon /></IconButton>
       <HelpDialog isOpen={helpIsOpen} onClose={() => setHelpIsOpen(false)} />
     </div>
   );

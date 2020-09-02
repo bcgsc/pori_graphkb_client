@@ -56,12 +56,12 @@ const ModelSelect = ({
 };
 
 ModelSelect.propTypes = {
-  name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   baseModel: PropTypes.string,
   defaultValue: PropTypes.string,
   disabled: PropTypes.bool,
   includeAbstract: PropTypes.bool,
+  name: PropTypes.string,
   value: PropTypes.string,
   variant: PropTypes.string,
 };
@@ -73,6 +73,7 @@ ModelSelect.defaultProps = {
   value: '',
   variant: 'select',
   disabled: false,
+  name: '',
 };
 
 export default ModelSelect;

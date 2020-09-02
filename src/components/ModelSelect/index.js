@@ -41,6 +41,9 @@ const ModelSelect = ({
     ? RadioSelect
     : DropDownSelect;
 
+  if (!choices.length) {
+    return null;
+  }
   return (
     <BaseComponent
       disabled={choices.length < 2 || disabled}

@@ -99,7 +99,7 @@ const PropertyFilter = ({
   // set the property options
   useEffect(() => {
     const choices = [];
-    Object.values(schema.get(modelName).queryProperties)
+    schema.getQueryProperties(modelName)
       .filter(p => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
@@ -138,7 +138,7 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel = { ...schema.get(modelName).properties[prop], mandatory: true };
+      let newPropertyModel = { ...schema.getQueryProperties(modelName).find(p => p.name === prop), mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
@@ -164,19 +164,18 @@ const PropertyFilter = ({
           newPropertyModel.iterable = true;
         }
 
-        setPropertyModel({ ...newPropertyModel, mandatory: true });
+        setPropertyModel({ type: 'string', ...newPropertyModel, mandatory: true });
       }
     }
   }, [property, modelName, subqueryType]);
 
   // set the subquery status
   useEffect(() => {
-    const originalPropertyModel = schema.get(modelName).properties[property];
+    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
 
     if (
       originalPropertyModel
-      && originalPropertyModel.linkedClass
-      && !originalPropertyModel.linkedClass.embedded
+      && originalPropertyModel.type.includes('link')
     ) {
       setCanSubquery(true);
     } else {
@@ -194,7 +193,7 @@ const PropertyFilter = ({
 
   // limit the choices for operators to select based on the property selected and the current value
   useEffect(() => {
-    const originalPropertyModel = schema.get(modelName).properties[property];
+    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
 
     if (property) {
       const choices = constructOperatorOptions(
@@ -213,15 +212,17 @@ const PropertyFilter = ({
   }, [formContent, modelName, property, subqueryType]);
 
   useEffect(() => {
-    if (property) {
-      const linkedModel = schema.get(modelName).properties[property].linkedClass;
+    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
+
+    if (property && subqueryType === 'keyword') {
+      const linkedModel = originalPropertyModel.linkedClass || schema.get('V');
       setKeywordTargetOptions(linkedModel.descendantTree(false).map(m => m.name));
       setKeywordTarget(linkedModel.name);
     }
-  }, [modelName, property]);
+  }, [modelName, property, subqueryType]);
 
   const handleAddFilter = useCallback(() => {
-    const originalPropertyModel = schema.get(modelName).properties[property];
+    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
     const [, subProp] = property.split('.');
     const result = {
       attr: property,
@@ -311,7 +312,7 @@ const PropertyFilter = ({
               value={operator}
             />
           </FieldWrapper>
-          {property && schema.get(modelName).properties[property].linkedClass && subqueryType === 'keyword' && (
+          {property && subqueryType === 'keyword' && (
           <FieldWrapper className="property-filter__keyword-target">
             <DropDownSelect
               disabled={keywordTargetOptions.length < 2}
@@ -328,7 +329,7 @@ const PropertyFilter = ({
               className="property-filter__value"
               disabled={!property}
               innerProps={{ 'data-testid': 'value-select' }}
-              model={{ ...propertyModel, format }}
+              model={{ type: 'string', ...propertyModel, format }}
               variant="edit"
             />
           </FormContext.Provider>

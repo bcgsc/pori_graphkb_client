@@ -216,7 +216,7 @@ const PropertyFilter = ({
 
     if (property && subqueryType === 'keyword') {
       const linkedModel = originalPropertyModel.linkedClass || schema.get('V');
-      setKeywordTargetOptions(linkedModel.descendantTree(false).map(m => m.name));
+      setKeywordTargetOptions(linkedModel.descendantTree(false).map(m => m.name).sort());
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);

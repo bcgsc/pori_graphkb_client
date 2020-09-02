@@ -38,7 +38,6 @@ const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
 const LoginView = lazy(() => import('@/views/LoginView'));
 const NewRecordView = lazy(() => import('@/views/NewRecordView'));
 const NewRecordSelectView = lazy(() => import('@/views/NewRecordSelectView'));
-const PopularSearchView = lazy(() => import('@/views/PopularSearchView'));
 const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 
@@ -120,7 +119,6 @@ const Main = () => {
                 <AuthenticatedRoute component={AboutView} path="/about" />
                 <AuthenticatedRoute component={ActivityView} path="/activity" />
                 <AuthenticatedRoute component={QuickSearch} exact path="/query" />
-                <AuthenticatedRoute component={PopularSearchView} path="/query-popular" />
                 <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
                 <AuthenticatedRoute
                   admin

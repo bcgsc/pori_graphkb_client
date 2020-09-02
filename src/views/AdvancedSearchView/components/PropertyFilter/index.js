@@ -240,7 +240,9 @@ const PropertyFilter = ({
           : 'IN',
         [property]: {
           queryType: 'similarTo',
-          treeEdges: [],
+          treeEdges: keywordTarget === 'Feature'
+            ? ['ElementOf']
+            : [],
           target: {
             target: keywordTarget || originalPropertyModel.linkedClass.name || 'V',
             operator,

@@ -8,6 +8,9 @@
     }
 
     @media (min-width: #{$breakpoint-med}) {
+      &__backup-icon {
+        display: none;
+      }
 
       // allow 2 columns for large dislays
       &__text {
@@ -33,6 +36,14 @@
 
     :first-child {
       margin-right: 10px;
+    }
+  }
+
+  &__tree-diagram {
+    max-width: 350px;
+
+    img {
+      max-width: 100%;
     }
   }
 }

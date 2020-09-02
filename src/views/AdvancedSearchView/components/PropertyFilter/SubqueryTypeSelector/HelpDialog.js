@@ -30,15 +30,15 @@ const HelpDialog = (props) => {
       open={isOpen}
     >
       <DialogTitle>
-        <Typography variant="h2">Subquerying</Typography>
+        <Typography variant="h3">Subquerying</Typography>
       </DialogTitle>
       <DialogContent>
         <section className="subquery-help__section">
           <div className="subquery-help__section-header">
             <TreeIcon />
-            <Typography variant="h3">Tree Subquery</Typography>
+            <Typography variant="h4">Tree Subquery</Typography>
           </div>
-          <Typography variant="paragraph">
+          <Typography variant="body2">
             The tree subquery is used to get all subclasses (and their subclasses, etc.) of a term.
             This is useful, for example, when filtering for all therapeutic terms.
             Instead of having to add each term individually, you can pick the base/root term of the
@@ -49,9 +49,9 @@ const HelpDialog = (props) => {
         <section className="subquery-help__section">
           <div className="subquery-help__section-header">
             <ShareIcon />
-            <Typography variant="h3">Keyword Subquery</Typography>
+            <Typography variant="h4">Keyword Subquery</Typography>
           </div>
-          <Typography variant="paragraph">
+          <Typography variant="body2">
             The keyword subquery can be used to find terms that match a substring or a string
             exactly. The subquery will automatically resolve the aliases, deprecated forms,
             and cross reference relationships to grab all the equivalent representations

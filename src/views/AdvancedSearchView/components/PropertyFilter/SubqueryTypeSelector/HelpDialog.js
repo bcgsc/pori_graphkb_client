@@ -12,13 +12,11 @@ import React from 'react';
 import treeDiagram from '@/static/images/tree.png';
 
 /**
-   * Component for simple dialog that prompts the user before deleting a record.
-   * @param {object} props
-   * @param {boolean} props.isOpen - Drawer open flag
-   * @param {function} props.onCancel - Handler for closing of dialog.
-   * @param {function} props.onConfirm - Handler for confirming action
-   * @param {string} props.message - Message to display in dialog title.
-   */
+ * Component for displaying the help information on subqueries
+ * @param {object} props
+ * @param {boolean} props.isOpen - Dialog open flag
+ * @param {function} props.onClose - Handler for closing of dialog.
+ */
 const HelpDialog = (props) => {
   const {
     isOpen,

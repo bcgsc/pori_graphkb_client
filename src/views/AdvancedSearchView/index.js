@@ -64,6 +64,7 @@ function AdvancedSearchView({ history }) {
       <div className="advanced-search__class-select">
         <ModelSelect
           baseModel="V"
+          includeAbstract
           onChange={handleModelChange}
           value={modelName}
         />

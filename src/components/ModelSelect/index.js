@@ -27,7 +27,7 @@ const ModelSelect = ({
   useEffect(() => {
     const models = schema.get(baseModel).descendantTree(!includeAbstract).map(m => ({
       label: m.name, value: m.name, caption: m.description, key: m.name,
-    }));
+    })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);
   }, [baseModel, includeAbstract, name, onChange, value]);
 
@@ -41,6 +41,9 @@ const ModelSelect = ({
     ? RadioSelect
     : DropDownSelect;
 
+  if (!choices.length) {
+    return null;
+  }
   return (
     <BaseComponent
       disabled={choices.length < 2 || disabled}
@@ -53,12 +56,12 @@ const ModelSelect = ({
 };
 
 ModelSelect.propTypes = {
-  name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   baseModel: PropTypes.string,
   defaultValue: PropTypes.string,
   disabled: PropTypes.bool,
   includeAbstract: PropTypes.bool,
+  name: PropTypes.string,
   value: PropTypes.string,
   variant: PropTypes.string,
 };
@@ -70,6 +73,7 @@ ModelSelect.defaultProps = {
   value: '',
   variant: 'select',
   disabled: false,
+  name: '',
 };
 
 export default ModelSelect;

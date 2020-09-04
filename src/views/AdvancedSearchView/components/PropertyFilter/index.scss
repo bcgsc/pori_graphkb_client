@@ -27,16 +27,17 @@
     @media (min-width: $breakpoint-lg) {
       &__content {
         display: flex;
-        justify-content: space-around;
         flex-flow: wrap;
-      }
-
-      &__property {
-        width: 50%;
+        justify-content: space-between;
       }
 
       &__operator {
-        width: 50%;
+        width: calc(100% - 515px);
+      }
+
+      &__subquery {
+        max-width: 515px;
+        width: fit-content;
       }
     }
   }

@@ -5,7 +5,9 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import TreeIcon from '@material-ui/icons/AccountTree';
 import CancelIcon from '@material-ui/icons/Cancel';
+import ShareIcon from '@material-ui/icons/Share';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
@@ -56,6 +58,13 @@ function FilterGroup({
           } else if (typeof filterValue === 'string') {
             filterValue = `'${filterValue}'`;
           }
+          let icon = null;
+
+          if (filter.subqueryType === 'keyword') {
+            icon = (<ShareIcon />);
+          } else if (filter.subqueryType === 'tree') {
+            icon = (<TreeIcon />);
+          }
           return (
             <div
               key={`${filter.attr}.${filter.value}`}
@@ -64,6 +73,7 @@ function FilterGroup({
             >
               <Chip
                 default="outlined"
+                icon={icon}
                 label={`${filter.attr} ${filter.operator} ${filterValue}`}
                 onDelete={
                     onDeleteFilter

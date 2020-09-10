@@ -45,7 +45,7 @@ const QueryResultsTable = ({
 
   // fetch recent records data
   // fetch recent records data
-  const { data } = useQuery(['/query', queryBody], async (route, body) => api.post(route, body).request());
+  const { data, isFetching } = useQuery(['/query', queryBody], async (route, body) => api.post(route, body).request());
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {
@@ -60,7 +60,7 @@ const QueryResultsTable = ({
   return (
     <div className="query-results-table">
       <Typography className="query-results-table__title" variant="h3">
-        {title} ({data && data.length})
+        {title} ({isFetching ? '?' : data && data.length})
       </Typography>
       {description && (<Typography paragraph variant="caption">{description}</Typography>)}
       <div

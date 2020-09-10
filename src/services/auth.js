@@ -153,5 +153,16 @@ const logout = async () => {
 
 
 export {
-  login, logout, hasWriteAccess, isAdmin, isAuthorized, isAuthenticated, isExpired, validToken, getUser, getUsername, getReferrerUri, keycloak,
+  login,
+  logout,
+  hasWriteAccess,
+  isAdmin,
+  isAuthorized,
+  isAuthenticated,
+  isExpired,
+  validToken,
+  getUser,
+  getUsername,
+  getReferrerUri,
+  keycloak,
 };

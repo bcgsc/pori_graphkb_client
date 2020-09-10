@@ -1,0 +1,20 @@
+@import '../../globals';
+
+.query-results-table {
+  height: fit-content;
+
+  & &__content,
+  & &__content .ag-header {
+    background-color: inherit;
+  }
+
+  &__content {
+    height: $readable-min;
+    width: 100%;
+  }
+
+  &__jump-to-record {
+    align-items: center;
+    display: flex;
+  }
+}

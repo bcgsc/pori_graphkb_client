@@ -19,6 +19,7 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 
+import ActiveLinkContext from '@/components/ActiveLinkContext';
 import { SecurityContext } from '@/components/SecurityContext';
 import { hasWriteAccess, isAdmin } from '@/services/auth';
 import logo from '@/static/gsclogo.svg';
@@ -31,29 +32,31 @@ import MenuLink from './MenuLink';
  * @property {Array} props.links - List of app links to display in sidebar.
  * @property {function} props.onChange - handler for siderbar state change.
  */
-const MainNav = ({ isOpen, activeLink, onChange }) => {
+const MainNav = ({ isOpen, onChange }) => {
   const [subMenuOpenLink, setSubMenuOpenLink] = useState('/query');
   const context = useContext(SecurityContext);
+  const { setActiveLink } = useContext(ActiveLinkContext);
 
   /**
    * Handles closing of drawer.
    */
   const handleClose = useCallback(() => {
-    onChange({ isOpen: false, activeLink });
-  }, [activeLink, onChange]);
+    onChange({ isOpen: false });
+  }, [onChange]);
 
   const handleOpen = useCallback((defaultRoute) => {
-    onChange({ isOpen: true, activeLink: defaultRoute });
+    onChange({ isOpen: true });
     setSubMenuOpenLink(defaultRoute);
   }, [onChange]);
 
-  const handleClickLink = useCallback((link, topLevel) => {
-    if (topLevel) {
-      handleOpen(topLevel);
+  const handleClickLink = useCallback((link, group) => {
+    if (group) {
+      handleOpen(group);
     } else {
-      onChange({ isOpen, activeLink: link });
+      setActiveLink(link);
+      onChange({ isOpen });
     }
-  }, [handleOpen, isOpen, onChange]);
+  }, [handleOpen, isOpen, onChange, setActiveLink]);
 
   return (
     <Drawer
@@ -71,20 +74,20 @@ const MainNav = ({ isOpen, activeLink, onChange }) => {
       </div>
       <Divider />
       <List className="main-nav-drawer__links">
-        <MenuLink activeLink={activeLink} icon={<HomeIcon />} label="Quick Search" onClick={handleClickLink} route="/query" topLevel />
-        <MenuLink activeLink={activeLink} icon={<SearchIcon />} label="Advanced Search" onClick={handleClickLink} route="/query-advanced" topLevel />
+        <MenuLink icon={<HomeIcon />} label="Quick Search" onClick={handleClickLink} route="/query" />
+        <MenuLink icon={<SearchIcon />} label="Advanced Search" onClick={handleClickLink} route="/query-advanced" />
         {hasWriteAccess(context) && (
-        <MenuLink activeLink={activeLink} icon={<AddIcon />} label="Add new Record" onClick={handleClickLink} route="/new/ontology" topLevel />
+        <MenuLink group icon={<AddIcon />} label="Add new Record" onClick={handleClickLink} />
         )}
         {hasWriteAccess(context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
         <>
           {isAdmin(context) && (
-          <MenuLink activeLink={activeLink} inset label="Source*" onClick={handleClickLink} route="/new/source" />
+          <MenuLink inset label="Source*" onClick={handleClickLink} route="/new/source" />
           )}
-          <MenuLink activeLink={activeLink} inset label="Ontology" onClick={handleClickLink} route="/new/ontology" />
-          <MenuLink activeLink={activeLink} inset label="Variant" onClick={handleClickLink} route="/new/variant" />
-          <MenuLink activeLink={activeLink} inset label="Statement" onClick={handleClickLink} route="/new/statement" />
-          <MenuLink activeLink={activeLink} inset label="Relationship" onClick={handleClickLink} route="/new/e" />
+          <MenuLink inset label="Ontology" onClick={handleClickLink} route="/new/ontology" />
+          <MenuLink inset label="Variant" onClick={handleClickLink} route="/new/variant" />
+          <MenuLink inset label="Statement" onClick={handleClickLink} route="/new/statement" />
+          <MenuLink inset label="Relationship" onClick={handleClickLink} route="/new/e" />
         </>
         )}
         {hasWriteAccess(context) && (
@@ -95,11 +98,11 @@ const MainNav = ({ isOpen, activeLink, onChange }) => {
         )}
         {hasWriteAccess(context) && (isOpen && subMenuOpenLink === 'import') && (
         <>
-          <MenuLink activeLink={activeLink} inset label="PubMed" onClick={handleClickLink} route="/import/pubmed" />
+          <MenuLink inset label="PubMed" onClick={handleClickLink} route="/import/pubmed" />
         </>
         )}
-        <MenuLink activeLink={activeLink} icon={<TrendingUpIcon />} label="Activity" onClick={handleClickLink} route="/activity" />
-        <MenuLink activeLink={activeLink} icon={<HelpOutlineIcon />} label="About" onClick={handleClickLink} route="/about" />
+        <MenuLink icon={<TrendingUpIcon />} label="Activity" onClick={handleClickLink} route="/activity" />
+        <MenuLink icon={<HelpOutlineIcon />} label="About" onClick={handleClickLink} route="/about" />
       </List>
       <div className="main-nav-drawer__footer">
         <Divider />
@@ -114,7 +117,6 @@ const MainNav = ({ isOpen, activeLink, onChange }) => {
 
 
 MainNav.propTypes = {
-  activeLink: PropTypes.string,
   isOpen: PropTypes.bool,
   onChange: PropTypes.func,
 };
@@ -122,7 +124,6 @@ MainNav.propTypes = {
 MainNav.defaultProps = {
   isOpen: false,
   onChange: () => { },
-  activeLink: null,
 };
 
 export default MainNav;

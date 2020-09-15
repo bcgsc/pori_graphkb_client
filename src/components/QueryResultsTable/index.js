@@ -51,9 +51,10 @@ const QueryResultsTable = ({
   useEffect(() => {
     if (gridReady) {
       gridApi.sizeColumnsToFit();
-    }
-    if (data) {
-      gridApi.setRowData(data);
+
+      if (gridApi && data) {
+        gridApi.setRowData(data);
+      }
     }
   }, [gridReady, gridApi, data]);
 

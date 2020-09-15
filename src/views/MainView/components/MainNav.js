@@ -77,7 +77,10 @@ const MainNav = ({ isOpen, onChange }) => {
         <MenuLink icon={<HomeIcon />} label="Quick Search" onClick={handleClickLink} route="/query" />
         <MenuLink icon={<SearchIcon />} label="Advanced Search" onClick={handleClickLink} route="/query-advanced" />
         {hasWriteAccess(context) && (
-        <MenuLink group icon={<AddIcon />} label="Add new Record" onClick={handleClickLink} />
+          <MenuItem onClick={() => handleOpen('/new/ontology')}>
+            <ListItemIcon><AddIcon /></ListItemIcon>
+            <ListItemText primary="Add new Record" />
+          </MenuItem>
         )}
         {hasWriteAccess(context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
         <>

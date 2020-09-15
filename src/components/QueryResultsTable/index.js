@@ -43,8 +43,6 @@ const QueryResultsTable = ({
 }) => {
   const { onGridReady, gridReady, gridApi } = useGrid();
 
-  // fetch recent records data
-  // fetch recent records data
   const { data, isFetching } = useQuery(['/query', queryBody], async (route, body) => api.post(route, body).request());
 
   // resize the columns to fit once the data and grid are ready

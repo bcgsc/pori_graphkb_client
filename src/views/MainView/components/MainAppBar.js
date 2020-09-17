@@ -16,6 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
 import React, {
+  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -31,9 +32,10 @@ import {
 import MenuLink from './MenuLink';
 
 const MainAppBar = ({
-  authorizationToken, authenticationToken, onDrawerChange, drawerOpen, activeLink, onLinkChange,
+  authorizationToken, authenticationToken, onDrawerChange, drawerOpen, onLinkChange,
 }) => {
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
+  const [authOk, setAuthOk] = useState(false);
 
   const dropdown = useRef();
 
@@ -49,6 +51,10 @@ const MainAppBar = ({
     handleClose();
     onLinkChange({ isOpen: drawerOpen, activeLink: link });
   };
+
+  useEffect(() => {
+    setAuthOk(isAuthenticated({ authorizationToken, authenticationToken }));
+  }, [authorizationToken, authenticationToken]);
 
   return (
     <AppBar
@@ -77,7 +83,7 @@ const MainAppBar = ({
           >
             <PersonIcon />
             <Typography color="inherit" variant="h6">
-              {isAuthenticated({ authorizationToken, authenticationToken })
+              {authOk
                 ? getUsername({ authenticationToken, authorizationToken })
                 : 'Logged Out'
               }
@@ -98,24 +104,29 @@ const MainAppBar = ({
           >
             <Card className="user-dropdown__content">
               <MenuLink
-                activeLink={activeLink}
                 label="Feedback"
                 onClick={handleClickLink}
                 route="/feedback"
               />
               {isAdmin({ authorizationToken }) && (
                 <MenuLink
-                  activeLink={activeLink}
                   label="Admin"
                   onClick={handleClickLink}
                   route="/admin"
                 />
               )}
+              {authOk && (
+                <MenuLink
+                  label="Profile"
+                  onClick={handleClickLink}
+                  route="/user-profile"
+                />
+              )}
               <MenuItem onClick={() => logout()}>
                 {
-                  isAuthenticated({ authorizationToken, authenticationToken })
-                    ? 'Logout'
-                    : 'Login'
+                 authOk
+                   ? 'Logout'
+                   : 'Login'
                 }
               </MenuItem>
             </Card>
@@ -127,7 +138,6 @@ const MainAppBar = ({
 };
 
 MainAppBar.propTypes = {
-  activeLink: PropTypes.string.isRequired,
   onDrawerChange: PropTypes.func.isRequired,
   onLinkChange: PropTypes.func.isRequired,
   authenticationToken: PropTypes.string,

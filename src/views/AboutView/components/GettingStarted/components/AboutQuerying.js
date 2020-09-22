@@ -18,24 +18,18 @@ const AboutQuerying = () => (
       Querying
     </Typography>
     <Typography paragraph variant="body2">
-      There are 3 ways to query GraphKB. These can be found by clicking on the search icon in the left-hand side bar.
+      There are 2 ways to query GraphKB. The basic/quick search is found on the home page of the application
+      and the search Icon will lead users to the advanced search option
+      For more
     </Typography>
     <List className="search-list">
       <ListItem>
         <Link to="/query">
-          <ListItemText primary="Quick Search" />
+          <ListItemText primary="Basic/Quick Search" />
         </Link>
       </ListItem>
       <ListItem>
         <Typography>This is the simplest way to query. It is the main page view of this application and contains a single text box for input</Typography>
-      </ListItem>
-      <ListItem>
-        <Link to="/query-popular/gene">
-          <ListItemText primary="Popular Search" />
-        </Link>
-      </ListItem>
-      <ListItem>
-        <Typography> {'These are pre-built \'advanced\' queries which are commonly used by analysts exploring the database'}</Typography>
       </ListItem>
       <ListItem>
         <Link to="/query-advanced">
@@ -43,7 +37,7 @@ const AboutQuerying = () => (
         </Link>
       </ListItem>
       <ListItem>
-        <Typography>This view is for advanced users and lets the user build their own queries from scratch. New users should start with one of the other two query views</Typography>
+        <Typography>This view is for advanced users and lets the user build their own queries from scratch</Typography>
       </ListItem>
     </List>
     <Typography id="about-results-table" variant="h3">

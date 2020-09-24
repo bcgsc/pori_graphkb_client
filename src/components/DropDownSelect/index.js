@@ -151,7 +151,7 @@ const SelectOptionPropType = PropTypes.shape({
  */
 
 DropDownSelect.propTypes = {
-  IconComponent: PropTypes.element,
+  IconComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   children: PropTypes.func,
   className: PropTypes.string,
   dense: PropTypes.bool,

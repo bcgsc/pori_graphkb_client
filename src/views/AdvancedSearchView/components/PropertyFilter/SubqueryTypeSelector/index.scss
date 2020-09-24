@@ -1,0 +1,49 @@
+@import '../../../../../theme';
+@import '../../../../../globals';
+
+.subquery-toggle {
+  .toggle-option {
+    &__text {
+      display: none;
+    }
+
+    @media (min-width: #{$breakpoint-med}) {
+      &__backup-icon {
+        display: none;
+      }
+
+      // allow 2 columns for large dislays
+      &__text {
+        display: initial;
+        margin-left: 5px;
+      }
+    }
+  }
+
+  &__help-popup {
+    min-height: 200px;
+  }
+}
+
+.subquery-help {
+  &__section {
+    margin-bottom: $default-spacing;
+  }
+
+  &__section-header {
+    display: flex;
+    margin-bottom: 10px;
+
+    :first-child {
+      margin-right: 10px;
+    }
+  }
+
+  &__tree-diagram {
+    max-width: 350px;
+
+    img {
+      max-width: 100%;
+    }
+  }
+}

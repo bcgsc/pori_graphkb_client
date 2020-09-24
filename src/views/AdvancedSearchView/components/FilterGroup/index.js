@@ -1,11 +1,18 @@
 import './index.scss';
 
-import { Chip, IconButton, Typography } from '@material-ui/core';
+import {
+  Chip, IconButton,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+import TreeIcon from '@material-ui/icons/AccountTree';
 import CancelIcon from '@material-ui/icons/Cancel';
+import ShareIcon from '@material-ui/icons/Share';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
+import LetterIcon from '@/components/LetterIcon';
 import schema from '@/services/schema';
 
 import { DATE_FIELDS } from '../constants';
@@ -19,27 +26,26 @@ import { DATE_FIELDS } from '../constants';
  * @property {ArrayOf<Filters>} filterGroup.filters array of filters with format {attr, value, operator}
  * @property {function} handleDelete parent handler function to delete filterGroup
  */
-function FilterGroup(props) {
-  const { filterGroup, handleDelete } = props;
-
+function FilterGroup({
+  name, filters = [], onDelete, onSelect, isSelected, onDeleteFilter,
+}) {
+  const handleDeleteFilter = useCallback((filterIndex) => {
+    onDeleteFilter(filterIndex, name);
+  }, [name, onDeleteFilter]);
   return (
-    <div className="filter-groups__box">
-      <div className="filter-groups__group-label">
-        <Typography variant="h6">
-          {filterGroup.name}
-        </Typography>
+    <Paper className="filter-group">
+      <div className="filter-group__label">
+        <Typography className="filter-group__conjunction">OR</Typography>
+        <LetterIcon
+          onClick={onSelect}
+          value={name}
+          variant={isSelected
+            ? 'contained'
+            : 'outlined'}
+        />
       </div>
-      <div className="filter-groups__cancel-btn">
-        <IconButton
-          classes={{ label: 'cancel-btn-label' }}
-          data-testid="cancel-btn"
-          onClick={() => { handleDelete(filterGroup.name); }}
-        >
-          <CancelIcon />
-        </IconButton>
-      </div>
-      <>
-        {filterGroup.filters.map((filter, index) => {
+      <div className="filter-group__content">
+        {filters.map((filter, index) => {
           let filterValue = filter.value;
 
           if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
@@ -52,6 +58,13 @@ function FilterGroup(props) {
           } else if (typeof filterValue === 'string') {
             filterValue = `'${filterValue}'`;
           }
+          let icon = null;
+
+          if (filter.subqueryType === 'keyword') {
+            icon = (<ShareIcon />);
+          } else if (filter.subqueryType === 'tree') {
+            icon = (<TreeIcon />);
+          }
           return (
             <div
               key={`${filter.attr}.${filter.value}`}
@@ -60,23 +73,46 @@ function FilterGroup(props) {
             >
               <Chip
                 default="outlined"
+                icon={icon}
                 label={`${filter.attr} ${filter.operator} ${filterValue}`}
+                onDelete={
+                    onDeleteFilter
+                      ? () => handleDeleteFilter(index)
+                      : null
+                  }
               />
             </div>
           );
         })}
-      </>
-    </div>
+      </div>
+      {onDelete && (
+        <IconButton
+          classes={{ label: 'cancel-btn-label' }}
+          className="filter-group__cancel-btn"
+          data-testid="cancel-btn"
+          onClick={() => { onDelete(name); }}
+        >
+          <CancelIcon />
+        </IconButton>
+      )}
+    </Paper>
   );
 }
 
 FilterGroup.propTypes = {
-  filterGroup: PropTypes.object.isRequired,
-  handleDelete: PropTypes.func,
+  filters: PropTypes.array.isRequired,
+  name: PropTypes.string.isRequired,
+  isSelected: PropTypes.bool,
+  onDelete: PropTypes.func,
+  onDeleteFilter: PropTypes.func,
+  onSelect: PropTypes.func,
 };
 
 FilterGroup.defaultProps = {
-  handleDelete: () => {},
+  isSelected: false,
+  onDelete: null,
+  onDeleteFilter: null,
+  onSelect: () => {},
 };
 
 export default FilterGroup;

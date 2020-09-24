@@ -1,29 +1,33 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc/knowledgebase-schema';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
-  CircularProgress,
+  Button, CircularProgress,
   Paper, Typography,
 } from '@material-ui/core';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import { Alert } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useRef,
   useState,
 } from 'react';
+import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
+import { SecurityContext } from '@/components/SecurityContext';
 import { GeneralRecordPropType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
+import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
-import EdgeTable from './EdgeTable';
-import RelatedStatementsTable from './RelatedStatementsTable';
-import RelatedVariantsTable from './RelatedVariantsTable';
+import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
@@ -37,9 +41,8 @@ const FIELD_EXCLUSIONS = ['groupRestrictions'];
  * @property {value} props.value values of individual properties of passed class model
  * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
-const RecordForm = ({
+const StatementForm = ({
   value: initialValue,
-  modelName,
   title,
   onTopClick,
   onSubmit,
@@ -48,28 +51,109 @@ const RecordForm = ({
   navigateToGraph,
   ...rest
 }) => {
+  const { data: diagnosticData } = useQuery(['/query', {
+    queryType: 'similarTo',
+    target: {
+      queryType: 'ancestors',
+      target: 'Vocabulary',
+      filters: { name: 'diagnostic indicator' },
+    },
+    returnProperties: ['name'],
+  }], async (route, body) => api.post(route, body).request());
+
+  const { data: therapeuticData } = useQuery(['/query', {
+    queryType: 'similarTo',
+    target: {
+      queryType: 'ancestors',
+      target: 'Vocabulary',
+      filters: { name: 'therapeutic efficacy' },
+    },
+    returnProperties: ['name'],
+  }], async (route, body) => api.post(route, body).request());
+
+  const { data: prognosticData } = useQuery(['/query', {
+    queryType: 'similarTo',
+    target: {
+      queryType: 'ancestors',
+      target: 'Vocabulary',
+      filters: { name: 'prognostic indicator' },
+    },
+    returnProperties: ['name'],
+  }], async (route, body) => api.post(route, body).request());
+
   const snackbar = useContext(SnackbarContext);
+  const context = useContext(SecurityContext);
+  const model = schemaDefn.schema.Statement;
+  const fieldDefs = model.properties;
 
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = useRef([]);
-  const [isEdge, setIsEdge] = useState(false);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
-  const [fieldDefs, setFieldDefs] = useState({});
+  const checkLogicalStatement = useCallback((formContent) => {
+    try {
+      const {
+        relevance: { name: relevanceName },
+        subject: { '@class': subjectClass, name: subjectName },
+      } = formContent;
 
-  useEffect(() => {
-    if (modelName) {
-      const { properties } = schema.get(modelName);
-      setFieldDefs(properties);
-      setIsEdge(schema.isEdge(modelName));
-    }
-  }, [modelName]);
+      if (relevanceName === 'eligibility') {
+        if (subjectClass !== 'ClinicalTrial') {
+          return 'eligibility statements should have a ClinicalTrial subject';
+        }
+      } else if (diagnosticData.some(r => r.name === relevanceName)) {
+        if (subjectClass !== 'Disease') {
+          return 'diagnostic statements should have a Disease subject';
+        }
+      } else if (therapeuticData.some(r => r.name === relevanceName)) {
+        if (subjectClass !== 'Therapy') {
+          return 'therapeutic statements should have a Therapy subject';
+        }
+      } else if (prognosticData.some(r => r.name === relevanceName)) {
+        if (subjectName !== 'patient') {
+          return 'prognostic statements should have the Vocabulary record "patient" for the subject';
+        }
+      }
+    } catch (err) {} // eslint-disable-line no-empty
+    return '';
+  }, [diagnosticData, prognosticData, therapeuticData]);
 
-  const form = useSchemaForm(fieldDefs, initialValue, { variant });
+  const form = useSchemaForm(
+    fieldDefs, initialValue, {
+      variant,
+      additionalValidationFn: checkLogicalStatement,
+    },
+  );
   const {
-    formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
+    formIsDirty,
+    setFormIsDirty,
+    formContent,
+    formErrors,
+    updateField,
+    formHasErrors,
+    additionalValidationError,
   } = form;
 
   useEffect(() => () => controllers.current.map(c => c.abort()), []);
+
+  const statementReviewCheck = useCallback((currContent, content) => {
+    const updatedContent = { ...content };
+
+    if (!currContent.reviewStatus) {
+      updatedContent.reviewStatus = 'initial';
+    }
+
+    if (!currContent.reviews) {
+      const createdBy = getUser(context);
+      updatedContent.reviews = [{
+        status: 'initial',
+        comment: '',
+        createdBy,
+      }];
+    }
+
+    return updatedContent;
+  }, [context]);
 
   /**
    * Handler for submission of a new record
@@ -82,11 +166,9 @@ const RecordForm = ({
       setFormIsDirty(true);
     } else {
       // ok to POST
-      const content = { ...formContent };
+      let content = { ...formContent, '@class': model.name };
+      content = statementReviewCheck(formContent, content);
 
-      if (!formContent['@class']) {
-        content['@class'] = modelName;
-      }
 
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
@@ -105,17 +187,14 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, model.name, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
 
   /**
    * Handler for deleting an existing record
    */
   const handleDeleteAction = useCallback(async () => {
-    const content = { ...formContent };
+    const content = { ...formContent, '@class': model.name };
 
-    if (!formContent['@class']) {
-      content['@class'] = modelName;
-    }
     const { routeName } = schema.get(content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     controllers.current.push(call);
@@ -130,17 +209,13 @@ const RecordForm = ({
       onError({ error: err, content });
     }
     setActionInProgress(false);
-  }, [formContent, modelName, onError, onSubmit, snackbar]);
+  }, [formContent, model.name, onError, onSubmit, snackbar]);
 
   /**
    * Handler for edits to an existing record
    */
   const handleEditAction = useCallback(async () => {
-    const content = { ...formContent };
-
-    if (!formContent['@class']) {
-      content['@class'] = modelName;
-    }
+    const content = { ...formContent, '@class': model.name };
 
     if (formHasErrors) {
       // bring up the snackbar for errors
@@ -167,7 +242,20 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, model.name, onError, onSubmit, setFormIsDirty, snackbar]);
+
+
+  const handleAddReview = useCallback((content, updateReviewStatus) => {
+    // add the new value to the field
+    const reviews = [...(formContent.reviews || []), content];
+    updateField('reviews', reviews);
+
+    if (updateReviewStatus) {
+      updateField('reviewStatus', content.status);
+    }
+    setReviewDialogOpen(false);
+    setFormIsDirty(true);
+  }, [formContent.reviews, setFormIsDirty, updateField]);
 
   const handleToggleState = useCallback((newState) => {
     if (newState !== variant) {
@@ -190,13 +278,26 @@ const RecordForm = ({
   }
 
   return (
-    <Paper className="record-form__wrapper" elevation={4}>
-      <div className="record-form__header">
+    <Paper className="statement-form__wrapper" elevation={4}>
+      <div className="statement-form__header">
         <span className="title">
           <Typography variant="h1">{pageTitle}</Typography>
           {title !== pageTitle && (<Typography variant="subtitle">{title}</Typography>)}
         </span>
         <div className={`header__actions header__actions--${variant}`}>
+          {variant === FORM_VARIANT.EDIT && (
+          <Button
+            className="header__review-action"
+            disabled={actionInProgress}
+            onClick={() => setReviewDialogOpen(true)}
+            variant="outlined"
+          >
+            <LocalLibraryIcon
+              classes={{ root: 'review-icon' }}
+            />
+            Add Review
+          </Button>
+          )}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <RecordFormStateToggle
             message="Are you sure? You will lose your changes."
@@ -206,27 +307,25 @@ const RecordForm = ({
           />
           )}
         </div>
+        {variant === FORM_VARIANT.EDIT && (
+        <ReviewDialog
+          isOpen={reviewDialogOpen}
+          onClose={() => setReviewDialogOpen(false)}
+          onSubmit={handleAddReview}
+        />
+        )}
       </div>
       <FormContext.Provider value={form}>
         <FormLayout
           {...rest}
           collapseExtra
-          disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && isEdge)}
+          disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
-          modelName={modelName}
+          modelName={model.name}
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && schema.get(modelName).inherits.includes('V') && (
-        <>
-          <EdgeTable recordId={form.formContent['@rid']} />
-          <RelatedStatementsTable recordId={form.formContent['@rid']} />
-          {schema.get(modelName).inherits.includes('Ontology') && (
-            <RelatedVariantsTable recordId={form.formContent['@rid']} />
-          )}
-        </>
-      )}
-      <div className="record-form__action-buttons">
+      <div className="statement-form__action-buttons">
         {variant === FORM_VARIANT.EDIT
           ? (
             <ActionButton
@@ -244,7 +343,10 @@ const RecordForm = ({
         {actionInProgress && (
         <CircularProgress size={50} />
         )}
-        {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
+        {additionalValidationError && (
+          <Alert severity="error">{additionalValidationError}</Alert>
+        )}
+        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT
           ? (
             <ActionButton
               color="primary"
@@ -271,10 +373,9 @@ const RecordForm = ({
 };
 
 
-RecordForm.propTypes = {
+StatementForm.propTypes = {
   navigateToGraph: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  modelName: PropTypes.string,
   onError: PropTypes.func,
   onSubmit: PropTypes.func,
   onTopClick: PropTypes.func,
@@ -283,8 +384,7 @@ RecordForm.propTypes = {
   variant: PropTypes.string,
 };
 
-RecordForm.defaultProps = {
-  modelName: null,
+StatementForm.defaultProps = {
   onError: () => {},
   onSubmit: () => {},
   onTopClick: null,
@@ -293,4 +393,4 @@ RecordForm.defaultProps = {
   value: {},
 };
 
-export default RecordForm;
+export default StatementForm;

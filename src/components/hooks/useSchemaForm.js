@@ -12,7 +12,6 @@ import schema from '@/services/schema';
 
 import useObject from './useObject';
 
-
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
@@ -21,15 +20,20 @@ import useObject from './useObject';
  * @param {Object} props extra options
  * @param {boolean} props.ignoreMandatoryErrors do not throw errors when required fields are missing
  * @param {string} props.variant the form type/variant (ex. view)
+ * @param {function} props.additionalValidationFn a function which should return an error message if failed and empty string if passed. Accepts the formContent as input
  *
  * @returns {FormContext} the form context values
  */
-const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErrors = false, variant = '' } = {}) => {
+const useSchemaForm = (
+  initialFieldDefs,
+  initialValue = {},
+  { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null } = {},
+) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
   const [formVariant, setFormVariant] = useState(variant);
-
   const [fieldDefs, setFieldDefs] = useState(initialFieldDefs);
+  const [additionalValidationError, setAdditionalValidationError] = useState('');
 
   useEffect(() => {
     setFormVariant(variant);
@@ -65,8 +69,15 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
 
   useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some(err => err);
-    setFormHasErrors(errorState);
-  }, [formErrors || {}]);
+    setFormHasErrors(errorState || additionalValidationError);
+  }, [formErrors || {}, additionalValidationError]);
+
+  useDeepCompareEffect(() => {
+    if (additionalValidationFn) {
+      setAdditionalValidationError(additionalValidationFn(formContent));
+    }
+  }, [formContent || {}, additionalValidationFn]);
+
 
   // check the initial content for errors
   useDeepCompareEffect(() => {
@@ -91,11 +102,24 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
     setFormFieldContent(propName, value);
     setFormFieldError(propName, error);
 
+    // re-build the display name template for the statement
+    // TODO: add flag to property to auto regenerating defaults
+    if (
+      ['subject', 'conditions', 'relevance'].includes(propName)
+      && fieldDefs.displayNameTemplate
+      && fieldDefs.displayNameTemplate.generateDefault
+      && formContent.displayNameTemplate
+    ) {
+      const { displayNameTemplate, ...rest } = formContent;
+      const newTemplate = fieldDefs.displayNameTemplate.generateDefault({ ...rest, [propName]: value });
+      setFormFieldContent('displayNameTemplate', newTemplate);
+    }
+
     if (error) {
       setFormHasErrors(true);
     }
     setFormIsDirty(true);
-  }, [formValidator, setFormFieldContent, setFormFieldError]);
+  }, [fieldDefs.displayNameTemplate, formContent, formValidator, setFormFieldContent, setFormFieldError]);
 
   const updateFieldEvent = useCallback(({ target }) => {
     // add the new value to the field
@@ -114,6 +138,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, { ignoreMandatoryErr
     updateField,
     updateFieldEvent,
     formVariant,
+    additionalValidationError,
   };
 };
 

@@ -1,7 +1,6 @@
 import {
   CircularProgress,
   ListItem,
-  ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -9,6 +8,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 
 import DetailChip from '@/components/DetailChip';
+import LetterIcon from '@/components/LetterIcon';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -52,12 +52,11 @@ const ClassDescription = ({ name, description }) => {
   return (
     <React.Fragment key={name}>
       <ListItem>
-        <ListItemIcon className="letter-icon">
-          {count === ''
-            ? name.slice(0, 1)
-            : count
+        <LetterIcon value={count === ''
+          ? name.slice(0, 1)
+          : count
           }
-        </ListItemIcon>
+        />
         <ListItemText primary={name} secondary={description} />
       </ListItem>
       <ListItem>

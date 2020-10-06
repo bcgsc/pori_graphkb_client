@@ -27,7 +27,9 @@ import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
+import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
+
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
@@ -89,6 +91,7 @@ const StatementForm = ({
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [civicEvidenceId, setCivicEvidenceId] = useState('');
 
   const checkLogicalStatement = useCallback((formContent) => {
     try {
@@ -133,6 +136,18 @@ const StatementForm = ({
     formHasErrors,
     additionalValidationError,
   } = form;
+
+  useEffect(() => {
+    try {
+      if (variant === FORM_VARIANT.VIEW && formContent.source.name === 'civic' && formContent.sourceId) {
+        setCivicEvidenceId(formContent.sourceId);
+      } else {
+        setCivicEvidenceId('');
+      }
+    } catch (err) {
+      setCivicEvidenceId('');
+    }
+  }, [variant, formContent]);
 
   useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
@@ -298,6 +313,7 @@ const StatementForm = ({
             Add Review
           </Button>
           )}
+          {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <RecordFormStateToggle
             message="Are you sure? You will lose your changes."
@@ -315,6 +331,7 @@ const StatementForm = ({
         />
         )}
       </div>
+
       <FormContext.Provider value={form}>
         <FormLayout
           {...rest}

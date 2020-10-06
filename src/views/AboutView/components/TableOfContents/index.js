@@ -1,13 +1,12 @@
-import './index.scss';
-
 import {
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import LetterIcon from '@/components/LetterIcon';
 
 const TableOfContents = ({ sections, baseRoute }) => (
   <List>
@@ -15,9 +14,7 @@ const TableOfContents = ({ sections, baseRoute }) => (
       const anchorId = id;
       return (
         <ListItem>
-          <ListItemIcon className="letter-icon">
-            {label.slice(0, 1)}
-          </ListItemIcon>
+          <LetterIcon value={label.slice(0, 1)} />
           <ListItemText>
             <a href={`${baseRoute}#${anchorId}`}> {label}</a>
           </ListItemText>

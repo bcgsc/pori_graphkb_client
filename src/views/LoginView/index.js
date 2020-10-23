@@ -10,7 +10,7 @@ import {
   getReferrerUri, isAuthenticated, isAuthorized,
   keycloak, login,
 } from '@/services/auth';
-import handleErrorSaveLocation from '@/services/util';
+import util from '@/services/util';
 import config from '@/static/config';
 
 const {
@@ -82,7 +82,7 @@ class LoginView extends React.Component {
       } catch (error) {
         // redirect to the error page
         console.error(error);
-        handleErrorSaveLocation({ error: error.toJSON() }, history);
+        util.handleErrorSaveLocation(error, history);
         return;
       }
     }

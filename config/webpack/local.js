@@ -8,7 +8,7 @@ const DIST = path.resolve(__dirname, '../../dist/production');
 module.exports = createBaseConfig({
   outputPath: DIST,
   env: {
-    API_BASE_URL: `http://${process.env.HOSTNAME}:8080/api`,
+    API_BASE_URL: `http://${process.env.HOSTNAME}:8080`,
     KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
     NODE_ENV: 'local',
   },

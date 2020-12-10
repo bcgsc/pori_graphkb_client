@@ -9,7 +9,7 @@ module.exports = createBaseConfig({
   outputPath: DIST,
   mode: 'production',
   env: {
-    API_BASE_URL: 'https://graphkb-api.bcgsc.ca/api',
+    API_BASE_URL: 'https://graphkb-api.bcgsc.ca',
     KEYCLOAK_URL: 'https://sso.bcgsc.ca/auth',
     NODE_ENV: 'production',
   },

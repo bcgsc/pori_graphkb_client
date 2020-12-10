@@ -9,7 +9,7 @@ const DIST = path.resolve(__dirname, '../../dist/development');
 module.exports = createBaseConfig({
   outputPath: DIST,
   env: {
-    API_BASE_URL: 'https://graphkbdev-api.bcgsc.ca/api',
+    API_BASE_URL: 'https://graphkbdev-api.bcgsc.ca',
     KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
     NODE_ENV: 'development',
   },

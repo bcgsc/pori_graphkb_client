@@ -1,4 +1,4 @@
-import { sentenceTemplates } from '@bcgsc/knowledgebase-schema';
+import { sentenceTemplates } from '@bcgsc-pori/graphkb-schema';
 import React from 'react';
 
 import { StatementPropType } from '@/components/types';

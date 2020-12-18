@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { render } from '@testing-library/react';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
 import { SecurityContext } from '@/components/SecurityContext';
@@ -12,15 +12,6 @@ import ReviewDialog from '../ReviewDialog';
 jest.mock('@/services/auth', () => ({
   getUser: () => ({ '@rid': '#20:0' }),
 }));
-
-
-jest.mock('@bcgsc/react-snackbar-provider', () => {
-  const { createContext } = require('react'); // eslint-disable-line global-require
-  const SnackbarContext = createContext({ add: () => {} });
-
-  const SnackbarContextProvider = SnackbarContext.Provider;
-  return { SnackbarContext, SnackbarContextProvider };
-});
 
 
 describe('ReviewDialog', () => {
@@ -39,7 +30,7 @@ describe('ReviewDialog', () => {
   beforeEach(() => {
     ({ getByText, queryByText, getAllByText } = render(
       <SecurityContext.Provider value={{ }}>
-        <SnackbarProvider value={{ add: snackbarSpy }}>
+        <SnackbarProvider onEnter={snackbarSpy}>
           <ReviewDialog
             isOpen
             onClose={onCancelSpy}

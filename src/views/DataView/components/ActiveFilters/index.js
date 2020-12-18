@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { util } from '@bcgsc/knowledgebase-schema';
+import { util } from '@bcgsc-pori/graphkb-schema';
 import {
   Button,
   Card,

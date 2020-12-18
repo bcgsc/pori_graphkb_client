@@ -66,7 +66,7 @@ class ApiCall {
 
     try {
       response = await fetch(
-        API_BASE_URL + this.endpoint,
+        `${API_BASE_URL}/api${this.endpoint}`,
         {
           ...this.requestOptions,
           headers: {
@@ -86,7 +86,7 @@ class ApiCall {
 
       try {
         response = await fetch(
-          API_BASE_URL + this.endpoint,
+          `${API_BASE_URL}/api${this.endpoint}`,
           {
             ...this.requestOptions,
             headers: {

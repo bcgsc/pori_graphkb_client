@@ -26,7 +26,7 @@ const createBaseConfig = ({
   const ENV_VARS = {
     DEBUG: false,
     DISABLE_AUTH: null,
-    API_BASE_URL: 'http://localhost:8080/api',
+    API_BASE_URL: 'http://localhost:8080',
     KEYCLOAK_CLIENT_ID: 'GraphKB',
     KEYCLOAK_REALM: 'GSC',
     KEYCLOAK_ROLE: 'GraphKB',
@@ -134,7 +134,7 @@ const createBaseConfig = ({
       'base-uri': "'self'",
       'default-src': "'self'",
       'object-src': "'none'",
-      'img-src': ["'self'", 'data:'],
+      'img-src': ["'self'", 'data:', stripToBaseUrl(ENV_VARS.API_BASE_URL)],
       'frame-src': [
         "'self'",
         stripToBaseUrl(ENV_VARS.KEYCLOAK_URL),

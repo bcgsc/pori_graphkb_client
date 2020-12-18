@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { act, fireEvent, render } from '@testing-library/react';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
 import { SecurityContext } from '@/components/SecurityContext';
@@ -12,15 +12,6 @@ import ReviewDialog from '../ReviewDialog';
 jest.mock('@/services/auth', () => ({
   getUser: () => ({ '@rid': '#20:0' }),
 }));
-
-
-jest.mock('@bcgsc/react-snackbar-provider', () => {
-  const { createContext } = require('react'); // eslint-disable-line global-require
-  const SnackbarContext = createContext({ add: () => {} });
-
-  const SnackbarContextProvider = SnackbarContext.Provider;
-  return { SnackbarContext, SnackbarContextProvider };
-});
 
 /* eslint-disable react/prop-types */
 jest.mock('../../DropDownSelect', () => ({
@@ -61,7 +52,7 @@ describe('ReviewDialog formActions', () => {
   beforeEach(() => {
     ({ getByText, getByTestId } = render(
       <SecurityContext.Provider value={{ }}>
-        <SnackbarProvider value={{ add: snackbarSpy }}>
+        <SnackbarProvider onEnter={snackbarSpy}>
           <ReviewDialog
             isOpen
             onClose={onCancelSpy}
@@ -76,7 +67,6 @@ describe('ReviewDialog formActions', () => {
     fireEvent.click(getByText('ADD REVIEW'));
     expect(getByText('ADD REVIEW')).toBeDisabled();
     expect(snackbarSpy).toHaveBeenCalled();
-    expect(snackbarSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
     expect(onSubmitSpy).not.toHaveBeenCalled();
   });
 

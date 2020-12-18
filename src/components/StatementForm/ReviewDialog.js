@@ -1,11 +1,11 @@
 import './index.scss';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Checkbox,
   Dialog, DialogContent, FormControlLabel, IconButton, Typography,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useState,
@@ -33,7 +33,7 @@ const MODEL_NAME = 'StatementReview';
 const AddReviewDialog = ({
   onSubmit, isOpen, onClose,
 }) => {
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const context = useContext(SecurityContext);
   const { comment, status } = schema.get(MODEL_NAME).properties;
 
@@ -55,7 +55,7 @@ const AddReviewDialog = ({
       // bring up the snackbar for errors
       setFormIsDirty(true);
       console.error(formErrors);
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
     } else {
       const content = { ...formContent, '@class': MODEL_NAME, createdBy: getUser(context) };
       onSubmit(content, updateAmalgamated);

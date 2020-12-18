@@ -1,7 +1,6 @@
 /**
  * @module /App
  */
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { CssBaseline } from '@material-ui/core';
 import {
   createGenerateClassName, createMuiTheme,
@@ -10,6 +9,7 @@ import {
   StylesProvider,
 } from '@material-ui/core/styles';
 import { create } from 'jss';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { variant } from '@bcgsc/knowledgebase-parser';
+import { variant } from '@bcgsc-pori/graphkb-parser';
 import {
   Table,
   TableBody,

@@ -1,9 +1,33 @@
 import { useCallback, useState } from 'react';
 
 import useObject from '@/components/hooks/useObject';
-import { cleanLinkedRecords } from '@/components/util';
 
 const START_GROUP = '1';
+
+
+/**
+ * Unlike cleaning record links, cannot assume there are no intermediary
+ * objects that are not also records
+ */
+const cleanFilterLinks = (content) => {
+  if (Array.isArray(content)) {
+    return content.map(cleanFilterLinks);
+  }
+  if (content != null && typeof content === 'object') {
+    const newContent = {};
+
+    if (content['@rid'] !== undefined) {
+      return content['@rid'];
+    }
+    Object.keys(content).forEach((key) => {
+      if (content[key] !== undefined) {
+        newContent[key] = cleanFilterLinks(content[key]);
+      }
+    });
+    return newContent;
+  }
+  return content;
+};
 
 
 const useFilterGroups = () => {
@@ -67,7 +91,7 @@ const useFilterGroups = () => {
     Object.values(groups).forEach((group) => {
       const filters = [];
       group.forEach((filter) => {
-        filters.push(cleanLinkedRecords(filter.query));
+        filters.push(cleanFilterLinks(filter.query));
       });
 
       if (filters.length === 1) {

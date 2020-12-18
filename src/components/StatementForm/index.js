@@ -177,7 +177,7 @@ const StatementForm = ({
     if (formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
     } else {
       // ok to POST
@@ -193,11 +193,11 @@ const StatementForm = ({
 
       try {
         const result = await call.request();
-        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
         onSubmit(result);
       } catch (err) {
         console.error(err);
-        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
         onError({ error: err, content });
       }
       setActionInProgress(false);
@@ -217,10 +217,10 @@ const StatementForm = ({
 
     try {
       await call.request();
-      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
       onSubmit();
     } catch (err) {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
       onError({ error: err, content });
     }
     setActionInProgress(false);
@@ -235,7 +235,7 @@ const StatementForm = ({
     if (formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
     } else if (!formIsDirty) {
       snackbar.enqueueSnackbar('no changes to submit');
@@ -249,10 +249,10 @@ const StatementForm = ({
 
       try {
         const result = await call.request();
-        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
         onSubmit(result);
       } catch (err) {
-        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
         onError({ error: err, content });
       }
       setActionInProgress(false);

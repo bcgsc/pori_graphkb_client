@@ -582,7 +582,7 @@ function GraphComponent(props) {
 
       if (isColoringKeyBad) {
         if (tooManyUniques) {
-          snackbar.enqueueSnackbar(`${GRAPH_UNIQUE_LIMIT} (${graphOpts[`${type}sColor`]})`);
+          snackbar.enqueueSnackbar(`${GRAPH_UNIQUE_LIMIT} (${graphOpts[`${type}sColor`]})`, { variant: 'warning' });
         }
         graphOpts[`${type}sColor`] = ''; // reset coloring prop chosen
         updateColors(gNodes, gLinks, graphOpts);

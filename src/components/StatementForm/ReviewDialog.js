@@ -55,7 +55,7 @@ const AddReviewDialog = ({
       // bring up the snackbar for errors
       setFormIsDirty(true);
       console.error(formErrors);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
     } else {
       const content = { ...formContent, '@class': MODEL_NAME, createdBy: getUser(context) };
       onSubmit(content, updateAmalgamated);

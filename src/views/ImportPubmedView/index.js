@@ -116,7 +116,7 @@ const ImportPubmedView = (props) => {
         const newCall = api.post('/publications', { ...externalRecord, source });
         controllers.current.push(newCall);
         const result = await newCall.request();
-        snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
         setCurrentRecords([result]);
       } catch (err) {
         handleErrorSaveLocation(err, history);

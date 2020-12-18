@@ -61,7 +61,7 @@ const AboutUsageTerms = () => {
 
   const handleConfirmSign = useCallback(async () => {
     await api.post('/license/sign').request();
-    snackbar.enqueueSnackbar('Signed the user agreement');
+    snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });
     setIsSigned(false);
     setRequiresSigning(false);
   }, [snackbar]);

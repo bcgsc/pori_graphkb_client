@@ -162,11 +162,11 @@ const VariantForm = ({
 
     try {
       const result = await call.request();
-      snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);
     } catch (err) {
       console.error(err);
-      snackbar.enqueueSnackbar(`Error (${err.name}) in ${actionType.replace(/ed$/, 'ing')} the record`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in ${actionType.replace(/ed$/, 'ing')} the record`, { variant: 'error' });
       onError({ error: err, content });
     }
   }, [formVariant, onError, onSubmit, snackbar]);
@@ -180,11 +180,11 @@ const VariantForm = ({
 
     try {
       const result = await call.request();
-      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(null);
     } catch (err) {
       console.error(err);
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record`, { variant: 'error' });
       onError({ error: err, content });
     }
   }, [onError, onSubmit, snackbar]);

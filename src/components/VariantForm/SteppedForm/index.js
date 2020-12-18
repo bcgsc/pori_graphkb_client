@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Step,
   StepButton,
@@ -8,9 +7,10 @@ import {
   StepLabel,
   Stepper,
 } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useContext, useEffect,
+  useCallback, useEffect,
   useRef, useState,
 } from 'react';
 
@@ -31,7 +31,7 @@ import { FORM_VARIANT } from '@/components/util';
 const SteppedForm = ({
   children, modelName, properties, onSubmit, className, value, formVariant, onDelete,
 }) => {
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const controllers = useRef([]);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
@@ -56,7 +56,7 @@ const SteppedForm = ({
     if (isIncomplete || formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
     } else {
       // ok to submit
       onSubmit(formContent);

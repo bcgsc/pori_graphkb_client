@@ -1,13 +1,13 @@
 import './index.scss';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   CircularProgress,
   Paper, Typography,
 } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useContext, useEffect, useRef,
+  useCallback, useEffect, useRef,
   useState,
 } from 'react';
 
@@ -48,7 +48,7 @@ const RecordForm = ({
   navigateToGraph,
   ...rest
 }) => {
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
 
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = useRef([]);
@@ -78,7 +78,7 @@ const RecordForm = ({
     if (formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
       setFormIsDirty(true);
     } else {
       // ok to POST
@@ -96,11 +96,11 @@ const RecordForm = ({
 
       try {
         const result = await call.request();
-        snackbar.add(`Sucessfully created the record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
         console.error(err);
-        snackbar.add(`Error (${err.name}) in creating the record`);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`);
         onError({ error: err, content });
       }
       setActionInProgress(false);
@@ -123,10 +123,10 @@ const RecordForm = ({
 
     try {
       await call.request();
-      snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`);
       onSubmit();
     } catch (err) {
-      snackbar.add(`Error (${err.name}) in deleting the record (${content['@rid']})`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`);
       onError({ error: err, content });
     }
     setActionInProgress(false);
@@ -145,10 +145,10 @@ const RecordForm = ({
     if (formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
       setFormIsDirty(true);
     } else if (!formIsDirty) {
-      snackbar.add('no changes to submit');
+      snackbar.enqueueSnackbar('no changes to submit');
       onSubmit(formContent);
     } else {
       const payload = cleanPayload(content);
@@ -159,10 +159,10 @@ const RecordForm = ({
 
       try {
         const result = await call.request();
-        snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
-        snackbar.add(`Error (${err.name}) in editing the record (${content['@rid']})`);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`);
         onError({ error: err, content });
       }
       setActionInProgress(false);

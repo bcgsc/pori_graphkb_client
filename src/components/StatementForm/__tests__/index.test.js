@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { fireEvent, render } from '@testing-library/react';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
 import { SecurityContext } from '@/components/SecurityContext';
@@ -11,14 +11,6 @@ import StatementForm from '..';
 jest.mock('@/services/auth', () => ({
   getUser: () => '23:9',
 }));
-
-jest.mock('@bcgsc/react-snackbar-provider', () => {
-  const { createContext } = require('react'); // eslint-disable-line global-require
-  const SnackbarContext = createContext({ add: () => {} });
-
-  const SnackbarContextProvider = SnackbarContext.Provider;
-  return { SnackbarContext, SnackbarContextProvider };
-});
 
 jest.mock('@/services/api', () => {
   const mockRequest = () => ({
@@ -86,7 +78,7 @@ describe('StatementForm', () => {
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(
       <SecurityContext.Provider value={{ }}>
-        <SnackbarProvider value={{ add: snackbarSpy }}>
+        <SnackbarProvider onEnter={snackbarSpy}>
           <StatementForm
             modelName="Statement"
             onError={onErrorSpy}
@@ -108,7 +100,7 @@ describe('StatementForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <SnackbarProvider value={{ add: snackbarSpy }}>
+        <SnackbarProvider onEnter={snackbarSpy}>
           <SecurityContext.Provider value={{ }}>
             <StatementForm
               modelName="Statement"

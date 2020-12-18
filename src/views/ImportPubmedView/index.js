@@ -1,14 +1,14 @@
 import './index.scss';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   CircularProgress,
   Typography,
 } from '@material-ui/core';
 import { titleCase } from 'change-case';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useContext,
+  useCallback,
   useEffect, useRef, useState,
 } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -38,7 +38,7 @@ const createPubmedQuery = pmid => api.post('/query', {
 
 const ImportPubmedView = (props) => {
   const { history } = props;
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
   const [text, setText] = useState('');
   const [externalRecord, setExternalRecord] = useState(null);
@@ -116,7 +116,7 @@ const ImportPubmedView = (props) => {
         const newCall = api.post('/publications', { ...externalRecord, source });
         controllers.current.push(newCall);
         const result = await newCall.request();
-        snackbar.add(`created the new publication record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`);
         setCurrentRecords([result]);
       } catch (err) {
         handleErrorSaveLocation(err, history);

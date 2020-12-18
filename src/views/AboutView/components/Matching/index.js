@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Button,
   CircularProgress,
@@ -9,10 +8,10 @@ import {
 } from '@material-ui/core';
 import { Timeline as TimelineIcon } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react';
@@ -103,7 +102,7 @@ const DEBOUNCE_MS = 100;
 
 const MatchView = (props) => {
   const { history } = props;
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const [text, setText] = useState('');
   const [term] = useDebounce(text, DEBOUNCE_MS);
   const [termType, setTermType] = useState('Vocabulary');
@@ -189,7 +188,7 @@ const MatchView = (props) => {
 
   const handleJumpToGraph = useCallback(() => {
     navigateToGraph(matches.map(m => m['@rid']), history, (err) => {
-      snackbar.add(err);
+      snackbar.enqueueSnackbar(err);
     });
   }, [history, matches, snackbar]);
 

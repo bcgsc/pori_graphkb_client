@@ -1,4 +1,4 @@
-import kbSchema, { Property } from '@bcgsc/knowledgebase-schema';
+import kbSchema, { Property } from '@bcgsc-pori/graphkb-schema';
 import { boundMethod } from 'autobind-decorator';
 import { titleCase } from 'change-case';
 

@@ -3,7 +3,6 @@
  */
 import './GraphComponent.scss';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   IconButton,
   Tooltip,
@@ -15,10 +14,10 @@ import * as d3Force from 'd3-force';
 import * as d3Select from 'd3-selection';
 import * as d3Zoom from 'd3-zoom';
 import isObject from 'lodash.isobject';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useRef,
 } from 'react';
@@ -99,7 +98,7 @@ const initialGraphData = {
  * @property {function} props.handleGraphStateSave - parent handler to save state in URL
  */
 function GraphComponent(props) {
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const { data: initialData } = props;
 
   const {
@@ -583,7 +582,7 @@ function GraphComponent(props) {
 
       if (isColoringKeyBad) {
         if (tooManyUniques) {
-          snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOpts[`${type}sColor`]})`);
+          snackbar.enqueueSnackbar(`${GRAPH_UNIQUE_LIMIT} (${graphOpts[`${type}sColor`]})`, { variant: 'warning' });
         }
         graphOpts[`${type}sColor`] = ''; // reset coloring prop chosen
         updateColors(gNodes, gLinks, graphOpts);

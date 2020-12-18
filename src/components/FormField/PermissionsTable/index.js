@@ -3,7 +3,7 @@
  */
 import './index.scss';
 
-import kbSchema from '@bcgsc/knowledgebase-schema';
+import kbSchema from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Table,

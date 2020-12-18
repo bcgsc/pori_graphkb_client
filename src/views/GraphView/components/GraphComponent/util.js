@@ -55,7 +55,7 @@ const copyURLToClipBoard = (snackbar) => {
   document.body.removeChild(dummy);
 
   // const snackbar = this.context;
-  snackbar.add('URL has been copied to your clip-board!');
+  snackbar.enqueueSnackbar('URL has been copied to your clip-board!', { variant: 'success' });
 };
 
 export {

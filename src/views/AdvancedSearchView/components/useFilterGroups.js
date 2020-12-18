@@ -12,7 +12,8 @@ const START_GROUP = '1';
 const cleanFilterLinks = (content) => {
   if (Array.isArray(content)) {
     return content.map(cleanFilterLinks);
-  } if (content != null && typeof content === 'object') {
+  }
+  if (content != null && typeof content === 'object') {
     const newContent = {};
 
     if (content['@rid'] !== undefined) {

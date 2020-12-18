@@ -188,7 +188,7 @@ const MatchView = (props) => {
 
   const handleJumpToGraph = useCallback(() => {
     navigateToGraph(matches.map(m => m['@rid']), history, (err) => {
-      snackbar.enqueueSnackbar(err);
+      snackbar.enqueueSnackbar(err, { variant: 'error' });
     });
   }, [history, matches, snackbar]);
 

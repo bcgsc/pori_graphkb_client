@@ -56,7 +56,7 @@ const SteppedForm = ({
     if (isIncomplete || formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
     } else {
       // ok to submit
       onSubmit(formContent);

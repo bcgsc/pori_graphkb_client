@@ -1,6 +1,6 @@
 # GraphKB Client
 
-![Build Status](https://www.bcgsc.ca/bamboo/plugins/servlet/wittified/build-status/KNOW-KNW)
+![build](https://github.com/bcgsc/pori_graphkb_client/workflows/build/badge.svg?branch=master)
 
 The GraphKB client is the front-end web client for the GraphKB project. It is built
 using `React.js` and `webpack`. Linting is done with `eslint`, and follows a modified

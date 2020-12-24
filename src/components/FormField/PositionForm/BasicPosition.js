@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema } from '@bcgsc/knowledgebase-schema';
+import { schema } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';

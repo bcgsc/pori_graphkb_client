@@ -1,10 +1,10 @@
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Checkbox,
   FormControlLabel,
   Typography,
 } from '@material-ui/core';
 import { formatDistanceToNow } from 'date-fns';
+import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
   useContext, useEffect, useState,
@@ -19,7 +19,7 @@ import TableOfContext from './TableOfContents';
 
 const AboutUsageTerms = () => {
   const security = useContext(SecurityContext);
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
 
   const [isSigned, setIsSigned] = useState(false);
   const [requiresSigning, setRequiresSigning] = useState(false);
@@ -61,7 +61,7 @@ const AboutUsageTerms = () => {
 
   const handleConfirmSign = useCallback(async () => {
     await api.post('/license/sign').request();
-    snackbar.add('Signed the user agreement');
+    snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });
     setIsSigned(false);
     setRequiresSigning(false);
   }, [snackbar]);

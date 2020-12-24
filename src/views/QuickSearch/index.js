@@ -3,8 +3,8 @@
  */
 import './index.scss';
 
-import kbp from '@bcgsc/knowledgebase-parser';
-import kbSchema from '@bcgsc/knowledgebase-schema';
+import kbp from '@bcgsc-pori/graphkb-parser';
+import kbSchema from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,

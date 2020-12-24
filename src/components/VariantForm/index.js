@@ -1,13 +1,12 @@
 import './index.scss';
 
-import { schema } from '@bcgsc/knowledgebase-schema';
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import { schema } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@material-ui/core';
 import omit from 'lodash.omit';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -113,7 +112,7 @@ const VariantForm = ({
       ? MAJOR_FORM_TYPES.SUB
       : pickInputType(value),
   );
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const controllers = useRef([]);
   const [model, setModel] = useState(null);
 
@@ -163,11 +162,11 @@ const VariantForm = ({
 
     try {
       const result = await call.request();
-      snackbar.add(`Sucessfully ${actionType} the record ${result['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);
     } catch (err) {
       console.error(err);
-      snackbar.add(`Error (${err.name}) in ${actionType.replace(/ed$/, 'ing')} the record`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in ${actionType.replace(/ed$/, 'ing')} the record`, { variant: 'error' });
       onError({ error: err, content });
     }
   }, [formVariant, onError, onSubmit, snackbar]);
@@ -181,11 +180,11 @@ const VariantForm = ({
 
     try {
       const result = await call.request();
-      snackbar.add(`Sucessfully deleted the record ${result['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(null);
     } catch (err) {
       console.error(err);
-      snackbar.add(`Error (${err.name}) in deleting the record`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record`, { variant: 'error' });
       onError({ error: err, content });
     }
   }, [onError, onSubmit, snackbar]);

@@ -98,6 +98,6 @@ describe('AdvancedSearchView', () => {
     await fireEvent.click(getByText('add to selected group'));
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjpbeyJvcGVyYXRvciI6Ij0iLCJyZWxldmFuY2UiOiIxOjEifV19');
+    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjpbeyJvcGVyYXRvciI6Ij0iLCJyZWxldmFuY2UiOlsiMToxIl19XX0%253D');
   });
 });

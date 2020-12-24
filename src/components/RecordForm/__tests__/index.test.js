@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { act, fireEvent, render } from '@testing-library/react';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
 import { SecurityContext } from '@/components/SecurityContext';
@@ -12,14 +12,6 @@ import RecordForm from '..';
 jest.mock('@/services/auth', () => ({
   getUser: () => '23:9',
 }));
-
-jest.mock('@bcgsc/react-snackbar-provider', () => {
-  const { createContext } = require('react'); // eslint-disable-line global-require
-  const SnackbarContext = createContext({ add: () => {} });
-
-  const SnackbarContextProvider = SnackbarContext.Provider;
-  return { SnackbarContext, SnackbarContextProvider };
-});
 
 jest.mock('@/services/api', () => {
   const mockRequest = () => ({
@@ -93,7 +85,7 @@ describe('RecordForm', () => {
     beforeEach(() => {
       ({ getByText, queryByText, getByTestId } = render(
         <SecurityContext.Provider value={{ }}>
-          <SnackbarProvider value={{ add: snackbarSpy }}>
+          <SnackbarProvider onEnter={snackbarSpy}>
             <RecordForm
               modelName="User"
               navigateToGraph={navSpy}
@@ -143,7 +135,7 @@ describe('RecordForm', () => {
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
         <SecurityContext.Provider value={{ }}>
-          <SnackbarProvider value={{ add: snackbarSpy }}>
+          <SnackbarProvider onEnter={snackbarSpy}>
             <RecordForm
               modelName="User"
               onError={onErrorSpy}
@@ -191,7 +183,7 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <SnackbarProvider value={{ add: snackbarSpy }}>
+        <SnackbarProvider onEnter={snackbarSpy}>
           <SecurityContext.Provider value={{ }}>
             <RecordForm
               modelName="User"
@@ -235,7 +227,6 @@ describe('RecordForm', () => {
       expect(onSubmitSpy).not.toHaveBeenCalled();
       expect(getByText('SUBMIT')).toBeDisabled();
       expect(snackbarSpy).toHaveBeenCalled();
-      expect(snackbarSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
     });
   });
 });

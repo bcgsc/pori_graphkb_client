@@ -8,7 +8,7 @@ module.exports = createBaseConfig({
   outputPath: DIST,
   mode: 'production',
   env: {
-    API_BASE_URL: 'https://graphkbstaging-api.bcgsc.ca/api',
+    API_BASE_URL: 'https://graphkbstaging-api.bcgsc.ca',
     KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
     NODE_ENV: 'production',
   },

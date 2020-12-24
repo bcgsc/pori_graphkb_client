@@ -1,4 +1,4 @@
-import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
+import { schema as SCHEMA_DEFN } from '@bcgsc-pori/graphkb-schema';
 
 import testSchema from '../schema';
 

@@ -5,6 +5,7 @@
   "bugs": {
     "email": "graphkb@bcgsc.ca"
   },
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "https://svn.bcgsc.ca/bitbucket/scm/dat/knowledgebase_web.git"

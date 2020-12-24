@@ -1,13 +1,13 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc/knowledgebase-schema';
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Button, CircularProgress,
   Paper, Typography,
 } from '@material-ui/core';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { Alert } from '@material-ui/lab';
+import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useRef,
@@ -27,7 +27,9 @@ import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
+import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
+
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
@@ -81,7 +83,7 @@ const StatementForm = ({
     returnProperties: ['name'],
   }], async (route, body) => api.post(route, body).request());
 
-  const snackbar = useContext(SnackbarContext);
+  const snackbar = useSnackbar();
   const context = useContext(SecurityContext);
   const model = schemaDefn.schema.Statement;
   const fieldDefs = model.properties;
@@ -89,6 +91,7 @@ const StatementForm = ({
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [civicEvidenceId, setCivicEvidenceId] = useState('');
 
   const checkLogicalStatement = useCallback((formContent) => {
     try {
@@ -134,6 +137,18 @@ const StatementForm = ({
     additionalValidationError,
   } = form;
 
+  useEffect(() => {
+    try {
+      if (variant === FORM_VARIANT.VIEW && formContent.source.name === 'civic' && formContent.sourceId) {
+        setCivicEvidenceId(formContent.sourceId);
+      } else {
+        setCivicEvidenceId('');
+      }
+    } catch (err) {
+      setCivicEvidenceId('');
+    }
+  }, [variant, formContent]);
+
   useEffect(() => () => controllers.current.map(c => c.abort()), []);
 
   const statementReviewCheck = useCallback((currContent, content) => {
@@ -162,7 +177,7 @@ const StatementForm = ({
     if (formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
     } else {
       // ok to POST
@@ -178,11 +193,11 @@ const StatementForm = ({
 
       try {
         const result = await call.request();
-        snackbar.add(`Sucessfully created the record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
         onSubmit(result);
       } catch (err) {
         console.error(err);
-        snackbar.add(`Error (${err.name}) in creating the record`);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
         onError({ error: err, content });
       }
       setActionInProgress(false);
@@ -202,10 +217,10 @@ const StatementForm = ({
 
     try {
       await call.request();
-      snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
       onSubmit();
     } catch (err) {
-      snackbar.add(`Error (${err.name}) in deleting the record (${content['@rid']})`);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
       onError({ error: err, content });
     }
     setActionInProgress(false);
@@ -220,10 +235,10 @@ const StatementForm = ({
     if (formHasErrors) {
       // bring up the snackbar for errors
       console.error(formErrors);
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
     } else if (!formIsDirty) {
-      snackbar.add('no changes to submit');
+      snackbar.enqueueSnackbar('no changes to submit');
       onSubmit(formContent);
     } else {
       const payload = cleanPayload(content);
@@ -234,10 +249,10 @@ const StatementForm = ({
 
       try {
         const result = await call.request();
-        snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
+        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
         onSubmit(result);
       } catch (err) {
-        snackbar.add(`Error (${err.name}) in editing the record (${content['@rid']})`);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
         onError({ error: err, content });
       }
       setActionInProgress(false);
@@ -298,6 +313,7 @@ const StatementForm = ({
             Add Review
           </Button>
           )}
+          {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <RecordFormStateToggle
             message="Are you sure? You will lose your changes."
@@ -315,6 +331,7 @@ const StatementForm = ({
         />
         )}
       </div>
+
       <FormContext.Provider value={form}>
         <FormLayout
           {...rest}

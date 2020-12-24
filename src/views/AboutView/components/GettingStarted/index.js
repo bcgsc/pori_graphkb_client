@@ -48,11 +48,15 @@ const GettingStarted = () => {
         <Typography variant="h2">Core Concepts</Typography>
         <Typography variant="body1">
           There are 3 main data types in GraphKB: Statements, Ontologies, and Variants.
+        </Typography>
+        <Typography variant="h3">Statements</Typography>
+        <Typography variant="body1">
           Statements are used to represent the interpretive content or assertions.
           Statements make up most of the interpretive content of GraphKB. Statements are
           decomposed sentences which link conditions to a conclusion. There are four main
           elements to a statement
         </Typography>
+        <img alt="Statement Schema" src={`${process.env.API_BASE_URL}/public/pori-statement-schema.svg`} />
         <List>
           <ListItem>
             <ListItemText
@@ -79,12 +83,14 @@ const GettingStarted = () => {
             />
           </ListItem>
         </List>
+        <Typography variant="h3">Variants</Typography>
         <Typography variant="body1">
           Variants can be the well known small mutations (KRAS:p.G12D), fusions, signature
           variants, expression variants, copy variants, etc. Variant Records are composed of three
           key attributes: reference1, reference2, and type. All of these are foreign keys to an
           ontology record. Most often reference1/2 are genes and type is a Vocabulary record.
         </Typography>
+        <img alt="Variant Schema" src={`${process.env.API_BASE_URL}/public/pori-positional-variant-schema.svg`} />
         <List>
           <ListItem>
             <ListItemText
@@ -105,10 +111,12 @@ const GettingStarted = () => {
             />
           </ListItem>
         </List>
+        <Typography variant="h3">Ontology Terms</Typography>
         <Typography variant="body1">
           Ontologies can be used to represent any set of controlled vocabulary. Important features
           of an ontology record in GraphKB are
         </Typography>
+        <img alt="Ontology Schema" src={`${process.env.API_BASE_URL}/public/pori-ontology-schema.svg`} />
         <List>
           <ListItem>
             <ListItemText primary="source" secondary="This is the database or external collection that defines this record (ex. PubMed)" />

@@ -433,11 +433,16 @@ const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
  */
 const massageRecordExistsError = (error) => {
   const { message } = error;
-  const [, incomingRecord] = /previously assigned to the record\s*(#[\d]*:[\d]*)/gi.exec(message);
-  const [, existingRecord] = /Cannot index record\s*(#[\d]*:[\d]*)/gi.exec(message);
 
-  if (incomingRecord && existingRecord) {
-    return `Cannot modify record ${incomingRecord} because record ${existingRecord} exists with the same parameters.`;
+  try {
+    const [, incomingRecord] = /previously assigned to the record\s*(#[\d]*:[\d]*)/gi.exec(message);
+    const [, existingRecord] = /Cannot index record\s*(#[\d]*:[\d]*)/gi.exec(message);
+
+    if (incomingRecord && existingRecord) {
+      return `Cannot modify record ${incomingRecord} because record ${existingRecord} exists with the same parameters.`;
+    }
+  } catch {
+    return message;
   }
   return message;
 };

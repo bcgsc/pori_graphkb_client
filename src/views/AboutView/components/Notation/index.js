@@ -17,7 +17,7 @@ const AboutNotation = () => (
       HGVS notation has been extended to support additional types and coordinate systems (ex. cytoband positions,
       exon numbers, etc.). The parser is implemented as a separate node package, further documentation
       on the parser and the notation it supports can be found with the&nbsp;
-      <a href="https://svn.bcgsc.ca/bitbucket/projects/DAT/repos/knowledgebase_parser/browse">repository</a>
+      <a href="https://github.com/bcgsc/pori_graphkb_parser">repository</a>
       &nbsp;for that package
     </Typography>
     <Typography variant="body1">

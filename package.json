@@ -118,7 +118,7 @@
   },
   "scripts": {
     "clean": "rm -r dist stats.json",
-    "build": "NODE_ENV=production webpack -p --config config/webpack/prod.js",
+    "build": "NODE_ENV=production webpack -p --config config/webpack/docker.js",
     "build:dev": "NODE_ENV=production webpack -p --mode production --config config/webpack/dev.js",
     "build:staging": "NODE_ENV=production webpack -p --mode production --config config/webpack/staging.js",
     "build:ci": "NODE_ENV=production webpack -p --mode production --config config/webpack/ci.js",

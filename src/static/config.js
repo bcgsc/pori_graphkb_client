@@ -12,7 +12,7 @@ export default {
     GRAPH_OBJECTS: 'graphObjects',
   },
   KEYCLOAK: {
-    REALM: process.env.KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
+    REALM: process.env.KEYCLOAK_REALM || 'PORI', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
     CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || 'GraphKB',
     URL: process.env.KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
     GRAPHKB_ROLE: process.env.KEYCLOAK_ROLE || 'GraphKB',

@@ -33,6 +33,21 @@ Start the development server
 npm start
 ```
 
+## Docker
+
+Building the Docker Image with the default HTTP URLs. The Image builds http by default, if you
+need HTTPS you will need your own certs etc.
+
+```bash
+docker build  \
+  --build-arg KEYCLOAK_REALM=PORI \
+  --build-arg KEYCLOAK_URL=http://auth:8082/auth \
+  --build-arg API_BASE_URL=http://graphkb_api:8081 \
+  -t <YOUR NAME>/graphkb-client \
+  -f Dockerfile  \
+  .
+```
+
 ## Tests
 
 ### Running the Tests

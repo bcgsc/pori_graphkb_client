@@ -37,6 +37,7 @@
     "jss": "^10.1.1",
     "keycloak-js": "^4.8.2",
     "lodash.isobject": "^3.0.2",
+    "lodash.merge": "^4.6.2",
     "lodash.omit": "^4.5.0",
     "notistack": "^1.0.2",
     "object-assign": "4.1.1",

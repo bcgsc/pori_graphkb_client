@@ -26,12 +26,9 @@ const createBaseConfig = ({
   const ENV_VARS = {
     DEBUG: false,
     DISABLE_AUTH: null,
-    API_BASE_URL: 'http://localhost:8080',
     KEYCLOAK_CLIENT_ID: 'GraphKB',
-    KEYCLOAK_REALM: 'GSC',
     KEYCLOAK_ROLE: 'GraphKB',
-    KEYCLOAK_URL: "'none'",
-    NODE_ENV: 'production',
+    KEYCLOAK_REALM: 'PORI',
     USER: null,
     PASSWORD: null,
     npm_package_version: null,

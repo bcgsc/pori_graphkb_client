@@ -11,6 +11,7 @@ module.exports = createBaseConfig({
   env: {
     API_BASE_URL: 'https://graphkb-api.bcgsc.ca',
     KEYCLOAK_URL: 'https://sso.bcgsc.ca/auth',
+    KEYCLOAK_REALM: 'GSC',
     NODE_ENV: 'production',
   },
   sourceMap: false,

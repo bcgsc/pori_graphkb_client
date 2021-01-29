@@ -4,16 +4,12 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
 
-import config from '@/static/config';
-
-const { FEEDBACK: { JIRA, EMAIL } } = config;
-
 /**
  * Feedback page
  */
 function FeedbackView() {
-  const emailLink = <a href={`mailto:${EMAIL}`}>{EMAIL}</a>;
-  const jiraLink = <a href={JIRA} rel="noopener noreferrer" target="_blank">KBDEV</a>;
+  const emailLink = <a href={`mailto:${window._env_.CONTACT_EMAIL}`}>{window._env_.CONTACT_EMAIL}</a>;
+  const jiraLink = <a href={window._env_.CONTACT_TICKET_URL} rel="noopener noreferrer" target="_blank">Tickets</a>;
   return (
     <div className="content-wrapper">
       <Typography variant="h1">Feedback</Typography>
@@ -23,7 +19,7 @@ function FeedbackView() {
       </Typography>
       <Typography paragraph variant="subtitle1">Feature Requests and Bug reports</Typography>
       <Typography paragraph>
-        Create JIRA tickets for feature requests, bug reports, and big
+        Create tickets for feature requests, bug reports, and big
         questions that might require more discussion, under the {jiraLink} project.
       </Typography>
     </div>

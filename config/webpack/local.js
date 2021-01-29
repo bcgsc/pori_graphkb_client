@@ -4,7 +4,6 @@ const createBaseConfig = require('./common.js');
 
 const DIST = path.resolve(__dirname, '../../dist/production');
 
-
 module.exports = createBaseConfig({
   outputPath: DIST,
   env: {

@@ -9,9 +9,6 @@ module.exports = createBaseConfig({
   mode: 'production',
   sourceMap: false,
   env: {
-    API_BASE_URL: process.env.API_BASE_URL,
-    KEYCLOAK_URL: process.env.KEYCLOAK_URL,
-    KEYCLOAK_REALM: process.env.KEYCLOAK_REALM,
     NODE_ENV: 'production'
   },
 });

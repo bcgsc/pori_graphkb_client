@@ -9,6 +9,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
+const lodashMerge = require('lodash.merge');
 
 
 const stripToBaseUrl = (url) => {
@@ -23,24 +24,22 @@ const stripToBaseUrl = (url) => {
 const createBaseConfig = ({
   env = {}, mode = 'production', sourceMap = false, outputPath,
 } = {}) => {
-  const ENV_VARS = {
-    DEBUG: false,
-    DISABLE_AUTH: null,
-    KEYCLOAK_CLIENT_ID: 'GraphKB',
-    KEYCLOAK_ROLE: 'GraphKB',
-    KEYCLOAK_REALM: 'PORI',
-    USER: null,
-    PASSWORD: null,
-    npm_package_version: null,
-    ...env || {},
-  };
-
   const BASE_DIR = path.resolve(__dirname, '../..');
   const SRC_PATH = path.resolve(BASE_DIR, 'src');
   const INCLUDE = [
     path.resolve(BASE_DIR, 'node_modules/@bcgsc'),
     SRC_PATH,
   ];
+
+  const ENV_VARS = lodashMerge({
+    KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || 'GraphKB',
+    KEYCLOAK_ROLE: process.env.KEYCLOAK_ROLE || 'GraphKB',
+    KEYCLOAK_REALM: process.env.KEYCLOAK_REALM || 'PORI',
+    KEYCLOAK_URL: process.env.KEYCLOAK_URL || 'http://localhost:8888/auth',
+    API_BASE_URL: process.env.API_BASE_URL ||  'http://localhost:8080/api',
+    CONTACT_EMAIL: process.env.CONTACT_EMAIL || 'graphkb@bcgsc.ca',
+    CONTACT_TICKET_URL: process.env.CONTACT_TICKET_URL || 'https://www.bcgsc.ca/jira/projects/KBDEV',
+  }, env);
 
 
   const moduleSettings = {
@@ -116,7 +115,11 @@ const createBaseConfig = ({
       outputPath, { root: BASE_DIR },
     ),
     // Copy values of ENV variables in as strings using these defaults (null = unset)
-    new webpack.EnvironmentPlugin(ENV_VARS),
+    new webpack.DefinePlugin({
+      'window._env_': JSON.stringify(ENV_VARS),
+      'process.env.npm_package_version': process.env.npm_package_version,
+      'process.NODE_ENV': env.NODE_ENV || process.env.NODE_ENV
+    }),
     // template index.html. Required for running the dev-server properly
     new HtmlWebpackPlugin({
       template: path.resolve(SRC_PATH, 'static/index.html'),
@@ -131,17 +134,15 @@ const createBaseConfig = ({
       'base-uri': "'self'",
       'default-src': "'self'",
       'object-src': "'none'",
-      'img-src': ["'self'", 'data:', stripToBaseUrl(ENV_VARS.API_BASE_URL)],
+      'img-src': ["'self'", 'data:', '*'],
       'frame-src': [
         "'self'",
-        stripToBaseUrl(ENV_VARS.KEYCLOAK_URL),
-        stripToBaseUrl(ENV_VARS.API_BASE_URL),
+        '*',
         'https://www.ncbi.nlm.nih.gov',
       ],
       'connect-src': [
         "'self'",
-        stripToBaseUrl(ENV_VARS.KEYCLOAK_URL),
-        stripToBaseUrl(ENV_VARS.API_BASE_URL),
+        '*'
       ],
       // TODO: Remove google charts requirement since it requires external load which cannot include nonce/hash
       // Then re-add the nonce/hash to scripts

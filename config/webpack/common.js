@@ -9,7 +9,6 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
-const lodashMerge = require('lodash.merge');
 
 
 const stripToBaseUrl = (url) => {
@@ -31,7 +30,7 @@ const createBaseConfig = ({
     SRC_PATH,
   ];
 
-  const ENV_VARS = lodashMerge({
+  const ENV_VARS = {
     KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || 'GraphKB',
     KEYCLOAK_ROLE: process.env.KEYCLOAK_ROLE || 'GraphKB',
     KEYCLOAK_REALM: process.env.KEYCLOAK_REALM || 'PORI',
@@ -39,7 +38,8 @@ const createBaseConfig = ({
     API_BASE_URL: process.env.API_BASE_URL ||  'http://localhost:8080/api',
     CONTACT_EMAIL: process.env.CONTACT_EMAIL || 'graphkb@bcgsc.ca',
     CONTACT_TICKET_URL: process.env.CONTACT_TICKET_URL || 'https://www.bcgsc.ca/jira/projects/KBDEV',
-  }, env);
+    ...env
+  };
 
 
   const moduleSettings = {
@@ -117,8 +117,8 @@ const createBaseConfig = ({
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.DefinePlugin({
       'window._env_': JSON.stringify(ENV_VARS),
-      'process.env.npm_package_version': process.env.npm_package_version,
-      'process.NODE_ENV': env.NODE_ENV || process.env.NODE_ENV
+      'process.env.npm_package_version': JSON.stringify(process.env.npm_package_version),
+      'process.NODE_ENV': JSON.stringify(env.NODE_ENV || process.env.NODE_ENV)
     }),
     // template index.html. Required for running the dev-server properly
     new HtmlWebpackPlugin({

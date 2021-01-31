@@ -22,7 +22,6 @@ import ActiveLinkContext from '@/components/ActiveLinkContext';
 import AuthenticatedRoute from '@/components/AuthenticatedRoute';
 import { SecurityContext } from '@/components/SecurityContext';
 import schema from '@/services/schema';
-import config from '@/static/config';
 
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';

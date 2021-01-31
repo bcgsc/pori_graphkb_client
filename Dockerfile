@@ -14,7 +14,7 @@ RUN npm run build:docker
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1.15
 
-COPY --from=build-stage /app/build/ /usr/share/nginx/html
+COPY --from=build-stage /app/dist/production /usr/share/nginx/html
 # Default port exposure
 EXPOSE 80
 

@@ -18,7 +18,7 @@ const EmailReportError = (props) => {
   const { linkText, body, subject } = props;
   return (
     <a href={`mailto:${
-      EMAIL
+      window._env_.CONTACT_EMAIL
     }?subject=${
       encodeURIComponent(subject)
     }&body=${

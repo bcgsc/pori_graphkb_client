@@ -1,6 +1,5 @@
 const path = require('path');
 
-
 const createBaseConfig = require('./common.js');
 
 const DIST = path.resolve(__dirname, '../../dist/development');

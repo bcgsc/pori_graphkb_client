@@ -12,7 +12,7 @@ COPY ./ /app/
 RUN npm run build:docker
 
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
-FROM nginx:1.15
+FROM nginx:1.15-alpine
 
 COPY --from=build-stage /app/dist/production /usr/share/nginx/html
 # Default port exposure

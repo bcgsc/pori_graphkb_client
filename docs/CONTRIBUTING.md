@@ -1,6 +1,7 @@
 # Developers Guide
 
 - [Install](#install)
+- [Docker](#docker)
 - [Tests](#tests)
   - [Running the Tests](#running-the-tests)
   - [Coverage Reports](#coverage-reports)
@@ -40,12 +41,20 @@ need HTTPS you will need your own certs etc.
 
 ```bash
 docker build  \
-  --build-arg KEYCLOAK_REALM=PORI \
-  --build-arg KEYCLOAK_URL=http://auth:8082/auth \
-  --build-arg API_BASE_URL=http://graphkb_api:8081 \
-  -t <YOUR NAME>/graphkb-client \
+  -t pori/graphkb-client \
   -f Dockerfile  \
   .
+```
+
+Now to start the static nginx server
+
+```bash
+docker run \
+  -p 5000:80 \
+  -e API_BASE_URL='http://localhost:8080' \
+  -e KEYCLOAK_REALM=PORI \
+  -e KEYCLOAK_URL='http://localhost:8888/auth' \
+  pori/graphkb-client:latest
 ```
 
 ## Tests

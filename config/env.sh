@@ -10,6 +10,13 @@ touch ./env-config.js
 # Add assignment
 echo "window._env_ = {" >> ./env-config.js
 
+ENV_FILE=.env
+
+if [ ! -f "$ENV_FILE" ];
+then
+  ENV_FILE=config/.env
+fi
+
 # Read each line in .env file
 # Each line represents key=value pairs
 while read -r line || [[ -n "$line" ]];
@@ -25,13 +32,13 @@ do
   if [[ -z $value ]]
   then
     value=${varvalue}
-    echo "$varname=$varvalue"
+    echo "$varname=$varvalue (DEFAULT)"
   else
     echo "$varname=$value (CUSTOM)"
   fi
   # Append configuration property to JS file
   echo "  $varname: \"$value\"," >> ./env-config.js
-done < .env
+done < $ENV_FILE
 
 echo "}" >> ./env-config.js
 

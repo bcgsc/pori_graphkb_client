@@ -118,7 +118,7 @@
     "webpack-manifest-plugin": "^2.0.4"
   },
   "scripts": {
-    "dev": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./src/static",
+    "env": "chmod +x ./config/env.sh && ./config/env.sh && mv env-config.js ./src/static",
     "clean": "rm -r dist stats.json",
     "build:docker": "NODE_ENV=production webpack -p --mode production --config config/webpack/docker.js",
     "build:dev": "NODE_ENV=production webpack -p --mode production --config config/webpack/dev.js",
@@ -126,12 +126,12 @@
     "build:ci": "NODE_ENV=production webpack -p --mode production --config config/webpack/ci.js",
     "compress": "tar cvfz v${npm_package_version}.tar.gz dist",
     "analyze": "NODE_ENV=production webpack --profile --json --config config/webpack/prod.js > stats.json; webpack-bundle-analyzer stats.json dist",
-    "start": "npm run dev; webpack-dev-server --config config/webpack/dev.js",
+    "start": "npm run env; webpack-dev-server --config config/webpack/dev.js",
     "start:local": "npm run dev; webpack-dev-server --config config/webpack/local.js",
-    "test:local": "NODE_ENV=local jest --config config/jest.config.js",
-    "test": "NODE_ENV=test jest --config config/jest.config.js",
-    "test:watch": "NODE_ENV=test jest --config config/jest.config.js --watch",
-    "test:ci": "NODE_ENV=test jest --config config/jest.config.js",
+    "test:local": "npm run env; NODE_ENV=local jest --config config/jest.config.js",
+    "test": "npm run env; NODE_ENV=test jest --config config/jest.config.js",
+    "test:watch": "npm run env; NODE_ENV=test jest --config config/jest.config.js --watch",
+    "test:ci": "npm run env; NODE_ENV=test jest --config config/jest.config.js",
     "serve": "NODE_ENV=production serve dist -s",
     "commit": "git-cz"
   },

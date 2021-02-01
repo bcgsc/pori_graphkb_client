@@ -56,7 +56,7 @@ const GettingStarted = () => {
           decomposed sentences which link conditions to a conclusion. There are four main
           elements to a statement
         </Typography>
-        <img alt="Statement Schema" src={`${process.env.API_BASE_URL}/public/pori-statement-schema.svg`} />
+        <img alt="Statement Schema" src={`${window._env_.API_BASE_URL}/public/pori-statement-schema.svg`} />
         <List>
           <ListItem>
             <ListItemText
@@ -90,7 +90,7 @@ const GettingStarted = () => {
           key attributes: reference1, reference2, and type. All of these are foreign keys to an
           ontology record. Most often reference1/2 are genes and type is a Vocabulary record.
         </Typography>
-        <img alt="Variant Schema" src={`${process.env.API_BASE_URL}/public/pori-positional-variant-schema.svg`} />
+        <img alt="Variant Schema" src={`${window._env_.API_BASE_URL}/public/pori-positional-variant-schema.svg`} />
         <List>
           <ListItem>
             <ListItemText
@@ -116,7 +116,7 @@ const GettingStarted = () => {
           Ontologies can be used to represent any set of controlled vocabulary. Important features
           of an ontology record in GraphKB are
         </Typography>
-        <img alt="Ontology Schema" src={`${process.env.API_BASE_URL}/public/pori-ontology-schema.svg`} />
+        <img alt="Ontology Schema" src={`${window._env_.API_BASE_URL}/public/pori-ontology-schema.svg`} />
         <List>
           <ListItem>
             <ListItemText primary="source" secondary="This is the database or external collection that defines this record (ex. PubMed)" />

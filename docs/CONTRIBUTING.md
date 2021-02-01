@@ -1,6 +1,7 @@
 # Developers Guide
 
 - [Install](#install)
+- [Docker](#docker)
 - [Tests](#tests)
   - [Running the Tests](#running-the-tests)
   - [Coverage Reports](#coverage-reports)
@@ -31,6 +32,29 @@ Start the development server
 
 ```bash
 npm start
+```
+
+## Docker
+
+Building the Docker Image with the default HTTP URLs. The Image builds http by default, if you
+need HTTPS you will need your own certs etc.
+
+```bash
+docker build  \
+  -t pori/graphkb-client \
+  -f Dockerfile  \
+  .
+```
+
+Now to start the static nginx server
+
+```bash
+docker run \
+  -p 5000:80 \
+  -e API_BASE_URL='http://localhost:8080' \
+  -e KEYCLOAK_REALM=PORI \
+  -e KEYCLOAK_URL='http://localhost:8888/auth' \
+  pori/graphkb-client:latest
 ```
 
 ## Tests

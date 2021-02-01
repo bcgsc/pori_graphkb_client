@@ -31,6 +31,7 @@ module.exports = {
     '<rootDir>/src/polyfills.js',
     '<rootDir>/config/jest/browserMock.js',
     '<rootDir>/config/jest/enzymeInit.js',
+    '<rootDir>/config/jest/windowEnvMock.js',
     'jest-canvas-mock',
   ],
   testRegex: 'src.*__tests__.*.jsx?$',

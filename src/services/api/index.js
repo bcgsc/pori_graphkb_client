@@ -6,17 +6,11 @@ import kbSchema from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 
-import config from '@/static/config';
-
 import { ApiCall } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
 
-
-const {
-  API_BASE_URL,
-} = config;
 
 const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
@@ -150,7 +144,6 @@ export default {
   encodeQueryComplexToSearch,
   getQueryFromSearch,
   getSearchFromQuery,
-  API_BASE_URL,
   CLASS_PROP,
   defaultSuggestionHandler,
   delete: del,

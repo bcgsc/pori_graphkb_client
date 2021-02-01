@@ -43,3 +43,4 @@ Thumbs.db
 !/public/mainfest.json
 /stats.json
 /dist
+src/static/env-config.js

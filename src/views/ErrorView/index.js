@@ -12,15 +12,13 @@ import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { LocationPropType } from '@/components/types';
-import config from '@/static/config';
 
-const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;
 
 const EmailReportError = (props) => {
   const { linkText, body, subject } = props;
   return (
     <a href={`mailto:${
-      EMAIL
+      window._env_.CONTACT_EMAIL
     }?subject=${
       encodeURIComponent(subject)
     }&body=${
@@ -69,7 +67,7 @@ const ErrorView = ({ location: { state }, history }) => {
     });
   }
 
-  const jiraLink = <a href={JIRA_LINK} rel="noopener noreferrer" target="_blank">JIRA</a>;
+  const jiraLink = <a href={window._env_.CONTACT_TICKET_URL} rel="noopener noreferrer" target="_blank">Ticket/Issue</a>;
 
   let errorDetails = `Error Details (Please include in error reports)
 version: ${process.env.npm_package_version || process.env.REACT_APP_VERSION || ''}
@@ -104,7 +102,7 @@ error text: ${message}`;
         Report this error in a {jiraLink} ticket or email us at&nbsp;
         <EmailReportError
           body={errorDetails}
-          linkText={EMAIL}
+          linkText={window._env_.CONTACT_EMAIL}
           subject={`${name}: ${message}`}
         />
         .

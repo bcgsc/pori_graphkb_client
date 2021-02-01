@@ -5,17 +5,6 @@
 import * as jwt from 'jsonwebtoken';
 import Keycloak from 'keycloak-js';
 
-import config from '@/static/config';
-
-const {
-  KEYCLOAK: {
-    GRAPHKB_ROLE,
-    REALM,
-    CLIENT_ID,
-    URL,
-  },
-  DISABLE_AUTH,
-} = config;
 
 // must store the referring uri in local to get around the redirect
 const KEYCLOAK_REFERRER = 'KEYCLOAK_REFERRER';
@@ -26,10 +15,10 @@ const dbRoles = {
 };
 
 const keycloak = Keycloak({
-  realm: REALM,
-  clientId: CLIENT_ID,
-  url: URL,
-  realm_access: { roles: [GRAPHKB_ROLE] },
+  realm: window._env_.KEYCLOAK_REALM,
+  clientId: window._env_.KEYCLOAK_CLIENT_ID,
+  url: window._env_.KEYCLOAK_URL,
+  realm_access: { roles: [window._env_.KEYCLOAK_ROLE] },
 });
 
 /**
@@ -101,7 +90,7 @@ const isAuthenticated = ({ authenticationToken }) => {
 };
 
 const isAuthorized = ({ authorizationToken, authenticationToken }) => {
-  if (isAuthenticated({ authenticationToken }) || !DISABLE_AUTH) {
+  if (isAuthenticated({ authenticationToken })) {
     return Boolean(validToken(authorizationToken) && !isExpired(authorizationToken));
   }
   return false;

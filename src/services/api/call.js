@@ -1,8 +1,6 @@
 import { boundMethod } from 'autobind-decorator';
 import * as jc from 'json-cycle';
 
-import config from '@/static/config';
-
 import {
   APIConnectionFailureError,
   AuthenticationError,
@@ -10,10 +8,6 @@ import {
   BadRequestError,
   RecordExistsError,
 } from '../errors';
-
-const {
-  API_BASE_URL,
-} = config;
 
 
 class ApiCall {
@@ -66,7 +60,7 @@ class ApiCall {
 
     try {
       response = await fetch(
-        `${API_BASE_URL}/api${this.endpoint}`,
+        `${window._env_.API_BASE_URL}/api${this.endpoint}`,
         {
           ...this.requestOptions,
           headers: {
@@ -86,7 +80,7 @@ class ApiCall {
 
       try {
         response = await fetch(
-          `${API_BASE_URL}/api${this.endpoint}`,
+          `${window._env_.API_BASE_URL}/api${this.endpoint}`,
           {
             ...this.requestOptions,
             headers: {

@@ -116,7 +116,6 @@ const createBaseConfig = ({
     ),
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.DefinePlugin({
-      'window._env_': JSON.stringify(ENV_VARS),
       'process.env.npm_package_version': JSON.stringify(process.env.npm_package_version),
       'process.NODE_ENV': JSON.stringify(env.NODE_ENV || process.env.NODE_ENV)
     }),

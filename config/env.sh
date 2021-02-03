@@ -2,13 +2,13 @@
 
 # source: https://www.freecodecamp.org/news/how-to-implement-runtime-environment-variables-with-create-react-app-docker-and-nginx-7f9d42a91d70/
 
-echo "Creating env variables script: ./env-config.js"
+echo "Creating env variables script: ./graphkb-env-config.js"
 # Recreate config file
-rm -rf ./env-config.js
-touch ./env-config.js
+rm -rf ./graphkb-env-config.js
+touch ./graphkb-env-config.js
 
 # Add assignment
-echo "window._env_ = {" >> ./env-config.js
+echo "window._env_ = {" >> ./graphkb-env-config.js
 
 ENV_FILE=.env
 
@@ -37,9 +37,9 @@ do
     echo "$varname=$value (CUSTOM)"
   fi
   # Append configuration property to JS file
-  echo "  $varname: \"$value\"," >> ./env-config.js
+  echo "  $varname: \"$value\"," >> ./graphkb-env-config.js
 done < $ENV_FILE
 
-echo "}" >> ./env-config.js
+echo "}" >> ./graphkb-env-config.js
 
-cat ./env-config.js
+cat ./graphkb-env-config.js

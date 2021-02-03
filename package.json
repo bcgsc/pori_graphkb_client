@@ -118,7 +118,7 @@
     "webpack-manifest-plugin": "^2.0.4"
   },
   "scripts": {
-    "env": "chmod +x ./config/env.sh && ./config/env.sh && mv env-config.js ./src/static",
+    "env": "chmod +x ./config/env.sh && ./config/env.sh && mv graphkb-env-config.js ./src/static",
     "clean": "rm -r dist stats.json",
     "build:docker": "NODE_ENV=production webpack -p --mode production --config config/webpack/docker.js",
     "build:dev": "NODE_ENV=production webpack -p --mode production --config config/webpack/dev.js",

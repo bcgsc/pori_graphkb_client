@@ -7,11 +7,13 @@ const DIST = path.resolve(__dirname, '../../dist/development');
 
 module.exports = createBaseConfig({
   outputPath: DIST,
-  env: {
-    API_BASE_URL: 'https://graphkbdev-api.bcgsc.ca',
-    KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
-    KEYCLOAK_REALM: 'GSC',
-    NODE_ENV: 'development',
+  define: {
+    'window._env_': JSON.stringify({
+      API_BASE_URL: 'https://graphkbdev-api.bcgsc.ca',
+      KEYCLOAK_URL: 'https://keycloakdev.bcgsc.ca/auth',
+      KEYCLOAK_REALM: 'GSC',
+    }),
+    'process.env.NODE_ENV': JSON.stringify('development'),
   },
   sourceMap: true,
   mode: 'development',

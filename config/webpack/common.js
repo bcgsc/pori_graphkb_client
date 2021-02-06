@@ -13,7 +13,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 
 const createBaseConfig = ({
-  define = {}, mode = 'production', sourceMap = false, outputPath, baseUrl = '/',
+  define = {}, mode = 'production', sourceMap = false, outputPath, base = '/',
 } = {}) => {
   const BASE_DIR = path.resolve(__dirname, '../..');
   const SRC_PATH = path.resolve(BASE_DIR, 'src');
@@ -115,7 +115,7 @@ const createBaseConfig = ({
       filename: 'index.html',
       inject: true,
       favicon: path.resolve(SRC_PATH, 'static/favicon/favicon.ico'),
-      baseUrl,
+      base,
       minify: {
         removeComments: false,
       },

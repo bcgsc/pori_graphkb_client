@@ -46,11 +46,12 @@ echo "};" >> $ENVJS_FILE
 chmod a+x $ENVJS_FILE
 cat $ENVJS_FILE
 
-INDEX_FILE=index.html
+export INDEX_FILE="index.html"
 
-# now replace the static file instances of PUBLIC_URL
+# now replace the static file instances of PUBLIC_PATH
 # adapted from here: https://dev.to/n1ru4l/configure-the-cra-public-url-post-build-with-node-js-and-express-4n8
 if [ -f $INDEX_FILE ];
 then
-  sed -i "s,\%PUBLIC_URL\%,$PUBLIC_URL,g" $INDEX_FILE
+  echo "REPLACE %PUBLIC_PATH% with $PUBLIC_PATH in $INDEX_FILE"
+  sed -i "s,\%PUBLIC_PATH\%,$PUBLIC_PATH,g" $INDEX_FILE
 fi

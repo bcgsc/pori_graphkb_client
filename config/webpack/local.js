@@ -15,7 +15,7 @@ module.exports = createBaseConfig({
       KEYCLOAK_ROLE: 'GraphKB',
       CONTACT_EMAIL: 'graphkb@bcgsc.ca',
       CONTACT_TICKET_URL: 'https://www.bcgsc.ca/jira/projects/KBDEV',
-      PUBLIC_URL: '/',
+      PUBLIC_PATH: '/',
     }),
     'process.env.NODE_ENV': JSON.stringify('local'),
   },

@@ -8,5 +8,5 @@ module.exports = createBaseConfig({
   outputPath: DIST,
   mode: 'production',
   sourceMap: false,
-  base: '%PUBLIC_PATH%',
+  baseUrl: '%PUBLIC_PATH%',
 });

@@ -13,7 +13,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 
 const createBaseConfig = ({
-  define = {}, mode = 'production', sourceMap = false, outputPath, base = '/',
+  define = {}, mode = 'production', sourceMap = false, outputPath, baseUrl = '/',
 } = {}) => {
   const BASE_DIR = path.resolve(__dirname, '../..');
   const SRC_PATH = path.resolve(BASE_DIR, 'src');
@@ -111,11 +111,11 @@ const createBaseConfig = ({
     }),
     // template index.html. Required for running the dev-server properly
     new HtmlWebpackPlugin({
-      template: path.resolve(SRC_PATH, 'static/index.html'),
+      template: path.resolve(SRC_PATH, 'static/index.ejs'),
       filename: 'index.html',
       inject: true,
       favicon: path.resolve(SRC_PATH, 'static/favicon/favicon.ico'),
-      base,
+      baseUrl,
       minify: {
         removeComments: false,
       },
@@ -217,7 +217,7 @@ const createBaseConfig = ({
       path: outputPath,
       filename: 'static/js/[name].bundle.js',
       chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
-      publicPath: '/',
+      publicPath: '',
     },
     devServer: {
       host: process.env.HOSTNAME || 'localhost',

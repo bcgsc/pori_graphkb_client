@@ -8,5 +8,5 @@ window._env_ = {
   API_BASE_URL: 'https://graphkbdev-api.bcgsc.ca',
   CONTACT_EMAIL: 'graphkb@bcgsc.ca',
   CONTACT_TICKET_URL: 'https://www.bcgsc.ca/jira/projects/KBDEV',
-  PUBLIC_URL: '/',
+  PUBLIC_PATH: '/',
 };

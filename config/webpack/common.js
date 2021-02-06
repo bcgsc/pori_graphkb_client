@@ -9,6 +9,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 
 const createBaseConfig = ({
@@ -86,6 +87,15 @@ const createBaseConfig = ({
 
   const plugins = [
     new webpack.HotModuleReplacementPlugin(),
+    // copy the dynamic env js file
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(SRC_PATH, 'static/graphkb-env-config.js'),
+          to: outputPath,
+        },
+      ],
+    }),
     // separate the css from the main js bundle
     new MiniCssExtractPlugin({
       filename: 'static/style/[name].css',

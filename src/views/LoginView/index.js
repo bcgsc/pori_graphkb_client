@@ -56,7 +56,7 @@ class LoginView extends React.Component {
         setAuthenticationToken(keycloak.token);
       } catch (err) {
         // redirect to the error page
-        history.push('/error', { error: { name: err.name, message: err.message } });
+        history.push('/error', { error: { name: err.name || err, message: err.message || err } });
         return;
       }
     }

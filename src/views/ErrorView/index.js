@@ -42,7 +42,7 @@ EmailReportError.propTypes = {
 const ErrorView = ({ location: { state }, history }) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const { from: { pathname, search } } = state;
+  const { from: { pathname, search } = {} } = state;
 
 
   const {

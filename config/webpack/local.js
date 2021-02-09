@@ -16,6 +16,7 @@ module.exports = createBaseConfig({
       CONTACT_EMAIL: 'graphkb@bcgsc.ca',
       CONTACT_TICKET_URL: 'https://www.bcgsc.ca/jira/projects/KBDEV',
       PUBLIC_PATH: '/',
+      IS_DEMO: false,
     }),
     'process.env.NODE_ENV': JSON.stringify('local'),
   },

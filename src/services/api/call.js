@@ -54,6 +54,13 @@ class ApiCall {
      */
   @boundMethod
   async request(ignoreAbort = true) {
+    if (
+      this.requestOptions.method !== 'GET'
+      && !['/query', '/parse', '/token'].includes(this.endpoint)
+      && window._env_.IS_DEMO
+    ) {
+      throw new Error('Write operations are disabled in DEMO mode. Changes will not submit');
+    }
     this.controller = new AbortController();
 
     let response;

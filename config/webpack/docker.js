@@ -8,7 +8,5 @@ module.exports = createBaseConfig({
   outputPath: DIST,
   mode: 'production',
   sourceMap: false,
-  env: {
-    NODE_ENV: 'production'
-  },
+  baseUrl: '%PUBLIC_PATH%',
 });

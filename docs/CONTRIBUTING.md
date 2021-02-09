@@ -40,10 +40,7 @@ Building the Docker Image with the default HTTP URLs. The Image builds http by d
 need HTTPS you will need your own certs etc.
 
 ```bash
-docker build  \
-  -t pori/graphkb-client \
-  -f Dockerfile  \
-  .
+docker build --file Dockerfile --tag bcgsc/pori-graphkb-client:latest .
 ```
 
 Now to start the static nginx server
@@ -51,10 +48,12 @@ Now to start the static nginx server
 ```bash
 docker run \
   -p 5000:80 \
-  -e API_BASE_URL='http://localhost:8080' \
+  -d \
+  -e API_BASE_URL='https://pori-demo.bcgsc.ca/graphkb-api' \
   -e KEYCLOAK_REALM=PORI \
-  -e KEYCLOAK_URL='http://localhost:8888/auth' \
-  pori/graphkb-client:latest
+  -e KEYCLOAK_URL='https://pori-demo.bcgsc.ca/auth' \
+  -e PUBLIC_PATH=/graphkb \
+  bcgsc/pori-graphkb-client:latest
 ```
 
 ## Tests

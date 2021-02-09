@@ -5,17 +5,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="theme-color" content="#000000">
-  <base href="/" />
   <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-  <link rel="manifest" href="/manifest.json">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <script src="/graphkb-env-config.js"></script>
+  <base href="<%= htmlWebpackPlugin.options.baseUrl %>">
+  <link rel="manifest" href="manifest.json">
+  <link rel="shortcut icon" href="favicon.ico">
+  <script src="graphkb-env-config.js"></script>
+  <title>GraphKB</title>
   <!-- jss-insertion-point -->
   <!-- below file is built by webpack -->
-  <title>GraphKB</title>
 </head>
 
 <body>

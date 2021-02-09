@@ -43,4 +43,3 @@ Thumbs.db
 !/public/mainfest.json
 /stats.json
 /dist
-src/static/graphkb-env-config.js

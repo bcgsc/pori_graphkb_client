@@ -4,11 +4,12 @@
 
 echo "Creating env variables script: ./graphkb-env-config.js"
 # Recreate config file
-rm -rf ./graphkb-env-config.js
-touch ./graphkb-env-config.js
+ENVJS_FILE=./graphkb-env-config.js
+rm -rf $ENVJS_FILE
+touch $ENVJS_FILE
 
 # Add assignment
-echo "window._env_ = {" >> ./graphkb-env-config.js
+echo "window._env_ = {" >> $ENVJS_FILE
 
 ENV_FILE=.env
 
@@ -37,9 +38,20 @@ do
     echo "$varname=$value (CUSTOM)"
   fi
   # Append configuration property to JS file
-  echo "  $varname: \"$value\"," >> ./graphkb-env-config.js
+  echo "  $varname: '$value'," >> $ENVJS_FILE
 done < $ENV_FILE
 
-echo "}" >> ./graphkb-env-config.js
+echo "};" >> $ENVJS_FILE
 
-cat ./graphkb-env-config.js
+chmod a+x $ENVJS_FILE
+cat $ENVJS_FILE
+
+export INDEX_FILE="index.html"
+
+# now replace the static file instances of PUBLIC_PATH
+# adapted from here: https://dev.to/n1ru4l/configure-the-cra-public-url-post-build-with-node-js-and-express-4n8
+if [ -f $INDEX_FILE ];
+then
+  echo "REPLACE %PUBLIC_PATH% with $PUBLIC_PATH in $INDEX_FILE"
+  sed -i "s,\%PUBLIC_PATH\%,$PUBLIC_PATH,g" $INDEX_FILE
+fi

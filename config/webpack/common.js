@@ -9,19 +9,11 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
-
-
-const stripToBaseUrl = (url) => {
-  const match = /^(https?:\/\/[^/]+)/.exec(url);
-  const baseAuthUrl = match
-    ? match[1]
-    : url;
-  return baseAuthUrl;
-};
+const CopyPlugin = require('copy-webpack-plugin');
 
 
 const createBaseConfig = ({
-  env = {}, mode = 'production', sourceMap = false, outputPath,
+  define = {}, mode = 'production', sourceMap = false, outputPath, baseUrl = '/',
 } = {}) => {
   const BASE_DIR = path.resolve(__dirname, '../..');
   const SRC_PATH = path.resolve(BASE_DIR, 'src');
@@ -29,18 +21,6 @@ const createBaseConfig = ({
     path.resolve(BASE_DIR, 'node_modules/@bcgsc'),
     SRC_PATH,
   ];
-
-  const ENV_VARS = {
-    KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || 'GraphKB',
-    KEYCLOAK_ROLE: process.env.KEYCLOAK_ROLE || 'GraphKB',
-    KEYCLOAK_REALM: process.env.KEYCLOAK_REALM || 'PORI',
-    KEYCLOAK_URL: process.env.KEYCLOAK_URL || 'http://localhost:8888/auth',
-    API_BASE_URL: process.env.API_BASE_URL ||  'http://localhost:8080',
-    CONTACT_EMAIL: process.env.CONTACT_EMAIL || 'graphkb@bcgsc.ca',
-    CONTACT_TICKET_URL: process.env.CONTACT_TICKET_URL || 'https://www.bcgsc.ca/jira/projects/KBDEV',
-    ...env
-  };
-
 
   const moduleSettings = {
     rules: [
@@ -107,6 +87,15 @@ const createBaseConfig = ({
 
   const plugins = [
     new webpack.HotModuleReplacementPlugin(),
+    // copy the dynamic env js file
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(SRC_PATH, 'static/graphkb-env-config.js'),
+          to: outputPath,
+        },
+      ],
+    }),
     // separate the css from the main js bundle
     new MiniCssExtractPlugin({
       filename: 'static/style/[name].css',
@@ -117,14 +106,16 @@ const createBaseConfig = ({
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.DefinePlugin({
       'process.env.npm_package_version': JSON.stringify(process.env.npm_package_version),
-      'process.NODE_ENV': JSON.stringify(env.NODE_ENV || process.env.NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      ...define,
     }),
     // template index.html. Required for running the dev-server properly
     new HtmlWebpackPlugin({
-      template: path.resolve(SRC_PATH, 'static/index.html'),
+      template: path.resolve(SRC_PATH, 'static/index.ejs'),
       filename: 'index.html',
       inject: true,
       favicon: path.resolve(SRC_PATH, 'static/favicon/favicon.ico'),
+      baseUrl,
       minify: {
         removeComments: false,
       },
@@ -141,7 +132,7 @@ const createBaseConfig = ({
       ],
       'connect-src': [
         "'self'",
-        '*'
+        '*',
       ],
       // TODO: Remove google charts requirement since it requires external load which cannot include nonce/hash
       // Then re-add the nonce/hash to scripts
@@ -226,7 +217,7 @@ const createBaseConfig = ({
       path: outputPath,
       filename: 'static/js/[name].bundle.js',
       chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
-      publicPath: '/',
+      publicPath: '',
     },
     devServer: {
       host: process.env.HOSTNAME || 'localhost',

@@ -133,7 +133,9 @@ const logout = async () => {
   setReferrerUri(null);
 
   try {
-    const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
+    const resp = await keycloak.logout({
+      redirectUri: `${window.location.origin}${window._env_.PUBLIC_PATH}login`,
+    });
     return resp;
   } catch (err) {
     return err;

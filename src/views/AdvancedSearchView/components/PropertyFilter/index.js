@@ -268,11 +268,17 @@ const PropertyFilter = ({
         },
       };
     } else {
+      let value = subProp
+        ? formContent[subProp]
+        : formContent[property];
+
+      if (operator === 'CONTAINS' && value.length === 1) {
+        // special case. CONTAINS is marked iterable for entry convenience for the user
+        [value] = value;
+      }
       result.query = {
         operator,
-        [property]: subProp
-          ? formContent[subProp]
-          : formContent[property],
+        [property]: value,
       };
     }
     onSubmit(result);

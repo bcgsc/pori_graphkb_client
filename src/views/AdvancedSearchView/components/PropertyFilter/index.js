@@ -159,8 +159,7 @@ const PropertyFilter = ({
           } else {
             newPropertyModel = null;
           }
-        } else if (newPropertyModel.type === 'link') {
-          newPropertyModel.type = 'linkset';
+        } else if (newPropertyModel.type === 'linkset') {
           newPropertyModel.iterable = true;
         }
 

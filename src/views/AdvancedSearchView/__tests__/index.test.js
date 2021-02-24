@@ -89,7 +89,7 @@ describe('AdvancedSearchView', () => {
     expect(getByText('add to selected group')).toBeInTheDocument();
     expect(getByText('add to selected group')).not.toBeDisabled();
     await fireEvent.click(getByText('add to selected group'));
-    expect(getByText('relevance = value (1:1)')).toBeInTheDocument();
+    expect(getByText('relevance IN value (1:1)')).toBeInTheDocument();
   });
 
   test('fires new search correctly', async () => {
@@ -98,6 +98,6 @@ describe('AdvancedSearchView', () => {
     await fireEvent.click(getByText('add to selected group'));
     fireEvent.click(getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjpbeyJvcGVyYXRvciI6Ij0iLCJyZWxldmFuY2UiOlsiMToxIl19XX0%253D');
+    expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjpbeyJvcGVyYXRvciI6IklOIiwicmVsZXZhbmNlIjpbIjE6MSJdfV19');
   });
 });

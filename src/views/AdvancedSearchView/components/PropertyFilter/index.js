@@ -49,8 +49,9 @@ const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, sub
       return OPERATORS.filter(op => ['CONTAINSANY', 'CONTAINSALL', '='].includes(op.label));
     }
     return OPERATORS.filter(op => ['CONTAINS'].includes(op.label));
-  } if (type === 'link') {
-    if (currentVal && Array.isArray(currentVal) && currentVal.length > 1) {
+  }
+  if (type === 'link') {
+    if (currentVal && Array.isArray(currentVal) && currentVal.length > 0) {
       return OPERATORS.filter(op => ['IN'].includes(op.label));
     }
     return OPERATORS.filter(op => ['='].includes(op.label));
@@ -159,7 +160,8 @@ const PropertyFilter = ({
           } else {
             newPropertyModel = null;
           }
-        } else if (newPropertyModel.type === 'linkset') {
+        } else if (newPropertyModel.type === 'link') {
+          newPropertyModel.type = 'linkset';
           newPropertyModel.iterable = true;
         }
 

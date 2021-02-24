@@ -22,3 +22,11 @@ jobs:
         with:
           yml: codecov.yml
           token: ${{ secrets.CODECOV_TOKEN }}
+  docker:
+    runs-on: ubuntu-latest
+    name: docker build
+    steps:
+      - uses: actions/checkout@v2
+      - name: build the docker container
+        run: |
+          docker build --file Dockerfile --tag pori/graphkb-client .

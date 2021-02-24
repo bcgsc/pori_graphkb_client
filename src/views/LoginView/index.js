@@ -11,11 +11,7 @@ import {
   keycloak, login,
 } from '@/services/auth';
 import util from '@/services/util';
-import config from '@/static/config';
 
-const {
-  DISABLE_AUTH,
-} = config;
 /**
  * View to handle user authentication. Redirected to if at any point during use
  * the application receives a 401 error code from the server. Logs in by posting
@@ -60,20 +56,13 @@ class LoginView extends React.Component {
         setAuthenticationToken(keycloak.token);
       } catch (err) {
         // redirect to the error page
-        history.push('/error', { error: { name: err.name, message: err.message } });
+        history.push('/error', { error: { name: err.name || err, message: err.message || err } });
         return;
       }
     }
 
     if (!isAuthorized(this.context)) {
-      let call;
-
-      if (DISABLE_AUTH !== true) {
-        call = api.post('/token', { keyCloakToken: keycloak.token });
-      } else { // FOR TESTING ONLY
-        console.warn('Authentication server is currently disabled by the client');
-        call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
-      }
+      const call = api.post('/token', { keyCloakToken: keycloak.token });
       this.controllers.push(call);
 
       try {

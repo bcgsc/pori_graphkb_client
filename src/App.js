@@ -77,7 +77,7 @@ function App() {
       <CssBaseline />
       <MuiThemeProvider theme={theme}>
         <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-          <BrowserRouter>
+          <BrowserRouter basename={window._env_.PUBLIC_PATH}>
             <MainView />
           </BrowserRouter>
         </SnackbarProvider>

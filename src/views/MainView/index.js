@@ -22,7 +22,6 @@ import ActiveLinkContext from '@/components/ActiveLinkContext';
 import AuthenticatedRoute from '@/components/AuthenticatedRoute';
 import { SecurityContext } from '@/components/SecurityContext';
 import schema from '@/services/schema';
-import config from '@/static/config';
 
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
@@ -43,9 +42,6 @@ const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-const {
-  API_BASE_URL,
-} = config;
 
 const ABSTRACT_CLASSES = Object.values(schema.schema)
   .filter(m => m.isAbstract && m.name !== 'Variant')
@@ -64,7 +60,7 @@ const Main = () => {
   useEffect(() => {
     const unregister = fetchIntercept.register({
       request: (fetchUrl, fetchConfig) => {
-        if (fetchUrl.startsWith(API_BASE_URL)) {
+        if (fetchUrl.startsWith(window._env_.API_BASE_URL)) {
           const newConfig = { ...fetchConfig };
 
           if (!newConfig.headers) {

@@ -1,8 +1,6 @@
 import { boundMethod } from 'autobind-decorator';
 import * as jc from 'json-cycle';
 
-import config from '@/static/config';
-
 import {
   APIConnectionFailureError,
   AuthenticationError,
@@ -10,10 +8,6 @@ import {
   BadRequestError,
   RecordExistsError,
 } from '../errors';
-
-const {
-  API_BASE_URL,
-} = config;
 
 
 class ApiCall {
@@ -60,13 +54,20 @@ class ApiCall {
      */
   @boundMethod
   async request(ignoreAbort = true) {
+    if (
+      this.requestOptions.method !== 'GET'
+      && !['/query', '/parse', '/token'].includes(this.endpoint)
+      && window._env_.IS_DEMO
+    ) {
+      throw new Error('Write operations are disabled in DEMO mode. Changes will not submit');
+    }
     this.controller = new AbortController();
 
     let response;
 
     try {
       response = await fetch(
-        `${API_BASE_URL}/api${this.endpoint}`,
+        `${window._env_.API_BASE_URL}/api${this.endpoint}`,
         {
           ...this.requestOptions,
           headers: {
@@ -86,7 +87,7 @@ class ApiCall {
 
       try {
         response = await fetch(
-          `${API_BASE_URL}/api${this.endpoint}`,
+          `${window._env_.API_BASE_URL}/api${this.endpoint}`,
           {
             ...this.requestOptions,
             headers: {

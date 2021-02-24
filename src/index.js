@@ -1,3 +1,4 @@
+import './publicPath';
 import './index.scss';
 
 import React from 'react';

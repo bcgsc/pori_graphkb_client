@@ -2,6 +2,8 @@
 
 ![build](https://github.com/bcgsc/pori_graphkb_client/workflows/build/badge.svg?branch=master)
 
+This repository is part of the [platform for oncogenomic reporting and interpretation](https://github.com/bcgsc/pori).
+
 The GraphKB client is the front-end web client for the GraphKB project. It is built
 using `React.js` and `webpack`. Linting is done with `eslint`, and follows a modified
 version of the Airbnb style guide. The full guide for developers can be found

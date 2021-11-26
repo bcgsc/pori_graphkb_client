@@ -1,6 +1,7 @@
 # GraphKB Client
 
-![build](https://github.com/bcgsc/pori_graphkb_client/workflows/build/badge.svg?branch=master)
+![build](https://github.com/bcgsc/pori_graphkb_client/workflows/build/badge.svg?branch=master) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5730455.svg)](https://doi.org/10.5281/zenodo.5730455)
+
 
 This repository is part of the [platform for oncogenomic reporting and interpretation](https://github.com/bcgsc/pori).
 

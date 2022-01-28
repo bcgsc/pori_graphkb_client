@@ -4,14 +4,12 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
-import { SecurityContext } from '@/components/SecurityContext';
+import { AuthContext } from '@/components/Auth';
 import * as api from '@/services/api';
 
 import RecordForm from '..';
 
-jest.mock('@/services/auth', () => ({
-  getUser: () => '23:9',
-}));
+const auth = { user: { '@rid': '23:9' } };
 
 jest.mock('@/services/api', () => {
   const mockRequest = () => ({
@@ -84,7 +82,7 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, queryByText, getByTestId } = render(
-        <SecurityContext.Provider value={{ }}>
+        <AuthContext.Provider value={auth}>
           <SnackbarProvider onEnter={snackbarSpy}>
             <RecordForm
               modelName="User"
@@ -97,7 +95,7 @@ describe('RecordForm', () => {
               variant="view"
             />
           </SnackbarProvider>
-        </SecurityContext.Provider>,
+        </AuthContext.Provider>,
       ));
     });
 
@@ -134,7 +132,7 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <SecurityContext.Provider value={{ }}>
+        <AuthContext.Provider value={auth}>
           <SnackbarProvider onEnter={snackbarSpy}>
             <RecordForm
               modelName="User"
@@ -146,7 +144,7 @@ describe('RecordForm', () => {
               variant="edit"
             />
           </SnackbarProvider>
-        </SecurityContext.Provider>,
+        </AuthContext.Provider>,
       ));
     });
 
@@ -184,7 +182,7 @@ describe('RecordForm', () => {
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
         <SnackbarProvider onEnter={snackbarSpy}>
-          <SecurityContext.Provider value={{ }}>
+          <AuthContext.Provider value={auth}>
             <RecordForm
               modelName="User"
               onError={onErrorSpy}
@@ -194,7 +192,7 @@ describe('RecordForm', () => {
               value={{ }}
               variant="new"
             />
-          </SecurityContext.Provider>
+          </AuthContext.Provider>
         </SnackbarProvider>,
       ));
     });

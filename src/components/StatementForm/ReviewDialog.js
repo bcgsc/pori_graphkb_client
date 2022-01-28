@@ -7,19 +7,16 @@ import {
 import CancelIcon from '@material-ui/icons/Cancel';
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
-import React, {
-  useCallback, useContext, useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
+import { useAuth } from '@/components/Auth';
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
-import { SecurityContext } from '@/components/SecurityContext';
 import {
   FORM_VARIANT,
 } from '@/components/util';
-import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
 
@@ -34,7 +31,7 @@ const AddReviewDialog = ({
   onSubmit, isOpen, onClose,
 }) => {
   const snackbar = useSnackbar();
-  const context = useContext(SecurityContext);
+  const auth = useAuth();
   const { comment, status } = schema.get(MODEL_NAME).properties;
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
@@ -57,10 +54,10 @@ const AddReviewDialog = ({
       console.error(formErrors);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
     } else {
-      const content = { ...formContent, '@class': MODEL_NAME, createdBy: getUser(context) };
+      const content = { ...formContent, '@class': MODEL_NAME, createdBy: auth.user };
       onSubmit(content, updateAmalgamated);
     }
-  }, [context, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
+  }, [auth, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
 
   return (

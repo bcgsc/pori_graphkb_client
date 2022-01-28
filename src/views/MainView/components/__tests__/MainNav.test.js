@@ -2,7 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import { SecurityContext } from '@/components/SecurityContext';
+import { AuthContext } from '@/components/Auth';
 
 import MainNav from '../MainNav';
 
@@ -13,9 +13,9 @@ describe('<MainNav />', () => {
   test('correctly renders', () => {
     wrapper = mount(
       <BrowserRouter>
-        <SecurityContext.Provider value={{}}>
+        <AuthContext.Provider value={{}}>
           <MainNav />
-        </SecurityContext.Provider>
+        </AuthContext.Provider>
       </BrowserRouter>,
     );
     expect(wrapper.find(MainNav)).toHaveLength(1);

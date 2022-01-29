@@ -89,7 +89,7 @@ const AdminTable = ({ onChange, records, variant }) => {
         headerName: 'groups',
         field: 'groups',
         flex: true,
-        valueGetter: ({ data: { groups } }) => groups.map(group => group.name).join(', '),
+        valueGetter: ({ data: { groups } }) => groups?.map(group => group.name).join(', ') ?? '',
       },
     ]);
   }

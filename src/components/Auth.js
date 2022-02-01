@@ -6,8 +6,7 @@ import * as jwt from 'jsonwebtoken';
 import Keycloak from 'keycloak-js';
 import { PropTypes } from 'prop-types';
 import React, {
-  createContext, useContext, useEffect,
-  useLayoutEffect, useMemo, useRef,
+  createContext, useContext, useEffect, useLayoutEffect, useMemo,
 } from 'react';
 import { useMutation } from 'react-query';
 import { Route } from 'react-router-dom';
@@ -138,10 +137,9 @@ Centered.propTypes = {
 const AuthenticatedRoute = (props) => {
   const { admin, component, path } = props;
   const auth = useAuth();
-  const x = useRef();
 
   useLayoutEffect(() => {
-    if (!auth.isAuthenticating && !auth.isAuthenticated && !x.current && !auth.error) {
+    if (!auth.isAuthenticating && !auth.isAuthenticated && !auth.error) {
       auth.login();
     }
   }, [auth]);

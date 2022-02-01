@@ -42,7 +42,7 @@ const AuthProvider = (props) => {
   const { children } = props;
 
   const [logInOrOut, { isLoading: isAuthenticating, data, error }] = useMutation(
-    async (loggingIn) => {
+    async ({ loggingIn }) => {
       if (loggingIn) {
         const loggedIn = await keycloak.init({
           checkLoginIframe: false,
@@ -100,12 +100,12 @@ const AuthProvider = (props) => {
   const auth = useMemo(() => ({
     login: () => {
       if (!isAuthenticating) {
-        logInOrOut(true);
+        logInOrOut({ loggingIn: true });
       }
     },
     logout: () => {
       if (!isAuthenticating) {
-        logInOrOut();
+        logInOrOut({ loggingIn: false });
       }
     },
     isAuthenticating,

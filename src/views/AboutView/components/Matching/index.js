@@ -130,7 +130,8 @@ const MatchView = (props) => {
           queries.map(async query => queryCache.prefetchQuery(
             ['/query', query],
             async (key, bodykey) => api.post(key, bodykey).request(),
-            { staleTime: Infinity, throwOnError: false },
+            { staleTime: Infinity },
+            { throwOnError: false },
           )),
         );
 

@@ -50,11 +50,12 @@ const Main = () => {
 
   return (
     <ReactQueryConfigProvider config={{
-      staleTime: 15 * 60 * 1000, // 15m
-      refetchAllOnWindowFocus: false,
-      refetchOnWindowFocus: false,
-      throwOnError: true,
-      refetchOnMount: false,
+      queries: {
+        staleTime: 15 * 60 * 1000, // 15m
+        refetchOnWindowFocus: false,
+        throwOnError: true,
+        refetchOnMount: false,
+      },
     }}
     >
       <div className="main-view">

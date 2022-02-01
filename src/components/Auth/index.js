@@ -1,6 +1,6 @@
-import {
-  Box, Button, CircularProgress, Typography,
-} from '@material-ui/core';
+import './index.scss';
+
+import { Button, CircularProgress, Typography } from '@material-ui/core';
 import fetchIntercept from 'fetch-intercept';
 import * as jwt from 'jsonwebtoken';
 import Keycloak from 'keycloak-js';
@@ -126,8 +126,8 @@ AuthProvider.propTypes = {
 };
 
 const Centered = ({ children }) => (
-  <div>
-    <Box alignItems="center" display="flex" flexDirection="column" paddingTop="40px" width="100%">{children}</Box>
+  <div className="auth-centered">
+    {children}
   </div>
 );
 Centered.propTypes = {

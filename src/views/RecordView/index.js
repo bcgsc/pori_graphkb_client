@@ -10,7 +10,6 @@ import React, {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { useAuth } from '@/components/Auth';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { HistoryPropType } from '@/components/types';
@@ -49,7 +48,6 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
 
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
-  const auth = useAuth();
 
   const [recordContent, setRecordContent] = useState({});
   const [modelName, setModelName] = useState(modelNameParam || '');
@@ -164,11 +162,7 @@ const RecordView = (props) => {
         navigateToGraph={navigateToGraphView}
         onError={handleError}
         onSubmit={handleSubmit}
-        onTopClick={
-        auth.hasWriteAccess
-          ? onTopClick
-          : null
-      }
+        onTopClick={onTopClick}
         rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
         value={recordContent}
@@ -182,11 +176,7 @@ const RecordView = (props) => {
       navigateToGraph={navigateToGraphView}
       onError={handleError}
       onSubmit={handleSubmit}
-      onTopClick={
-        auth.hasWriteAccess
-          ? onTopClick
-          : null
-      }
+      onTopClick={onTopClick}
       rid={rid}
       title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
       value={recordContent}

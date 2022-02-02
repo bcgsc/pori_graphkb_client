@@ -314,6 +314,7 @@ const StatementForm = ({
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <RecordFormStateToggle
+            allowEdit={auth.hasWriteAccess}
             message="Are you sure? You will lose your changes."
             onClick={handleToggleState}
             requireConfirm={variant === 'edit' && formIsDirty}

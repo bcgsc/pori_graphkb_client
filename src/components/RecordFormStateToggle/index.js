@@ -14,6 +14,7 @@ import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
  *
  * @property {object} props
  * @property {function} props.onClick parent handler function to toggle states
+ * @property {bool} props.allowEdit if true, edit button is shown
  * @property {bool} props.requireConfirm flag to check whether confirmation is needed
  * @property {string} props.message message displayed in confirmation dialog
  * @property {string} props.value starting variant value
@@ -23,6 +24,7 @@ function RecordFormStateToggle({
   requireConfirm,
   message,
   value: inputValue,
+  allowEdit,
 }) {
   const [value, setValue] = useState(inputValue);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -78,12 +80,14 @@ function RecordFormStateToggle({
         >
           <ViewIcon /><span className="toggle-option__text">View</span>
         </ToggleButton>
-        <ToggleButton
-          aria-label="edit"
-          value="edit"
-        >
-          <EditIcon /><span className="toggle-option__text">Edit</span>
-        </ToggleButton>
+        {allowEdit && (
+          <ToggleButton
+            aria-label="edit"
+            value="edit"
+          >
+            <EditIcon /><span className="toggle-option__text">Edit</span>
+          </ToggleButton>
+        )}
       </ToggleButtonGroup>
       {requireConfirm && (
       <ConfirmActionDialog
@@ -99,6 +103,7 @@ function RecordFormStateToggle({
 }
 
 RecordFormStateToggle.propTypes = {
+  allowEdit: PropTypes.bool,
   message: PropTypes.string,
   onClick: PropTypes.func,
   requireConfirm: PropTypes.bool,
@@ -107,6 +112,7 @@ RecordFormStateToggle.propTypes = {
 
 RecordFormStateToggle.defaultProps = {
   onClick: () => {},
+  allowEdit: false,
   requireConfirm: false,
   message: 'Are you sure?',
   value: 'view',

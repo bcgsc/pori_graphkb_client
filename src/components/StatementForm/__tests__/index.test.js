@@ -9,7 +9,7 @@ import { AuthContext } from '@/components/Auth';
 import StatementForm from '..';
 
 
-const auth = { user: { '@rid': '23:9' } };
+const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
 jest.mock('@/services/api', () => {
   const mockRequest = () => ({

@@ -4,13 +4,12 @@ import { fireEvent, render } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
-import { SecurityContext } from '@/components/SecurityContext';
+import { AuthContext } from '@/components/Auth';
 
 import StatementForm from '..';
 
-jest.mock('@/services/auth', () => ({
-  getUser: () => '23:9',
-}));
+
+const auth = { user: { '@rid': '23:9' } };
 
 jest.mock('@/services/api', () => {
   const mockRequest = () => ({
@@ -77,7 +76,7 @@ describe('StatementForm', () => {
 
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(
-      <SecurityContext.Provider value={{ }}>
+      <AuthContext.Provider value={auth}>
         <SnackbarProvider onEnter={snackbarSpy}>
           <StatementForm
             modelName="Statement"
@@ -89,7 +88,7 @@ describe('StatementForm', () => {
             variant="edit"
           />
         </SnackbarProvider>
-      </SecurityContext.Provider>,
+      </AuthContext.Provider>,
     );
     expect(getByText('Add Review')).toBeInTheDocument();
   });
@@ -101,7 +100,7 @@ describe('StatementForm', () => {
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
         <SnackbarProvider onEnter={snackbarSpy}>
-          <SecurityContext.Provider value={{ }}>
+          <AuthContext.Provider value={auth}>
             <StatementForm
               modelName="Statement"
               onError={onErrorSpy}
@@ -111,7 +110,7 @@ describe('StatementForm', () => {
               value={{ }}
               variant="new"
             />
-          </SecurityContext.Provider>
+          </AuthContext.Provider>
         </SnackbarProvider>,
       ));
     });

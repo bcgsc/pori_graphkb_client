@@ -9,9 +9,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import { copy } from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
-
-import { LocationPropType } from '@/components/types';
+import { Link, useLocation } from 'react-router-dom';
 
 
 const EmailReportError = (props) => {
@@ -39,11 +37,10 @@ EmailReportError.propTypes = {
 /**
  * View for displaying uncaught error messages.
  */
-const ErrorView = ({ location: { state }, history }) => {
+const ErrorView = () => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
-
-  const { from: { pathname, search } = {} } = state;
-
+  const location = useLocation();
+  const state = location.state ?? {};
 
   const {
     error: {
@@ -53,19 +50,6 @@ const ErrorView = ({ location: { state }, history }) => {
       ...rest
     } = {},
   } = state;
-
-  if (name === 'AuthenticationError') {
-    const savedLocation = {
-      pathname,
-      search,
-    };
-    localStorage.setItem('savedLocation', JSON.stringify(savedLocation));
-
-    history.push({
-      pathname: '/login',
-      state: { from: { pathname, search } },
-    });
-  }
 
   const jiraLink = <a href={window._env_.CONTACT_TICKET_URL} rel="noopener noreferrer" target="_blank">Ticket/Issue</a>;
 
@@ -141,10 +125,5 @@ error text: ${message}`;
   );
 };
 
-
-ErrorView.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: LocationPropType.isRequired,
-};
 
 export default ErrorView;

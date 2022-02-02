@@ -16,7 +16,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types';
 import React, {
-  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -24,18 +23,15 @@ import {
   Link,
 } from 'react-router-dom';
 
-import {
-  getUsername, isAdmin, isAuthenticated,
-  logout,
-} from '@/services/auth';
+import { useAuth } from '@/components/Auth';
 
 import MenuLink from './MenuLink';
 
 const MainAppBar = ({
-  authorizationToken, authenticationToken, onDrawerChange, drawerOpen, onLinkChange,
+  onDrawerChange, drawerOpen, onLinkChange,
 }) => {
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
-  const [authOk, setAuthOk] = useState(false);
+  const auth = useAuth();
 
   const dropdown = useRef();
 
@@ -51,10 +47,6 @@ const MainAppBar = ({
     handleClose();
     onLinkChange({ isOpen: drawerOpen, activeLink: link });
   };
-
-  useEffect(() => {
-    setAuthOk(isAuthenticated({ authorizationToken, authenticationToken }));
-  }, [authorizationToken, authenticationToken]);
 
   return (
     <AppBar
@@ -83,8 +75,8 @@ const MainAppBar = ({
           >
             <PersonIcon />
             <Typography color="inherit" variant="h6">
-              {authOk
-                ? getUsername({ authenticationToken, authorizationToken })
+              {auth.isAuthenticated
+                ? auth.username
                 : 'Logged Out'
               }
             </Typography>
@@ -108,27 +100,29 @@ const MainAppBar = ({
                 onClick={handleClickLink}
                 route="/feedback"
               />
-              {isAdmin({ authorizationToken }) && (
+              {auth.isAdmin && (
                 <MenuLink
                   label="Admin"
                   onClick={handleClickLink}
                   route="/admin"
                 />
               )}
-              {authOk && (
+              {auth.isAuthenticated && (
                 <MenuLink
                   label="Profile"
                   onClick={handleClickLink}
                   route="/user-profile"
                 />
               )}
-              <MenuItem onClick={() => logout()}>
-                {
-                 authOk
-                   ? 'Logout'
-                   : 'Login'
-                }
-              </MenuItem>
+              {auth.isAuthenticated ? (
+                <MenuItem onClick={() => auth.logout()}>
+                  Logout
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={() => auth.login()}>
+                  Login
+                </MenuItem>
+              )}
             </Card>
           </Popover>
         </div>
@@ -140,14 +134,10 @@ const MainAppBar = ({
 MainAppBar.propTypes = {
   onDrawerChange: PropTypes.func.isRequired,
   onLinkChange: PropTypes.func.isRequired,
-  authenticationToken: PropTypes.string,
-  authorizationToken: PropTypes.string,
   drawerOpen: PropTypes.bool,
 };
 
 MainAppBar.defaultProps = {
-  authenticationToken: '',
-  authorizationToken: '',
   drawerOpen: false,
 };
 

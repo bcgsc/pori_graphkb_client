@@ -13,6 +13,8 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+import { AuthProvider } from '@/components/Auth';
+
 import * as cssTheme from './_theme.scss';
 import MainView from './views/MainView';
 
@@ -78,7 +80,9 @@ function App() {
       <MuiThemeProvider theme={theme}>
         <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
           <BrowserRouter basename={window._env_.PUBLIC_PATH}>
-            <MainView />
+            <AuthProvider>
+              <MainView />
+            </AuthProvider>
           </BrowserRouter>
         </SnackbarProvider>
       </MuiThemeProvider>

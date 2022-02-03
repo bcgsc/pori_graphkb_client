@@ -10,17 +10,14 @@ import LetterIcon from '@/components/LetterIcon';
 
 const TableOfContents = ({ sections, baseRoute }) => (
   <List>
-    {sections.map(({ id, label }) => {
-      const anchorId = id;
-      return (
-        <ListItem>
-          <LetterIcon value={label.slice(0, 1)} />
-          <ListItemText>
-            <a href={`${baseRoute}#${anchorId}`}> {label}</a>
-          </ListItemText>
-        </ListItem>
-      );
-    })}
+    {sections.map(({ id, label }) => (
+      <ListItem key={id}>
+        <LetterIcon value={label.slice(0, 1)} />
+        <ListItemText>
+          <a href={`${baseRoute}#${id}`}> {label}</a>
+        </ListItemText>
+      </ListItem>
+    ))}
   </List>
 );
 

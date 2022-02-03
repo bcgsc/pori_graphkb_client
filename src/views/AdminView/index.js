@@ -10,9 +10,8 @@ import {
 import {
   MailOutline,
 } from '@material-ui/icons';
-import React, {
-  useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback } from 'react';
+import { useQuery } from 'react-query';
 
 import api from '@/services/api';
 
@@ -22,66 +21,37 @@ import AdminTable from './components/AdminTable';
  * View for editing or adding database users.
  */
 const AdminView = () => {
-  const [users, setUsers] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [userRefresh, setUserRefresh] = useState(true);
-  const [groupRefresh, setGroupRefresh] = useState(true);
+  const { data: users = [], refetch: refetchUsers } = useQuery(
+    ['/query', {
+      target: 'User',
+      neighbors: 2,
+      returnProperties: [
+        '@class',
+        '@rid',
+        'createdAt',
+        'email',
+        'groups.@class',
+        'groups.@rid',
+        'groups.name',
+        'name',
+        'signedLicenseAt',
+      ],
+    }],
+    async (route, body) => api.post(route, body).request(),
+  );
 
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.post('/query', {
-        target: 'User',
-        neighbors: 2,
-        returnProperties: [
-          '@class',
-          '@rid',
-          'createdAt',
-          'email',
-          'groups.@class',
-          'groups.@rid',
-          'groups.name',
-          'name',
-          'signedLicenseAt',
-        ],
-      });
-      const result = await controller.request();
-      setUsers(result);
-      setUserRefresh(false);
-    };
-
-    if (userRefresh) {
-      getData();
-    }
-    return () => controller && controller.abort();
-  }, [userRefresh]);
-
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.post('/query', { target: 'UserGroup', neighbors: 2 });
-      const result = await controller.request();
-      setGroups(result);
-      setGroupRefresh(false);
-    };
-
-    if (groupRefresh) {
-      getData();
-    }
-    return () => controller && controller.abort();
-  }, [groupRefresh]);
+  const { data: groups = [], refetch: refetchGroups } = useQuery(
+    ['/query', { target: 'UserGroup', neighbors: 2 }],
+    async (route, body) => api.post(route, body).request(),
+  );
 
   const handleUserChange = useCallback(() => {
-    setUserRefresh(true);
-  }, []);
+    refetchUsers();
+  }, [refetchUsers]);
 
   const handleGroupChange = useCallback(() => {
-    setGroupRefresh(true);
-  }, []);
-
-  if (!users) return null;
+    refetchGroups();
+  }, [refetchGroups]);
 
   return (
     <div className="admin">

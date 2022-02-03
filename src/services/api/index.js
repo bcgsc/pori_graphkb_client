@@ -5,11 +5,23 @@
 import kbSchema from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
+import { QueryClient } from 'react-query';
 
 import { request } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 15 * 60 * 1000, // 15m
+      refetchOnWindowFocus: false,
+      throwOnError: true,
+      refetchOnMount: false,
+    },
+  },
+});
 
 
 const ID_PROP = '@rid';
@@ -132,4 +144,5 @@ export default {
   patch,
   post,
   getDefaultSuggestionQueryBody,
+  queryClient,
 };

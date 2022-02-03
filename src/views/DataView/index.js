@@ -16,7 +16,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { queryCache, useQuery } from 'react-query';
+import { useIsFetching, useQuery } from 'react-query';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
@@ -94,16 +94,16 @@ const getRowsFromBlocks = async ({
       search, skip: block, limit: blockSize, sortModel,
     });
 
-    blockRequests.push(queryCache.prefetchQuery(
+    blockRequests.push(api.queryClient.fetchQuery(
       ['/query', payload],
-      async (route, body) => api.post(route, body),
+      async ({ queryKey: [route, body] }) => api.post(route, body),
     ));
   }
   const data = [];
   (await Promise.all(blockRequests)).forEach(block => data.push(...block));
 
   data.forEach((record) => {
-    queryCache.setQueryData(
+    api.queryClient.setQueryData(
       ['/query', { target: [record['@rid']], neighbors: DEFAULT_NEIGHBORS }],
       [record],
     );
@@ -119,7 +119,7 @@ const DataView = ({
   location: { search: initialSearch }, blockSize, history,
 }) => {
   const [isExportingData, setIsExportingData] = useState(false);
-  const [isLoading, setIsLoading] = useState(0);
+  const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
@@ -132,9 +132,12 @@ const DataView = ({
     search, count: true,
   }), [search]);
 
-  const { data: [{ count: totalRows }] = [{ count: null }] } = useQuery(
+  const { data: totalRows = null } = useQuery(
     ['/query', payload],
-    async (route, body) => api.post(route, body),
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      select: response => response[0]?.count,
+    },
   );
 
   const initializeGrid = useCallback(() => {
@@ -190,24 +193,20 @@ const DataView = ({
     }
   }, [blockSize, gridApi, gridReady, initializeGrid, search, totalRows]);
 
-  // reset loading state on cache load change
-  queryCache.subscribe(() => setIsLoading(queryCache.isFetching));
-
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
 
-  const { data } = useQuery(
+  const { data: detailPanelRow } = useQuery(
     ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
-    async (route, body) => api.post(route, body),
+    async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(detailsRowId),
       onError: err => handleError(err),
+      select: response => response[0],
     },
   );
-
-  const [detailPanelRow] = data ?? [];
 
   const handleToggleDetailPanel = useCallback(async (params) => {
     // no data or clicked link is a link property without a class model

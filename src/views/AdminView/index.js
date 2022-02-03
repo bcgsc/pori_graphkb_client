@@ -37,12 +37,12 @@ const AdminView = () => {
         'signedLicenseAt',
       ],
     }],
-    async (route, body) => api.post(route, body),
+    async ({ queryKey: [route, body] }) => api.post(route, body),
   );
 
   const { data: groups = [], refetch: refetchGroups } = useQuery(
     ['/query', { target: 'UserGroup', neighbors: 2 }],
-    async (route, body) => api.post(route, body),
+    async ({ queryKey: [route, body] }) => api.post(route, body),
   );
 
   const handleUserChange = useCallback(() => {

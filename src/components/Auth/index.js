@@ -41,7 +41,9 @@ const useAuth = () => {
 const AuthProvider = (props) => {
   const { children } = props;
 
-  const [logInOrOut, { isLoading: isAuthenticating, data, error }] = useMutation(
+  const {
+    mutate: logInOrOut, isLoading: isAuthenticating, data, error,
+  } = useMutation(
     async ({ loggingIn }) => {
       if (loggingIn) {
         const loggedIn = await keycloak.init({

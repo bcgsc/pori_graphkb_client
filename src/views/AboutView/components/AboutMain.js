@@ -15,25 +15,28 @@ const AboutMain = () => {
 
   const { data: chartData } = useQuery(
     '/stats?classList=Statement&groupBy=source',
-    async (url) => {
-      const { Statement: result } = await api.get(url);
-      const data = [['source', 'count']];
-      Object.entries(result).forEach(([label, value]) => {
-        data.push([
-          label === 'null'
-            ? 'other'
-            : label,
-          value,
-        ]);
-      });
-      return data;
+    async ({ queryKey: [route] }) => api.get(route),
+    {
+      staleTime: Infinity,
+      select: (response) => {
+        const { Statement: result } = response;
+        const data = [['source', 'count']];
+        Object.entries(result).forEach(([label, value]) => {
+          data.push([
+            label === 'null'
+              ? 'other'
+              : label,
+            value,
+          ]);
+        });
+        return data;
+      },
     },
-    { staleTime: Infinity },
   );
 
   const { data: versions } = useQuery(
     '/version',
-    async url => api.get(url),
+    async ({ queryKey: [route] }) => api.get(route),
     { staleTime: Infinity },
   );
 

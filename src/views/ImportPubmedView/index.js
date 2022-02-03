@@ -26,15 +26,14 @@ const ImportPubmedView = (props) => {
   const [pmid] = useDebounce(text, 1000);
 
   // fetch the pubmed source record
-  const { data: record } = useQuery(
+  const { data: source } = useQuery(
     ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
-    (route, body) => api.post(route, body),
+    ({ queryKey: [route, body] }) => api.post(route, body),
     {
       onError: err => handleErrorSaveLocation(err, history),
+      select: response => response['@rid'],
     },
   );
-
-  const source = record?.['@rid'];
 
   // fetch records that already exist in GraphKB
   const { data: currentRecords, isLoading, refetch: refetchCurrentRecords } = useQuery(
@@ -55,7 +54,7 @@ const ImportPubmedView = (props) => {
         },
       },
     ],
-    (route, body) => api.post(route, body),
+    ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(text),
       onError: err => handleErrorSaveLocation(err, history),
@@ -65,13 +64,13 @@ const ImportPubmedView = (props) => {
   // fetch details from PUBMED
   const { data: externalRecord = null } = useQuery(
     `/extensions/pubmed/${pmid}`,
-    route => api.get(route),
+    ({ queryKey: [route] }) => api.get(route),
     {
       enabled: Boolean(pmid),
     },
   );
 
-  const [importRecord, { isLoading: isImporting }] = useMutation(
+  const { mutate: importRecord, isLoading: isImporting } = useMutation(
     async () => {
       if (externalRecord) {
         try {

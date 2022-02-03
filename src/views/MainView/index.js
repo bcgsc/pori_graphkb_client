@@ -10,7 +10,6 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { ReactQueryConfigProvider } from 'react-query';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
@@ -49,71 +48,61 @@ const Main = () => {
   const [activeLink, setActiveLink] = useState('');
 
   return (
-    <ReactQueryConfigProvider config={{
-      queries: {
-        staleTime: 15 * 60 * 1000, // 15m
-        refetchOnWindowFocus: false,
-        throwOnError: true,
-        refetchOnMount: false,
-      },
-    }}
-    >
-      <div className="main-view">
-        <ActiveLinkContext.Provider value={{ activeLink, setActiveLink }}>
-          <MainNav
-            isOpen={drawerOpen}
-            onChange={({ isOpen }) => {
-              setDrawerOpen(isOpen);
-            }}
-          />
-          <MainAppBar
-            drawerOpen={drawerOpen}
-            onDrawerChange={setDrawerOpen}
-            onLinkChange={({ isOpen }) => {
-              setDrawerOpen(isOpen);
-            }}
-          />
+    <div className="main-view">
+      <ActiveLinkContext.Provider value={{ activeLink, setActiveLink }}>
+        <MainNav
+          isOpen={drawerOpen}
+          onChange={({ isOpen }) => {
+            setDrawerOpen(isOpen);
+          }}
+        />
+        <MainAppBar
+          drawerOpen={drawerOpen}
+          onDrawerChange={setDrawerOpen}
+          onLinkChange={({ isOpen }) => {
+            setDrawerOpen(isOpen);
+          }}
+        />
 
-          <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
-            <Suspense fallback={(<CircularProgress color="secondary" />)}>
-              <Switch>
-                <AuthenticatedRoute component={FeedbackView} path="/feedback" />
-                <Route component={ErrorView} exact path="/error" />
-                <AuthenticatedRoute component={AboutView} path="/about" />
-                <AuthenticatedRoute component={ActivityView} path="/activity" />
-                <AuthenticatedRoute component={QuickSearch} exact path="/query" />
-                <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
-                <AuthenticatedRoute
-                  admin
-                  component={RecordView}
-                  path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
-                />
-                <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:modelName/:rid" />
-                <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:rid" />
-                <AuthenticatedRoute
-                  admin
-                  component={NewRecordView}
-                  path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
-                />
-                <AuthenticatedRoute
-                  component={NewRecordSelectView}
-                  path={`/:variant(new)/:modelName(${
-                    [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map(m => m.toLowerCase())].join('|')
-                  })`}
-                />
-                <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
-                <AuthenticatedRoute component={DataView} path="/data/table" />
-                <AuthenticatedRoute component={GraphView} path="/data/graph" />
-                <AuthenticatedRoute admin component={AdminView} path="/admin" />
-                <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
-                <AuthenticatedRoute component={UserProfileView} path="/user-profile" />
-                <Redirect from="/" to="/query" />
-              </Switch>
-            </Suspense>
-          </section>
-        </ActiveLinkContext.Provider>
-      </div>
-    </ReactQueryConfigProvider>
+        <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
+          <Suspense fallback={(<CircularProgress color="secondary" />)}>
+            <Switch>
+              <AuthenticatedRoute component={FeedbackView} path="/feedback" />
+              <Route component={ErrorView} exact path="/error" />
+              <AuthenticatedRoute component={AboutView} path="/about" />
+              <AuthenticatedRoute component={ActivityView} path="/activity" />
+              <AuthenticatedRoute component={QuickSearch} exact path="/query" />
+              <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
+              <AuthenticatedRoute
+                admin
+                component={RecordView}
+                path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+              />
+              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:modelName/:rid" />
+              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:rid" />
+              <AuthenticatedRoute
+                admin
+                component={NewRecordView}
+                path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
+              />
+              <AuthenticatedRoute
+                component={NewRecordSelectView}
+                path={`/:variant(new)/:modelName(${
+                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map(m => m.toLowerCase())].join('|')
+                })`}
+              />
+              <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
+              <AuthenticatedRoute component={DataView} path="/data/table" />
+              <AuthenticatedRoute component={GraphView} path="/data/graph" />
+              <AuthenticatedRoute admin component={AdminView} path="/admin" />
+              <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
+              <AuthenticatedRoute component={UserProfileView} path="/user-profile" />
+              <Redirect from="/" to="/query" />
+            </Switch>
+          </Suspense>
+        </section>
+      </ActiveLinkContext.Provider>
+    </div>
   );
 };
 

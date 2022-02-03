@@ -13,7 +13,7 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
@@ -39,13 +39,14 @@ const StatementReview = ({
     status, createdBy, comment,
   } = value;
 
-  const { data } = useQuery(
+  const { data: author = createdBy } = useQuery(
     ['/query', { target: [createdBy] }],
-    (url, body) => api.post(url, body),
-    { enabled: !createdBy['@rid'] },
+    ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: !createdBy['@rid'],
+      select: response => response[0],
+    },
   );
-
-  const author = useMemo(() => data?.[0] ?? createdBy, [createdBy, data]);
 
   const previewStr = `${author.name} (${author['@rid']})`;
 

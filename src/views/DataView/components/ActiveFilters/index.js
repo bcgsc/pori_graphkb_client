@@ -18,7 +18,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import copy from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useMemo, useState,
 } from 'react';
 import { useQuery } from 'react-query';
 
@@ -50,20 +50,10 @@ const extractRids = (obj) => {
 
 const ActiveFilters = ({ search }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [payload, setPayload] = useState({});
-  const [routeName, setRouteName] = useState('/query');
-
-  useEffect(() => {
-    const {
-      payload: newPayload,
-      routeName: newRouteName,
-    } = api.getQueryFromSearch({ search, schema });
-    setPayload(newPayload);
-    setRouteName(newRouteName);
-  }, [search]);
-
+  const { payload, routeName } = useMemo(() => api.getQueryFromSearch({ search, schema }), [search]);
   const recordIds = useMemo(() => extractRids(payload), [payload]);
-  const { data } = useQuery(
+
+  const { data: recordHash } = useQuery(
     [
       '/query',
       {
@@ -71,20 +61,22 @@ const ActiveFilters = ({ search }) => {
         returnProperties: ['@class', '@rid', 'name', 'displayName'],
       },
     ],
-    async (route, body) => api.post(route, body),
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: Boolean(recordIds.length),
+      select: (response) => {
+        const hash = {};
+        response.forEach((rec) => {
+          if (rec['@class'] === 'Statement') {
+            hash[rec['@rid']] = 'Statement';
+          } else {
+            hash[rec['@rid']] = schema.getPreview(rec);
+          }
+        });
+        return hash;
+      },
+    },
   );
-
-  const recordHash = useMemo(() => {
-    const hash = {};
-    data.forEach((rec) => {
-      if (rec['@class'] === 'Statement') {
-        hash[rec['@rid']] = 'Statement';
-      } else {
-        hash[rec['@rid']] = schema.getPreview(rec);
-      }
-    });
-    return hash;
-  }, [data]);
 
   const handleToggleOpen = useCallback((event) => {
     if (!anchorEl) {

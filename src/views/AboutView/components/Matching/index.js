@@ -15,7 +15,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { queryCache, useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';
@@ -108,6 +108,7 @@ const MatchView = (props) => {
   const [termType, setTermType] = useState('Vocabulary');
   const [rootText, setRootText] = useState('');
   const [rootTerm] = useDebounce(rootText, DEBOUNCE_MS);
+  const queryClient = useQueryClient();
 
   const { data: { hasTooManyRecords, matches = [], isLoading } = {} } = useQuery(
     ['queries', rootTerm, term, termType],
@@ -122,9 +123,9 @@ const MatchView = (props) => {
       }
 
       const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
-        queries.map(async query => queryCache.prefetchQuery(
+        queries.map(async query => queryClient.fetchQuery(
           ['/query', query],
-          async (key, body) => api.post(key, body),
+          async ({ queryKey: [route, body] }) => api.post(route, body),
           { staleTime: Infinity },
           { throwOnError: true },
         )),

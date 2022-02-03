@@ -59,7 +59,7 @@ const StatementForm = ({
       filters: { name: 'diagnostic indicator' },
     },
     returnProperties: ['name'],
-  }], async (route, body) => api.post(route, body));
+  }], async ({ queryKey: [route, body] }) => api.post(route, body));
 
   const { data: therapeuticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -69,7 +69,7 @@ const StatementForm = ({
       filters: { name: 'therapeutic efficacy' },
     },
     returnProperties: ['name'],
-  }], async (route, body) => api.post(route, body));
+  }], async ({ queryKey: [route, body] }) => api.post(route, body));
 
   const { data: prognosticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -79,7 +79,7 @@ const StatementForm = ({
       filters: { name: 'prognostic indicator' },
     },
     returnProperties: ['name'],
-  }], async (route, body) => api.post(route, body));
+  }], async ({ queryKey: [route, body] }) => api.post(route, body));
 
   const snackbar = useSnackbar();
   const auth = useAuth();
@@ -164,7 +164,7 @@ const StatementForm = ({
     return updatedContent;
   }, [auth]);
 
-  const [addNewAction, { isLoading: isAdding }] = useMutation(
+  const { mutate: addNewAction, isLoading: isAdding } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
@@ -200,7 +200,7 @@ const StatementForm = ({
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
 
-  const [deleteAction, { isLoading: isDeleting }] = useMutation(
+  const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
       const { routeName } = schema.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
@@ -225,7 +225,7 @@ const StatementForm = ({
     deleteAction(content);
   }, [deleteAction, formContent, model.name]);
 
-  const [updateAction, { isLoading: isUpdating }] = useMutation(
+  const { mutate: updateAction, isLoading: isUpdating } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);

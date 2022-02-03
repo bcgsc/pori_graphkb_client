@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render, wait } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 
 import { AuthContext } from '@/components/Auth';
 import api from '@/services/api';
@@ -59,19 +60,21 @@ describe('StatementForm', () => {
 
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(
-      <AuthContext.Provider value={auth}>
-        <SnackbarProvider onEnter={snackbarSpy}>
-          <StatementForm
-            modelName="Statement"
-            onError={onErrorSpy}
-            onSubmit={onSubmitSpy}
-            onTopClick={onTopClickSpy}
-            title="blargh monkeys"
-            value={{ }}
-            variant="edit"
-          />
-        </SnackbarProvider>
-      </AuthContext.Provider>,
+      <QueryClientProvider client={api.queryClient}>
+        <AuthContext.Provider value={auth}>
+          <SnackbarProvider onEnter={snackbarSpy}>
+            <StatementForm
+              modelName="Statement"
+              onError={onErrorSpy}
+              onSubmit={onSubmitSpy}
+              onTopClick={onTopClickSpy}
+              title="blargh monkeys"
+              value={{ }}
+              variant="edit"
+            />
+          </SnackbarProvider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
     );
     expect(getByText('Add Review')).toBeInTheDocument();
   });
@@ -82,19 +85,21 @@ describe('StatementForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <SnackbarProvider onEnter={snackbarSpy}>
-          <AuthContext.Provider value={auth}>
-            <StatementForm
-              modelName="Statement"
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
-              title="blargh monkeys"
-              value={{ }}
-              variant="new"
-            />
-          </AuthContext.Provider>
-        </SnackbarProvider>,
+        <QueryClientProvider client={api.queryClient}>
+          <SnackbarProvider onEnter={snackbarSpy}>
+            <AuthContext.Provider value={auth}>
+              <StatementForm
+                modelName="Statement"
+                onError={onErrorSpy}
+                onSubmit={onSubmitSpy}
+                onTopClick={onTopClickSpy}
+                title="blargh monkeys"
+                value={{ }}
+                variant="new"
+              />
+            </AuthContext.Provider>
+          </SnackbarProvider>
+        </QueryClientProvider>,
       ));
     });
 

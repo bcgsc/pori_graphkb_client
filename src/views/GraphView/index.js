@@ -6,7 +6,7 @@ import {
 import React, {
   useCallback, useMemo, useState,
 } from 'react';
-import { queryCache, useQuery } from 'react-query';
+import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 import { useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
@@ -27,29 +27,32 @@ const { DEFAULT_NEIGHBORS } = config;
  */
 const GraphView = ({ history }) => {
   const { search, pathname } = useLocation();
+  const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
   const recordIds = useMemo(() => getNodeRIDsFromURL(`${pathname}?${search}`), [search, pathname]);
+  const queryClient = useQueryClient();
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
-  const { data: fullRecords } = useQuery(
+  const { data: graphData } = useQuery(
     ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
-    async (url, body) => api.post(url, body),
-    { enabled: Boolean(recordIds.length) },
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: Boolean(recordIds.length),
+      select: (response) => {
+        const recordHash = util.hashRecordsByRID(response);
+        Object.keys(recordHash).forEach((recordId) => {
+          queryClient.setQueryData(
+            [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+            [recordHash[recordId]],
+          );
+        });
+        return recordHash;
+      },
+    },
   );
-
-  const graphData = useMemo(() => {
-    const recordHash = util.hashRecordsByRID(fullRecords);
-    Object.keys(recordHash).forEach((recordId) => {
-      queryCache.setQueryData(
-        [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-        [recordHash[recordId]],
-      );
-    });
-    return recordHash;
-  }, [fullRecords]);
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -62,9 +65,9 @@ const GraphView = ({ history }) => {
       setDetailPanelRow(null);
     } else {
       try {
-        const [fullRecord] = await queryCache.prefetchQuery(
+        const [fullRecord] = await queryClient.fetchQuery(
           ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async (url, body) => api.post(url, body),
+          async ({ queryKey: [route, body] }) => api.post(route, body),
         );
 
         if (!fullRecord) {
@@ -77,7 +80,7 @@ const GraphView = ({ history }) => {
         handleError(err);
       }
     }
-  }, [handleError]);
+  }, [handleError, queryClient]);
 
 
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
@@ -92,9 +95,9 @@ const GraphView = ({ history }) => {
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
   const handleExpandRecord = async (recordId) => {
-    const [fullRecord] = await queryCache.prefetchQuery(
+    const [fullRecord] = await queryClient.fetchQuery(
       ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-      async (url, body) => api.post(url, body),
+      async ({ queryKey: [route, body] }) => api.post(route, body),
     );
     return fullRecord;
   };
@@ -129,7 +132,7 @@ const GraphView = ({ history }) => {
         )}
       </div>
       <div className="data-view__footer">
-        {queryCache.isFetching === 'loading' && (
+        {Boolean(isLoading) && (
           <div className="footer__loader">
             <CircularProgress />
           </div>

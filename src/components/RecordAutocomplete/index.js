@@ -139,19 +139,18 @@ const RecordAutocomplete = (props) => {
     enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength);
   }
 
-  const { data: ungroupedOptions, isLoading } = useQuery(
+  const { data: options, isLoading } = useQuery(
     ['/query', searchBody, { forceListReturn: true }],
-    (route, body, opts) => api.post(route, body, opts),
+    ({ queryKey: [route, body, opts] }) => api.post(route, body, opts),
     {
       enabled,
       onError: (err) => {
         console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
         console.error(err);
       },
+      select: response => groupOptions(response ?? []),
     },
   );
-
-  const options = useMemo(() => groupOptions(ungroupedOptions ?? []), [groupOptions, ungroupedOptions]);
 
   const handleChange = useCallback(
     (newValue, { action: actionType }) => {

@@ -69,7 +69,7 @@ const RecordForm = ({
     formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
   } = form;
 
-  const [addNewAction, { isLoading: isAdding }] = useMutation(
+  const { mutate: addNewAction, isLoading: isAdding } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
@@ -110,7 +110,7 @@ const RecordForm = ({
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
 
 
-  const [deleteAction, { isLoading: isDeleting }] = useMutation(
+  const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
       const { routeName } = schema.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
@@ -139,7 +139,7 @@ const RecordForm = ({
     deleteAction(content);
   }, [deleteAction, formContent, modelName]);
 
-  const [updateAction, { isLoading: isUpdating }] = useMutation(
+  const { mutate: updateAction, isLoading: isUpdating } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);

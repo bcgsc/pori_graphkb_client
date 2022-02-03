@@ -4,6 +4,7 @@ import {
   fireEvent, render, wait, waitForElement,
 } from '@testing-library/react';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 
 import api from '@/services/api';
 
@@ -47,14 +48,16 @@ describe('RecordAutocomplete (data-fetching)', () => {
   test('singleLoad triggers query', async () => {
     const placeholder = 'input something';
     const { getByText, getByTestId } = render(
-      <RecordAutocomplete
-        getQueryBody={() => ({})}
-        minSearchLength={0}
-        name="test"
-        onChange={jest.fn()}
-        placeholder={placeholder}
-        singleLoad
-      />,
+      <QueryClientProvider client={api.queryClient}>
+        <RecordAutocomplete
+          getQueryBody={() => ({})}
+          minSearchLength={0}
+          name="test"
+          onChange={jest.fn()}
+          placeholder={placeholder}
+          singleLoad
+        />
+      </QueryClientProvider>,
     );
 
     await wait(() => {

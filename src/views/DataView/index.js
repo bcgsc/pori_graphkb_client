@@ -11,9 +11,12 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { AgGridReact } from 'ag-grid-react';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
-import { queryCache } from 'react-query';
+import { queryCache, useQuery } from 'react-query';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
@@ -119,15 +122,23 @@ const DataView = ({
   location: { search: initialSearch }, blockSize, history,
 }) => {
   const [isExportingData, setIsExportingData] = useState(false);
-  const [totalRows, setTotalRows] = useState(null);
   const [isLoading, setIsLoading] = useState(0);
   const [search, setSearch] = useState(initialSearch);
   const [selectedRecords, setSelectedRecords] = useState([]);
-  const [detailPanelRow, setDetailPanelRow] = useState(null);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
+  const [detailsRowId, setDetailsRowId] = useState(null);
   const {
     gridApi, colApi, onGridReady, gridReady,
   } = useGrid();
+
+  const payload = useMemo(() => getQueryPayload({
+    search, count: true,
+  }), [search]);
+
+  const { data: [{ count: totalRows }] = [{ count: null }] } = useQuery(
+    ['/query', payload],
+    async (route, body) => api.post(route, body).request(),
+  );
 
   const initializeGrid = useCallback(() => {
     gridApi.setColumnDefs([
@@ -169,23 +180,6 @@ const DataView = ({
     setSearch(newSearch);
   }, [initialSearch]);
 
-  useEffect(() => {
-    // count the number of expected rows
-    const fetchTotalRowCount = async () => {
-      const payload = getQueryPayload({
-        search, count: true,
-      });
-      const [{ count }] = await queryCache.prefetchQuery(
-        ['/query', payload],
-        async (route, body) => api.post(route, body).request(),
-      );
-      setTotalRows(count);
-    };
-
-    setTotalRows(null);
-    fetchTotalRowCount();
-  }, [search]);
-
   // set up infinitite row model data source
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -207,27 +201,25 @@ const DataView = ({
   }, [history, search]);
 
 
-  const handleToggleDetailPanel = useCallback(async ({ data } = {}) => {
-    // no data or clicked link is a link property without a class model
-    if (!data || data.isLinkProp) {
-      setDetailPanelRow(null);
-    } else {
-      try {
-        const [fullRecord] = await queryCache.prefetchQuery(
-          ['/query', { target: [data['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async (route, body) => api.post(route, body).request(),
-        );
+  const { data } = useQuery(
+    ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
+    async (route, body) => api.post(route, body).request(),
+    {
+      enabled: Boolean(detailsRowId),
+      onError: err => handleError(err),
+    },
+  );
 
-        if (!fullRecord) {
-          setDetailPanelRow(null);
-        } else {
-          setDetailPanelRow(fullRecord);
-        }
-      } catch (err) {
-        handleError(err);
-      }
+  const [detailPanelRow] = data ?? [];
+
+  const handleToggleDetailPanel = useCallback(async (params) => {
+    // no data or clicked link is a link property without a class model
+    if (!params?.data || params.data.isLinkProp) {
+      setDetailsRowId(null);
+    } else {
+      setDetailsRowId(params.data['@rid']);
     }
-  }, [handleError]);
+  }, []);
 
   /**
    * Opens the options menu. The trigger is defined on this component but
@@ -364,7 +356,6 @@ const DataView = ({
             infiniteInitialRowCount={1}
             maxBlocksInCache={0}
             maxConcurrentDatasourceRequests={1}
-              // onBodyScroll={detectFetchTrigger}
             onCellFocused={({ rowIndex }) => {
               if (rowIndex !== null) {
                 const rowNode = gridApi.getDisplayedRowAtIndex(rowIndex);

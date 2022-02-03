@@ -5,9 +5,8 @@ import {
 } from '@material-ui/core';
 import { formatDistanceToNow } from 'date-fns';
 import { useSnackbar } from 'notistack';
-import React, {
-  useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
@@ -16,52 +15,24 @@ import api from '@/services/api';
 import TableOfContext from './TableOfContents';
 
 const AboutUsageTerms = () => {
-  const auth = useAuth();
+  const { user } = useAuth();
   const snackbar = useSnackbar();
+  const [hasAcknowledgedTerms, setHasAcknowledgedTerms] = useState(false);
+  const [hasSigned, setHasSigned] = useState(false);
 
-  const [isSigned, setIsSigned] = useState(false);
-  const [requiresSigning, setRequiresSigning] = useState(false);
-  const [licenseContent, setlicenseContent] = useState([]);
-  const [licenseEnactedAt, setLicenseEnactedAt] = useState((new Date()).getTime());
+  const { data } = useQuery(
+    ['/license', user.signedLicenseAt],
+    () => api.get('/license').request(),
+  );
 
-
-  // get the stats for the pie chart
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      controller = api.get('/license');
-      const { content, enactedAt } = await controller.request();
-      setlicenseContent(content);
-      setLicenseEnactedAt(enactedAt);
-    };
-    getData();
-    return () => controller && controller.abort();
-  }, [auth]);
-
-  useEffect(() => {
-    let controller;
-
-    const getData = async () => {
-      const { user } = auth;
-
-      if (!user || !user.signedLicenseAt || user.signedLicenseAt < licenseEnactedAt) {
-        setRequiresSigning(true);
-      } else {
-        setIsSigned(true);
-        setRequiresSigning(false);
-      }
-    };
-    getData();
-    return () => controller && controller.abort();
-  }, [licenseEnactedAt, auth]);
+  const requiresSigning = Boolean(!data || !user || !user.signedLicenseAt || user.signedLicenseAt < data.enactedAt);
+  const isSigned = !requiresSigning || hasSigned;
 
 
   const handleConfirmSign = useCallback(async () => {
     await api.post('/license/sign').request();
     snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });
-    setIsSigned(false);
-    setRequiresSigning(false);
+    setHasSigned(true);
   }, [snackbar]);
 
   return (
@@ -69,9 +40,9 @@ const AboutUsageTerms = () => {
       <Typography variant="h2">
         GraphKB Terms of Use
       </Typography>
-      <TableOfContext baseRoute="about/terms" sections={licenseContent} />
-      {licenseContent.map(sectionDatum => (
-        <div>
+      <TableOfContext baseRoute="about/terms" sections={data?.content ?? []} />
+      {data?.content.map(sectionDatum => (
+        <div key={sectionDatum.id}>
           <Typography id={sectionDatum.id} variant="h3">
             {sectionDatum.label}
           </Typography>
@@ -84,24 +55,26 @@ const AboutUsageTerms = () => {
         <FormControlLabel
           control={(
             <Checkbox
-              checked={isSigned}
+              checked={isSigned || hasAcknowledgedTerms}
               disabled={!requiresSigning}
-              onChange={(_, value) => setIsSigned(value)}
+              onChange={(_, value) => setHasAcknowledgedTerms(value)}
             />
                     )}
           label="I have read and understood the terms of use"
         />
         <ActionButton
-          disabled={!isSigned || !requiresSigning}
+          disabled={isSigned || !hasAcknowledgedTerms}
           onClick={handleConfirmSign}
           requireConfirm={false}
         >
           Confirm
         </ActionButton>
       </div>
-      <Typography>
-        page last updated {formatDistanceToNow(licenseEnactedAt)} ago
-      </Typography>
+      {data?.enactedAt && (
+        <Typography>
+          page last updated {formatDistanceToNow(data.enactedAt)} ago
+        </Typography>
+      )}
     </div>
   );
 };

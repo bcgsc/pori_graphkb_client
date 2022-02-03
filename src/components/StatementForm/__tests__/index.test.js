@@ -1,35 +1,21 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
 import { AuthContext } from '@/components/Auth';
+import api from '@/services/api';
 
 import StatementForm from '..';
 
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.mock('@/services/api', () => {
-  const mockRequest = () => ({
-    request: () => Promise.resolve(
-      [],
-    ),
-    abort: () => {},
-  });
-
-  // to check that initial reviewStatus is set to initial by default
-  const mockPost = jest.fn((route, payload) => ({ request: () => payload, abort: () => {} }));
-  return ({
-    delete: jest.fn().mockReturnValue(mockRequest()),
-    post: mockPost,
-    get: jest.fn().mockReturnValue(mockRequest()),
-    patch: jest.fn().mockReturnValue(mockRequest()),
-    defaultSuggestionHandler: jest.fn().mockReturnValue(mockRequest()),
-  });
-});
-
+jest.spyOn(api, 'post').mockImplementation((_, payload) => ({
+  request: () => payload,
+  abort: () => {},
+}));
 
 jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,
@@ -137,7 +123,9 @@ describe('StatementForm', () => {
           createdBy: '23:9',
         }],
       };
-      expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
+      await wait(() => {
+        expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
+      });
     });
   });
 });

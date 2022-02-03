@@ -28,24 +28,9 @@ class ApiCall {
     } = callOptions || {};
     this.endpoint = endpoint;
     this.requestOptions = requestOptions;
-    this.controller = null;
     this.forceListReturn = forceListReturn;
     this.forceRecordReturn = forceRecordReturn;
     this.name = name || endpoint;
-  }
-
-  /**
-     * Cancel this fetch request
-     */
-  abort() {
-    if (this.controller) {
-      this.controller.abort();
-      this.controller = null;
-    }
-  }
-
-  isFinished() {
-    return !this.controller;
   }
 
   /**
@@ -53,7 +38,7 @@ class ApiCall {
      * or login pages
      */
   @boundMethod
-  async request(ignoreAbort = true) {
+  async request() {
     if (
       this.requestOptions.method !== 'GET'
       && !['/query', '/parse', '/token'].includes(this.endpoint)
@@ -61,7 +46,6 @@ class ApiCall {
     ) {
       throw new Error('Write operations are disabled in DEMO mode. Changes will not submit');
     }
-    this.controller = new AbortController();
 
     let response;
 
@@ -73,17 +57,12 @@ class ApiCall {
           headers: {
             'Content-type': 'application/json',
           },
-          signal: this.controller.signal,
         },
       );
     } catch (err) {
-      if (err.name === 'AbortError' && ignoreAbort) {
-        return null;
-      }
       // https://www.bcgsc.ca/jira/browse/SYS-55907
       console.error(err);
       console.error('Fetch error. Re-trying Request with cache-busting');
-      this.controller = new AbortController();
 
       try {
         response = await fetch(
@@ -93,19 +72,14 @@ class ApiCall {
             headers: {
               'Content-type': 'application/json',
             },
-            signal: this.controller.signal,
             cache: 'reload',
           },
         );
       } catch (err2) {
-        if (err2.name === 'AbortError' && ignoreAbort) {
-          return null;
-        }
         console.error(err2);
         throw err2;
       }
     }
-    this.controller = null;
 
     if (response.ok) {
       const body = await response.json();
@@ -163,10 +137,6 @@ class ApiCallSet {
 
   push(call) {
     this.calls.push(call);
-  }
-
-  abort() {
-    this.calls.forEach(controller => controller.abort());
   }
 
   async request() {

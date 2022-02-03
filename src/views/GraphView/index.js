@@ -4,12 +4,13 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useMemo, useState,
 } from 'react';
-import { queryCache } from 'react-query';
+import { queryCache, useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
-import { HistoryPropType, LocationPropType } from '@/components/types';
+import { HistoryPropType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -24,49 +25,31 @@ const { DEFAULT_NEIGHBORS } = config;
 /**
  * Shows the search result filters and an edit button
  */
-const GraphView = ({
-  location: { search }, history,
-}) => {
+const GraphView = ({ history }) => {
+  const { search, pathname } = useLocation();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
-  const [recordIds, setRecordIds] = useState([]);
-  const [graphData, setGraphData] = useState(null);
+  const recordIds = useMemo(() => getNodeRIDsFromURL(`${pathname}?${search}`), [search, pathname]);
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
+  const { data: fullRecords } = useQuery(
+    ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
+    async (url, body) => api.post(url, body).request(),
+    { enabled: Boolean(recordIds.length) },
+  );
 
-  useEffect(() => {
-    const decodedNodes = getNodeRIDsFromURL(window.location.href);
-    setRecordIds(decodedNodes);
-  }, [handleError]);
-
-  useEffect(() => {
-    const fetchRecords = async () => {
-      const fullRecords = await queryCache.prefetchQuery(
-        ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
-        async (url, body) => {
-          const controller = api.post(url, body);
-          const result = await controller.request();
-          return result;
-        },
+  const graphData = useMemo(() => {
+    const recordHash = util.hashRecordsByRID(fullRecords);
+    Object.keys(recordHash).forEach((recordId) => {
+      queryCache.setQueryData(
+        [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+        [recordHash[recordId]],
       );
-
-      const recordHash = util.hashRecordsByRID(fullRecords);
-      Object.keys(recordHash).forEach((recordId) => {
-        queryCache.setQueryData(
-          [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-          [recordHash[recordId]],
-        );
-      });
-
-      setGraphData(recordHash);
-    };
-
-    if (recordIds.length) {
-      fetchRecords();
-    }
-  }, [recordIds, recordIds.length]);
+    });
+    return recordHash;
+  }, [fullRecords]);
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -163,7 +146,6 @@ const GraphView = ({
 
 GraphView.propTypes = {
   history: HistoryPropType.isRequired,
-  location: LocationPropType.isRequired,
 };
 
 

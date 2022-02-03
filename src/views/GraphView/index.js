@@ -45,11 +45,7 @@ const GraphView = ({
     const fetchRecords = async () => {
       const fullRecords = await queryCache.prefetchQuery(
         ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
-        async (url, body) => {
-          const controller = api.post(url, body);
-          const result = await controller.request();
-          return result;
-        },
+        async (url, body) => api.post(url, body),
       );
 
       const recordHash = util.hashRecordsByRID(fullRecords);
@@ -81,11 +77,7 @@ const GraphView = ({
       try {
         const [fullRecord] = await queryCache.prefetchQuery(
           ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async (url, body) => {
-            const controller = api.post(url, body);
-            const result = await controller.request();
-            return result;
-          },
+          async (url, body) => api.post(url, body),
         );
 
         if (!fullRecord) {
@@ -115,7 +107,7 @@ const GraphView = ({
   const handleExpandRecord = async (recordId) => {
     const [fullRecord] = await queryCache.prefetchQuery(
       ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-      async (url, body) => api.post(url, body).request(),
+      async (url, body) => api.post(url, body),
     );
     return fullRecord;
   };

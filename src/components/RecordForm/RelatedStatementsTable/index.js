@@ -63,7 +63,7 @@ const RelatedStatementsTable = ({ recordId }) => {
         'evidence.displayName',
         'subject.displayName',
       ],
-    }], async (route, body) => api.post(route, body).request(),
+    }], async (route, body) => api.post(route, body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );
 

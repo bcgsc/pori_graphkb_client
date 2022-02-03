@@ -71,7 +71,7 @@ const RecordForm = ({
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.post(routeName, payload).request();
+      return api.post(routeName, payload);
     },
     {
       onSuccess: (result) => {
@@ -111,7 +111,7 @@ const RecordForm = ({
   const [deleteAction, { isLoading: isDeleting }] = useMutation(
     async (content) => {
       const { routeName } = schema.get(content);
-      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`).request();
+      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
     {
       onSuccess: (_, content) => {
@@ -141,7 +141,7 @@ const RecordForm = ({
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload).request();
+      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
     },
     {
       onSuccess: (result) => {

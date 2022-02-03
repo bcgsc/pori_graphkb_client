@@ -93,10 +93,7 @@ const getRowsFromBlocks = async ({
 
     blockRequests.push(queryCache.prefetchQuery(
       ['/query', payload],
-      async (route, body) => {
-        const result = await api.post(route, body).request();
-        return result;
-      },
+      async (route, body) => api.post(route, body),
     ));
   }
   const data = [];
@@ -177,7 +174,7 @@ const DataView = ({
       });
       const [{ count }] = await queryCache.prefetchQuery(
         ['/query', payload],
-        async (route, body) => api.post(route, body).request(),
+        async (route, body) => api.post(route, body),
       );
       setTotalRows(count);
     };
@@ -215,7 +212,7 @@ const DataView = ({
       try {
         const [fullRecord] = await queryCache.prefetchQuery(
           ['/query', { target: [data['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async (route, body) => api.post(route, body).request(),
+          async (route, body) => api.post(route, body),
         );
 
         if (!fullRecord) {

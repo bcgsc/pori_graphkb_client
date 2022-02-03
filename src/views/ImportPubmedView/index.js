@@ -28,7 +28,7 @@ const ImportPubmedView = (props) => {
   // fetch the pubmed source record
   const { data: record } = useQuery(
     ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
-    (route, body) => api.post(route, body).request(),
+    (route, body) => api.post(route, body),
     {
       onError: err => handleErrorSaveLocation(err, history),
     },
@@ -55,7 +55,7 @@ const ImportPubmedView = (props) => {
         },
       },
     ],
-    (route, body) => api.post(route, body).request(),
+    (route, body) => api.post(route, body),
     {
       enabled: Boolean(text),
       onError: err => handleErrorSaveLocation(err, history),
@@ -65,7 +65,7 @@ const ImportPubmedView = (props) => {
   // fetch details from PUBMED
   const { data: externalRecord = null } = useQuery(
     `/extensions/pubmed/${pmid}`,
-    route => api.get(route).request(),
+    route => api.get(route),
     {
       enabled: Boolean(pmid),
     },
@@ -75,8 +75,7 @@ const ImportPubmedView = (props) => {
     async () => {
       if (externalRecord) {
         try {
-          const newCall = api.post('/publications', { ...externalRecord, source });
-          const result = await newCall.request();
+          const result = await api.post('/publications', { ...externalRecord, source });
           snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
           refetchCurrentRecords();
         } catch (err) {

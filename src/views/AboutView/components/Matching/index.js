@@ -129,7 +129,7 @@ const MatchView = (props) => {
         const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
           queries.map(async query => queryCache.prefetchQuery(
             ['/query', query],
-            async (key, bodykey) => api.post(key, bodykey).request(),
+            async (key, bodykey) => api.post(key, bodykey),
             { staleTime: Infinity },
             { throwOnError: false },
           )),

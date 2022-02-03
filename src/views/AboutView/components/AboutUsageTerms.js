@@ -21,7 +21,7 @@ const AboutUsageTerms = () => {
 
   const { data, refetch } = useQuery(
     ['/license', user.signedLicenseAt],
-    () => api.get('/license').request(),
+    () => api.get('/license'),
   );
 
   const requiresSigning = Boolean(!data || !user || !user.signedLicenseAt || user.signedLicenseAt < data.licenseEnactedAt);
@@ -29,7 +29,7 @@ const AboutUsageTerms = () => {
 
 
   const handleConfirmSign = useCallback(async () => {
-    await api.post('/license/sign').request();
+    await api.post('/license/sign');
     snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });
     refetch();
   }, [refetch, snackbar]);

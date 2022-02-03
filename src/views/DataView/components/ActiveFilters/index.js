@@ -72,7 +72,7 @@ const ActiveFilters = ({ search }) => {
             target: recordIds,
             returnProperties,
           }],
-          async (route, body) => api.post(route, body).request(),
+          async (route, body) => api.post(route, body),
         );
         const hash = {};
         result.forEach((rec) => {

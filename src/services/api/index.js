@@ -6,7 +6,7 @@ import kbSchema from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 
-import { ApiCall } from './call';
+import { request } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
@@ -29,7 +29,7 @@ const patch = (endpoint, payload, callOptions) => {
     method: 'PATCH',
     body: jc.stringify(changes),
   };
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 /**
@@ -40,7 +40,7 @@ const get = (endpoint, callOptions) => {
   const init = {
     method: 'GET',
   };
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 /**
@@ -53,7 +53,7 @@ const post = (endpoint, payload, callOptions) => {
     method: 'POST',
     body: jc.stringify(payload),
   };
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 /**
@@ -65,7 +65,7 @@ const del = (endpoint, callOptions) => {
     method: 'DELETE',
   };
 
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 

@@ -12,20 +12,13 @@ import RecordForm from '..';
 const auth = { user: { '@rid': '23:9' } };
 
 jest.mock('@/services/api', () => {
-  const mockRequest = () => ({
-    request: () => Promise.resolve(
-      [],
-    ),
-    abort: () => {},
-  });
-
   // to check that initial reviewStatus is set to initial by default
-  const mockPost = jest.fn((route, payload) => ({ request: () => payload, abort: () => {} }));
+  const mockPost = jest.fn((route, payload) => payload);
   return ({
-    delete: jest.fn().mockReturnValue(mockRequest()),
+    delete: jest.fn().mockReturnValue([]),
     post: mockPost,
-    get: jest.fn().mockReturnValue(mockRequest()),
-    patch: jest.fn().mockReturnValue(mockRequest()),
+    get: jest.fn().mockReturnValue([]),
+    patch: jest.fn().mockReturnValue([]),
   });
 });
 

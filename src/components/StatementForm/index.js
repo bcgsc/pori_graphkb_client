@@ -59,7 +59,7 @@ const StatementForm = ({
       filters: { name: 'diagnostic indicator' },
     },
     returnProperties: ['name'],
-  }], async (route, body) => api.post(route, body).request());
+  }], async (route, body) => api.post(route, body));
 
   const { data: therapeuticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -69,7 +69,7 @@ const StatementForm = ({
       filters: { name: 'therapeutic efficacy' },
     },
     returnProperties: ['name'],
-  }], async (route, body) => api.post(route, body).request());
+  }], async (route, body) => api.post(route, body));
 
   const { data: prognosticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -79,7 +79,7 @@ const StatementForm = ({
       filters: { name: 'prognostic indicator' },
     },
     returnProperties: ['name'],
-  }], async (route, body) => api.post(route, body).request());
+  }], async (route, body) => api.post(route, body));
 
   const snackbar = useSnackbar();
   const auth = useAuth();
@@ -168,7 +168,7 @@ const StatementForm = ({
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.post(routeName, payload).request();
+      return api.post(routeName, payload);
     },
     {
       onSuccess: (result) => {
@@ -203,7 +203,7 @@ const StatementForm = ({
   const [deleteAction, { isLoading: isDeleting }] = useMutation(
     async (content) => {
       const { routeName } = schema.get(content);
-      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`).request();
+      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
     {
       onSuccess: (_, content) => {
@@ -229,7 +229,7 @@ const StatementForm = ({
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload).request();
+      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
     },
     {
       onSuccess: (result) => {

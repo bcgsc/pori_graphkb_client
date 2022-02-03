@@ -45,7 +45,7 @@ const StatementReview = ({
     const fetchUser = async () => {
       const user = await queryCache.prefetchQuery(
         ['/query', { target: [createdBy] }],
-        (url, body) => api.post(url, body).request(),
+        (url, body) => api.post(url, body),
       );
       setAuthor(user[0]);
     };

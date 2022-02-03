@@ -26,7 +26,6 @@ jest.mock('@/services/api', () => {
     post: mockPost,
     get: jest.fn().mockReturnValue(mockRequest()),
     patch: jest.fn().mockReturnValue(mockRequest()),
-    defaultSuggestionHandler: jest.fn().mockReturnValue(mockRequest()),
   });
 });
 

@@ -13,10 +13,10 @@ describe('RecordAutocomplete', () => {
     const placeholder = 'blargh monkeys';
     const { getByText } = render(
       <RecordAutocomplete
+        getQueryBody={jest.fn()}
         name="test"
         onChange={jest.fn()}
         placeholder={placeholder}
-        searchHandler={jest.fn()}
       />,
     );
     expect(getByText(placeholder)).toBeInTheDocument();
@@ -26,10 +26,10 @@ describe('RecordAutocomplete', () => {
     const record = { '@rid': '#2:3', name: 'bob' };
     const { getByText } = render(
       <RecordAutocomplete
+        getQueryBody={jest.fn()}
         itemToString={v => v.name}
         name="test"
         onChange={jest.fn()}
-        searchHandler={jest.fn()}
         value={record}
       />,
     );
@@ -40,11 +40,11 @@ describe('RecordAutocomplete', () => {
     const record = [{ '@rid': '#2:3', name: 'bob' }, { '@rid': '#2:4', name: 'alice' }];
     const { getByText } = render(
       <RecordAutocomplete
+        getQueryBody={jest.fn()}
         isMulti
         itemToString={v => v.name}
         name="test"
         onChange={jest.fn()}
-        searchHandler={jest.fn()}
         value={record}
       />,
     );

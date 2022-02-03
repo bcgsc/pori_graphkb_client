@@ -5,31 +5,17 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
 import { AuthContext } from '@/components/Auth';
+import api from '@/services/api';
 
 import StatementForm from '..';
 
 
 const auth = { user: { '@rid': '23:9' } };
 
-jest.mock('@/services/api', () => {
-  const mockRequest = () => ({
-    request: () => Promise.resolve(
-      [],
-    ),
-    abort: () => {},
-  });
-
-  // to check that initial reviewStatus is set to initial by default
-  const mockPost = jest.fn((route, payload) => ({ request: () => payload, abort: () => {} }));
-  return ({
-    delete: jest.fn().mockReturnValue(mockRequest()),
-    post: mockPost,
-    get: jest.fn().mockReturnValue(mockRequest()),
-    patch: jest.fn().mockReturnValue(mockRequest()),
-    defaultSuggestionHandler: jest.fn().mockReturnValue(mockRequest()),
-  });
-});
-
+jest.spyOn(api, 'post').mockImplementation((_, payload) => ({
+  request: () => payload,
+  abort: () => {},
+}));
 
 jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,

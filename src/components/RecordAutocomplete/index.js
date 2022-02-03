@@ -3,28 +3,17 @@ import './index.scss';
 import { NoSsr } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useEffect,
-  useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
+import { useQuery } from 'react-query';
 import Select from 'react-select';
 import { useDebounce } from 'use-debounce';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+
+import api from '@/services/api';
 
 import defaultComponents from './components';
 
 const MIN_TERM_LENGTH = 3;
-
-/**
- * @typedef {function} searchHandlerRequest
- * @param {string} searchTermValue the term to search for
- * @returns {Promise.<Array.<object>>} the list of records suggested
- */
-
-/**
- * @typedef {function} searchHandler
- * @param {string} term the term to search
- * @returns {ApiCall} an instance of api call which implements the abort and request functions
- */
 
 const defaultOptionGrouping = (rawOptions) => {
   const sourceGroups = {};
@@ -68,7 +57,7 @@ const defaultOptionGrouping = (rawOptions) => {
   * @property {object} props.components components to be passed to react-select
   * @property {object} props.DetailChipProps properties to be applied to the DetailChip
   * @property {object|Array.<object>} props.value the initial selected value(s)
-  * @property {searchHandler} props.searchHandler the function to create the async options call
+  * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
   * @property {string} props.className Additional css class name to use on the main select component
   * @property {string} props.errorText Error message
   * @property {string} props.label the label for this form field
@@ -94,7 +83,7 @@ const RecordAutocomplete = (props) => {
     onChange,
     placeholder,
     required,
-    searchHandler,
+    getQueryBody,
     singleLoad,
     helperText: initialHelperText,
     groupOptions,
@@ -102,8 +91,6 @@ const RecordAutocomplete = (props) => {
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [options, setOptions] = useState([]);
   const [helperText, setHelperText] = useState(initialHelperText);
   const [selectedValue, setSelectedValue] = useState(value);
   const [debouncedSearchTerm] = useDebounce(searchTerm, debounceMs);
@@ -130,93 +117,41 @@ const RecordAutocomplete = (props) => {
     }
   }, [searchTerm]);
 
-  // initial load handler
-  useDeepCompareEffect(
+  const searchBody = useMemo(
     () => {
-      let controller;
-
-      const getOptions = async () => {
-        if (controller) {
-          // if there is already a request being executed  abort it and make a new one
-          controller.abort();
-          setIsLoading(false);
-        }
-        controller = searchHandler('');
-
-        try {
-          setIsLoading(true);
-          const result = await controller.request();
-
-          if (groupOptions) {
-            setOptions(groupOptions(result || []));
-          } else {
-            setOptions(result || []);
-          }
-          setIsLoading(false);
-        } catch (err) {
-          console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
-          console.error(err);
-          setIsLoading(false);
-        }
-      };
-
-      if (singleLoad && !disabled) {
-        getOptions();
-      }
-      return () => controller && controller.abort();
-    },
-    [disabled, searchHandler, singleLoad],
-  );
-
-  // fetch options based on the current search term
-  useDeepCompareEffect(
-    () => {
-      let controller;
-
-      const getOptions = async () => {
-        if (debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength) {
-          if (controller) {
-            // if there is already a request being executed  abort it and make a new one
-            controller.abort();
-            setIsLoading(false);
-          }
-          const terms = debouncedSearchTerm.split(' ');
-          const searchTerms = terms
-            .filter(term => term)
-            .filter(term => term.length >= MIN_TERM_LENGTH)
-            .join(' ');
-          controller = searchHandler(searchTerms);
-
-          try {
-            setIsLoading(true);
-            const result = await controller.request();
-
-            if (groupOptions) {
-              setOptions(groupOptions(result || []));
-            } else {
-              setOptions(result || []);
-            }
-
-            setIsLoading(false);
-          } catch (err) {
-            console.error('Error in getting the RecordAutocomplete suggestions');
-            console.error(err);
-            setIsLoading(false);
-          }
-          controller = null;
-        } else {
-          setOptions([]);
-        }
-      };
+      let searchTerms = '';
 
       if (!singleLoad) {
-        getOptions();
+        const terms = debouncedSearchTerm.split(' ');
+        searchTerms = terms
+          .filter(term => term)
+          .filter(term => term.length >= MIN_TERM_LENGTH)
+          .join(' ');
       }
-      return () => controller && controller.abort();
+      return getQueryBody(searchTerms);
     },
-    // Only call effect if debounced search term changes
-    [debouncedSearchTerm, minSearchLength, searchHandler, singleLoad],
+    [debouncedSearchTerm, getQueryBody, singleLoad],
   );
+
+  let enabled = !disabled;
+
+  if (!singleLoad) {
+    enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength);
+  }
+
+  const { data: ungroupedOptions, isLoading } = useQuery(
+    ['/query', searchBody, { forceRecordReturn: true }],
+    (route, body, opts) => api.post(route, body, opts).request(),
+    {
+      enabled,
+      onError: (err) => {
+        console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
+        console.error(err);
+      },
+    },
+  );
+
+  const options = useMemo(() => groupOptions(ungroupedOptions ?? []), [groupOptions, ungroupedOptions]);
 
   const handleChange = useCallback(
     (newValue, { action: actionType }) => {
@@ -326,8 +261,8 @@ const RecordAutocomplete = (props) => {
 };
 
 RecordAutocomplete.propTypes = {
+  getQueryBody: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
-  searchHandler: PropTypes.func.isRequired,
   DetailChipProps: PropTypes.shape({
     getLink: PropTypes.func,
     valueToString: PropTypes.func,

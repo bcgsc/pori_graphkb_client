@@ -70,52 +70,32 @@ const del = (endpoint, callOptions) => {
 
 
 /**
- * @typedef {function} searchHandlerRequest
- * @param {string} searchTermValue the term to search for
- * @returns {Array.<object>|object} the record or list of records suggested
- */
-
-/**
- * @typedef {object} searchHandler
- * @property {function} abort aborts the current fetch request
- * @property {searchHandlerRequest} request the asynchronous call to fetch the data
- */
-
-/**
  * @param {ClassModel} model the schema model to use to generate the search function
- * @returns {searchHandler} the function to retrieve the sugesstions based on some input text
+ * @returns the function to retrieve the query request body based on some input text
  */
-const defaultSuggestionHandler = (model, opt = {}) => {
-  const searchHandler = (textInput) => {
-    const { ...rest } = opt;
+const getDefaultSuggestionQueryBody = model => (textInput) => {
+  let body = {};
 
-    const callOptions = { forceListReturn: true, ...rest };
-    let body = {};
-
-    if (kbSchema.util.looksLikeRID(textInput)) {
-      body = {
-        target: [textInput],
-      };
-      return post('/query', body, callOptions);
-    }
-
+  if (kbSchema.util.looksLikeRID(textInput)) {
     body = {
-      queryType: 'keyword',
-      target: `${model.name}`,
-      keyword: textInput,
-      limit: MAX_SUGGESTIONS,
-      neighbors: 1,
+      target: [textInput],
     };
+    return body;
+  }
 
-    if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-      body.orderBy = ['source.sort', 'name', 'sourceId'];
-    }
-    return post('/query', body, callOptions);
+  body = {
+    queryType: 'keyword',
+    target: `${model.name}`,
+    keyword: textInput,
+    limit: MAX_SUGGESTIONS,
+    neighbors: 1,
   };
-  searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)
-  return searchHandler;
-};
 
+  if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
+    body.orderBy = ['source.sort', 'name', 'sourceId'];
+  }
+  return body;
+};
 
 /**
  * encodes complex/payload for POST query request. Returns search with encoded complex.
@@ -145,11 +125,11 @@ export default {
   getQueryFromSearch,
   getSearchFromQuery,
   CLASS_PROP,
-  defaultSuggestionHandler,
   delete: del,
   buildSearchFromParseVariant,
   get,
   ID_PROP,
   patch,
   post,
+  getDefaultSuggestionQueryBody,
 };

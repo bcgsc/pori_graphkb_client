@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
@@ -123,7 +123,9 @@ describe('StatementForm', () => {
           createdBy: '23:9',
         }],
       };
-      expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
+      await wait(() => {
+        expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
+      });
     });
   });
 });

@@ -9,10 +9,7 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
-import React, {
-  useCallback, useEffect,
-  useRef, useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
@@ -33,14 +30,11 @@ const SteppedForm = ({
 }) => {
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
-  const controllers = useRef([]);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
   const form = useSchemaForm(properties, { '@class': modelName, ...value }, { variant: formVariant });
   const {
     formContent, formErrors, formHasErrors, formIsDirty,
   } = form;
-
-  useEffect(() => () => controllers.current.forEach(c => c.abort()), []);
 
   const handleOnClick = useCallback((index) => {
     setStepVisit(index, true);

@@ -12,10 +12,7 @@ import StatementForm from '..';
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.spyOn(api, 'post').mockImplementation((_, payload) => ({
-  request: () => payload,
-  abort: () => {},
-}));
+jest.spyOn(api, 'post').mockImplementation((_, payload) => payload);
 
 jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,

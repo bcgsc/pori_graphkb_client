@@ -96,10 +96,7 @@ const getRowsFromBlocks = async ({
 
     blockRequests.push(queryCache.prefetchQuery(
       ['/query', payload],
-      async (route, body) => {
-        const result = await api.post(route, body).request();
-        return result;
-      },
+      async (route, body) => api.post(route, body),
     ));
   }
   const data = [];
@@ -137,7 +134,7 @@ const DataView = ({
 
   const { data: [{ count: totalRows }] = [{ count: null }] } = useQuery(
     ['/query', payload],
-    async (route, body) => api.post(route, body).request(),
+    async (route, body) => api.post(route, body),
   );
 
   const initializeGrid = useCallback(() => {
@@ -203,7 +200,7 @@ const DataView = ({
 
   const { data } = useQuery(
     ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
-    async (route, body) => api.post(route, body).request(),
+    async (route, body) => api.post(route, body),
     {
       enabled: Boolean(detailsRowId),
       onError: err => handleError(err),

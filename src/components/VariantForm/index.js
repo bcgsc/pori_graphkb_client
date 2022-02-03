@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 
@@ -113,7 +112,6 @@ const VariantForm = ({
       : pickInputType(value),
   );
   const snackbar = useSnackbar();
-  const controllers = useRef([]);
   const [model, setModel] = useState(null);
 
   const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
@@ -151,17 +149,16 @@ const VariantForm = ({
   const handleSubmitAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
     const { routeName } = schema.get(payload);
-    const call = formVariant === FORM_VARIANT.NEW
-      ? api.post(routeName, payload)
-      : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-    controllers.current.push(call);
 
     const actionType = formVariant === FORM_VARIANT.NEW
       ? 'created'
       : 'edited';
 
     try {
-      const result = await call.request();
+      const result = await formVariant === FORM_VARIANT.NEW
+        ? api.post(routeName, payload)
+        : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);
     } catch (err) {
@@ -175,11 +172,9 @@ const VariantForm = ({
   const handleDeleteAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
     const { routeName } = schema.get(payload);
-    const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    controllers.current.push(call);
 
     try {
-      const result = await call.request();
+      const result = await api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
       snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(null);
     } catch (err) {

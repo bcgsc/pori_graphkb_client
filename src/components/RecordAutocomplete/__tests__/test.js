@@ -11,9 +11,7 @@ import RecordAutocomplete from '..';
 
 const spy = jest
   .spyOn(api, 'post')
-  .mockImplementation(() => ({
-    request: () => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }],
-  }));
+  .mockImplementation(() => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }]);
 
 /* eslint-disable react/prop-types */
 jest.mock('react-select', () => ({ options = [], value, onChange }) => {

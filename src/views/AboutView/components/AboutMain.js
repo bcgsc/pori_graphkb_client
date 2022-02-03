@@ -16,8 +16,7 @@ const AboutMain = () => {
   const { data: chartData } = useQuery(
     '/stats?classList=Statement&groupBy=source',
     async (url) => {
-      const controller = api.get(url);
-      const { Statement: result } = await controller.request();
+      const { Statement: result } = await api.get(url);
       const data = [['source', 'count']];
       Object.entries(result).forEach(([label, value]) => {
         data.push([
@@ -34,10 +33,7 @@ const AboutMain = () => {
 
   const { data: versions } = useQuery(
     '/version',
-    async (url) => {
-      const controller = api.get(url);
-      return controller.request();
-    },
+    async url => api.get(url),
     { staleTime: Infinity },
   );
 

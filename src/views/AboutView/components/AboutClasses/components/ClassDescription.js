@@ -22,8 +22,7 @@ const ClassDescription = ({ name, description }) => {
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     ['/query', { target: name, neighbors: 1, limit: 1 }],
     async (url, body) => {
-      const controller = api.post(url, body);
-      const [result] = await controller.request();
+      const [result] = await api.post(url, body);
       return result;
     },
     { staleTime: Infinity, throwOnError: false },
@@ -32,8 +31,7 @@ const ClassDescription = ({ name, description }) => {
   const { isFetching: countIsFetching, data: count } = useQuery(
     `/stats?classList=${name}`,
     async (url) => {
-      const controller = api.get(url);
-      const { [name]: value } = await controller.request();
+      const { [name]: value } = await api.get(url);
       let newCount = value;
 
       if (value / 1000000 > 1) {

@@ -71,7 +71,7 @@ const ActiveFilters = ({ search }) => {
         returnProperties: ['@class', '@rid', 'name', 'displayName'],
       },
     ],
-    async (route, body) => api.post(route, body).request(),
+    async (route, body) => api.post(route, body),
   );
 
   const recordHash = useMemo(() => {

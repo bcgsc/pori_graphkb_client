@@ -97,7 +97,7 @@ const RecordView = (props) => {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });
         return undefined;
       }
-      const result = await api.get(route, options).request();
+      const result = await api.get(route, options);
 
       if (result && result.length) {
         return { ...result[0] };

@@ -67,7 +67,7 @@ const ActivityView = () => {
         orderBy: ['createdAt'],
         orderByDirection: 'DESC',
         returnProperties: ['@rid', '@class', 'updatedBy.name', 'updatedAt', 'displayName'],
-      }).request(),
+      }),
 
       // get recent Edge records
       api.post('/query', {
@@ -81,7 +81,7 @@ const ActivityView = () => {
         orderBy: ['createdAt'],
         orderByDirection: 'DESC',
         returnProperties: ['@rid', '@class', 'createdBy.name', 'createdAt'],
-      }).request(),
+      }),
     ]);
     const result = [...records, ...edges]
       .sort((rec1, rec2) => (rec2.updatedAt || rec2.createdAt) - (rec1.updatedAt || rec1.createdAt));

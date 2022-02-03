@@ -46,7 +46,7 @@ const EdgeTable = ({ recordId }) => {
       target: [recordId],
       neighbors: 3,
     }, 'edges'], async (route, body) => {
-      const [record] = await api.post(route, body).request();
+      const [record] = await api.post(route, body);
       const newEdges = [];
       Object.entries(record).forEach(([propName, value]) => {
         if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {

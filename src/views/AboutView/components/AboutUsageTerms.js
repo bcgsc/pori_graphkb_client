@@ -22,7 +22,7 @@ const AboutUsageTerms = () => {
 
   const { data } = useQuery(
     ['/license', user.signedLicenseAt],
-    () => api.get('/license').request(),
+    () => api.get('/license'),
   );
 
   const requiresSigning = Boolean(!data || !user || !user.signedLicenseAt || user.signedLicenseAt < data.enactedAt);
@@ -30,7 +30,7 @@ const AboutUsageTerms = () => {
 
 
   const handleConfirmSign = useCallback(async () => {
-    await api.post('/license/sign').request();
+    await api.post('/license/sign');
     snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });
     setHasSigned(true);
   }, [snackbar]);

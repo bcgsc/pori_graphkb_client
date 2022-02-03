@@ -10,9 +10,9 @@ import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useState,
 } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
@@ -86,8 +86,6 @@ const StatementForm = ({
   const model = schemaDefn.schema.Statement;
   const fieldDefs = model.properties;
 
-  const [actionInProgress, setActionInProgress] = useState(false);
-  const controllers = useRef([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [civicEvidenceId, setCivicEvidenceId] = useState('');
 
@@ -147,8 +145,6 @@ const StatementForm = ({
     }
   }, [variant, formContent]);
 
-  useEffect(() => () => controllers.current.map(c => c.abort()), []);
-
   const statementReviewCheck = useCallback((currContent, content) => {
     const updatedContent = { ...content };
 
@@ -168,6 +164,25 @@ const StatementForm = ({
     return updatedContent;
   }, [auth]);
 
+  const [addNewAction, { isLoading: isAdding }] = useMutation(
+    async (content) => {
+      const payload = cleanPayload(content);
+      const { routeName } = schema.get(payload);
+      return api.post(routeName, payload).request();
+    },
+    {
+      onSuccess: (result) => {
+        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
+        onSubmit(result);
+      },
+      onError: (err, content) => {
+        console.error(err);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
+        onError({ error: err, content });
+      },
+    },
+  );
+
   /**
    * Handler for submission of a new record
    */
@@ -181,48 +196,52 @@ const StatementForm = ({
       // ok to POST
       let content = { ...formContent, '@class': model.name };
       content = statementReviewCheck(formContent, content);
-
-
-      const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
-      const call = api.post(routeName, payload);
-      controllers.current.push(call);
-      setActionInProgress(true);
-
-      try {
-        const result = await call.request();
-        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
-      } catch (err) {
-        console.error(err);
-        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-        onError({ error: err, content });
-      }
-      setActionInProgress(false);
+      addNewAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, model.name, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
+  }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
+
+  const [deleteAction, { isLoading: isDeleting }] = useMutation(
+    async (content) => {
+      const { routeName } = schema.get(content);
+      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`).request();
+    },
+    {
+      onSuccess: (_, content) => {
+        snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
+        onSubmit();
+      },
+      onError: (err, content) => {
+        snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
+        onError({ error: err, content });
+      },
+    },
+  );
 
   /**
    * Handler for deleting an existing record
    */
   const handleDeleteAction = useCallback(async () => {
     const content = { ...formContent, '@class': model.name };
+    deleteAction(content);
+  }, [deleteAction, formContent, model.name]);
 
-    const { routeName } = schema.get(content);
-    const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    controllers.current.push(call);
-    setActionInProgress(true);
-
-    try {
-      await call.request();
-      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
-      onSubmit();
-    } catch (err) {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-      onError({ error: err, content });
-    }
-    setActionInProgress(false);
-  }, [formContent, model.name, onError, onSubmit, snackbar]);
+  const [updateAction, { isLoading: isUpdating }] = useMutation(
+    async (content) => {
+      const payload = cleanPayload(content);
+      const { routeName } = schema.get(payload);
+      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload).request();
+    },
+    {
+      onSuccess: (result) => {
+        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
+        onSubmit(result);
+      },
+      onError: (err, content) => {
+        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
+        onError({ error: err, content });
+      },
+    },
+  );
 
   /**
    * Handler for edits to an existing record
@@ -239,24 +258,11 @@ const StatementForm = ({
       snackbar.enqueueSnackbar('no changes to submit');
       onSubmit(formContent);
     } else {
-      const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
-      const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-      controllers.current.push(call);
-      setActionInProgress(true);
-
-      try {
-        const result = await call.request();
-        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
-      } catch (err) {
-        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
-      }
-      setActionInProgress(false);
+      updateAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, model.name, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, model.name, onSubmit, setFormIsDirty, snackbar, updateAction]);
 
+  const actionInProgress = isAdding || isDeleting || isUpdating;
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field

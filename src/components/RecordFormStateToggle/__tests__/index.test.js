@@ -12,6 +12,7 @@ describe('RecordFormStateToggle', () => {
   beforeEach(() => {
     ({ getByText } = render((
       <RecordFormStateToggle
+        allowEdit
         message="Changes you will lose"
         onClick={clickSpy}
         value="view"

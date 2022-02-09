@@ -21,6 +21,7 @@ import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
+import { useAuth } from '../Auth';
 import EdgeTable from './EdgeTable';
 import RelatedStatementsTable from './RelatedStatementsTable';
 import RelatedVariantsTable from './RelatedVariantsTable';
@@ -49,6 +50,7 @@ const RecordForm = ({
   ...rest
 }) => {
   const snackbar = useSnackbar();
+  const auth = useAuth();
 
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = useRef([]);
@@ -199,6 +201,7 @@ const RecordForm = ({
         <div className={`header__actions header__actions--${variant}`}>
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <RecordFormStateToggle
+            allowEdit={auth.hasWriteAccess}
             message="Are you sure? You will lose your changes."
             onClick={handleToggleState}
             requireConfirm={variant === 'edit' && formIsDirty}

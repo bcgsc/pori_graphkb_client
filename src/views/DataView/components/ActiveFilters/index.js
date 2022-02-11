@@ -17,8 +17,10 @@ import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import copy from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
-import { queryCache } from 'react-query';
+import React, {
+  useCallback, useMemo, useState,
+} from 'react';
+import { useQuery } from 'react-query';
 
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -48,45 +50,33 @@ const extractRids = (obj) => {
 
 const ActiveFilters = ({ search }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [payload, setPayload] = useState({});
-  const [routeName, setRouteName] = useState('/query');
-  const [recordHash, setRecordHash] = useState({});
+  const { payload, routeName } = useMemo(() => api.getQueryFromSearch({ search, schema }), [search]);
+  const recordIds = useMemo(() => extractRids(payload), [payload]);
 
-  useEffect(() => {
-    const {
-      payload: newPayload,
-      routeName: newRouteName,
-    } = api.getQueryFromSearch({ search, schema });
-    setPayload(newPayload);
-    setRouteName(newRouteName);
-  }, [search]);
-
-  useEffect(() => {
-    const fetchDisplayNames = async () => {
-      const recordIds = extractRids(payload);
-
-      if (recordIds.length) {
-        const returnProperties = ['@class', '@rid', 'name', 'displayName'];
-        const result = await queryCache.prefetchQuery(
-          ['/query', {
-            target: recordIds,
-            returnProperties,
-          }],
-          async (route, body) => api.post(route, body).request(),
-        );
+  const { data: recordHash } = useQuery(
+    [
+      '/query',
+      {
+        target: recordIds,
+        returnProperties: ['@class', '@rid', 'name', 'displayName'],
+      },
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: Boolean(recordIds.length),
+      select: (response) => {
         const hash = {};
-        result.forEach((rec) => {
+        response.forEach((rec) => {
           if (rec['@class'] === 'Statement') {
             hash[rec['@rid']] = 'Statement';
           } else {
             hash[rec['@rid']] = schema.getPreview(rec);
           }
         });
-        setRecordHash(hash);
-      }
-    };
-    fetchDisplayNames();
-  }, [payload]);
+        return hash;
+      },
+    },
+  );
 
   const handleToggleOpen = useCallback((event) => {
     if (!anchorEl) {

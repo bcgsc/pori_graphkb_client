@@ -1,7 +1,9 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 
 import DetailChip from '@/components/DetailChip';
+import api from '@/services/api';
 
 import StatementReviewsTable from '..';
 
@@ -41,11 +43,13 @@ describe('StatementReviewsTable', () => {
 
   test('mounts successfully', () => {
     const wrapper = mount((
-      <StatementReviewsTable
-        label="reviews"
-        reviewProps={mockReviewProps}
-        values={reviews}
-      />
+      <QueryClientProvider client={api.queryClient}>
+        <StatementReviewsTable
+          label="reviews"
+          reviewProps={mockReviewProps}
+          values={reviews}
+        />
+      </QueryClientProvider>
     ));
 
     expect(wrapper.find(StatementReviewsTable)).toBeDefined();
@@ -53,11 +57,13 @@ describe('StatementReviewsTable', () => {
 
   test('does not crash with empty reviews array ', () => {
     const wrapper = mount((
-      <StatementReviewsTable
-        label="reviews"
-        reviewProps={mockReviewProps}
-        values={[]}
-      />
+      <QueryClientProvider client={api.queryClient}>
+        <StatementReviewsTable
+          label="reviews"
+          reviewProps={mockReviewProps}
+          values={[]}
+        />
+      </QueryClientProvider>
     ));
 
     expect(wrapper.find(StatementReviewsTable)).toBeDefined();
@@ -66,11 +72,13 @@ describe('StatementReviewsTable', () => {
 
   test('displays correct number of chips ', () => {
     const wrapper = mount((
-      <StatementReviewsTable
-        label="reviews"
-        reviewProps={mockReviewProps}
-        values={reviews}
-      />
+      <QueryClientProvider client={api.queryClient}>
+        <StatementReviewsTable
+          label="reviews"
+          reviewProps={mockReviewProps}
+          values={reviews}
+        />
+      </QueryClientProvider>
     ));
 
     expect(wrapper.find(StatementReviewsTable)).toBeDefined();

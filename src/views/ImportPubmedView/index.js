@@ -7,10 +7,8 @@ import {
 import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
-import React, {
-  useCallback,
-  useEffect, useRef, useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
 import handleErrorSaveLocation from '@/services/util';
@@ -20,123 +18,83 @@ import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
 
-const createPubmedQuery = pmid => api.post('/query', {
-  target: 'Publication',
-  filters: {
-    AND: [
-      {
-        source: {
-          target: 'Source',
-          filters: { name: 'pubmed' },
-        },
-      },
-      { sourceId: pmid },
-    ],
-  },
-});
-
-
 const ImportPubmedView = (props) => {
   const { history } = props;
   const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
   const [text, setText] = useState('');
-  const [externalRecord, setExternalRecord] = useState(null);
   const [pmid] = useDebounce(text, 1000);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [currentRecords, setCurrentRecords] = useState([]);
-  const [source, setSource] = useState('');
-
-  const controllers = useRef([]);
 
   // fetch the pubmed source record
-  useEffect(() => {
-    let call;
-
-    const fetchRecord = async () => {
-      call = api.post('/query', { target: 'Source', filters: { name: 'pubmed' } });
-
-      try {
-        const [record] = await call.request();
-        setSource(record['@rid']);
-      } catch (err) {
-        handleErrorSaveLocation(err, history);
-      }
-    };
-
-    fetchRecord();
-
-    return () => call && call.abort();
-  }, [history]);
+  const { data: source } = useQuery(
+    ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
+    ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      onError: err => handleErrorSaveLocation(err, history),
+      select: response => response[0]?.['@rid'],
+    },
+  );
 
   // fetch records that already exist in GraphKB
-  useEffect(() => {
-    let call;
+  const { data: currentRecords, isLoading, refetch: refetchCurrentRecords } = useQuery(
+    [
+      '/query',
+      {
+        target: 'Publication',
+        filters: {
+          AND: [
+            {
+              source: {
+                target: 'Source',
+                filters: { name: 'pubmed' },
+              },
+            },
+            { sourceId: pmid },
+          ],
+        },
+      },
+    ],
+    ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: Boolean(text),
+      onError: err => handleErrorSaveLocation(err, history),
+    },
+  );
 
-    const fetchRecords = async () => {
-      if (text) {
-        call = createPubmedQuery(text);
+  // fetch details from PUBMED
+  const { data: externalRecord = null } = useQuery(
+    `/extensions/pubmed/${pmid}`,
+    ({ queryKey: [route] }) => api.get(route),
+    {
+      enabled: Boolean(pmid),
+    },
+  );
 
+  const { mutate: importRecord, isLoading: isImporting } = useMutation(
+    async () => {
+      if (externalRecord) {
         try {
-          const records = await call.request();
-          setCurrentRecords(records);
+          const result = await api.post('/publications', { ...externalRecord, source });
+          snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
+          refetchCurrentRecords();
         } catch (err) {
           handleErrorSaveLocation(err, history);
         }
       }
-    };
-
-    fetchRecords();
-
-    return () => call && call.abort();
-  }, [history, text]);
-
-  // fetch details from PUBMED
-  useEffect(() => {
-    const getContent = async () => {
-      const call = api.get(`/extensions/pubmed/${pmid}`);
-      controllers.current.push(call);
-      const record = await call.request();
-      setExternalRecord(record);
-      setIsLoading(false);
-    };
-    getContent();
-  }, [pmid]);
-
-
-  useEffect(() => {
-    controllers.current.forEach(c => c && c.abort());
-  }, []);
+    },
+  );
 
   // fetch records that do not already exist in GraphKB
-  const handleImport = useCallback(async () => {
-    if (externalRecord) {
-      try {
-        const newCall = api.post('/publications', { ...externalRecord, source });
-        controllers.current.push(newCall);
-        const result = await newCall.request();
-        snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
-        setCurrentRecords([result]);
-      } catch (err) {
-        handleErrorSaveLocation(err, history);
-      }
-    }
-  }, [externalRecord, source, snackbar, history]);
+  const handleImport = useCallback(async () => importRecord(), [importRecord]);
 
   const handleTextChange = useCallback((value) => {
-    if (text) {
-      setIsLoading(true);
-    }
-    setExternalRecord(null);
-
     if (/^\d*$/.exec(`${value}`)) {
       setErrorText('');
       setText(value);
     } else {
       setErrorText('PubMed IDs must be only numbers');
     }
-  }, [text]);
+  }, []);
 
   return (
     <div className="import-view">
@@ -151,7 +109,7 @@ const ImportPubmedView = (props) => {
         placeholder="Enter a PubMed ID ex. 1234"
         value={text}
       />
-      {currentRecords.map(rec => (
+      {currentRecords?.map(rec => (
         <PubmedCard
           key={rec['@rid']}
           abstract={rec.description}
@@ -161,7 +119,7 @@ const ImportPubmedView = (props) => {
           title={titleCase(rec.name)}
         />
       ))}
-      {isLoading && <CircularProgress className="import-view__progress" />}
+      {(isImporting || isLoading) && <CircularProgress className="import-view__progress" />}
       {(!currentRecords || !currentRecords.length) && externalRecord && (
         <PubmedCard
           key={text}

@@ -21,9 +21,8 @@ import schema from '@/services/schema';
 const ClassDescription = ({ name, description }) => {
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     ['/query', { target: name, neighbors: 1, limit: 1 }],
-    async (url, body) => {
-      const controller = api.post(url, body);
-      const [result] = await controller.request();
+    async ({ queryKey: [route, body] }) => {
+      const [result] = await api.post(route, body);
       return result;
     },
     { staleTime: Infinity, throwOnError: false },
@@ -31,21 +30,23 @@ const ClassDescription = ({ name, description }) => {
 
   const { isFetching: countIsFetching, data: count } = useQuery(
     `/stats?classList=${name}`,
-    async (url) => {
-      const controller = api.get(url);
-      const { [name]: value } = await controller.request();
-      let newCount = value;
+    async ({ queryKey: [route] }) => api.get(route),
+    {
+      staleTime: Infinity,
+      select: (response) => {
+        const { [name]: value } = response;
+        let newCount = value;
 
-      if (value / 1000000 > 1) {
-        newCount = `${Math.round(value / 1000000)}M`;
-      } else if (value / 1000 > 1) {
-        newCount = `${Math.round(value / 1000)}K`;
-      } else {
-        newCount = `${value}`;
-      }
-      return newCount;
+        if (value / 1000000 > 1) {
+          newCount = `${Math.round(value / 1000000)}M`;
+        } else if (value / 1000 > 1) {
+          newCount = `${Math.round(value / 1000)}K`;
+        } else {
+          newCount = `${value}`;
+        }
+        return newCount;
+      },
     },
-    { staleTime: Infinity, throwOnError: false },
   );
 
 

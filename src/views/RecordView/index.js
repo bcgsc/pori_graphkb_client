@@ -6,9 +6,10 @@ import {
 import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useMemo,
+  useState,
 } from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import { useQuery } from 'react-query';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -49,7 +50,6 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
 
-  const [recordContent, setRecordContent] = useState({});
   const [modelName, setModelName] = useState(modelNameParam || '');
 
   useEffect(() => {
@@ -88,48 +88,39 @@ const RecordView = (props) => {
     util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
-  // fetch the record from the rid if given
-  useDeepCompareEffect(() => {
-    let call = null;
+  const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
 
-    const fetchRecord = async () => {
-      const { '@class': defaultModel } = recordContent;
-      const model = schema.get(modelName || 'V');
-
+  const { data: recordContent } = useQuery(
+    [`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }],
+    async ({ queryKey: [route, options] }) => {
       if (!model) {
-        handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName || defaultModel}` } });
-      } else if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid) {
-        // If not a new form then should have existing content
-        try {
-          call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true });
-          const result = await call.request();
-
-          if (result && result.length) {
-            setRecordContent({ ...result[0] });
-            setModelName(result[0]['@class']);
-          } else {
-            handleError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${model.routeName}/${rid}` } });
-          }
-        } catch (err) {
-          handleError({ error: err });
-        }
+        handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });
+        return undefined;
       }
-    };
-    fetchRecord();
-    return () => call && call.abort();
-    // must not update on modelName since this sets modelName
-  }, [rid, modelNameParam, schema, path, recordContent, variant, handleError]); // eslint-disable-line
+      const result = await api.get(route, options);
+
+      if (result && result.length) {
+        return { ...result[0] };
+      }
+      handleError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${model.routeName}/${rid}` } });
+      return undefined;
+    },
+    {
+      enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
+      onError: err => handleError({ error: err }),
+      onSuccess: result => result && setModelName(result['@class']),
+    },
+  );
 
 
   // redirect when the user clicks the top right button
   const onTopClick = useCallback(() => {
-    const model = schema.get(modelName);
     const newVariant = variant === FORM_VARIANT.EDIT
       ? FORM_VARIANT.VIEW
       : FORM_VARIANT.EDIT;
     const newPath = `/${newVariant}/${model.name}/${rid}`;
     history.push(newPath);
-  }, [history, modelName, rid, variant]);
+  }, [history, model.name, rid, variant]);
 
   const navigateToGraphView = useCallback(() => {
     navigateToGraph([recordContent['@rid']], history, handleError);

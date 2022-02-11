@@ -1,20 +1,18 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { fireEvent, render, waitForElement } from '@testing-library/react';
+import {
+  fireEvent, render, wait, waitForElement,
+} from '@testing-library/react';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
+
+import api from '@/services/api';
 
 import RecordAutocomplete from '..';
 
-
-const mockSearchHandler = (values = []) => {
-  const request = jest.fn();
-  request.mockResolvedValue(
-    values.map(
-      (value, index) => Object.assign({}, { '@rid': `#1:${index}` }, value),
-    ),
-  );
-  return jest.fn().mockReturnValue({ abort: jest.fn(), request });
-};
+const spy = jest
+  .spyOn(api, 'post')
+  .mockImplementation(() => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }]);
 
 /* eslint-disable react/prop-types */
 jest.mock('react-select', () => ({ options = [], value, onChange }) => {
@@ -47,20 +45,24 @@ jest.mock('react-select', () => ({ options = [], value, onChange }) => {
 
 
 describe('RecordAutocomplete (data-fetching)', () => {
-  test('singleLoad triggers searchHandler', async () => {
-    const spy = mockSearchHandler([{ name: 'bob' }, { name: 'alice' }]);
+  test('singleLoad triggers query', async () => {
     const placeholder = 'input something';
     const { getByText, getByTestId } = render(
-      <RecordAutocomplete
-        minSearchLength={0}
-        name="test"
-        onChange={jest.fn()}
-        placeholder={placeholder}
-        searchHandler={spy}
-        singleLoad
-      />,
+      <QueryClientProvider client={api.queryClient}>
+        <RecordAutocomplete
+          getQueryBody={() => ({})}
+          minSearchLength={0}
+          name="test"
+          onChange={jest.fn()}
+          placeholder={placeholder}
+          singleLoad
+        />
+      </QueryClientProvider>,
     );
-    expect(spy).toHaveBeenCalledTimes(1);
+
+    await wait(() => {
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
     // click action to render the newly fetched popup options
     fireEvent.click(getByTestId('select'));
     const [bob, alice] = await waitForElement(() => [getByText('bob'), getByText('alice')]);
@@ -68,7 +70,7 @@ describe('RecordAutocomplete (data-fetching)', () => {
     expect(alice).toBeInTheDocument();
   });
 
-  test.todo('searchHandler triggered on input change');
+  test.todo('query triggered on input change');
 
   afterEach(() => {
     jest.clearAllMocks();

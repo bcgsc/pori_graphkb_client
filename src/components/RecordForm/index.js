@@ -7,9 +7,9 @@ import {
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useEffect, useRef,
-  useState,
+  useCallback, useEffect, useState,
 } from 'react';
+import { useMutation } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
@@ -52,8 +52,6 @@ const RecordForm = ({
   const snackbar = useSnackbar();
   const auth = useAuth();
 
-  const [actionInProgress, setActionInProgress] = useState(false);
-  const controllers = useRef([]);
   const [isEdge, setIsEdge] = useState(false);
 
   const [fieldDefs, setFieldDefs] = useState({});
@@ -71,7 +69,24 @@ const RecordForm = ({
     formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
   } = form;
 
-  useEffect(() => () => controllers.current.map(c => c.abort()), []);
+  const { mutate: addNewAction, isLoading: isAdding } = useMutation(
+    async (content) => {
+      const payload = cleanPayload(content);
+      const { routeName } = schema.get(payload);
+      return api.post(routeName, payload);
+    },
+    {
+      onSuccess: (result) => {
+        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
+        onSubmit(result);
+      },
+      onError: (err, content) => {
+        console.error(err);
+        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
+        onError({ error: err, content });
+      },
+    },
+  );
 
   /**
    * Handler for submission of a new record
@@ -90,24 +105,27 @@ const RecordForm = ({
         content['@class'] = modelName;
       }
 
-      const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
-      const call = api.post(routeName, payload);
-      controllers.current.push(call);
-      setActionInProgress(true);
-
-      try {
-        const result = await call.request();
-        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
-      } catch (err) {
-        console.error(err);
-        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-        onError({ error: err, content });
-      }
-      setActionInProgress(false);
+      addNewAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
+
+
+  const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
+    async (content) => {
+      const { routeName } = schema.get(content);
+      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
+    },
+    {
+      onSuccess: (_, content) => {
+        snackbar.enqueueSnackbar(`Successfully deleted the record ${content['@rid']}`, { variant: 'success' });
+        onSubmit();
+      },
+      onError: (err, content) => {
+        snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
+        onError({ error: err, content });
+      },
+    },
+  );
 
   /**
    * Handler for deleting an existing record
@@ -118,21 +136,26 @@ const RecordForm = ({
     if (!formContent['@class']) {
       content['@class'] = modelName;
     }
-    const { routeName } = schema.get(content);
-    const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    controllers.current.push(call);
-    setActionInProgress(true);
+    deleteAction(content);
+  }, [deleteAction, formContent, modelName]);
 
-    try {
-      await call.request();
-      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
-      onSubmit();
-    } catch (err) {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-      onError({ error: err, content });
-    }
-    setActionInProgress(false);
-  }, [formContent, modelName, onError, onSubmit, snackbar]);
+  const { mutate: updateAction, isLoading: isUpdating } = useMutation(
+    async (content) => {
+      const payload = cleanPayload(content);
+      const { routeName } = schema.get(payload);
+      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+    },
+    {
+      onSuccess: (result) => {
+        snackbar.enqueueSnackbar(`Successfully edited the record ${result['@rid']}`, { variant: 'success' });
+        onSubmit(result);
+      },
+      onError: (err, content) => {
+        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
+        onError({ error: err, content });
+      },
+    },
+  );
 
   /**
    * Handler for edits to an existing record
@@ -153,23 +176,11 @@ const RecordForm = ({
       snackbar.enqueueSnackbar('no changes to submit');
       onSubmit(formContent);
     } else {
-      const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
-      const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-      controllers.current.push(call);
-      setActionInProgress(true);
-
-      try {
-        const result = await call.request();
-        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
-      } catch (err) {
-        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
-      }
-      setActionInProgress(false);
+      updateAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onSubmit, setFormIsDirty, snackbar, updateAction]);
+
+  const actionInProgress = isAdding || isDeleting || isUpdating;
 
   const handleToggleState = useCallback((newState) => {
     if (newState !== variant) {

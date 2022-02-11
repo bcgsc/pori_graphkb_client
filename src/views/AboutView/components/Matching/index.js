@@ -15,7 +15,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { queryCache } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';
@@ -108,60 +108,51 @@ const MatchView = (props) => {
   const [termType, setTermType] = useState('Vocabulary');
   const [rootText, setRootText] = useState('');
   const [rootTerm] = useDebounce(rootText, DEBOUNCE_MS);
-  const [isLoading, setIsLoading] = useState(false);
-  const [matches, setMatches] = useState([]);
-  const [hasTooManyRecords, setHasTooManyRecords] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setMatches([]);
+  const { data: { hasTooManyRecords, matches = [], isLoading } = {} } = useQuery(
+    ['queries', rootTerm, term, termType],
+    async () => {
       const queries = [
         termTreeQuery(termType, term),
         equivalentTermsQuery(termType, term),
       ];
 
-
       if (rootTerm) {
         queries.push(exludeRootTermsQuery(termType, rootTerm));
       }
 
-      try {
-        const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
-          queries.map(async query => queryCache.prefetchQuery(
-            ['/query', query],
-            async (key, bodykey) => api.post(key, bodykey).request(),
-            { staleTime: Infinity },
-            { throwOnError: false },
-          )),
-        );
+      const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
+        queries.map(async query => queryClient.fetchQuery(
+          ['/query', query],
+          async ({ queryKey: [route, body] }) => api.post(route, body),
+          { staleTime: Infinity },
+          { throwOnError: true },
+        )),
+      );
 
-        const terms = {};
-        treeTerms.forEach((currentTerm) => {
-          terms[currentTerm['@rid']] = currentTerm;
-        });
-        parentTerms.forEach((currentTerm) => {
-          terms[currentTerm['@rid']] = currentTerm;
-        });
-        setHasTooManyRecords(treeTerms.length >= MATCH_LIMIT || parentTerms.length >= MATCH_LIMIT);
+      const terms = {};
+      treeTerms.forEach((currentTerm) => {
+        terms[currentTerm['@rid']] = currentTerm;
+      });
+      parentTerms.forEach((currentTerm) => {
+        terms[currentTerm['@rid']] = currentTerm;
+      });
 
-        if (excludedParentTerms) {
-          excludedParentTerms.forEach((currentTerm) => {
-            delete terms[currentTerm['@rid']];
-          });
-        }
-        setMatches(Object.values(terms));
-      } catch (err) {
-        handleErrorSaveLocation(err, history);
+      if (excludedParentTerms) {
+        excludedParentTerms.forEach((currentTerm) => {
+          delete terms[currentTerm['@rid']];
+        });
       }
-      setIsLoading(false);
-    };
-
-    if (term) {
-      fetchData();
-    } else {
-      setIsLoading(false);
-    }
-  }, [history, rootTerm, term, termType]);
+      return {
+        hasTooManyRecords: treeTerms.length >= MATCH_LIMIT || parentTerms.length >= MATCH_LIMIT,
+        matches: Object.values(terms),
+      };
+    },
+    {
+      onError: err => handleErrorSaveLocation(err, history),
+    },
+  );
 
   useEffect(() => {
     const normalizedTerm = text.toLowerCase().trim();
@@ -181,9 +172,7 @@ const MatchView = (props) => {
   };
 
   const handleTextChange = useCallback((value) => {
-    setIsLoading(true);
     setRootText('');
-    setMatches([]);
     setText(value.trim());
   }, []);
 

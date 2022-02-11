@@ -42,32 +42,39 @@ const EdgeTable = ({ recordId }) => {
   } = useGrid();
 
   const { data: edges, isFetching } = useQuery(
-    ['/query', {
-      target: [recordId],
-      neighbors: 3,
-    }, 'edges'], async (route, body) => {
-      const [record] = await api.post(route, body).request();
-      const newEdges = [];
-      Object.entries(record).forEach(([propName, value]) => {
-        if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
-          value.forEach((edge) => {
-            const model = schema.get(edge);
-            const reversed = isReversed(recordId, edge);
+    [
+      '/query',
+      {
+        target: [recordId],
+        neighbors: 3,
+      },
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      select: (response) => {
+        const [record] = response;
+        const newEdges = [];
+        Object.entries(record).forEach(([propName, value]) => {
+          if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
+            value.forEach((edge) => {
+              const model = schema.get(edge);
+              const reversed = isReversed(recordId, edge);
 
-            newEdges.push({
-              ...edge,
-              reversed,
-              relationshipType: reversed
-                ? model.reverseName
-                : model.name,
-              target: reversed
-                ? edge.out
-                : edge.in,
+              newEdges.push({
+                ...edge,
+                reversed,
+                relationshipType: reversed
+                  ? model.reverseName
+                  : model.name,
+                target: reversed
+                  ? edge.out
+                  : edge.in,
+              });
             });
-          });
-        }
-      });
-      return newEdges;
+          }
+        });
+        return newEdges;
+      },
     },
   );
 

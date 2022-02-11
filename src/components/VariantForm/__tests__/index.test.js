@@ -2,6 +2,9 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
+
+import api from '@/services/api';
 
 import NewVariant from '..';
 
@@ -18,7 +21,9 @@ describe('NewVariant', () => {
     ({
       getByText, getByTestId, queryByText,
     } = render(
-      <NewVariant />,
+      <QueryClientProvider client={api.queryClient}>
+        <NewVariant />
+      </QueryClientProvider>,
     ));
   });
 

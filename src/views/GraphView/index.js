@@ -4,12 +4,13 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useMemo, useState,
 } from 'react';
-import { queryCache } from 'react-query';
+import { useIsFetching, useQuery, useQueryClient } from 'react-query';
+import { useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
-import { HistoryPropType, LocationPropType } from '@/components/types';
+import { HistoryPropType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -24,49 +25,34 @@ const { DEFAULT_NEIGHBORS } = config;
 /**
  * Shows the search result filters and an edit button
  */
-const GraphView = ({
-  location: { search }, history,
-}) => {
+const GraphView = ({ history }) => {
+  const { search } = useLocation();
+  const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
-  const [recordIds, setRecordIds] = useState([]);
-  const [graphData, setGraphData] = useState(null);
+  // the existing behaviour of the graph relies on this not changing even when the url *is* updated
+  const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
+  const queryClient = useQueryClient();
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
-
-  useEffect(() => {
-    const decodedNodes = getNodeRIDsFromURL(window.location.href);
-    setRecordIds(decodedNodes);
-  }, [handleError]);
-
-  useEffect(() => {
-    const fetchRecords = async () => {
-      const fullRecords = await queryCache.prefetchQuery(
-        ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
-        async (url, body) => {
-          const controller = api.post(url, body);
-          const result = await controller.request();
-          return result;
-        },
-      );
-
-      const recordHash = util.hashRecordsByRID(fullRecords);
-      Object.keys(recordHash).forEach((recordId) => {
-        queryCache.setQueryData(
-          [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-          [recordHash[recordId]],
-        );
-      });
-
-      setGraphData(recordHash);
-    };
-
-    if (recordIds.length) {
-      fetchRecords();
-    }
-  }, [recordIds, recordIds.length]);
+  const { data: graphData } = useQuery(
+    ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: Boolean(recordIds.length),
+      onSuccess: (recordHash) => {
+        Object.keys(recordHash).forEach((recordId) => {
+          queryClient.setQueryData(
+            [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+            [recordHash[recordId]],
+          );
+        });
+      },
+      select: response => util.hashRecordsByRID(response),
+    },
+  );
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -79,13 +65,9 @@ const GraphView = ({
       setDetailPanelRow(null);
     } else {
       try {
-        const [fullRecord] = await queryCache.prefetchQuery(
+        const [fullRecord] = await queryClient.fetchQuery(
           ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async (url, body) => {
-            const controller = api.post(url, body);
-            const result = await controller.request();
-            return result;
-          },
+          async ({ queryKey: [route, body] }) => api.post(route, body),
         );
 
         if (!fullRecord) {
@@ -98,7 +80,7 @@ const GraphView = ({
         handleError(err);
       }
     }
-  }, [handleError]);
+  }, [handleError, queryClient]);
 
 
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
@@ -113,10 +95,15 @@ const GraphView = ({
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
   const handleExpandRecord = async (recordId) => {
-    const [fullRecord] = await queryCache.prefetchQuery(
-      ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-      async (url, body) => api.post(url, body).request(),
-    );
+    const key = ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }];
+    let fullRecord = queryClient.getQueryData(key);
+
+    if (!fullRecord) {
+      [fullRecord] = await queryClient.fetchQuery(
+        key,
+        async ({ queryKey: [route, body] }) => api.post(route, body),
+      );
+    }
     return fullRecord;
   };
 
@@ -150,7 +137,7 @@ const GraphView = ({
         )}
       </div>
       <div className="data-view__footer">
-        {queryCache.isFetching === 'loading' && (
+        {Boolean(isLoading) && (
           <div className="footer__loader">
             <CircularProgress />
           </div>
@@ -163,7 +150,6 @@ const GraphView = ({
 
 GraphView.propTypes = {
   history: HistoryPropType.isRequired,
-  location: LocationPropType.isRequired,
 };
 
 

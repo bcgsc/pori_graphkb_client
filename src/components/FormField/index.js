@@ -226,24 +226,19 @@ const FormField = ({
         />
       );
     } else {
-      const searchOptions = {};
-
-      if (linkedClass) {
-        if (['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
-          autoProps.searchHandler = () => api.post('/query', {
-            target: `${linkedClass.name}`,
-            orderBy: linkedClass.name === 'EvidenceLevel'
-              ? ['source.sort', 'sourceId']
-              : ['name'],
-            neighbors: 1,
-          }, { forceListReturn: true });
-          autoProps.singleLoad = true;
-        } else {
-          autoProps.searchHandler = api.defaultSuggestionHandler(linkedClass, searchOptions);
-        }
+      if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
+        autoProps.getQueryBody = () => ({
+          target: `${linkedClass.name}`,
+          orderBy: linkedClass.name === 'EvidenceLevel'
+            ? ['source.sort', 'sourceId']
+            : ['name'],
+          neighbors: 1,
+        });
+        autoProps.singleLoad = true;
       } else {
-        autoProps.searchHandler = api.defaultSuggestionHandler(schema.get('V'), searchOptions);
+        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schema.get('V'));
       }
+
       propComponent = (
         <RecordAutocomplete
           {...autoProps}

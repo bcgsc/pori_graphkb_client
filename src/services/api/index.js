@@ -5,11 +5,23 @@
 import kbSchema from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
+import { QueryClient } from 'react-query';
 
-import { ApiCall } from './call';
+import { request } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 15 * 60 * 1000, // 15m
+      refetchOnWindowFocus: false,
+      throwOnError: true,
+      refetchOnMount: false,
+    },
+  },
+});
 
 
 const ID_PROP = '@rid';
@@ -29,7 +41,7 @@ const patch = (endpoint, payload, callOptions) => {
     method: 'PATCH',
     body: jc.stringify(changes),
   };
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 /**
@@ -40,7 +52,7 @@ const get = (endpoint, callOptions) => {
   const init = {
     method: 'GET',
   };
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 /**
@@ -53,7 +65,7 @@ const post = (endpoint, payload, callOptions) => {
     method: 'POST',
     body: jc.stringify(payload),
   };
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
 /**
@@ -65,57 +77,37 @@ const del = (endpoint, callOptions) => {
     method: 'DELETE',
   };
 
-  return new ApiCall(endpoint, init, callOptions);
+  return request(endpoint, init, callOptions);
 };
 
-
-/**
- * @typedef {function} searchHandlerRequest
- * @param {string} searchTermValue the term to search for
- * @returns {Array.<object>|object} the record or list of records suggested
- */
-
-/**
- * @typedef {object} searchHandler
- * @property {function} abort aborts the current fetch request
- * @property {searchHandlerRequest} request the asynchronous call to fetch the data
- */
 
 /**
  * @param {ClassModel} model the schema model to use to generate the search function
- * @returns {searchHandler} the function to retrieve the sugesstions based on some input text
+ * @returns the function to retrieve the query request body based on some input text
  */
-const defaultSuggestionHandler = (model, opt = {}) => {
-  const searchHandler = (textInput) => {
-    const { ...rest } = opt;
+const getDefaultSuggestionQueryBody = model => (textInput) => {
+  let body = {};
 
-    const callOptions = { forceListReturn: true, ...rest };
-    let body = {};
-
-    if (kbSchema.util.looksLikeRID(textInput)) {
-      body = {
-        target: [textInput],
-      };
-      return post('/query', body, callOptions);
-    }
-
+  if (kbSchema.util.looksLikeRID(textInput)) {
     body = {
-      queryType: 'keyword',
-      target: `${model.name}`,
-      keyword: textInput,
-      limit: MAX_SUGGESTIONS,
-      neighbors: 1,
+      target: [textInput],
     };
+    return body;
+  }
 
-    if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-      body.orderBy = ['source.sort', 'name', 'sourceId'];
-    }
-    return post('/query', body, callOptions);
+  body = {
+    queryType: 'keyword',
+    target: `${model.name}`,
+    keyword: textInput,
+    limit: MAX_SUGGESTIONS,
+    neighbors: 1,
   };
-  searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)
-  return searchHandler;
-};
 
+  if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
+    body.orderBy = ['source.sort', 'name', 'sourceId'];
+  }
+  return body;
+};
 
 /**
  * encodes complex/payload for POST query request. Returns search with encoded complex.
@@ -145,11 +137,12 @@ export default {
   getQueryFromSearch,
   getSearchFromQuery,
   CLASS_PROP,
-  defaultSuggestionHandler,
   delete: del,
   buildSearchFromParseVariant,
   get,
   ID_PROP,
   patch,
   post,
+  getDefaultSuggestionQueryBody,
+  queryClient,
 };

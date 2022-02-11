@@ -3,33 +3,19 @@ import '@testing-library/jest-dom/extend-expect';
 import { act, fireEvent, render } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 
 import { AuthContext } from '@/components/Auth';
-import * as api from '@/services/api';
+import api from '@/services/api';
 
 import RecordForm from '..';
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.mock('@/services/api', () => {
-  const mockRequest = () => ({
-    request: () => Promise.resolve(
-      [],
-    ),
-    abort: () => {},
-  });
-
-  // to check that initial reviewStatus is set to initial by default
-  const mockPost = jest.fn((route, payload) => ({ request: () => payload, abort: () => {} }));
-  return ({
-    delete: jest.fn().mockReturnValue(mockRequest()),
-    post: mockPost,
-    get: jest.fn().mockReturnValue(mockRequest()),
-    patch: jest.fn().mockReturnValue(mockRequest()),
-    defaultSuggestionHandler: jest.fn().mockReturnValue(mockRequest()),
-  });
-});
-
+jest.spyOn(api, 'post').mockImplementation((route, payload) => payload);
+jest.spyOn(api, 'patch').mockImplementation(() => []);
+jest.spyOn(api, 'delete').mockImplementation(() => []);
+jest.spyOn(api, 'get').mockImplementation(() => []);
 
 jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,
@@ -82,20 +68,22 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, queryByText, getByTestId } = render(
-        <AuthContext.Provider value={auth}>
-          <SnackbarProvider onEnter={snackbarSpy}>
-            <RecordForm
-              modelName="User"
-              navigateToGraph={navSpy}
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
-              title="blargh monkeys"
-              value={{ name: 'bob', '@rid': '#1:2', '@class': 'User' }}
-              variant="view"
-            />
-          </SnackbarProvider>
-        </AuthContext.Provider>,
+        <QueryClientProvider client={api.queryClient}>
+          <AuthContext.Provider value={auth}>
+            <SnackbarProvider onEnter={snackbarSpy}>
+              <RecordForm
+                modelName="User"
+                navigateToGraph={navSpy}
+                onError={onErrorSpy}
+                onSubmit={onSubmitSpy}
+                onTopClick={onTopClickSpy}
+                title="blargh monkeys"
+                value={{ name: 'bob', '@rid': '#1:2', '@class': 'User' }}
+                variant="view"
+              />
+            </SnackbarProvider>
+          </AuthContext.Provider>
+        </QueryClientProvider>,
       ));
     });
 
@@ -132,19 +120,21 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <AuthContext.Provider value={auth}>
-          <SnackbarProvider onEnter={snackbarSpy}>
-            <RecordForm
-              modelName="User"
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
-              title="blargh monkeys"
-              value={{ name: 'bob', '@rid': '#1:2' }}
-              variant="edit"
-            />
-          </SnackbarProvider>
-        </AuthContext.Provider>,
+        <QueryClientProvider client={api.queryClient}>
+          <AuthContext.Provider value={auth}>
+            <SnackbarProvider onEnter={snackbarSpy}>
+              <RecordForm
+                modelName="User"
+                onError={onErrorSpy}
+                onSubmit={onSubmitSpy}
+                onTopClick={onTopClickSpy}
+                title="blargh monkeys"
+                value={{ name: 'bob', '@rid': '#1:2' }}
+                variant="edit"
+              />
+            </SnackbarProvider>
+          </AuthContext.Provider>
+        </QueryClientProvider>,
       ));
     });
 
@@ -181,19 +171,21 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <SnackbarProvider onEnter={snackbarSpy}>
-          <AuthContext.Provider value={auth}>
-            <RecordForm
-              modelName="User"
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
-              title="blargh monkeys"
-              value={{ }}
-              variant="new"
-            />
-          </AuthContext.Provider>
-        </SnackbarProvider>,
+        <QueryClientProvider client={api.queryClient}>
+          <SnackbarProvider onEnter={snackbarSpy}>
+            <AuthContext.Provider value={auth}>
+              <RecordForm
+                modelName="User"
+                onError={onErrorSpy}
+                onSubmit={onSubmitSpy}
+                onTopClick={onTopClickSpy}
+                title="blargh monkeys"
+                value={{ }}
+                variant="new"
+              />
+            </AuthContext.Provider>
+          </SnackbarProvider>
+        </QueryClientProvider>,
       ));
     });
 

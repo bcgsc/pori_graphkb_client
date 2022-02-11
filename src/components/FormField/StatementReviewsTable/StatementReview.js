@@ -13,8 +13,8 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { queryCache } from 'react-query';
+import React from 'react';
+import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
@@ -39,21 +39,14 @@ const StatementReview = ({
     status, createdBy, comment,
   } = value;
 
-  const [author, setAuthor] = useState(createdBy);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const user = await queryCache.prefetchQuery(
-        ['/query', { target: [createdBy] }],
-        (url, body) => api.post(url, body).request(),
-      );
-      setAuthor(user[0]);
-    };
-
-    if (!createdBy['@rid']) {
-      fetchUser();
-    }
-  }, [createdBy]);
+  const { data: author = createdBy } = useQuery(
+    ['/query', { target: [createdBy] }],
+    ({ queryKey: [route, body] }) => api.post(route, body),
+    {
+      enabled: !createdBy['@rid'],
+      select: response => response[0],
+    },
+  );
 
   const previewStr = `${author.name} (${author['@rid']})`;
 

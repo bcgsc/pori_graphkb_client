@@ -3,7 +3,7 @@ import './index.scss';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import FilterIcon from '@material-ui/icons/FilterList';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
@@ -52,9 +52,9 @@ const FilteredRecordAutocomplete = ({
 
   const itemToString = item => schema.getLabel(item);
 
-  const searchHandler = api.defaultSuggestionHandler(
+  const getQueryBody = useMemo(() => api.getDefaultSuggestionQueryBody(
     schema.get(selectedClassName),
-  );
+  ), [selectedClassName]);
 
   const valueToString = (record) => {
     if (record && record['@rid']) {
@@ -90,13 +90,13 @@ const FilteredRecordAutocomplete = ({
           disabled={disabled}
           getOptionKey={opt => opt['@rid']}
           getOptionLabel={itemToString}
+          getQueryBody={getQueryBody}
           isMulti={isMulti}
           name={name}
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
             : `Search for an Existing ${selectedClassName} Record`
           }
-          searchHandler={searchHandler}
         />
       </div>
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}

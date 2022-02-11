@@ -1,35 +1,19 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, wait } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 
 import { AuthContext } from '@/components/Auth';
+import api from '@/services/api';
 
 import StatementForm from '..';
 
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.mock('@/services/api', () => {
-  const mockRequest = () => ({
-    request: () => Promise.resolve(
-      [],
-    ),
-    abort: () => {},
-  });
-
-  // to check that initial reviewStatus is set to initial by default
-  const mockPost = jest.fn((route, payload) => ({ request: () => payload, abort: () => {} }));
-  return ({
-    delete: jest.fn().mockReturnValue(mockRequest()),
-    post: mockPost,
-    get: jest.fn().mockReturnValue(mockRequest()),
-    patch: jest.fn().mockReturnValue(mockRequest()),
-    defaultSuggestionHandler: jest.fn().mockReturnValue(mockRequest()),
-  });
-});
-
+jest.spyOn(api, 'post').mockImplementation((_, payload) => payload);
 
 jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,
@@ -76,19 +60,21 @@ describe('StatementForm', () => {
 
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(
-      <AuthContext.Provider value={auth}>
-        <SnackbarProvider onEnter={snackbarSpy}>
-          <StatementForm
-            modelName="Statement"
-            onError={onErrorSpy}
-            onSubmit={onSubmitSpy}
-            onTopClick={onTopClickSpy}
-            title="blargh monkeys"
-            value={{ }}
-            variant="edit"
-          />
-        </SnackbarProvider>
-      </AuthContext.Provider>,
+      <QueryClientProvider client={api.queryClient}>
+        <AuthContext.Provider value={auth}>
+          <SnackbarProvider onEnter={snackbarSpy}>
+            <StatementForm
+              modelName="Statement"
+              onError={onErrorSpy}
+              onSubmit={onSubmitSpy}
+              onTopClick={onTopClickSpy}
+              title="blargh monkeys"
+              value={{ }}
+              variant="edit"
+            />
+          </SnackbarProvider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
     );
     expect(getByText('Add Review')).toBeInTheDocument();
   });
@@ -99,19 +85,21 @@ describe('StatementForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <SnackbarProvider onEnter={snackbarSpy}>
-          <AuthContext.Provider value={auth}>
-            <StatementForm
-              modelName="Statement"
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
-              title="blargh monkeys"
-              value={{ }}
-              variant="new"
-            />
-          </AuthContext.Provider>
-        </SnackbarProvider>,
+        <QueryClientProvider client={api.queryClient}>
+          <SnackbarProvider onEnter={snackbarSpy}>
+            <AuthContext.Provider value={auth}>
+              <StatementForm
+                modelName="Statement"
+                onError={onErrorSpy}
+                onSubmit={onSubmitSpy}
+                onTopClick={onTopClickSpy}
+                title="blargh monkeys"
+                value={{ }}
+                variant="new"
+              />
+            </AuthContext.Provider>
+          </SnackbarProvider>
+        </QueryClientProvider>,
       ));
     });
 
@@ -137,7 +125,9 @@ describe('StatementForm', () => {
           createdBy: '23:9',
         }],
       };
-      expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
+      await wait(() => {
+        expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
+      });
     });
   });
 });

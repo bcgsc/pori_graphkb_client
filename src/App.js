@@ -11,9 +11,11 @@ import {
 import { create } from 'jss';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 import { BrowserRouter } from 'react-router-dom';
 
 import { AuthProvider } from '@/components/Auth';
+import api from '@/services/api';
 
 import * as cssTheme from './_theme.scss';
 import MainView from './views/MainView';
@@ -78,13 +80,15 @@ function App() {
     <StylesProvider jss={jss}>
       <CssBaseline />
       <MuiThemeProvider theme={theme}>
-        <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-          <BrowserRouter basename={window._env_.PUBLIC_PATH}>
-            <AuthProvider>
-              <MainView />
-            </AuthProvider>
-          </BrowserRouter>
-        </SnackbarProvider>
+        <QueryClientProvider client={api.queryClient}>
+          <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+            <BrowserRouter basename={window._env_.PUBLIC_PATH}>
+              <AuthProvider>
+                <MainView />
+              </AuthProvider>
+            </BrowserRouter>
+          </SnackbarProvider>
+        </QueryClientProvider>
       </MuiThemeProvider>
     </StylesProvider>
   );

@@ -26,10 +26,11 @@ const { DEFAULT_NEIGHBORS } = config;
  * Shows the search result filters and an edit button
  */
 const GraphView = ({ history }) => {
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
   const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
-  const recordIds = useMemo(() => getNodeRIDsFromURL(`${pathname}?${search}`), [search, pathname]);
+  // the existing behaviour of the graph relies on this not changing even when the url *is* updated
+  const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
   const queryClient = useQueryClient();
 
   const handleError = useCallback((err) => {

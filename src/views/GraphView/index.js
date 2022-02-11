@@ -95,10 +95,15 @@ const GraphView = ({ history }) => {
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
   const handleExpandRecord = async (recordId) => {
-    const [fullRecord] = await queryClient.fetchQuery(
-      ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-      async ({ queryKey: [route, body] }) => api.post(route, body),
-    );
+    const key = ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }];
+    let fullRecord = queryClient.getQueryData(key);
+
+    if (!fullRecord) {
+      [fullRecord] = await queryClient.fetchQuery(
+        key,
+        async ({ queryKey: [route, body] }) => api.post(route, body),
+      );
+    }
     return fullRecord;
   };
 

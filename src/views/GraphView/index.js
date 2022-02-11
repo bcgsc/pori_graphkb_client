@@ -41,16 +41,15 @@ const GraphView = ({ history }) => {
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(recordIds.length),
-      select: (response) => {
-        const recordHash = util.hashRecordsByRID(response);
+      onSuccess: (recordHash) => {
         Object.keys(recordHash).forEach((recordId) => {
           queryClient.setQueryData(
             [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
             [recordHash[recordId]],
           );
         });
-        return recordHash;
       },
+      select: response => util.hashRecordsByRID(response),
     },
   );
 

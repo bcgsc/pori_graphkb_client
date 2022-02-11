@@ -31,7 +31,7 @@ const ImportPubmedView = (props) => {
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       onError: err => handleErrorSaveLocation(err, history),
-      select: response => response['@rid'],
+      select: response => response[0]?.['@rid'],
     },
   );
 
@@ -109,7 +109,7 @@ const ImportPubmedView = (props) => {
         placeholder="Enter a PubMed ID ex. 1234"
         value={text}
       />
-      {currentRecords.map(rec => (
+      {currentRecords?.map(rec => (
         <PubmedCard
           key={rec['@rid']}
           abstract={rec.description}

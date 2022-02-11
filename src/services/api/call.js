@@ -66,9 +66,9 @@ async function request(endpoint, requestOptions, callOptions) {
       ? decycled.result
       : decycled;
 
-    if (callOptions.forceListReturn && !Array.isArray(result)) {
+    if (callOptions?.forceListReturn && !Array.isArray(result)) {
       result = [result];
-    } else if (Array.isArray(result) && callOptions.forceRecordReturn) {
+    } else if (Array.isArray(result) && callOptions?.forceRecordReturn) {
       if (result.length > 1) {
         throw new BadRequestError(`expected a single record but found multiple (${result.length})`);
       }

@@ -10,141 +10,77 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TreeItem from '@material-ui/lab/TreeItem';
 import TreeView from '@material-ui/lab/TreeView';
-import { titleCase } from 'change-case';
 import PropTypes from 'prop-types';
-import React, {
-  useCallback, useContext, useEffect, useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import GridContext from '../../GridContext';
-
-
-const detectColumns = (gridColumnApi) => {
-  const activeColumns = gridColumnApi.getAllDisplayedColumns()
-    .map(col => col.colId);
-  const allColumns = [];
-  const allGroups = {};
-  const activeGroups = (gridColumnApi.getAllDisplayedColumnGroups() || [])
-    .map(col => col.colId);
-
-  (gridColumnApi.columnController.columnDefs || []).forEach((col) => {
-    if (col.groupId) {
-      allGroups[col.groupId] = col.children.map(childCol => childCol.colId);
-    }
-    allColumns.push(col.colId || col.groupId);
-  });
-  return {
-    allColumns, activeColumns: new Set(activeColumns), allGroups, activeGroups: new Set(activeGroups),
-  };
-};
-
-
-const getColumnLabel = (gridColumnApi, colId, isGroup = false) => {
-  let colDef;
-
-  try {
-    colDef = isGroup
-      ? gridColumnApi.getColumnGroup(colId).getColGroupDef()
-      : gridColumnApi.getColumn(colId).colDef;
-  } catch (err) {
-    colDef = { field: colId }; // non-visible column group error
-  }
-
-  return colDef.headerName || titleCase(colDef.field) || colDef.field;
-};
-
-
+/**
+ * shows list of checkboxes where each checkbox is a column.
+ * if column is part of a group, it is shown with a collapsable section
+ *
+ * columns that are currently visible will already be checked, and clicking a checkbox will swap the visibility of that column.
+ * labels for the columns/groups should match those visible in the grid
+ */
 const ColumnConfiguration = ({
   onClose,
   isOpen,
+  gridRef,
 }) => {
-  const { gridApi, gridReady, colApi: gridColumnApi } = useContext(GridContext);
-  const [activeColumns, setActiveColumns] = useState(new Set());
-  const [allColumns, setAllColumns] = useState([]);
-  const [allGroups, setAllGroups] = useState({});
-
-  const ignorePreviewColumns = colId => !colId.endsWith('.preview');
-
-  const update = useCallback(() => {
-    const state = detectColumns(gridColumnApi);
-    setActiveColumns(state.activeColumns);
-    setAllColumns(state.allColumns);
-    setAllGroups(state.allGroups);
-  }, [gridColumnApi]);
+  const [columns, setColumns] = useState([]);
+  const [openCols, setOpenCols] = useState({});
 
   useEffect(() => {
-    if (gridReady && gridColumnApi) {
-      update();
-      gridApi.addEventListener('gridColumnsChanged', update);
-      gridApi.addEventListener('columnGroupOpened', update);
-    }
-  }, [gridApi, gridColumnApi, gridReady, update]);
+    const columnApi = gridRef?.current?.columnApi;
 
-  const openColumnGroup = useCallback((groupId, open = true) => {
-    const columnGroupState = gridColumnApi.getColumnGroupState();
+    if (!isOpen || !columnApi) { return; }
 
-    for (let i = 0; i < columnGroupState.length; i++) {
-      if (columnGroupState[i].groupId === groupId) {
-        columnGroupState[i] = { ...columnGroupState[i], open };
-        break;
+    const cols = [];
+    let current;
+    const nextOpenCols = {};
+    columnApi.getAllColumns().forEach((column) => {
+      if (column.colId.endsWith('.preview')) { return; }
+      nextOpenCols[column.colId] = column.visible;
+      const parent = column.originalParent;
+      const parentTitle = parent ? parent.colGroupDef?.headerName : '';
+
+      if (parentTitle && current?.id !== parent?.groupId) {
+        //  add group
+        current = {
+          title: parentTitle,
+          id: parent.groupId,
+          children: [],
+        };
+        cols.push(current);
       }
-    }
-    gridColumnApi.setColumnGroupState(columnGroupState);
-  }, [gridColumnApi]);
 
-
-  const handleToggleColumn = useCallback((colId, groupId = null) => {
-    const isActive = activeColumns.has(colId);
-    gridColumnApi.setColumnVisible(colId, !isActive);
-
-    const newActiveColumns = new Set(activeColumns);
-
-    if (isActive) {
-      newActiveColumns.delete(colId);
-    } else {
-      newActiveColumns.add(colId);
-
-      // if a group Id is given, toggle the group open
-      if (groupId) {
-        openColumnGroup(groupId, true);
+      if (parentTitle) {
+        // add to current group
+        current.children.push({
+          title: columnApi.getDisplayNameForColumn(column),
+          id: column.colId,
+          parentId: parent?.groupId,
+        });
+      } else {
+        current = null;
+        cols.push({
+          title: columnApi.getDisplayNameForColumn(column),
+          id: column.colId,
+          parentId: parent?.groupId,
+        });
       }
+    });
+
+    setOpenCols(nextOpenCols);
+    setColumns(cols);
+  }, [gridRef, isOpen]);
+
+  const handleToggleColumn = useCallback((colId, show) => {
+    setOpenCols(prev => ({ ...prev, [colId]: show }));
+    const columnApi = gridRef?.current?.columnApi;
+
+    if (columnApi) {
+      columnApi.setColumnVisible(colId, show);
     }
-    setActiveColumns(newActiveColumns);
-  }, [activeColumns, gridColumnApi, openColumnGroup]);
-
-
-  const ColumnCheckBox = (colId, groupId = null) => (
-    <TreeItem
-      key={colId}
-      className="column-configuration__item"
-      icon={activeColumns.has(colId)
-        ? (<CheckBoxIcon color="secondary" />)
-        : (<CheckBoxOutlineBlankIcon />)}
-      label={getColumnLabel(gridColumnApi, colId, false)}
-      nodeId={colId}
-      onIconClick={() => handleToggleColumn(colId, groupId)}
-      onLabelClick={() => handleToggleColumn(colId, groupId)}
-    />
-  );
-
-  const columnControl = allColumns.sort().map((colId) => {
-    if (allGroups[colId]) {
-      return (
-        <TreeItem
-          key={colId}
-          className="column-configuration__item"
-          collapseIcon={<ExpandMoreIcon />}
-          expandIcon={<ChevronRightIcon />}
-          label={getColumnLabel(gridColumnApi, colId, true)}
-          nodeId={colId}
-        >
-          {allGroups[colId].filter(ignorePreviewColumns).map(subColId => ColumnCheckBox(subColId, colId))}
-        </TreeItem>
-      );
-    }
-    return ColumnCheckBox(colId);
-  });
-
+  }, [gridRef]);
 
   const result = (
     <Dialog
@@ -154,7 +90,49 @@ const ColumnConfiguration = ({
     >
       <DialogContent className="column-configuration__content">
         <TreeView>
-          {columnControl}
+          {columns.map((column) => {
+            if (column.children) {
+              // column group
+              return (
+                <TreeItem
+                  key={column.id}
+                  className="column-configuration__item"
+                  collapseIcon={<ExpandMoreIcon />}
+                  expandIcon={<ChevronRightIcon />}
+                  label={column.title}
+                  nodeId={column.id}
+                >
+                  {column.children.map(child => (
+                    <TreeItem
+                      key={child.id}
+                      className="column-configuration__item"
+                      icon={openCols[child.id]
+                        ? (<CheckBoxIcon color="secondary" />)
+                        : (<CheckBoxOutlineBlankIcon />)}
+                      label={child.title}
+                      nodeId={child.id}
+                      onIconClick={() => handleToggleColumn(child.id, !openCols[child.id])}
+                      onLabelClick={() => handleToggleColumn(child.id, !openCols[child.id])}
+                    />
+                  ))}
+                </TreeItem>
+              );
+            }
+
+            return (
+              <TreeItem
+                key={column.id}
+                className="column-configuration__item"
+                icon={openCols[column.id]
+                  ? (<CheckBoxIcon color="secondary" />)
+                  : (<CheckBoxOutlineBlankIcon />)}
+                label={column.title}
+                nodeId={column.id}
+                onIconClick={() => handleToggleColumn(column.id, !openCols[column.id])}
+                onLabelClick={() => handleToggleColumn(column.id, !openCols[column.id])}
+              />
+            );
+          })}
         </TreeView>
       </DialogContent>
     </Dialog>
@@ -163,6 +141,7 @@ const ColumnConfiguration = ({
 };
 
 ColumnConfiguration.propTypes = {
+  gridRef: PropTypes.any,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
 };

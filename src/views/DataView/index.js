@@ -28,7 +28,6 @@ import config from '@/static/config';
 
 import ActiveFilters from './components/ActiveFilters';
 import Footer from './components/Footer';
-import GridContext from './components/GridContext';
 import TableOptions from './components/TableOptions';
 
 const CACHE_BLOCK_SIZE = 50;
@@ -124,9 +123,7 @@ const DataView = ({
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
   const [detailsRowId, setDetailsRowId] = useState(null);
-  const {
-    gridApi, colApi, onGridReady, gridReady,
-  } = useGrid();
+  const grid = useGrid();
 
   const payload = useMemo(() => getQueryPayload({
     search, count: true,
@@ -141,6 +138,10 @@ const DataView = ({
   );
 
   const initializeGrid = useCallback(() => {
+    const gridApi = grid.ref?.current?.api;
+
+    if (!gridApi) { return; }
+
     gridApi.setColumnDefs([
       ...schema.defineGridColumns(search),
     ]);
@@ -170,7 +171,7 @@ const DataView = ({
     };
       // update the model
     gridApi.setDatasource(dataSource);
-  }, [blockSize, gridApi, search, totalRows]);
+  }, [blockSize, grid.ref, search, totalRows]);
 
   useEffect(() => {
     // normalize the input query
@@ -182,16 +183,18 @@ const DataView = ({
 
   // set up infinitite row model data source
   useEffect(() => {
+    const gridApi = grid.ref?.current?.api;
+
+    if (!gridApi) { return; }
+
     const handleSelectionChange = () => {
       const newSelection = gridApi.getSelectedRows();
       setSelectedRecords(newSelection);
     };
 
-    if (gridReady) {
-      initializeGrid();
-      gridApi.addEventListener('selectionChanged', handleSelectionChange);
-    }
-  }, [blockSize, gridApi, gridReady, initializeGrid, search, totalRows]);
+    initializeGrid();
+    gridApi.addEventListener('selectionChanged', handleSelectionChange);
+  }, [blockSize, grid.ref, initializeGrid, search, totalRows]);
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
@@ -227,6 +230,10 @@ const DataView = ({
 
 
   const handleClickExport = useCallback(async () => {
+    const gridApi = grid.ref?.current?.api;
+
+    if (!gridApi) { return; }
+
     const username = ''; // getUsername(context);
     const header = `## Exported from GraphKB at ${new Date()} by ${username}
 ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
@@ -263,7 +270,7 @@ const DataView = ({
       const allRows = await getRowsFromBlocks({
         startRow: 0,
         endRow: maxExportSize,
-        sortModel: gridApi.getSortModel(),
+        sortModel: gridApi.sortController.getSortModel(),
         search,
         blockSize,
       });
@@ -289,7 +296,7 @@ const DataView = ({
 
       gridApi.setDatasource(tempDataSource);
     }
-  }, [blockSize, gridApi, initializeGrid, isExportingData, search, totalRows]);
+  }, [blockSize, grid.ref, initializeGrid, isExportingData, search, totalRows]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -329,17 +336,14 @@ const DataView = ({
             height: '100%',
           }}
         >
-          <GridContext.Provider value={{
-            gridReady, gridApi, colApi,
-          }}
-          >
-            <TableOptions
-              anchorEl={optionsMenuAnchor}
-              onClose={() => setOptionsMenuAnchor(null)}
-              onExportToTsv={(totalRows !== null) && handleClickExport}
-            />
-          </GridContext.Provider>
+          <TableOptions
+            anchorEl={optionsMenuAnchor}
+            gridRef={grid.ref}
+            onClose={() => setOptionsMenuAnchor(null)}
+            onExportToTsv={(totalRows !== null) && handleClickExport}
+          />
           <AgGridReact
+            {...grid.props}
             blockLoadDebounceMillis={100}
             cacheBlockSize={CACHE_BLOCK_SIZE}
             cacheOverflowSize={1}
@@ -353,16 +357,16 @@ const DataView = ({
             maxBlocksInCache={0}
             maxConcurrentDatasourceRequests={1}
             onCellFocused={({ rowIndex }) => {
-              if (rowIndex !== null) {
+              const gridApi = grid.ref?.current?.api;
+
+              if (gridApi && rowIndex !== null) {
                 const rowNode = gridApi.getDisplayedRowAtIndex(rowIndex);
                 handleToggleDetailPanel(rowNode);
               }
             }}
-            onGridReady={onGridReady}
             paginationPageSize={25}
-            reactNext
-          // allow the user to select using the arrow keys and shift
             rowModelType="infinite"
+            // allow the user to select using the arrow keys and shift
             rowSelection="multiple"
             suppressHorizontalScroll={false}
             suppressMultiSort

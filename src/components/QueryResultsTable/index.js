@@ -41,20 +41,22 @@ JumpToRecord.propTypes = {
 const QueryResultsTable = ({
   columnDefs, queryBody, title, description,
 }) => {
-  const { onGridReady, gridReady, gridApi } = useGrid();
+  const grid = useGrid();
 
   const { data, isFetching } = useQuery(['/query', queryBody], async ({ queryKey: [route, body] }) => api.post(route, body));
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {
-    if (gridReady) {
+    const gridApi = grid.ref?.current?.api;
+
+    if (gridApi) {
       gridApi.sizeColumnsToFit();
 
       if (gridApi && data) {
         gridApi.setRowData(data);
       }
     }
-  }, [gridReady, gridApi, data]);
+  }, [grid, data]);
 
   return (
     <div className="query-results-table">
@@ -67,15 +69,14 @@ const QueryResultsTable = ({
         role="presentation"
       >
         <AgGridReact
+          {...grid.props}
           columnDefs={columnDefs}
           data={data}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={rowData => rowData['@rid']}
-          onGridReady={onGridReady}
           pagination
           paginationAutoPageSize
-          reactNext
           suppressHorizontalScroll
         />
       </div>

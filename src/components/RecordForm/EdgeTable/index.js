@@ -37,9 +37,7 @@ const isReversed = (nodeId, { out: src, in: tgt }) => {
  * @param {Array.<object>} props.values the edge records
  */
 const EdgeTable = ({ recordId }) => {
-  const {
-    onGridReady, gridApi, gridReady,
-  } = useGrid();
+  const grid = useGrid();
 
   const { data: edges, isFetching } = useQuery(
     [
@@ -79,11 +77,13 @@ const EdgeTable = ({ recordId }) => {
   );
 
   useEffect(() => {
-    if (edges && gridReady && !isFetching) {
+    const gridApi = grid.ref?.current?.api;
+
+    if (edges && gridApi && !isFetching) {
       gridApi.setRowData(edges);
       gridApi.sizeColumnsToFit();
     }
-  }, [edges, gridApi, gridReady, isFetching]);
+  }, [edges, grid.ref, isFetching]);
 
 
   const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink {...cellValue} /></>); // eslint-disable-line react/prop-types
@@ -104,6 +104,7 @@ const EdgeTable = ({ recordId }) => {
         }}
       >
         <AgGridReact
+          {...grid.props}
           columnDefs={[
             {
               headerName: 'Relationship',
@@ -129,10 +130,8 @@ const EdgeTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={data => data['@rid']}
-          onGridReady={onGridReady}
           pagination
           paginationAutoPageSize
-          reactNext
           suppressHorizontalScroll
         />
       </div>

@@ -1,25 +1,22 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 /**
  * hook for setting up and using ag-grids apis
- * credit: areisle
  */
 const useGrid = () => {
-  const gridApi = useRef(null);
-  const colApi = useRef(null);
-  const [gridReady, setGridReady] = useState(false);
+  const gridRef = useRef();
+  const [delayedRef, setDelayedRef] = useState(null);
 
-  const onGridReady = ({ api, columnApi }) => {
-    gridApi.current = api;
-    colApi.current = columnApi;
-    setGridReady(true);
-  };
+  const props = useMemo(() => ({
+    ref: gridRef,
+    onGridReady: () => {
+      setDelayedRef(gridRef);
+    },
+  }), []);
 
   return {
-    colApi: colApi.current,
-    gridApi: gridApi.current,
-    gridReady,
-    onGridReady,
+    ref: delayedRef,
+    props,
   };
 };
 

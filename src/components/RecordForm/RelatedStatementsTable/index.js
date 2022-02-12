@@ -26,9 +26,7 @@ import api from '@/services/api';
  * @param {Array.<object>} props.values the edge records
  */
 const RelatedStatementsTable = ({ recordId }) => {
-  const {
-    onGridReady, gridApi, gridReady,
-  } = useGrid();
+  const grid = useGrid();
 
   const { data: statements, isFetching } = useQuery(
     ['/query', {
@@ -68,11 +66,13 @@ const RelatedStatementsTable = ({ recordId }) => {
   );
 
   useEffect(() => {
-    if (gridReady && statements && !isFetching) {
+    const gridApi = grid.ref?.current?.api;
+
+    if (gridApi && statements && !isFetching) {
       gridApi.setRowData(statements);
       gridApi.sizeColumnsToFit();
     }
-  }, [gridApi, gridReady, isFetching, statements]);
+  }, [grid.ref, isFetching, statements]);
 
 
   const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
@@ -92,6 +92,7 @@ const RelatedStatementsTable = ({ recordId }) => {
         }}
       >
         <AgGridReact
+          {...grid.props}
           columnDefs={[
             {
               headerName: 'relevance',
@@ -123,10 +124,8 @@ const RelatedStatementsTable = ({ recordId }) => {
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={data => data['@rid']} // eslint-disable-line react/prop-types
-          onGridReady={onGridReady}
           pagination
           paginationAutoPageSize
-          reactNext
           suppressHorizontalScroll
         />
       </div>

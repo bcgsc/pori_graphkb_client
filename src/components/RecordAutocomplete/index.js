@@ -1,45 +1,52 @@
 import './index.scss';
 
-import { NoSsr } from '@material-ui/core';
+import { CircularProgress, ListSubheader, TextField } from '@material-ui/core';
+import { Search as SearchIcon } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useQuery } from 'react-query';
-import Select from 'react-select';
 import { useDebounce } from 'use-debounce';
 
 import api from '@/services/api';
+import schema from '@/services/schema';
 
-import defaultComponents from './components';
+import DetailChip from '../DetailChip';
 
 const MIN_TERM_LENGTH = 3;
 
-const defaultOptionGrouping = (rawOptions) => {
-  const sourceGroups = {};
+const getGroup = option => (option.source && option.source.displayName
+  ? option.source.displayName
+  : 'no source');
 
-  rawOptions.forEach((option) => {
-    const source = option.source && option.source.displayName
-      ? option.source.displayName
-      : 'no source';
-    sourceGroups[source] = sourceGroups[source] || [];
-    sourceGroups[source].push(option);
-  });
-
-  if (Object.keys(sourceGroups) < 2) {
-    return rawOptions;
-  }
-
-  const options = [];
-  Object.entries(sourceGroups).forEach(([key, group]) => {
-    options.push({
-      label: key,
-      options: group,
-    });
-  });
-  return options;
+const getAsArray = (value) => {
+  if (value === null || value === undefined) { return []; }
+  return Array.isArray(value) ? value : [value];
 };
 
+const valueToString = (record) => {
+  if (record && record['@rid']) {
+    return schema.getLabel(record, false);
+  }
+  if (Array.isArray(record)) {
+    return `Array(${record.length})`;
+  }
+  return `${record}`;
+};
+
+const sortByGroup = (a, b) => {
+  const gA = getGroup(a);
+  const gB = getGroup(b);
+
+  if (gA > gB) {
+    return -1;
+  } if (gA < gB) {
+    return 1;
+  }
+  return 0;
+};
 
 /**
   * Autocomplete dropdown component for inputs which take 1 or multiple records as input
@@ -48,14 +55,9 @@ const defaultOptionGrouping = (rawOptions) => {
   * @property {boolean} props.disabled flag to indicate this input is disabled
   * @property {boolean} props.isMulti flag to indicate this field accepts multiple records
   * @property {boolean} props.required flag to indicate that this field must be filled
-  * @property {function} props.getOptionKey function to be used in generating a key for comparing options to check if equal
-  * @property {function} props.getOptionLabel function to get the string representation of the option
   * @property {function} props.itemToString function to convert option objects to display label
   * @property {function} props.onChange the parent handler function
-  * @property {Number} props.debounceMs the ms to use in setting the debounce on calling getting options (id 0 then no debounce is set)
   * @property {Number} props.minSearchLength the minimum length of characters required before the async options handler is called
-  * @property {object} props.components components to be passed to react-select
-  * @property {object} props.DetailChipProps properties to be applied to the DetailChip
   * @property {object|Array.<object>} props.value the initial selected value(s)
   * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
   * @property {string} props.className Additional css class name to use on the main select component
@@ -68,15 +70,9 @@ const defaultOptionGrouping = (rawOptions) => {
 const RecordAutocomplete = (props) => {
   const {
     className,
-    components,
-    DetailChipProps,
-    debounceMs,
     disabled,
     errorText,
-    getOptionKey,
-    getOptionLabel,
     isMulti,
-    innerProps,
     label,
     minSearchLength,
     name,
@@ -86,18 +82,17 @@ const RecordAutocomplete = (props) => {
     getQueryBody,
     singleLoad,
     helperText: initialHelperText,
-    groupOptions,
     value,
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
   const [helperText, setHelperText] = useState(initialHelperText);
-  const [selectedValue, setSelectedValue] = useState(value);
-  const [debouncedSearchTerm] = useDebounce(searchTerm, debounceMs);
+  const [selectedValues, setSelectedValues] = useState(getAsArray(value));
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
   // update the selected value if the initial input value changes
   useEffect(() => {
-    setSelectedValue(value);
+    setSelectedValues(getAsArray(value));
   }, [value]);
 
   // check if there are any short terms below min length and give warning if so
@@ -148,38 +143,36 @@ const RecordAutocomplete = (props) => {
         console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
         console.error(err);
       },
-      select: response => groupOptions(response ?? []),
+      select: response => response.sort(sortByGroup),
     },
   );
 
   const handleChange = useCallback(
-    (newValue, { action: actionType }) => {
-      setSelectedValue(newValue);
-      const event = { target: { name, value: newValue } };
+    (e, newValue, actionType, { option } = {}) => {
+      setSelectedValues(newValue);
 
-      if (actionType === 'select-option' || actionType === 'clear' || actionType === 'remove-value') {
-        onChange(event);
+      if (actionType === 'select-option' && !isMulti) {
+        setSelectedValues(isMulti ? newValue : [option]);
+        onChange({ target: { name, value: option } });
+      } else {
+        setSelectedValues(newValue);
+
+        if (actionType !== 'blur') {
+          onChange({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
+        }
       }
     },
-    [name, onChange],
+    [isMulti, name, onChange],
   );
 
-  const handleInputChange = useCallback(
-    (newSearchTerm, { action: actionType }) => {
-      let newHelperText = newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0
-        ? `Requires ${minSearchLength} or more characters to search`
-        : '';
+  const handleInputChange = useCallback((e, newSearchTerm) => {
+    const newHelperText = (newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0 && !singleLoad)
+      ? `Requires ${minSearchLength} or more characters to search`
+      : '';
 
-      if (actionType === 'input-change') {
-        setHelperText(newHelperText);
-      } else if (actionType === 'set-value' && isMulti) {
-        newHelperText = `Requires ${minSearchLength} or more characters to search`;
-        setHelperText(newHelperText);
-      }
-      setSearchTerm(newSearchTerm);
-    },
-    [isMulti, minSearchLength],
-  );
+    setHelperText(newHelperText);
+    setSearchTerm(newSearchTerm);
+  }, [minSearchLength, singleLoad]);
 
   const handleOnFocus = useCallback(
     () => {
@@ -199,94 +192,100 @@ const RecordAutocomplete = (props) => {
     [disabled, errorText, isMulti],
   );
 
-  const optionFilter = (option, candidate) => {
-    if (candidate && singleLoad) {
-      return [
-        option.label,
-        option.data.name,
-        option.data.sourceId,
+  const filterOptions = useCallback((opts, { inputValue }) => {
+    if (singleLoad) {
+      return opts.filter(option => [
+        option.name,
+        option.sourceId,
         option.displayName,
       ].some(
-        tgt => tgt && tgt.toLowerCase().includes(candidate.toLowerCase()),
-      );
+        tgt => tgt && tgt.toLowerCase().includes(inputValue.toLowerCase()),
+      ));
     }
-    return true;
-  };
+
+    return opts;
+  }, [singleLoad]);
 
   return (
-    <NoSsr>
-      <Select
-        className={`record-autocomplete ${className}`}
-        components={components}
-        DetailChipProps={DetailChipProps}
-        error={Boolean(errorText)}
-        filterOption={optionFilter}
-        getOptionLabel={getOptionLabel}
-        getOptionValue={getOptionKey}
-        hideSelectedOptions
-        innerProps={innerProps}
-        inputValue={searchTerm}
-        isClearable={!disabled}
-        isLoading={isLoading} // used to compare options for equality
-        isMulti={isMulti} // generates the string representation
-        isSearchable={!disabled}
-        onBlur={handleOnBlur}
-        onChange={handleChange}
-        onFocus={handleOnFocus}
-        onInputChange={handleInputChange}
-        options={options}
-        placeholder={
-            disabled
-              ? ''
-              : placeholder
-          }
-        textFieldProps={{
-          InputProps: {
-            disabled: (disabled || Boolean(selectedValue)) && !isMulti,
-            disableUnderline: disabled || (Boolean(selectedValue) && !isMulti),
-          },
-          error: Boolean(errorText),
-          helperText: helperText || errorText,
-          InputLabelProps: {
-            shrink: Boolean(selectedValue) || !(disabled && !selectedValue),
-          },
-          required,
-          label,
-        }}
-        value={selectedValue}
-      />
-    </NoSsr>
+    <Autocomplete
+      className={`record-autocomplete ${className}`}
+      disabled={disabled}
+      filterOptions={filterOptions}
+      filterSelectedOptions
+      getOptionLabel={option => schema.getLabel(option)}
+      getOptionSelected={(option, value_) => option['@rid'] === value_['@rid']}
+      groupBy={getGroup}
+      ListboxProps={{
+        dense: true,
+      }}
+      loading={isLoading}
+      multiple
+      onBlur={handleOnBlur}
+      onChange={handleChange}
+      onFocus={handleOnFocus}
+      onInputChange={handleInputChange}
+      options={options ?? []}
+      popupIcon={<SearchIcon />}
+      renderGroup={params => [
+        <ListSubheader
+          key={params.key}
+          className="record-autocomplete__group-title"
+          component="div"
+        >
+          {params.group}
+        </ListSubheader>,
+        params.children,
+      ]}
+      renderInput={params => (
+        <TextField
+          {...params}
+          disabled={disabled || (!isMulti && Boolean(selectedValues.length))}
+          error={Boolean(errorText)}
+          helperText={helperText || errorText}
+          InputLabelProps={{
+            shrink: !(disabled && !selectedValues.length),
+          }}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+            disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
+          }}
+          label={label}
+          placeholder={
+                (disabled || selectedValues.length)
+                  ? ''
+                  : placeholder
+              }
+          required={required}
+        />
+      )}
+      renderTags={(values, getTagProps) => values.map((option, index) => (
+        <DetailChip
+          {...getTagProps({ index })}
+          className="record-autocomplete__chip record-autocomplete__chip--multi"
+          details={option}
+          getLink={schema.getLink}
+          label={schema.getLabel(option)}
+          valueToString={valueToString}
+        />
+      ))}
+      value={selectedValues}
+    />
   );
 };
 
 RecordAutocomplete.propTypes = {
   getQueryBody: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
-  DetailChipProps: PropTypes.shape({
-    getLink: PropTypes.func,
-    valueToString: PropTypes.func,
-  }),
   className: PropTypes.string,
-  components: PropTypes.shape({
-    Control: PropTypes.func,
-    DropdownIndicator: PropTypes.func,
-    Menu: PropTypes.func,
-    MultiValue: PropTypes.func,
-    NoOptionsMessage: PropTypes.func,
-    Option: PropTypes.func,
-    Placeholder: PropTypes.func,
-    SingleValue: PropTypes.func,
-    ValueContainer: PropTypes.func,
-    inputComponent: PropTypes.func,
-  }),
-  debounceMs: PropTypes.number,
   disabled: PropTypes.bool,
   errorText: PropTypes.string,
-  getOptionKey: PropTypes.func,
-  getOptionLabel: PropTypes.func,
-  groupOptions: PropTypes.func,
   helperText: PropTypes.string,
-  innerProps: PropTypes.object,
   isMulti: PropTypes.bool,
   label: PropTypes.string,
   minSearchLength: PropTypes.number,
@@ -299,22 +298,9 @@ RecordAutocomplete.propTypes = {
 
 RecordAutocomplete.defaultProps = {
   className: '',
-  components: defaultComponents,
-  debounceMs: 300,
-  DetailChipProps: {
-    valueToString: (record) => {
-      if (record && record['@rid']) {
-        return record['@rid'];
-      }
-      return `${record}`;
-    },
-  },
   disabled: false,
   errorText: '',
-  getOptionKey: opt => opt['@rid'],
-  getOptionLabel: opt => opt.name,
   isMulti: false,
-  innerProps: {},
   label: '',
   minSearchLength: 1,
   onChange: () => {},
@@ -323,7 +309,6 @@ RecordAutocomplete.defaultProps = {
   singleLoad: false,
   value: null,
   helperText: '',
-  groupOptions: defaultOptionGrouping,
 };
 
 export default RecordAutocomplete;

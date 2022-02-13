@@ -19,7 +19,6 @@ import schema from '@/services/schema';
  * @param {string} props.defaultFilterClassName the initial class selection for the class filter
  * @param {bool} props.disabled
  * @param {bool} props.isMulti allows multiple selections for the autocomplete
- * @param {Object} props.DetailChipProps properties to pass to the inner detail chip component(s)
  * @param {string} props.helperText
  * @param {bool} props.error
  * @param {string} props.name the field name used in passing to parent handlers
@@ -31,7 +30,6 @@ const FilteredRecordAutocomplete = ({
   defaultFilterClassName,
   disabled,
   isMulti,
-  DetailChipProps,
   helperText,
   filterOptions,
   error,
@@ -50,21 +48,9 @@ const FilteredRecordAutocomplete = ({
 
   const model = schema.get(linkedClassName);
 
-  const itemToString = item => schema.getLabel(item);
-
   const getQueryBody = useMemo(() => api.getDefaultSuggestionQueryBody(
     schema.get(selectedClassName),
   ), [selectedClassName]);
-
-  const valueToString = (record) => {
-    if (record && record['@rid']) {
-      return schema.getLabel(record, false);
-    }
-    if (Array.isArray(record)) {
-      return `Array(${record.length})`;
-    }
-    return `${record}`;
-  };
 
   return (
     <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
@@ -82,14 +68,7 @@ const FilteredRecordAutocomplete = ({
         )}
         <RecordAutocomplete
           {...rest}
-          DetailChipProps={{
-            ...DetailChipProps,
-            valueToString,
-            getDetails: details => details,
-          }}
           disabled={disabled}
-          getOptionKey={opt => opt['@rid']}
-          getOptionLabel={itemToString}
           getQueryBody={getQueryBody}
           isMulti={isMulti}
           name={name}
@@ -107,7 +86,6 @@ const FilteredRecordAutocomplete = ({
 FilteredRecordAutocomplete.propTypes = {
   linkedClassName: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  DetailChipProps: PropTypes.object,
   defaultFilterClassName: PropTypes.string,
   disabled: PropTypes.bool,
   error: PropTypes.bool,
@@ -123,7 +101,6 @@ FilteredRecordAutocomplete.defaultProps = {
   isMulti: false,
   helperText: '',
   error: false,
-  DetailChipProps: {},
 };
 
 

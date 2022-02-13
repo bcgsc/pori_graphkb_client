@@ -98,7 +98,7 @@ describe('DetailDrawer', () => {
 
   test('empty record value does not cause crash (Drawer closes)', () => {
     try {
-      render(<DetailDrawer />);
+      render(<ProvideSchema><DetailDrawer /></ProvideSchema>);
     } catch (err) {
       console.error(err);
     }

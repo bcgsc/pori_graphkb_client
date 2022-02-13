@@ -1,56 +1,29 @@
+@import '../../theme';
+
 .record-autocomplete {
   flex-grow: 1;
   max-width: 100%;
 
+  // prevent search icon from flipping when menu opens
+  .MuiAutocomplete-popupIndicatorOpen {
+    transform: none;
+  }
+
+  &__group-title {
+    // reduce from 48px
+    line-height: 24px;
+    font-size: x-small;
+    text-transform: uppercase;
+    background-color: $palette__common--white;
+  }
+
   &__chip {
-    margin: 4px;
+    margin: 2px 4px;
     max-width: calc(100% - 8px);
   }
 
-  &__dropdown {
-    margin: 8px;
-    width: 1.5rem;
-  }
-
-  &__input {
-    display: flex;
-    height: fit-content; // expand with multiple selections (may be multi-line)
-    margin-top: -3px; // match other MUI form fields
-    min-height: 37px; // match other MUI form fields
-    padding: 0;
-  }
-
-  &__no-options-message {
-    padding: 1px 2px;
-  }
-
-  &__option {
-    font-weight: 400;
-
-    &--selected {
-      font-weight: 500;
-    }
-  }
-
-  &__placeholder {
-    font-size: 1rem;
-    left: 2px;
-    position: absolute;
-  }
-
-  &__paper {
-    left: 0;
-    margin-top: 1px;
-    position: absolute;
-    right: 0;
-    z-index: 1;
-  }
-
-  &__value-container {
-    align-items: center;
-    display: flex;
-    flex: 1;
-    flex-wrap: wrap;
-    overflow: hidden;
+  // to match height of other mui textfields
+  .MuiInputBase-input {
+    min-height: 24px;
   }
 }

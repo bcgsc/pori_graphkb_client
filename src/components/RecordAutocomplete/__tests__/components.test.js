@@ -14,7 +14,7 @@ describe('RecordAutocomplete', () => {
 
   test('renders new placeholder', () => {
     const placeholder = 'blargh monkeys';
-    const { getByText } = render(
+    const { getByPlaceholderText } = render(
       <QueryClientProvider client={api.queryClient}>
         <RecordAutocomplete
           getQueryBody={jest.fn()}
@@ -24,7 +24,7 @@ describe('RecordAutocomplete', () => {
         />
       </QueryClientProvider>,
     );
-    expect(getByText(placeholder)).toBeInTheDocument();
+    expect(getByPlaceholderText(placeholder)).toBeInTheDocument();
   });
 
   test('renders when initial value is given', () => {
@@ -34,14 +34,13 @@ describe('RecordAutocomplete', () => {
       <QueryClientProvider client={api.queryClient}>
         <RecordAutocomplete
           getQueryBody={jest.fn()}
-          itemToString={v => v.name}
           name="test"
           onChange={jest.fn()}
           value={record}
         />
       </QueryClientProvider>,
     );
-    expect(getByText('bob')).toBeInTheDocument();
+    expect(getByText('bob (#2:3)')).toBeInTheDocument();
   });
 
   test('renders multiple initial values', () => {
@@ -51,15 +50,14 @@ describe('RecordAutocomplete', () => {
         <RecordAutocomplete
           getQueryBody={jest.fn()}
           isMulti
-          itemToString={v => v.name}
           name="test"
           onChange={jest.fn()}
           value={record}
         />
       </QueryClientProvider>,
     );
-    expect(getByText('bob')).toBeInTheDocument();
-    expect(getByText('alice')).toBeInTheDocument();
+    expect(getByText('bob (#2:3)')).toBeInTheDocument();
+    expect(getByText('alice (#2:4)')).toBeInTheDocument();
   });
 
   afterEach(() => {

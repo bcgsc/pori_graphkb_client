@@ -16,14 +16,13 @@ import { useDebounce } from 'use-debounce';
  * @param {string} props.value the initial value in the serach box
  * @param {string} props.helperText the text to display below the search box
  * @param {string} props.className the class name to add to the parent div element
- * @param {Number} props.debounceMs the number of ms to debounce reporting changes to the input text
  * @param {boolean} props.error the error state of the input box
  */
 const SearchBox = ({
-  onSubmit, value, error, helperText, onChange, className, debounceMs, ...props
+  onSubmit, value, error, helperText, onChange, className, ...props
 }) => {
   const [searchText, setSearchText] = useState(value);
-  const [debouncedSearchText] = useDebounce(searchText, debounceMs);
+  const [debouncedSearchText] = useDebounce(searchText, 300);
   const ENTER_KEYCODE = 13;
 
   const handleTextChange = useCallback(({ target: { value: newValue } }) => {
@@ -68,7 +67,6 @@ const SearchBox = ({
 
 SearchBox.propTypes = {
   className: PropTypes.string,
-  debounceMs: PropTypes.number,
   error: PropTypes.bool,
   helperText: PropTypes.string,
   onChange: PropTypes.func,
@@ -83,7 +81,6 @@ SearchBox.defaultProps = {
   value: '',
   error: false,
   helperText: '',
-  debounceMs: 300,
   className: '',
 };
 

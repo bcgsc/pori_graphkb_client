@@ -46,6 +46,7 @@ function GraphLegend(props) {
                 </Typography>
               </div>
               <IconButton
+                aria-label="nodes legend"
                 name="nodesLegend"
                 onClick={() => onChange({
                   target: {
@@ -102,6 +103,7 @@ function GraphLegend(props) {
                   </Typography>
                 </div>
                 <IconButton
+                  aria-label="links legend"
                   name="linksLegend"
                   onClick={() => onChange({
                     target: {

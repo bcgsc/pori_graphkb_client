@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -8,16 +8,16 @@ import MainNav from '../MainNav';
 
 
 describe('<MainNav />', () => {
-  let wrapper;
-
   test('correctly renders', () => {
-    wrapper = mount(
+    render(
       <BrowserRouter>
         <AuthContext.Provider value={{}}>
           <MainNav />
         </AuthContext.Provider>
       </BrowserRouter>,
     );
-    expect(wrapper.find(MainNav)).toHaveLength(1);
+
+    // find some element from nav
+    expect(screen.getByText('About')).toBeTruthy();
   });
 });

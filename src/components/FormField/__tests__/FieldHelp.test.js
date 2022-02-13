@@ -1,35 +1,32 @@
-import {
-  Tooltip,
-} from '@material-ui/core';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import FieldHelp from '../FieldHelp';
 
 
 describe('FieldHelp', () => {
-  test('includes example if given', () => {
-    const wrapper = mount((
-      <FieldHelp description="does stuff" example="3" />
-    ));
-    const click = wrapper.find(Tooltip);
-    expect(click).toHaveLength(1);
-    expect(click.prop('title')).toEqual('does stuff (Example: 3)');
+  test('includes example if given', async () => {
+    render(
+      <FieldHelp description="does stuff" example="3" />,
+    );
+    const button = screen.getByLabelText('show tooltip');
+    fireEvent.click(button);
+    await expect(screen.findByText('does stuff (Example: 3)')).resolves.toBeTruthy();
   });
 
   test('returns null if no description or example', () => {
-    const wrapper = mount((
-      <FieldHelp />
-    ));
-    expect(wrapper.find(Tooltip)).toHaveLength(0);
+    render(
+      <FieldHelp />,
+    );
+    expect(screen.queryByLabelText('show tooltip')).toBeFalsy();
   });
 
-  test('ignores example if not given', () => {
-    const wrapper = mount((
-      <FieldHelp description="does stuff" />
-    ));
-    const click = wrapper.find(Tooltip);
-    expect(click).toHaveLength(1);
-    expect(click.prop('title')).toEqual('does stuff');
+  test('ignores example if not given', async () => {
+    render(
+      <FieldHelp description="does stuff" />,
+    );
+    const button = screen.getByLabelText('show tooltip');
+    fireEvent.click(button);
+    await expect(screen.findByText('does stuff')).resolves.toBeTruthy();
   });
 });

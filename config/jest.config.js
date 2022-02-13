@@ -30,7 +30,6 @@ module.exports = {
   setupFiles: [
     '<rootDir>/src/polyfills.js',
     '<rootDir>/config/jest/browserMock.js',
-    '<rootDir>/config/jest/enzymeInit.js',
     '<rootDir>/config/jest/windowEnvMock.js',
     'jest-canvas-mock',
   ],

@@ -56,7 +56,7 @@ const QueryResultsTable = ({
         gridApi.setRowData(data);
       }
     }
-  }, [grid, data]);
+  }, [grid.ref, data]);
 
   return (
     <div className="query-results-table">

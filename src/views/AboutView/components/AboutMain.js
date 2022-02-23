@@ -2,14 +2,15 @@ import {
   Chip,
   CircularProgress, Typography,
 } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 import React from 'react';
 import Chart from 'react-google-charts';
 import { useQuery } from 'react-query';
 
-import * as cssTheme from '@/_theme.scss';
 import api from '@/services/api';
 
 function AboutMain() {
+  const theme = useTheme();
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
   const { data: chartData } = useQuery(
@@ -84,7 +85,7 @@ function AboutMain() {
         options={{
           title: 'Statement Sources',
           legend: 'none',
-          colors: [cssTheme.primaryMain, cssTheme.secondaryMain],
+          colors: [theme.palette.primary.main, theme.palette.secondary.main],
           backgroundColor: 'transparent',
         }}
         width="100%"

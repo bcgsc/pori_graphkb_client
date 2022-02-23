@@ -1,5 +1,5 @@
 # Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM node:12 as build-stage
+FROM node:16 as build-stage
 
 ARG API_BASE_URL
 ARG KEYCLOAK_URL

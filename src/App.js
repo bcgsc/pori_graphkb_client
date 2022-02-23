@@ -17,47 +17,46 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '@/components/Auth';
 import api from '@/services/api';
 
-import * as cssTheme from './_theme.scss';
 import MainView from './views/MainView';
 
 const theme = createMuiTheme({
   direction: 'ltr',
   palette: {
     primary: {
-      main: cssTheme.primaryMain,
-      light: cssTheme.primaryLight,
-      dark: cssTheme.primaryDark,
-      contrastText: cssTheme.primaryContrastText,
+      main: '#1b2786',
+      light: '#4682b4',
+      dark: '#111955',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: cssTheme.secondaryMain,
-      light: cssTheme.secondaryLight,
-      dark: cssTheme.secondaryDark,
-      contrastText: cssTheme.secondaryContrastText,
+      main: '#54b198',
+      light: '#a0ebd8',
+      dark: '#1f6552',
+      contrastText: '#ffffff',
     },
     error: {
-      main: cssTheme.errorMain,
-      light: cssTheme.errorLight,
-      dark: cssTheme.errorDark,
-      contrastText: cssTheme.errorContrastText,
+      main: '#f44336',
+      light: '#e57373',
+      dark: '#d32f2f',
+      contrastText: '#ffffff',
     },
     text: {
-      primary: cssTheme.textPrimary,
-      secondary: cssTheme.textSecondary,
-      hint: cssTheme.textHint,
-      disabled: cssTheme.textDisabled,
+      primary: 'rgba(0, 0, 0, 0.7)',
+      secondary: 'rgba(0, 0, 0, 0.54)',
+      hint: 'rgba(0, 0, 0, 0.38)',
+      disabled: 'rgba(0, 0, 0, 0.38)',
     },
   },
   typography: {
-    body1: { fontSize: cssTheme.fontSizeBody1 },
-    body2: { fontSize: cssTheme.fontSizeBody2 },
-    h1: { fontSize: cssTheme.fontSizeH1 },
-    h2: { fontSize: cssTheme.fontSizeH2 },
-    h3: { fontSize: cssTheme.fontSizeH3 },
-    h4: { fontSize: cssTheme.fontSizeH4 },
-    h5: { fontSize: cssTheme.fontSizeH5 },
-    h6: { fontSize: cssTheme.fontSizeH6 },
-    subtitle1: { fontSize: cssTheme.fontSizeSubtitle1 },
+    body1: { fontSize: '1rem' },
+    body2: { fontSize: '0.875rem' },
+    h1: { fontSize: '1.7rem' },
+    h2: { fontSize: '1.5rem' },
+    h3: { fontSize: '1.4rem' },
+    h4: { fontSize: '1.25rem' },
+    h5: { fontSize: '1.1rem' },
+    h6: { fontSize: '0.875rem' },
+    subtitle1: { fontSize: '0.875rem' },
   },
 });
 

@@ -46,9 +46,7 @@ JumpToRecord.propTypes = {
  * @param {Array.<object>} props.values the edge records
  */
 const ActivityView = () => {
-  const {
-    onGridReady, gridApi, gridReady,
-  } = useGrid();
+  const grid = useGrid();
 
   const currentTime = new Date().getTime(); // current time stamp in seconds
   const cutOff = useRef(currentTime - TWO_WEEK_MILLISECONDS);
@@ -90,13 +88,16 @@ const ActivityView = () => {
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {
-    if (gridReady) {
+    const gridApi = grid.ref?.current?.api;
+
+    if (gridApi) {
       gridApi.sizeColumnsToFit();
+
+      if (recentRecords) {
+        gridApi.setRowData(recentRecords);
+      }
     }
-    if (recentRecords) {
-      gridApi.setRowData(recentRecords);
-    }
-  }, [gridReady, gridApi, recentRecords]);
+  }, [recentRecords, grid.ref]);
 
   return (
     <div className="activity-view">
@@ -111,6 +112,7 @@ const ActivityView = () => {
         }}
       >
         <AgGridReact
+          {...grid.props}
           columnDefs={[
             {
               headerName: 'class',
@@ -146,10 +148,8 @@ const ActivityView = () => {
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={data => data['@rid']}
-          onGridReady={onGridReady}
           pagination
           paginationAutoPageSize
-          reactNext
           suppressHorizontalScroll
         />
       </div>

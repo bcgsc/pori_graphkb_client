@@ -17,6 +17,7 @@ const TableOptions = ({
   onExportToTsv,
   anchorEl,
   onClose,
+  gridRef,
 }) => {
   const [columnControlIsOpen, setColumnControlIsOpen] = useState(false);
 
@@ -61,6 +62,7 @@ const TableOptions = ({
         />
       </Popover>
       <ColumnConfiguration
+        gridRef={gridRef}
         isOpen={columnControlIsOpen}
         onClose={handleCloseColumnControl}
       />
@@ -71,6 +73,7 @@ const TableOptions = ({
 
 TableOptions.propTypes = {
   anchorEl: PropTypes.element,
+  gridRef: PropTypes.any,
   onClose: PropTypes.func,
   onExportToTsv: PropTypes.func,
 };

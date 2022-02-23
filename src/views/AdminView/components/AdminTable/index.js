@@ -167,9 +167,7 @@ const AdminTable = ({ onChange, records, variant }) => {
           frameworkComponents={{ EmailLink, Actions }}
           pagination
           paginationAutoPageSize
-          reactNext
           rowData={records}
-          sizeColumnsToFit
           suppressHorizontalScroll={false}
         />
       </div>

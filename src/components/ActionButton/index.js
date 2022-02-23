@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 import ConfirmActionDialog from './ConfirmActionDialog';
 
-
 /**
  * @property {object} props
  * @property {bool} props.requireConfirm flag indicating we should confirm the action using a dialog

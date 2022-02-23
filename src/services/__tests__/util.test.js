@@ -204,7 +204,7 @@ describe('validate outputs for util methods', () => {
       { val: 5, result: [1, 0, 1, 0] },
     ];
 
-    test.forEach(testCase => expect(util.parsePermission(testCase.val)).toEqual(testCase.result));
+    test.forEach((testCase) => expect(util.parsePermission(testCase.val)).toEqual(testCase.result));
   });
 
   test('getPropOfType', () => {

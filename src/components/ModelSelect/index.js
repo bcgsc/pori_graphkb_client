@@ -5,7 +5,6 @@ import DropDownSelect from '@/components/DropDownSelect';
 import RadioSelect from '@/components/RadioSelect';
 import schema from '@/services/schema';
 
-
 /**
  * Select a database model class
  *
@@ -18,14 +17,14 @@ import schema from '@/services/schema';
  * @param {string} props.name the field name to use in passing events to the onChange handler
  * @param {string} props.variant the display type (radio or select)
  */
-const ModelSelect = ({
+function ModelSelect({
   baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
-}) => {
+}) {
   const [choices, setChoices] = useState([]);
   const model = value || defaultValue;
 
   useEffect(() => {
-    const models = schema.get(baseModel).descendantTree(!includeAbstract).map(m => ({
+    const models = schema.get(baseModel).descendantTree(!includeAbstract).map((m) => ({
       label: m.name, value: m.name, caption: m.description, key: m.name,
     })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);
@@ -53,7 +52,7 @@ const ModelSelect = ({
       {...props}
     />
   );
-};
+}
 
 ModelSelect.propTypes = {
   onChange: PropTypes.func.isRequired,

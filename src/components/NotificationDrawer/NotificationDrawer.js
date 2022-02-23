@@ -51,8 +51,7 @@ function NotificationDrawer(props) {
                 size={NOTIFICATION_SPINNER_SIZE}
               />
             )
-            : <CheckIcon />
-          }
+            : <CheckIcon />}
         </Button>
       </div>
     </Drawer>

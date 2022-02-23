@@ -4,7 +4,6 @@ import useObject from '@/components/hooks/useObject';
 
 const START_GROUP = '1';
 
-
 /**
  * Unlike cleaning record links, cannot assume there are no intermediary
  * objects that are not also records
@@ -29,7 +28,6 @@ const cleanFilterLinks = (content) => {
   return content;
 };
 
-
 const useFilterGroups = () => {
   const {
     content: groups,
@@ -42,7 +40,6 @@ const useFilterGroups = () => {
   const reset = useCallback(() => {
     replaceGroups({ [START_GROUP]: [] });
   }, [replaceGroups]);
-
 
   const addGroup = useCallback(() => {
     let groupIndex = Object.keys(groups).length;
@@ -75,7 +72,6 @@ const useFilterGroups = () => {
     const newFilters = [...groups[group].slice(0, pos), ...groups[group].slice(pos + 1)];
     updateGroup(group, newFilters);
   }, [groups, selectedGroup, updateGroup]);
-
 
   const removeGroup = useCallback((group) => {
     if (group !== START_GROUP) {

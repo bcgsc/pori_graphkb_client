@@ -20,7 +20,6 @@ import React from 'react';
 
 import schema from '@/services/schema';
 
-
 /**
    * Formats record relationships.
    * @property {Object} record - Record being displayed.
@@ -36,7 +35,7 @@ function RelationshipList(props) {
   // Checks subclasses
   const edges = schema.getEdges(record);
 
-  const rid = rec => rec['@rid'] || rec;
+  const rid = (rec) => rec['@rid'] || rec;
 
   if (!edges || edges.length === 0) return null;
   return (
@@ -101,7 +100,6 @@ function RelationshipList(props) {
     </List>
   );
 }
-
 
 RelationshipList.propTypes = {
   formatMetadata: PropTypes.func.isRequired,

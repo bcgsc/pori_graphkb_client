@@ -11,8 +11,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-
-const EmailReportError = (props) => {
+function EmailReportError(props) {
   const { linkText, body, subject } = props;
   return (
     <a href={`mailto:${
@@ -26,7 +25,7 @@ const EmailReportError = (props) => {
       {linkText}
     </a>
   );
-};
+}
 
 EmailReportError.propTypes = {
   body: PropTypes.string.isRequired,
@@ -37,7 +36,7 @@ EmailReportError.propTypes = {
 /**
  * View for displaying uncaught error messages.
  */
-const ErrorView = () => {
+function ErrorView() {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const location = useLocation();
   const state = location.state ?? {};
@@ -123,7 +122,6 @@ error text: ${message}`;
       </Link>
     </div>
   );
-};
-
+}
 
 export default ErrorView;

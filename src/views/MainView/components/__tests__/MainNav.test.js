@@ -6,7 +6,6 @@ import { AuthContext } from '@/components/Auth';
 
 import MainNav from '../MainNav';
 
-
 describe('<MainNav />', () => {
   test('correctly renders', () => {
     render(

@@ -24,7 +24,7 @@ import Timestamp from './Timestamp';
 
 const POSITION_CLASSES = [
   'Position',
-  ...schema.schema.Position.descendantTree(false).map(m => m.name),
+  ...schema.schema.Position.descendantTree(false).map((m) => m.name),
 ];
 
 /**
@@ -36,7 +36,7 @@ const POSITION_CLASSES = [
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
  * @param {object} props.innerProps props to pass to the inner form field element
  */
-const FormField = ({
+function FormField({
   className = '',
   model,
   disabled = false,
@@ -44,7 +44,7 @@ const FormField = ({
   innerProps,
   helperText: defaultHelperText,
   baseModel,
-}) => {
+}) {
   const {
     formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
   } = useContext(FormContext);
@@ -204,7 +204,7 @@ const FormField = ({
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
         autoProps.filterOptions = [
-          ...schema.schema.Variant.descendantTree(false).map(m => m.name),
+          ...schema.schema.Variant.descendantTree(false).map((m) => m.name),
           'Disease',
           'CatalogueVariant',
         ];
@@ -286,8 +286,7 @@ const FormField = ({
       {propComponent}
     </FieldWrapper>
   );
-};
-
+}
 
 FormField.propTypes = {
   model: PropTypes.shape({
@@ -331,7 +330,6 @@ FormField.propTypes = {
   label: PropTypes.string,
 };
 
-
 FormField.defaultProps = {
   className: '',
   disabled: false,
@@ -340,6 +338,5 @@ FormField.defaultProps = {
   helperText: '',
   baseModel: '',
 };
-
 
 export default FormField;

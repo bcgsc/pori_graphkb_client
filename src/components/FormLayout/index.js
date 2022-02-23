@@ -24,7 +24,6 @@ import schema from '@/services/schema';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
-
 /**
  * @param {object} props the input properties
  * @param {string} props.modelName the name of the schema model to use
@@ -36,9 +35,9 @@ import FieldGroup from './FieldGroup';
  * @param {bool} props.disabled flag to indicated form fields are disabled
  * @param {string} props.className css class to add to main element
  */
-const FormLayout = ({
+function FormLayout({
   exclusions, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
-}) => {
+}) {
   const {
     formContent = {}, formVariant,
   } = useContext(FormContext);
@@ -123,7 +122,7 @@ const FormLayout = ({
       )}
     </div>
   );
-};
+}
 
 FormLayout.propTypes = {
   aboveFold: PropTypes.arrayOf(PropTypes.string),

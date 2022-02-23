@@ -12,7 +12,6 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 
 import FieldWrapper from '../FieldWrapper';
 
-
 const {
   schema: {
     CytobandPosition: {
@@ -21,7 +20,6 @@ const {
     },
   },
 } = schema;
-
 
 /**
  * Cytoband position form
@@ -33,13 +31,13 @@ const {
  * @param {bool} props.required flag to indicate this field must be filled
  * @param {bool} props.disabled flag to indicate this field is disabled
  */
-const CytobandPosition = ({
+function CytobandPosition({
   onChange,
   value,
   name,
   required,
   disabled,
-}) => {
+}) {
   const { formContent, formErrors, updateField } = useSchemaForm(
     properties,
     { ...(value || {}), '@class': VARIANT },
@@ -55,7 +53,7 @@ const CytobandPosition = ({
 
   return (
     <>
-      {[arm, majorBand, minorBand].map(model => (
+      {[arm, majorBand, minorBand].map((model) => (
         <FieldWrapper key={model.name}>
           <TextField
             disabled={disabled}
@@ -73,7 +71,7 @@ const CytobandPosition = ({
       ))}
     </>
   );
-};
+}
 
 CytobandPosition.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -89,6 +87,5 @@ CytobandPosition.defaultProps = {
   name: '',
   disabled: false,
 };
-
 
 export default CytobandPosition;

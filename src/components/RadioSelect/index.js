@@ -27,37 +27,38 @@ import React from 'react';
  * @param {function} props.optionToKey the function to generate a key from a selection value
  * @param {string} props.name the name to use for the input and reporting change to the parent handler
  */
-const RadioSelect = ({
+function RadioSelect({
   options, onChange, className, label, value, optionToKey, name,
-}) => (
-  <MenuList className={`radio-select ${className}`}>
-    {label && (<FormLabel>{label}</FormLabel>)}
-    {options.map((option) => {
-      const optionValue = option.value === undefined ? option : option.value;
-      const checked = Boolean(value === optionValue);
-      return (
-        <MenuItem
-          key={optionToKey(option)}
-          className="radio-option"
-          onClick={() => {
-            onChange({ target: { name, value: optionValue } });
-          }}
-          selected={checked}
-          value={optionValue}
-        >
-          <Radio checked={checked} inputProps={{ 'data-testid': `radio-option__${optionToKey(option)}` }} />
-          <ListItemText
-            primary={option.label || option}
-            primaryTypographyProps={{ className: 'radio-option__title' }}
-            secondary={option.caption || ''}
-            secondaryTypographyProps={{ className: 'radio-option__caption' }}
-          />
-        </MenuItem>
-      );
-    })}
-  </MenuList>
-);
-
+}) {
+  return (
+    <MenuList className={`radio-select ${className}`}>
+      {label && (<FormLabel>{label}</FormLabel>)}
+      {options.map((option) => {
+        const optionValue = option.value === undefined ? option : option.value;
+        const checked = Boolean(value === optionValue);
+        return (
+          <MenuItem
+            key={optionToKey(option)}
+            className="radio-option"
+            onClick={() => {
+              onChange({ target: { name, value: optionValue } });
+            }}
+            selected={checked}
+            value={optionValue}
+          >
+            <Radio checked={checked} inputProps={{ 'data-testid': `radio-option__${optionToKey(option)}` }} />
+            <ListItemText
+              primary={option.label || option}
+              primaryTypographyProps={{ className: 'radio-option__title' }}
+              secondary={option.caption || ''}
+              secondaryTypographyProps={{ className: 'radio-option__caption' }}
+            />
+          </MenuItem>
+        );
+      })}
+    </MenuList>
+  );
+}
 
 RadioSelect.propTypes = {
   options: PropTypes.arrayOf(PropTypes.oneOfType([
@@ -77,7 +78,7 @@ RadioSelect.defaultProps = {
   onChange: () => {},
   className: '',
   value: null,
-  optionToKey: o => o.key || o,
+  optionToKey: (o) => o.key || o,
 };
 
 export default RadioSelect;

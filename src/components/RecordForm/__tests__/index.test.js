@@ -17,9 +17,9 @@ jest.spyOn(api, 'patch').mockImplementation(() => []);
 jest.spyOn(api, 'delete').mockImplementation(() => []);
 jest.spyOn(api, 'get').mockImplementation(() => []);
 
-jest.mock('@/components/RecordAutocomplete', () => (({
+jest.mock('@/components/RecordAutocomplete', () => (function ({
   value, onChange, name, label,
-}) => {
+}) {
   const mockValues = {
     conditions: ['11:11'],
     evidence: ['12:23'],
@@ -32,14 +32,13 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   };
 
   return (
-    <select data-testid={`${name}-select`} id={`${name}-id`} onChange={handleChange} value={value}>
+    <select data-testid="$-select" id={`${name}-id`} onChange={handleChange} value={value}>
       <option key="test" value={value}>
         {label}
       </option>
     </select>
   );
 }));
-
 
 const originalError = console.error;
 
@@ -48,7 +47,6 @@ console.error = (msg) => {
     originalError(msg);
   }
 };
-
 
 describe('RecordForm', () => {
   afterEach(() => {
@@ -86,7 +84,6 @@ describe('RecordForm', () => {
         </QueryClientProvider>,
       ));
     });
-
 
     test('shows edit button', () => {
       expect(getByText('Edit')).toBeInTheDocument();
@@ -137,7 +134,6 @@ describe('RecordForm', () => {
         </QueryClientProvider>,
       ));
     });
-
 
     test('shows view button', () => {
       expect(getByText('View')).toBeInTheDocument();

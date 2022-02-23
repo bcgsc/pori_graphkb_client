@@ -31,7 +31,7 @@ import MenuLink from './MenuLink';
  * @property {Array} props.links - List of app links to display in sidebar.
  * @property {function} props.onChange - handler for siderbar state change.
  */
-const MainNav = ({ isOpen, onChange }) => {
+function MainNav({ isOpen, onChange }) {
   const [subMenuOpenLink, setSubMenuOpenLink] = useState('/query');
   const auth = useAuth();
   const { setActiveLink } = useContext(ActiveLinkContext);
@@ -99,9 +99,7 @@ const MainNav = ({ isOpen, onChange }) => {
         </MenuItem>
         )}
         {auth.hasWriteAccess && (isOpen && subMenuOpenLink === 'import') && (
-        <>
-          <MenuLink inset label="PubMed" onClick={handleClickLink} route="/import/pubmed" />
-        </>
+        <MenuLink inset label="PubMed" onClick={handleClickLink} route="/import/pubmed" />
         )}
         <MenuLink icon={<TrendingUpIcon />} label="Activity" onClick={handleClickLink} route="/activity" />
         <MenuLink icon={<HelpOutlineIcon />} label="About" onClick={handleClickLink} route="/about" />
@@ -115,8 +113,7 @@ const MainNav = ({ isOpen, onChange }) => {
       </div>
     </Drawer>
   );
-};
-
+}
 
 MainNav.propTypes = {
   isOpen: PropTypes.bool,

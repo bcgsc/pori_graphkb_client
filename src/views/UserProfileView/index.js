@@ -6,8 +6,7 @@ import React from 'react';
 import { useAuth } from '@/components/Auth';
 import QueryResultsTable from '@/components/QueryResultsTable';
 
-
-const UserProfileView = () => {
+function UserProfileView() {
   const { user } = useAuth();
 
   return (
@@ -210,7 +209,6 @@ const UserProfileView = () => {
       />
     </div>
   );
-};
-
+}
 
 export default UserProfileView;

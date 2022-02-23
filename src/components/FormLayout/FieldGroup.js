@@ -51,9 +51,9 @@ const filterNullFields = (orderingList, formContent) => {
  * @param {String} variant one of ['new', 'edit', 'search]
  * @param {bool} disabled if field should be disabled
  */
-const FieldGroup = ({
+function FieldGroup({
   model, ordering, exclusions, disabled,
-}) => {
+}) {
   const { formVariant, formContent } = useContext(FormContext);
   const { properties: { out, in: tgt, ...properties } } = model;
 
@@ -114,10 +114,9 @@ const FieldGroup = ({
     }
   });
   return (
-    <React.Fragment>{fields}</React.Fragment>
+    <>{fields}</>
   );
-};
-
+}
 
 FieldGroup.propTypes = {
   model: PropTypes.object.isRequired,
@@ -133,6 +132,5 @@ FieldGroup.defaultProps = {
   exclusions: [],
   disabled: false,
 };
-
 
 export default FieldGroup;

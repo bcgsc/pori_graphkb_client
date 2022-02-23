@@ -38,7 +38,7 @@ const FIELD_EXCLUSIONS = ['groupRestrictions'];
  * @property {value} props.value values of individual properties of passed class model
  * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
-const RecordForm = ({
+function RecordForm({
   value: initialValue,
   modelName,
   title,
@@ -48,7 +48,7 @@ const RecordForm = ({
   variant,
   navigateToGraph,
   ...rest
-}) => {
+}) {
   const snackbar = useSnackbar();
   const auth = useAuth();
 
@@ -108,7 +108,6 @@ const RecordForm = ({
       addNewAction(content);
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
-
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
@@ -265,16 +264,14 @@ const RecordForm = ({
               disabled={actionInProgress || (formHasErrors && formIsDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
-                : handleNewAction
-                }
+                : handleNewAction}
               requireConfirm={false}
               size="large"
               variant="contained"
             >
               {variant === FORM_VARIANT.EDIT
                 ? 'SUBMIT CHANGES'
-                : 'SUBMIT'
-                }
+                : 'SUBMIT'}
             </ActionButton>
           )
           : (<div />) // for spacing issues only
@@ -282,8 +279,7 @@ const RecordForm = ({
       </div>
     </Paper>
   );
-};
-
+}
 
 RecordForm.propTypes = {
   navigateToGraph: PropTypes.func.isRequired,

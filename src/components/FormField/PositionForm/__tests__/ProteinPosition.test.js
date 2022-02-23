@@ -5,7 +5,6 @@ import React from 'react';
 
 import ProteinPosition from '../ProteinPosition';
 
-
 describe('ProteinPosition', () => {
   test('shows both fields', () => {
     const { getByText } = render(<ProteinPosition value={{}} />);

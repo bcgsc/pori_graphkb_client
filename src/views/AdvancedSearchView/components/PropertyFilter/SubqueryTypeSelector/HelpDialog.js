@@ -17,7 +17,7 @@ import treeDiagram from '@/static/images/tree.png';
  * @param {boolean} props.isOpen - Dialog open flag
  * @param {function} props.onClose - Handler for closing of dialog.
  */
-const HelpDialog = (props) => {
+function HelpDialog(props) {
   const {
     isOpen,
     onClose,
@@ -65,7 +65,7 @@ const HelpDialog = (props) => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 HelpDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,

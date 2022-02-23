@@ -9,8 +9,7 @@ import { useQuery } from 'react-query';
 import * as cssTheme from '@/_theme.scss';
 import api from '@/services/api';
 
-
-const AboutMain = () => {
+function AboutMain() {
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
   const { data: chartData } = useQuery(
@@ -93,6 +92,6 @@ const AboutMain = () => {
       )}
     </div>
   );
-};
+}
 
 export default AboutMain;

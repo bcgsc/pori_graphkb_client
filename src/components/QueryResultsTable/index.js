@@ -16,13 +16,14 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
-const JumpToRecord = ({ data }) => (
-  <Link className="query-results-table__jump-to-record" target="_blank" to={schema.getLink(data)}>
-    <OpenInNewIcon />
-    {data['@rid']}
-  </Link>
-);
+function JumpToRecord({ data }) {
+  return (
+    <Link className="query-results-table__jump-to-record" target="_blank" to={schema.getLink(data)}>
+      <OpenInNewIcon />
+      {data['@rid']}
+    </Link>
+  );
+}
 
 JumpToRecord.propTypes = {
   data: PropTypes.shape({
@@ -38,9 +39,9 @@ JumpToRecord.propTypes = {
  * @param {object} props.queryBody the body of the query request
  * @param {string} props.title the title to put above the table
  */
-const QueryResultsTable = ({
+function QueryResultsTable({
   columnDefs, queryBody, title, description,
-}) => {
+}) {
   const grid = useGrid();
 
   const { data, isFetching } = useQuery(['/query', queryBody], async ({ queryKey: [route, body] }) => api.post(route, body));
@@ -74,7 +75,7 @@ const QueryResultsTable = ({
           data={data}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
-          getRowNodeId={rowData => rowData['@rid']}
+          getRowNodeId={(rowData) => rowData['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -82,7 +83,7 @@ const QueryResultsTable = ({
       </div>
     </div>
   );
-};
+}
 
 QueryResultsTable.propTypes = {
   columnDefs: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -94,6 +95,5 @@ QueryResultsTable.propTypes = {
 QueryResultsTable.defaultProps = {
   description: '',
 };
-
 
 export default QueryResultsTable;

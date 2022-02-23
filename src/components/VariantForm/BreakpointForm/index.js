@@ -9,7 +9,6 @@ import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import schema from '@/services/schema';
 
-
 /**
  * Handles the form for a single breakpoint (start and end) with the reference element it is
  * associated with
@@ -23,9 +22,9 @@ import schema from '@/services/schema';
  * @param {string} props.end the field name of the end position (ex. break1End)
  * @param {bool} props.required flag to indicate this field is required
  */
-const BreakpointForm = ({
+function BreakpointForm({
   coordinateType, reference, start, end, required, model,
-}) => {
+}) {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
 
@@ -89,7 +88,7 @@ const BreakpointForm = ({
       )}
     </div>
   );
-};
+}
 
 BreakpointForm.propTypes = {
   coordinateType: PropTypes.string.isRequired,

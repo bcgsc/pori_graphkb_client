@@ -7,18 +7,18 @@ import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsP
 import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
 /* eslint-disable react/prop-types */
-jest.mock('../../../../components/DropDownSelect', () => ({
+jest.mock('../../../../components/DropDownSelect', () => function ({
   options = [], value, onChange, name,
-}) => {
+}) {
   const handleChange = (event) => {
     const option = options.find(
-      opt => opt === event.currentTarget.value,
+      (opt) => opt === event.currentTarget.value,
     );
     onChange({ target: { value: option, name } });
   };
   return (
-    <select data-testid={`${name}`} onChange={handleChange} value={value}>
-      {options.map(opt => (
+    <select data-testid="$" onChange={handleChange} value={value}>
+      {options.map((opt) => (
         <option key={opt} value={opt}>
           {opt}
         </option>
@@ -38,7 +38,7 @@ describe('<GraphOptionsPanel />', () => {
   ];
 
   const propsMap = new PropsMap();
-  testNodes.forEach(t => propsMap.loadNode(t));
+  testNodes.forEach((t) => propsMap.loadNode(t));
 
   const handleDialogClose = jest.fn();
   const handleGraphOptionsChange = jest.fn();

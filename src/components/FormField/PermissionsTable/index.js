@@ -64,9 +64,9 @@ const splitPermissionsByOperation = (permissions) => {
  * @property {string} props.name field name to use in simulating events
  * @property {object} props.value the current permissions set
  */
-const PermissionsTable = ({
+function PermissionsTable({
   value, disabled, onChange, name,
-}) => {
+}) {
   const [content, setContent] = useState(value || {});
   const [topBoxes, setTopboxes] = useState({});
 
@@ -113,7 +113,6 @@ const PermissionsTable = ({
     onChange({ target: { name, value: newContent } });
   }, [content, name, onChange, topBoxes]);
 
-
   const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
   const permByModelName = splitPermissionsByOperation(content || {});
   const modelOrder = Object.keys(permByModelName).sort();
@@ -124,7 +123,7 @@ const PermissionsTable = ({
         <TableHead>
           <TableRow className="permissions-table__header">
             <TableCell size="small" />
-            {operationOrder.map(operation => (
+            {operationOrder.map((operation) => (
               <TableCell key={operation} padding="checkbox">
                 {operation}
               </TableCell>
@@ -132,7 +131,7 @@ const PermissionsTable = ({
           </TableRow>
           <TableRow>
             <TableCell size="small" />
-            {operationOrder.map(operation => (
+            {operationOrder.map((operation) => (
               <TableCell key={operation} padding="checkbox">
                 <Checkbox
                   checked={topBoxes[operation]}
@@ -152,7 +151,7 @@ const PermissionsTable = ({
                   <TableCell size="small">
                     {modelName}:
                   </TableCell>
-                  {operationOrder.map(operation => (
+                  {operationOrder.map((operation) => (
                     <TableCell key={operation} padding="checkbox">
                       {(permission[operation] !== null && (
                       <Checkbox
@@ -171,8 +170,7 @@ const PermissionsTable = ({
       </Table>
     </div>
   );
-};
-
+}
 
 PermissionsTable.propTypes = {
   name: PropTypes.string.isRequired,

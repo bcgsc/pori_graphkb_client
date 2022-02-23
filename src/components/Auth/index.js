@@ -38,7 +38,7 @@ const useAuth = () => {
   return state;
 };
 
-const AuthProvider = (props) => {
+function AuthProvider(props) {
   const { children } = props;
 
   const {
@@ -67,8 +67,8 @@ const AuthProvider = (props) => {
           authenticationToken: keycloak.token,
           authorizationToken,
           isAuthenticated: true,
-          isAdmin: Boolean(user.groups.find(group => group.name === dbRoles.admin)),
-          hasWriteAccess: Boolean(user.groups.find(group => [dbRoles.admin, dbRoles.regular].includes(group.name))),
+          isAdmin: Boolean(user.groups.find((group) => group.name === dbRoles.admin)),
+          hasWriteAccess: Boolean(user.groups.find((group) => [dbRoles.admin, dbRoles.regular].includes(group.name))),
           user,
           username,
         };
@@ -122,21 +122,23 @@ const AuthProvider = (props) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const Centered = ({ children }) => (
-  <div className="auth-centered">
-    {children}
-  </div>
-);
+function Centered({ children }) {
+  return (
+    <div className="auth-centered">
+      {children}
+    </div>
+  );
+}
 Centered.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const AuthenticatedRoute = (props) => {
+function AuthenticatedRoute(props) {
   const { admin, component, path } = props;
   const auth = useAuth();
 
@@ -189,8 +191,7 @@ const AuthenticatedRoute = (props) => {
   return (
     <Route component={component} path={path} />
   );
-};
-
+}
 
 AuthenticatedRoute.propTypes = {
   component: PropTypes.object.isRequired,
@@ -203,5 +204,8 @@ AuthenticatedRoute.defaultProps = {
 };
 
 export {
-  AuthProvider, useAuth, AuthenticatedRoute, AuthContext,
+  AuthContext,
+  AuthenticatedRoute,
+  AuthProvider,
+  useAuth,
 };

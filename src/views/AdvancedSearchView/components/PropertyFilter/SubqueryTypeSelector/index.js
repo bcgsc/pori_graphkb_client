@@ -42,7 +42,6 @@ function RecordFormStateToggle({
     setHelpIsOpen(!helpIsOpen);
   }, [helpIsOpen]);
 
-
   return (
     <div>
       <ToggleButtonGroup

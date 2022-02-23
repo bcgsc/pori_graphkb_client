@@ -19,13 +19,12 @@ import config from '@/static/config';
 
 import GraphComponent from './components/GraphComponent';
 
-
 const { DEFAULT_NEIGHBORS } = config;
 
 /**
  * Shows the search result filters and an edit button
  */
-const GraphView = ({ history }) => {
+function GraphView({ history }) {
   const { search } = useLocation();
   const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
@@ -50,7 +49,7 @@ const GraphView = ({ history }) => {
           );
         });
       },
-      select: response => util.hashRecordsByRID(response),
+      select: (response) => util.hashRecordsByRID(response),
     },
   );
 
@@ -82,15 +81,12 @@ const GraphView = ({ history }) => {
     }
   }, [handleError, queryClient]);
 
-
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
     navigateToGraph(nodeRIDs, history, handleError);
   }, [handleError, history]);
 
-
   const edges = schema.getEdges();
   const expandedEdgeTypes = util.expandEdges(edges);
-
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -111,7 +107,8 @@ const GraphView = ({ history }) => {
     <div className={
       `data-view ${detailPanelIsOpen
         ? 'data-view--squished'
-        : ''}`}
+        : ''}`
+}
     >
       <div className="data-view__content--graph-view">
         {graphData && (
@@ -146,11 +143,10 @@ const GraphView = ({ history }) => {
 
     </div>
   );
-};
+}
 
 GraphView.propTypes = {
   history: HistoryPropType.isRequired,
 };
-
 
 export default GraphView;

@@ -14,5 +14,4 @@ function FilterIcon(props) {
   );
 }
 
-
 export default FilterIcon;

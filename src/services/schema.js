@@ -8,7 +8,6 @@ const { schema: SCHEMA_DEFN } = kbSchema;
 
 const MAX_LABEL_LENGTH = 50;
 
-
 /**
  * Knowledgebase schema.
  */
@@ -91,7 +90,7 @@ class Schema {
     const classModel = this.get(obj);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
-      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+      .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
   /**
@@ -107,7 +106,7 @@ class Schema {
     const classModel = this.get(className);
     if (!classModel) return null;
     return Object.values(classModel.queryProperties || [])
-      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+      .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
   /**
@@ -123,7 +122,7 @@ class Schema {
    */
   getQueryable(isAdmin) {
     const { schema } = this;
-    return Object.values(schema).filter(model => model.expose
+    return Object.values(schema).filter((model) => model.expose
       && model.expose.QUERY
       && (isAdmin || !['User', 'UserGroup'].includes(model.name)));
   }
@@ -137,7 +136,7 @@ class Schema {
     const { schema } = this;
     if (!schema[cls]) return null;
     const list = Object.values(schema)
-      .filter(model => model.inherits && model.inherits.includes(cls));
+      .filter((model) => model.inherits && model.inherits.includes(cls));
     if (!subOnly) list.push(schema[cls]);
     return list;
   }
@@ -148,13 +147,13 @@ class Schema {
    */
   getEdges(node = null) {
     const { schema } = this;
-    const list = schema.E.subclasses.slice().map(classModel => classModel.name);
+    const list = schema.E.subclasses.slice().map((classModel) => classModel.name);
 
     if (node) {
       const edges = [];
       Object.keys(node)
-        .filter(key => key.split('_')[1] && list.includes(key.split('_')[1]))
-        .forEach(key => edges.push(...node[key]));
+        .filter((key) => key.split('_')[1] && list.includes(key.split('_')[1]))
+        .forEach((key) => edges.push(...node[key]));
       return edges;
     }
 
@@ -171,9 +170,8 @@ class Schema {
       parentCls = [parentCls];
     }
 
-
     return !!(this.get(cls)
-      && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));
+      && this.get(cls).inherits.some((inherited) => parentCls.includes(inherited)));
   }
 
   isEdge(cls) {
@@ -292,7 +290,7 @@ class Schema {
 
     const defineLinkSetColumn = (name) => {
       const colId = name;
-      const getLinkData = ({ data }) => data && (data[name] || []).map(l => this.getPreview(l));
+      const getLinkData = ({ data }) => data && (data[name] || []).map((l) => this.getPreview(l));
 
       return {
         colId,
@@ -304,20 +302,20 @@ class Schema {
       };
     };
 
-    const getCondition = propName => ({ data }) => {
+    const getCondition = (propName) => ({ data }) => {
       let values;
 
       if (data && data.conditions && propName !== 'other') {
-        values = data.conditions.filter(val => (val['@class'].toLowerCase().includes(propName)));
+        values = data.conditions.filter((val) => (val['@class'].toLowerCase().includes(propName)));
       } else if (data && data.conditions) {
-        values = data.conditions.filter(val => (
+        values = data.conditions.filter((val) => (
           !val['@class'].toLowerCase().includes('variant')
           && !val['@class'].toLowerCase().includes('disease')
           && (!data.subject || (data.subject['@rid'] !== val['@rid']))
         ));
       }
       if (values) {
-        return values.map(v => this.getPreview(v));
+        return values.map((v) => this.getPreview(v));
       }
       return values;
     };
@@ -358,7 +356,7 @@ class Schema {
         colId = this.get(colId).reverseName;
       }
 
-      const getEdgeData = ({ data }) => data && (data[name] || []).map(edge => this.getPreview(edge[target]));
+      const getEdgeData = ({ data }) => data && (data[name] || []).map((edge) => this.getPreview(edge[target]));
 
       return {
         colId,
@@ -422,7 +420,7 @@ class Schema {
     });
 
     const propModels = Object.values(allProps)
-      .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
+      .filter((prop) => !exclude.includes(prop.name) && prop.type !== 'embedded')
       .sort(compareColumnsForSort);
 
     const skinnyLinks = ['evidenceLevel', 'source']; // generally short content

@@ -14,7 +14,7 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = (props) => {
+function NewRecordView(props) {
   const {
     history,
     match: {
@@ -79,12 +79,11 @@ const NewRecordView = (props) => {
   return (
     <div className="new-record-view">{innerComponent}</div>
   );
-};
+}
 
 NewRecordView.propTypes = {
   history: propTypes.object.isRequired,
   match: propTypes.object.isRequired,
 };
-
 
 export default NewRecordView;

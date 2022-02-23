@@ -10,7 +10,6 @@ import schema from '@/services/schema';
 
 import BreakpointForm from '..';
 
-
 describe('BreakpointForm', () => {
   test('displays start when given', () => {
     const { getByText, queryByText } = render(

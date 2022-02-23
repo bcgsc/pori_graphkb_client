@@ -19,7 +19,7 @@ describe('kbgraph method i/o validations', () => {
     const testPropsMap = new PropsMap();
 
     // Load
-    testData.forEach(node => testPropsMap.loadNode(node, testColumns));
+    testData.forEach((node) => testPropsMap.loadNode(node, testColumns));
 
     // Validate
     Object.keys(testPropsMap.nodeProps).forEach((key) => {
@@ -43,7 +43,7 @@ describe('kbgraph method i/o validations', () => {
     const testPropsMap = new PropsMap();
 
     // Load
-    testData.forEach(link => testPropsMap.loadLink(link, testColumns));
+    testData.forEach((link) => testPropsMap.loadLink(link, testColumns));
 
     // Validate
     Object.keys(testPropsMap.linkProps).forEach((key) => {
@@ -67,10 +67,10 @@ describe('kbgraph method i/o validations', () => {
     const testPropsMap = new PropsMap();
 
     // Load
-    testData.forEach(node => testPropsMap.loadNode(node, testColumns));
+    testData.forEach((node) => testPropsMap.loadNode(node, testColumns));
 
     const deleted = testData.splice(0, 1);
-    testPropsMap.removeNode(deleted[0], testData.map(d => ({ data: d })), testColumns);
+    testPropsMap.removeNode(deleted[0], testData.map((d) => ({ data: d })), testColumns);
   });
 
   test('GraphOptions', () => {

@@ -16,7 +16,6 @@ import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
 const isReversed = (nodeId, { out: src, in: tgt }) => {
   if (src && tgt) {
     const srcId = src['@rid'] || src;
@@ -36,7 +35,7 @@ const isReversed = (nodeId, { out: src, in: tgt }) => {
  * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
  * @param {Array.<object>} props.values the edge records
  */
-const EdgeTable = ({ recordId }) => {
+function EdgeTable({ recordId }) {
   const grid = useGrid();
 
   const { data: edges, isFetching } = useQuery(
@@ -85,8 +84,7 @@ const EdgeTable = ({ recordId }) => {
     }
   }, [edges, grid.ref, isFetching]);
 
-
-  const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink {...cellValue} /></>); // eslint-disable-line react/prop-types
+  const renderCellRenderer = ({ value: cellValue }) => (<RecordIdLink {...cellValue} />); // eslint-disable-line react/prop-types
 
   if (!isFetching && (!edges || edges.length === 0)) {
     return null;
@@ -129,7 +127,7 @@ const EdgeTable = ({ recordId }) => {
           ]}
           defaultColDef={{ resizable: true, sortable: true }}
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']}
+          getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -137,11 +135,10 @@ const EdgeTable = ({ recordId }) => {
       </div>
     </div>
   );
-};
+}
 
 EdgeTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default EdgeTable;

@@ -6,7 +6,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import DetailChip from '..';
 
-
 describe('DetailChip', () => {
   const onDeleteSpy = jest.fn();
   const getLinkSpy = jest.fn(() => '/test');
@@ -60,7 +59,6 @@ describe('DetailChip', () => {
     const { getByText, container } = queryFunctions;
     const chip = getByText('label');
     await fireEvent.click(chip);
-
 
     const cancelIcon = container.querySelector('[class*="MuiChip-deleteIcon"]');
     await fireEvent.click(cancelIcon);

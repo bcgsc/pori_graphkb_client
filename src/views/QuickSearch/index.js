@@ -22,14 +22,13 @@ import api from '@/services/api';
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
 
-
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
  *
  * @property {Object} props.history - Application routing history object.
  */
-const QuickSearch = ({ history }) => {
+function QuickSearch({ history }) {
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -50,7 +49,6 @@ const QuickSearch = ({ history }) => {
       });
     }
   }, [errorMessage, history, value]);
-
 
   /**
    * Stringifies all queryable properties of parsed variant.
@@ -96,7 +94,6 @@ const QuickSearch = ({ history }) => {
     }
   }, [hgvs, history, searchByHGVS, searchKeyword, value, variant]);
 
-
   // validate
   useEffect(() => {
     if (!value) {
@@ -106,7 +103,7 @@ const QuickSearch = ({ history }) => {
         .trim()
         .toLowerCase()
         .split(/\s+/)
-        .filter(word => word.length >= MIN_WORD_LENGTH);
+        .filter((word) => word.length >= MIN_WORD_LENGTH);
 
       if (!trimmed.length) {
         setErrorMessage(`Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`);
@@ -149,7 +146,7 @@ const QuickSearch = ({ history }) => {
       <div className="search__bar">
         <div
           className="search__main"
-          onKeyUp={event => event.keyCode === ENTER_KEYCODE && handleSubmit()}
+          onKeyUp={(event) => event.keyCode === ENTER_KEYCODE && handleSubmit()}
           role="textbox"
           tabIndex={0}
         >
@@ -169,8 +166,7 @@ const QuickSearch = ({ history }) => {
             onChange={handleInputChange}
             placeholder={hgvs
               ? 'Search Statements by HGVS Shorthand'
-              : 'Search Statements by Keyword'
-            }
+              : 'Search Statements by Keyword'}
             value={value}
           />
           <FormControlLabel
@@ -184,7 +180,7 @@ const QuickSearch = ({ history }) => {
       </div>
     </div>
   );
-};
+}
 
 QuickSearch.propTypes = {
   history: PropTypes.object.isRequired,

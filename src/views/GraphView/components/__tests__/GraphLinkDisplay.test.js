@@ -21,7 +21,6 @@ const mockData = {
   },
 };
 
-
 describe('<GraphLinkDisplay />', () => {
   test('renders svg g element with nested paths', () => {
     const { container } = render(
@@ -34,7 +33,7 @@ describe('<GraphLinkDisplay />', () => {
 
     const group = container.querySelector('g');
     expect(group).toBeTruthy();
-    Array.from(group.children).forEach(child => expect(child.tagName).toBe('path'));
+    Array.from(group.children).forEach((child) => expect(child.tagName).toBe('path'));
   });
 
   test('renders label correctly', () => {

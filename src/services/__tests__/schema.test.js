@@ -2,7 +2,6 @@ import { schema as SCHEMA_DEFN } from '@bcgsc-pori/graphkb-schema';
 
 import testSchema from '../schema';
 
-
 describe('schema service', () => {
   describe('Retrieving classmodels and properties', () => {
     test('gets classes properly', () => {
@@ -31,8 +30,8 @@ describe('schema service', () => {
 
     test('Returns edges', () => {
       const edges = Object.values(testSchema.schema)
-        .filter(model => model.inherits && model.inherits.includes('E'))
-        .map(model => model.name);
+        .filter((model) => model.inherits && model.inherits.includes('E'))
+        .map((model) => model.name);
       expect(testSchema.getEdges()).toEqual(edges);
 
       const testNode = {
@@ -50,7 +49,7 @@ describe('schema service', () => {
     });
   });
 
-  describe('getLabel/getPreview tests ', () => {
+  describe('getLabel/getPreview tests', () => {
     test('returns a primitive value back', () => {
       const mockRID = '#19:0';
       const label = testSchema.getLabel(mockRID);

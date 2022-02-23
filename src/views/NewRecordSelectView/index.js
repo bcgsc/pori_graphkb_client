@@ -6,8 +6,7 @@ import React from 'react';
 
 import ModelSelect from '@/components/ModelSelect';
 
-
-const NewRecordSelectView = (props) => {
+function NewRecordSelectView(props) {
   const {
     history,
     match: {
@@ -32,12 +31,11 @@ const NewRecordSelectView = (props) => {
       </Paper>
     </div>
   );
-};
+}
 
 NewRecordSelectView.propTypes = {
   history: propTypes.object.isRequired,
   match: propTypes.object.isRequired,
 };
-
 
 export default NewRecordSelectView;

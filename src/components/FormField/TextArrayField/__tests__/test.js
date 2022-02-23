@@ -12,7 +12,6 @@ import React from 'react';
 
 import TextArrayField from '..';
 
-
 describe('TextArrayField', () => {
   test('Add value with Enter', () => {
     render(

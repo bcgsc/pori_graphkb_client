@@ -27,9 +27,9 @@ import { useAuth } from '@/components/Auth';
 
 import MenuLink from './MenuLink';
 
-const MainAppBar = ({
+function MainAppBar({
   onDrawerChange, drawerOpen, onLinkChange,
-}) => {
+}) {
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
   const auth = useAuth();
 
@@ -77,8 +77,7 @@ const MainAppBar = ({
             <Typography color="inherit" variant="h6">
               {auth.isAuthenticated
                 ? auth.username
-                : 'Logged Out'
-              }
+                : 'Logged Out'}
             </Typography>
           </Button>
           <Popover
@@ -129,7 +128,7 @@ const MainAppBar = ({
       </div>
     </AppBar>
   );
-};
+}
 
 MainAppBar.propTypes = {
   onDrawerChange: PropTypes.func.isRequired,

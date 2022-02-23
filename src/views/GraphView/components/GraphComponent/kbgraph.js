@@ -57,7 +57,6 @@ class GraphObj {
   }
 }
 
-
 /**
  * Represents a d3 force directed graph node.
  */
@@ -69,7 +68,6 @@ class GraphNode extends GraphObj {
     this.y = y || 0;
   }
 }
-
 
 /**
  * Represents a d3 force directed graph link object.
@@ -96,7 +94,6 @@ class GraphLink extends GraphObj {
     return typeof this.target === 'string' ? this.target : this.target.data['@rid'];
   }
 }
-
 
 /**
  * Class to define graph props maps, which keeps track of the different
@@ -146,7 +143,6 @@ class PropsMap {
   removeLink(link, links, validProps = DEFAULT_LINK_VPROPS) {
     this._removeObj('link', link, links, validProps);
   }
-
 
   /**
    * Updates propsMap after an object is removed.
@@ -209,7 +205,6 @@ class PropsMap {
     });
   }
 }
-
 
 /**
  * Represents possible graph options for the graph view.
@@ -300,8 +295,8 @@ class GraphOptions {
 }
 
 export {
+  GraphLink,
+  GraphNode,
   GraphOptions,
   PropsMap,
-  GraphNode,
-  GraphLink,
 };

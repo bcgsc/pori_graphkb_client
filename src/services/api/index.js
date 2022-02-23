@@ -23,11 +23,9 @@ const queryClient = new QueryClient({
   },
 });
 
-
 const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
-
 
 /**
  * Sends PATCH request to api.
@@ -80,12 +78,11 @@ const del = (endpoint, callOptions) => {
   return request(endpoint, init, callOptions);
 };
 
-
 /**
  * @param {ClassModel} model the schema model to use to generate the search function
  * @returns the function to retrieve the query request body based on some input text
  */
-const getDefaultSuggestionQueryBody = model => (textInput) => {
+const getDefaultSuggestionQueryBody = (model) => (textInput) => {
   let body = {};
 
   if (kbSchema.util.looksLikeRID(textInput)) {
@@ -130,7 +127,6 @@ const encodeQueryComplexToSearch = (content, modelName = 'V') => {
   const search = qs.stringify(payload);
   return search;
 };
-
 
 export default {
   encodeQueryComplexToSearch,

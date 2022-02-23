@@ -3,7 +3,6 @@ import React from 'react';
 
 import FieldHelp from '../FieldHelp';
 
-
 describe('FieldHelp', () => {
   test('includes example if given', async () => {
     render(

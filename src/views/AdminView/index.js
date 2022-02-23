@@ -20,7 +20,7 @@ import AdminTable from './components/AdminTable';
 /**
  * View for editing or adding database users.
  */
-const AdminView = () => {
+function AdminView() {
   const { data: users = [], refetch: refetchUsers } = useQuery(
     ['/query', {
       target: 'User',
@@ -65,7 +65,7 @@ const AdminView = () => {
       <div className="admin__email-all">
         <a
           href={`mailto:?subject=GraphKB&cc=graphkb@bcgsc.ca&bcc=${
-            users.filter(user => user.email).map(user => user.email).join(',')
+            users.filter((user) => user.email).map((user) => user.email).join(',')
           }`}
           rel="noopener noreferrer"
           target="_blank"
@@ -80,6 +80,6 @@ const AdminView = () => {
       />
     </div>
   );
-};
+}
 
 export default AdminView;

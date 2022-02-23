@@ -24,9 +24,9 @@ import ActiveLinkContext from '@/components/ActiveLinkContext';
  * @property {function} onClick callback fn for when this item is clicked
  * @property {string} activeLink the current page(link) the user is on
  */
-const MenuLink = ({
+function MenuLink({
   route, label, icon, inset, group, onClick,
-}) => {
+}) {
   const { activeLink, setActiveLink } = useContext(ActiveLinkContext);
   const [isSelected, setIsSelected] = useState(false);
 
@@ -34,7 +34,6 @@ const MenuLink = ({
     const selected = (activeLink === route) && (!group);
     setIsSelected(selected);
   }, [activeLink, group, route]);
-
 
   const handleClick = useCallback(() => {
     onClick(route, group ? route : null);
@@ -55,7 +54,7 @@ const MenuLink = ({
       </MenuItem>
     </Link>
   );
-};
+}
 
 MenuLink.propTypes = {
   label: PropTypes.string.isRequired,

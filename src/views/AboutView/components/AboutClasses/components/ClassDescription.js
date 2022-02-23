@@ -12,13 +12,12 @@ import LetterIcon from '@/components/LetterIcon';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
 /**
  * @param {Object} props
  * @param {string} props.name the class model name
  * @param {string} props.description the class description
  */
-const ClassDescription = ({ name, description }) => {
+function ClassDescription({ name, description }) {
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     ['/query', { target: name, neighbors: 1, limit: 1 }],
     async ({ queryKey: [route, body] }) => {
@@ -49,14 +48,12 @@ const ClassDescription = ({ name, description }) => {
     },
   );
 
-
   return (
     <React.Fragment key={name}>
       <ListItem>
         <LetterIcon value={count === ''
           ? name.slice(0, 1)
-          : count
-          }
+          : count}
         />
         <ListItemText primary={name} secondary={description} />
       </ListItem>
@@ -82,7 +79,7 @@ const ClassDescription = ({ name, description }) => {
       </ListItem>
     </React.Fragment>
   );
-};
+}
 
 ClassDescription.propTypes = {
   description: PropTypes.string.isRequired,

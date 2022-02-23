@@ -19,7 +19,6 @@ import React, {
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { FORM_VARIANT } from '@/components/util';
 
-
 /**
  * Component for managing AdminView User form state.
  *
@@ -28,7 +27,7 @@ import { FORM_VARIANT } from '@/components/util';
  * @property {Array} props.records List of records.
  * @property {function} props.onChange handler to be triggered when data changes
  */
-const AdminTable = ({ onChange, records, variant }) => {
+function AdminTable({ onChange, records, variant }) {
   const [recordOpen, setRecordOpen] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -89,7 +88,7 @@ const AdminTable = ({ onChange, records, variant }) => {
         headerName: 'groups',
         field: 'groups',
         flex: true,
-        valueGetter: ({ data: { groups } }) => groups?.map(group => group.name).join(', ') ?? '',
+        valueGetter: ({ data: { groups } }) => groups?.map((group) => group.name).join(', ') ?? '',
       },
     ]);
   }
@@ -109,18 +108,20 @@ const AdminTable = ({ onChange, records, variant }) => {
     },
   ]);
 
-  const Actions = ({ data: record }) => (
-    <IconButton onClick={() => handleOpenEditDialog(record)}>
-      <EditIcon />
-    </IconButton>
-  );
+  function Actions({ data: record }) {
+    return (
+      <IconButton onClick={() => handleOpenEditDialog(record)}>
+        <EditIcon />
+      </IconButton>
+    );
+  }
   Actions.propTypes = {
     data: PropTypes.object.isRequired,
   };
 
-  const EmailLink = ({ value: email }) => (
-    <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>
-  );
+  function EmailLink({ value: email }) {
+    return <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>;
+  }
 
   EmailLink.propTypes = {
     value: PropTypes.string.isRequired,
@@ -173,8 +174,7 @@ const AdminTable = ({ onChange, records, variant }) => {
       </div>
     </div>
   );
-};
-
+}
 
 AdminTable.propTypes = {
   onChange: PropTypes.func.isRequired,

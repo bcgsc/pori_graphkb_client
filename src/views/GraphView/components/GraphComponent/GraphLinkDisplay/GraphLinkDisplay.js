@@ -59,7 +59,6 @@ function GraphLinkDisplay(props) {
     || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
     || (filter && label.includes(filter.toLowerCase()));
 
-
   let opacity = DEFAULT_OPACITY;
 
   if (bold) {

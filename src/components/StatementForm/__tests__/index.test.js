@@ -10,14 +10,13 @@ import api from '@/services/api';
 
 import StatementForm from '..';
 
-
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
 jest.spyOn(api, 'post').mockImplementation((_, payload) => payload);
 
-jest.mock('@/components/RecordAutocomplete', () => (({
+jest.mock('@/components/RecordAutocomplete', () => (function ({
   value, onChange, name, label,
-}) => {
+}) {
   const mockValues = {
     conditions: ['11:11'],
     evidence: ['12:23'],
@@ -30,14 +29,13 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   };
 
   return (
-    <select data-testid={`${name}-select`} id={`${name}-id`} onChange={handleChange} value={value}>
+    <select data-testid="$-select" id={`${name}-id`} onChange={handleChange} value={value}>
       <option key="test" value={value}>
         {label}
       </option>
     </select>
   );
 }));
-
 
 const originalError = console.error;
 
@@ -46,7 +44,6 @@ console.error = (msg) => {
     originalError(msg);
   }
 };
-
 
 describe('StatementForm', () => {
   afterEach(() => {
@@ -102,7 +99,6 @@ describe('StatementForm', () => {
         </QueryClientProvider>,
       ));
     });
-
 
     test('sets reviewStatus as initial and adds empty review if left blank', async () => {
       await fireEvent.change(getByTestId('conditions-select'), { target: { value: ['11:11'] } });

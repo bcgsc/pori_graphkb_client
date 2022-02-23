@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -14,7 +13,7 @@ import ClickToolTip from '@/components/ClickToolTip';
  * @param {string} props.example an example value
  * @param {string} props.description the description of the form field
  */
-const FieldHelp = ({ example, description }) => {
+function FieldHelp({ example, description }) {
   let text;
 
   if (description) {
@@ -29,7 +28,7 @@ const FieldHelp = ({ example, description }) => {
       title={text}
     />
   );
-};
+}
 
 FieldHelp.propTypes = {
   description: PropTypes.string,
@@ -40,6 +39,5 @@ FieldHelp.defaultProps = {
   description: '',
   example: '',
 };
-
 
 export default FieldHelp;

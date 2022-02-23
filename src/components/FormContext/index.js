@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 /**
  * @typedef FormContext
  * Passes user values to wrapped consumers.
@@ -29,16 +28,18 @@ const FormContext = React.createContext({
   formVariant: '',
 });
 
-const withFormContext = Child => props => (
-  <FormContext.Consumer>
-    {values => (
-      <Child
-        {...values}
-        {...props}
-      />
-    )}
-  </FormContext.Consumer>
-);
+const withFormContext = (Child) => function (props) {
+  return (
+    <FormContext.Consumer>
+      {(values) => (
+        <Child
+          {...values}
+          {...props}
+        />
+      )}
+    </FormContext.Consumer>
+  );
+};
 
 export {
   withFormContext,

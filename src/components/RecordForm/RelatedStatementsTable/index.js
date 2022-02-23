@@ -15,7 +15,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 
-
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
@@ -25,7 +24,7 @@ import api from '@/services/api';
  * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
  * @param {Array.<object>} props.values the edge records
  */
-const RelatedStatementsTable = ({ recordId }) => {
+function RelatedStatementsTable({ recordId }) {
   const grid = useGrid();
 
   const { data: statements, isFetching } = useQuery(
@@ -61,7 +60,8 @@ const RelatedStatementsTable = ({ recordId }) => {
         'evidence.displayName',
         'subject.displayName',
       ],
-    }], async ({ queryKey: [route, body] }) => api.post(route, body),
+    }],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );
 
@@ -74,8 +74,7 @@ const RelatedStatementsTable = ({ recordId }) => {
     }
   }, [grid.ref, isFetching, statements]);
 
-
-  const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
+  const renderCellRenderer = ({ value }) => (<RecordIdLink {...value} />); // eslint-disable-line react/prop-types
 
   if (!isFetching && (!statements || statements.length === 0)) {
     return null;
@@ -104,11 +103,11 @@ const RelatedStatementsTable = ({ recordId }) => {
             },
             {
               headerName: 'conditions',
-              valueGetter: ({ data }) => data.conditions.map(c => c.displayName).join('; '),
+              valueGetter: ({ data }) => data.conditions.map((c) => c.displayName).join('; '),
             },
             {
               headerName: 'evidence',
-              valueGetter: ({ data }) => data.evidence.map(c => c.displayName).join('; '),
+              valueGetter: ({ data }) => data.evidence.map((c) => c.displayName).join('; '),
             },
             {
               headerName: 'Actions',
@@ -123,7 +122,7 @@ const RelatedStatementsTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']} // eslint-disable-line react/prop-types
+          getRowNodeId={(data) => data['@rid']} // eslint-disable-line react/prop-types
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -131,11 +130,10 @@ const RelatedStatementsTable = ({ recordId }) => {
       </div>
     </div>
   );
-};
+}
 
 RelatedStatementsTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default RelatedStatementsTable;

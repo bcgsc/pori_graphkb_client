@@ -65,13 +65,12 @@ const chunkSentence = (sentence, words) => {
   return chunks;
 };
 
-
 /**
  * @param {Object} props
  * @param {string} props.content the sentence
  * @param {Array.<string>} props.highlighted list of words to emphasize from the sentence
  */
-const SentencePreview = ({ content, highlighted }) => {
+function SentencePreview({ content, highlighted }) {
   if (!content || !content.length) {
     return null;
   }
@@ -91,8 +90,7 @@ const SentencePreview = ({ content, highlighted }) => {
       {sentence}
     </Typography>
   );
-};
-
+}
 
 SentencePreview.propTypes = {
   content: PropTypes.string.isRequired,

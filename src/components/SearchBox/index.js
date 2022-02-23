@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
-
 /**
  * @param {Object} props
  * @param {function} props.onSubmit the handler when the seach icon is pressed or enter is hit
@@ -18,9 +17,9 @@ import { useDebounce } from 'use-debounce';
  * @param {string} props.className the class name to add to the parent div element
  * @param {boolean} props.error the error state of the input box
  */
-const SearchBox = ({
+function SearchBox({
   onSubmit, value, error, helperText, onChange, className, ...props
-}) => {
+}) {
   const [searchText, setSearchText] = useState(value);
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const ENTER_KEYCODE = 13;
@@ -36,7 +35,7 @@ const SearchBox = ({
   return (
     <div
       className={`search-box ${className}`}
-      onKeyUp={event => event.keyCode === ENTER_KEYCODE && onSubmit(searchText)}
+      onKeyUp={(event) => event.keyCode === ENTER_KEYCODE && onSubmit(searchText)}
       role="textbox"
       tabIndex={0}
     >
@@ -62,8 +61,7 @@ const SearchBox = ({
       />
     </div>
   );
-};
-
+}
 
 SearchBox.propTypes = {
   className: PropTypes.string,
@@ -74,7 +72,6 @@ SearchBox.propTypes = {
   value: PropTypes.string,
 };
 
-
 SearchBox.defaultProps = {
   onChange: () => {},
   onSubmit: () => {},
@@ -83,6 +80,5 @@ SearchBox.defaultProps = {
   helperText: '',
   className: '',
 };
-
 
 export default SearchBox;

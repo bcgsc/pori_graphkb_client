@@ -1,4 +1,3 @@
-
 import {
   Collapse,
   Divider,
@@ -17,7 +16,6 @@ import util from '@/services/util';
 const DATE_KEYS = ['createdAt', 'deletedAt', 'updatedAt'];
 const MAX_STRING_LENGTH = 64;
 
-
 /**
    * Formats a key/value pair where string is value. Either formats it
    * as a string row or a collapsable row depending on length
@@ -33,7 +31,7 @@ function TextRow(props) {
     name, value, isStatic, isNested, opened, handleExpand,
   } = props;
 
-  const LongValue = () => {
+  function LongValue() {
     const listItemProps = isStatic
       ? {}
       : { button: true, onClick: () => handleExpand(name) };
@@ -73,7 +71,7 @@ function TextRow(props) {
         <Divider />
       </React.Fragment>
     );
-  };
+  }
 
   const shortValue = () => {
     let Wrapper = React.Fragment;

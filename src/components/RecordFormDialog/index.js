@@ -14,7 +14,6 @@ import React from 'react';
 import RecordForm from '@/components/RecordForm';
 import { FORM_VARIANT } from '@/components/util';
 
-
 /**
  * Popup container for holding a RecordForm component
  *
@@ -27,7 +26,7 @@ import { FORM_VARIANT } from '@/components/util';
  * @param {func} props.onSubmit the function handler to be executing on sucessful form submission
  * @param {string} props.rid the initial record id
  */
-const RecordFormDialog = (props) => {
+function RecordFormDialog(props) {
   const {
     isOpen,
     modelName,
@@ -43,7 +42,6 @@ const RecordFormDialog = (props) => {
   const defaultTitle = variant === FORM_VARIANT.NEW
     ? `Add a new ${modelName}`
     : `Edit an Existing ${modelName}`;
-
 
   return (
     <Dialog
@@ -80,7 +78,7 @@ const RecordFormDialog = (props) => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 RecordFormDialog.propTypes = {
   modelName: PropTypes.string.isRequired,
@@ -98,6 +96,5 @@ RecordFormDialog.defaultProps = {
   value: {},
   title: '',
 };
-
 
 export default RecordFormDialog;

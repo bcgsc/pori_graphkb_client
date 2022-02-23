@@ -16,7 +16,7 @@ import React from 'react';
  * @param {function} props.onConfirm - Handler for confirming action
  * @param {string} props.message - Message to display in dialog title.
  */
-const ConfirmActionDialog = (props) => {
+function ConfirmActionDialog(props) {
   const {
     children,
     isOpen,
@@ -56,7 +56,7 @@ const ConfirmActionDialog = (props) => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 ConfirmActionDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,

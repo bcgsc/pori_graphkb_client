@@ -28,13 +28,13 @@ import api from '@/services/api';
  * @property {object} props.content full record which has link to value
  * @property {function} props.onChange parent handler function to update record
  */
-const StatementReview = ({
+function StatementReview({
   value,
   index,
   variant,
   onDelete,
   label,
-}) => {
+}) {
   const {
     status, createdBy, comment,
   } = value;
@@ -44,55 +44,57 @@ const StatementReview = ({
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: !createdBy['@rid'],
-      select: response => response[0],
+      select: (response) => response[0],
     },
   );
 
   const previewStr = `${author.name} (${author['@rid']})`;
 
-  const ReviewComponent = () => (
-    <div className="review-card">
-      <Card>
-        <div className="review-card__header">
-          <CardHeader
-            avatar={(
-              <Avatar
-                aria-label="Statement Review"
-                className="review-card__avatar"
-              >
-                SR
-              </Avatar>
+  function ReviewComponent() {
+    return (
+      <div className="review-card">
+        <Card>
+          <div className="review-card__header">
+            <CardHeader
+              avatar={(
+                <Avatar
+                  aria-label="Statement Review"
+                  className="review-card__avatar"
+                >
+                  SR
+                </Avatar>
           )}
-            subheader={`created by ${author.name}`}
-            title="Statement Review"
-          />
-        </div>
-        <Divider />
-        <CardContent>
-          <Typography align="center" color="secondary" gutterBottom variant="h5">
-            {`Status: ${status}`}
-          </Typography>
-          <Typography align="center" color="textSecondary" variant="body1">
-            {comment}
-          </Typography>
-          <div className="review-card__action-button">
-            {variant === 'edit' && (
-            <ActionButton
-              color="primary"
-              onClick={() => onDelete({ index })}
-              requireConfirm={false}
-              size="medium"
-              variant="contained"
-            >
-              Delete
-              <DeleteIcon />
-            </ActionButton>
-            )}
+              subheader={`created by ${author.name}`}
+              title="Statement Review"
+            />
           </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+          <Divider />
+          <CardContent>
+            <Typography align="center" color="secondary" gutterBottom variant="h5">
+              {`Status: ${status}`}
+            </Typography>
+            <Typography align="center" color="textSecondary" variant="body1">
+              {comment}
+            </Typography>
+            <div className="review-card__action-button">
+              {variant === 'edit' && (
+              <ActionButton
+                color="primary"
+                onClick={() => onDelete({ index })}
+                requireConfirm={false}
+                size="medium"
+                variant="contained"
+              >
+                Delete
+                <DeleteIcon />
+              </ActionButton>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const details = {};
   Object.keys(value).forEach((prop) => {
@@ -135,7 +137,7 @@ const StatementReview = ({
       </TableRow>
     </React.Fragment>
   );
-};
+}
 
 StatementReview.propTypes = {
   index: PropTypes.number.isRequired,

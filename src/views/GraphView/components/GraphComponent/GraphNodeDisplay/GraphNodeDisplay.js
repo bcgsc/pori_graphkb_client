@@ -44,7 +44,6 @@ function GraphNodeDisplay(props) {
     filter,
   } = props;
 
-
   const nodeSVG = useRef(null);
 
   // enables svg dragging,calls applyDrag to set dragged position as new position

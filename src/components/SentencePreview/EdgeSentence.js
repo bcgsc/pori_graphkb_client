@@ -4,8 +4,7 @@ import React from 'react';
 
 import SentencePreview from '.';
 
-
-const EdgeSentence = ({ srcRecord, tgtRecord, type }) => {
+function EdgeSentence({ srcRecord, tgtRecord, type }) {
   let edgeType = titleCase(type);
 
   if (edgeType.endsWith('Of')) {
@@ -20,7 +19,6 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }) => {
       ? tgtRecord.displayName
       : '[target record]',
   ];
-
 
   const highlights = [];
 
@@ -38,14 +36,13 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }) => {
       highlighted={highlights}
     />
   );
-};
+}
 
 EdgeSentence.propTypes = {
   type: PropTypes.string.isRequired,
   srcRecord: PropTypes.object,
   tgtRecord: PropTypes.object,
 };
-
 
 EdgeSentence.defaultProps = {
   srcRecord: null,

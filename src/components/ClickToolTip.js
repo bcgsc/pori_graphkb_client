@@ -1,3 +1,4 @@
+/* eslint-disable react/static-property-placement */
 import {
   ClickAwayListener,
   Tooltip,

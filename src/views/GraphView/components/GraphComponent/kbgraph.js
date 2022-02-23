@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import isObject from 'lodash.isobject';
 
 import config from '@/static/config';
@@ -107,7 +108,7 @@ class PropsMap {
   }
 
   /**
-   * Loads a node's properties into the propsmap.
+   * Loads a node's properties into the proposal.
    * @param {Object} node - Ontology object (GraphNode.data).
    * @param {Array.<string>} validProps - List of valid ontology properties.
    */

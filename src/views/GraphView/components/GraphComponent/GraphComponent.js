@@ -503,9 +503,9 @@ function GraphComponent(props) {
    * is a valid or bad choice for node/link coloring. Also returns whether or not
    * there are too many unique colors for given key.
    */
-  const coloringKeyCheck = (pMap, colorPalette = {}, key, type) => {
+  const coloringKeyCheck = (pMap, colorPalette, key, type) => {
     const properties = pMap[`${type}Props`];
-    const tooManyUniques = (Object.keys(colorPalette).length > PALLETE_SIZE
+    const tooManyUniques = (Object.keys(colorPalette ?? {}).length > PALLETE_SIZE
         && Object.keys(properties).length !== 1);
     const noUniques = properties[key]
         && (properties[key].length === 0

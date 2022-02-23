@@ -13,7 +13,7 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
@@ -50,34 +50,33 @@ function StatementReview({
 
   const previewStr = `${author.name} (${author['@rid']})`;
 
-  function ReviewComponent() {
-    return (
-      <div className="review-card">
-        <Card>
-          <div className="review-card__header">
-            <CardHeader
-              avatar={(
-                <Avatar
-                  aria-label="Statement Review"
-                  className="review-card__avatar"
-                >
-                  SR
-                </Avatar>
+  const ReviewComponent = useCallback(() => (
+    <div className="review-card">
+      <Card>
+        <div className="review-card__header">
+          <CardHeader
+            avatar={(
+              <Avatar
+                aria-label="Statement Review"
+                className="review-card__avatar"
+              >
+                SR
+              </Avatar>
           )}
-              subheader={`created by ${author.name}`}
-              title="Statement Review"
-            />
-          </div>
-          <Divider />
-          <CardContent>
-            <Typography align="center" color="secondary" gutterBottom variant="h5">
-              {`Status: ${status}`}
-            </Typography>
-            <Typography align="center" color="textSecondary" variant="body1">
-              {comment}
-            </Typography>
-            <div className="review-card__action-button">
-              {variant === 'edit' && (
+            subheader={`created by ${author.name}`}
+            title="Statement Review"
+          />
+        </div>
+        <Divider />
+        <CardContent>
+          <Typography align="center" color="secondary" gutterBottom variant="h5">
+            {`Status: ${status}`}
+          </Typography>
+          <Typography align="center" color="textSecondary" variant="body1">
+            {comment}
+          </Typography>
+          <div className="review-card__action-button">
+            {variant === 'edit' && (
               <ActionButton
                 color="primary"
                 onClick={() => onDelete({ index })}
@@ -88,13 +87,12 @@ function StatementReview({
                 Delete
                 <DeleteIcon />
               </ActionButton>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  ), [author.name, comment, index, onDelete, status, variant]);
 
   const details = {};
   Object.keys(value).forEach((prop) => {

@@ -74,7 +74,7 @@ function GraphLinkDisplay(props) {
   let angle = 0;
 
   if (dx === 0) {
-    angle = dy > 0 ? Math.PI / 2 : Math.PI * 3 / 2;
+    angle = dy > 0 ? Math.PI / 2 : (Math.PI * 3) / 2;
   } else if (dy === 0) {
     angle = dx > 0 ? 0 : Math.PI;
   } else {

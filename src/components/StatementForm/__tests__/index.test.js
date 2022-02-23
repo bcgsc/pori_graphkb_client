@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import '@testing-library/jest-dom/extend-expect';
 
-import { fireEvent, render, wait } from '@testing-library/react';
+import {
+  fireEvent, render, screen, wait,
+} from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -13,30 +15,56 @@ import StatementForm from '..';
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.spyOn(api, 'post').mockImplementation((_, payload) => payload);
+jest.spyOn(api, 'post').mockImplementation((endpoint, payload) => {
+  // request to create statement
+  if (endpoint === '/statements') {
+    return payload;
+  }
+  // to prevent other records causing validation error when running `checkLogicalStatement`
+  if (payload.queryType === 'similarTo') {
+    return [];
+  }
 
-jest.mock('@/components/RecordAutocomplete', () => (function ({
-  value, onChange, name, label,
-}) {
-  const mockValues = {
-    conditions: ['11:11'],
-    evidence: ['12:23'],
-    subject: '20:20',
-    relevance: '90:32',
-  };
+  return [
+    {
+      '@rid': '11:11',
+      displayName: 'anything',
+    },
+    {
+      '@rid': '12:23',
+      displayName: 'anything',
+    },
+    {
+      '@rid': '20:20',
+      displayName: 'anything',
+    },
+    {
+      '@rid': '90:32',
+      displayName: 'anything',
+    },
+  ];
+});
 
-  const handleChange = (event) => {
-    onChange({ target: { name, value: mockValues[event.currentTarget.value] } });
-  };
+const selectFromAutocomplete = async (label, option, search = 'anything') => {
+  const input = screen.getByLabelText(label);
+  input.focus();
+  fireEvent.change(input, { target: { value: search } });
 
-  return (
-    <select data-testid="$-select" id={`${name}-id`} onChange={handleChange} value={value}>
-      <option key="test" value={value}>
-        {label}
-      </option>
-    </select>
-  );
-}));
+  // make sure dropdown is visible
+  await wait(() => {
+    expect(screen.getByText(option)).toBeInTheDocument();
+  });
+
+  const item = screen.getByText(option);
+  fireEvent.click(item);
+
+  input.blur();
+
+  // verify option was selected
+  await wait(() => {
+    expect(screen.getByText(option)).toBeInTheDocument();
+  });
+};
 
 const originalError = console.error;
 
@@ -78,11 +106,8 @@ describe('StatementForm', () => {
   });
 
   describe('Statement Add', () => {
-    let getByText;
-    let getByTestId;
-
-    beforeEach(() => {
-      ({ getByText, getByTestId } = render(
+    test('sets reviewStatus as initial and adds empty review if left blank', async () => {
+      render(
         <QueryClientProvider client={api.queryClient}>
           <SnackbarProvider onEnter={snackbarSpy}>
             <AuthContext.Provider value={auth}>
@@ -98,17 +123,17 @@ describe('StatementForm', () => {
             </AuthContext.Provider>
           </SnackbarProvider>
         </QueryClientProvider>,
-      ));
-    });
+      );
+      await selectFromAutocomplete(/^conditions/, 'anything (11:11)');
+      await selectFromAutocomplete(/^evidence /, 'anything (12:23)');
+      await selectFromAutocomplete(/^relevance/, 'anything (90:32)');
+      await selectFromAutocomplete(/^subject/, 'anything (20:20)');
 
-    test('sets reviewStatus as initial and adds empty review if left blank', async () => {
-      await fireEvent.change(getByTestId('conditions-select'), { target: { value: ['11:11'] } });
-      await fireEvent.change(getByTestId('evidence-select'), { target: { value: ['12:23'] } });
-      await fireEvent.change(getByTestId('relevance-select'), { target: { value: '90:32' } });
-      await fireEvent.change(getByTestId('subject-select'), { target: { value: 'man' } });
+      const submitBtn = screen.getByText('SUBMIT');
+      expect(submitBtn).toBeEnabled();
 
-      const submitBtn = getByText('SUBMIT');
-      await fireEvent.click(submitBtn);
+      fireEvent.click(submitBtn);
+
       const expectedPayload = {
         '@class': 'Statement',
         conditions: ['11:11'],

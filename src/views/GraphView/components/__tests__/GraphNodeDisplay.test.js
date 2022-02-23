@@ -1,4 +1,4 @@
-import { mount, shallow } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import GraphNodeDisplay from '../GraphComponent/GraphNodeDisplay/GraphNodeDisplay';
@@ -17,66 +17,78 @@ const mockData = new GraphNode(
 );
 
 describe('<GraphNodeDisplay />', () => {
-  let wrapper;
-
   test('renders children correctly', () => {
-    wrapper = shallow(
-      <GraphNodeDisplay
-        node={mockData}
-      />,
+    const { container } = render(
+      <svg>
+        <GraphNodeDisplay
+          node={mockData}
+        />
+      </svg>,
     );
-    expect(wrapper.type()).toBe('g');
-    expect(wrapper.children().first().type()).toBe('text');
+
+    const group = container.querySelector('g');
+    expect(group).toBeTruthy();
+    expect(Array.from(group.children)[0].tagName).toBe('text');
   });
 
   test('renders correct label', () => {
-    wrapper = shallow(
-      <GraphNodeDisplay
-        labelKey="name"
-        node={mockData}
-      />,
+    render(
+      <svg>
+        <GraphNodeDisplay
+          labelKey="name"
+          node={mockData}
+        />
+      </svg>,
     );
-    expect(wrapper.type()).toBe('g');
-    expect(wrapper.children('text').text()).toBe('node');
+    expect(screen.getByText('node')).toBeTruthy();
   });
 
   test('mutes node if not selected for detail viewing', () => {
     const detail = { '@rid': '#2' };
-    wrapper = shallow(
-      <GraphNodeDisplay
-        actionsNode={{ data: detail }}
-        detail={detail}
-        labelKey="source.name"
-        node={mockData}
-      />,
+    render(
+      <svg>
+        <GraphNodeDisplay
+          actionsNode={{ data: detail }}
+          detail={detail}
+          labelKey="source.name"
+          node={mockData}
+        />
+      </svg>,
     );
 
-    expect(wrapper.find('circle.node').props().style.opacity).toBe(0.6);
+    const text = screen.getByText('node source').closest('text');
+    expect(text.getAttribute('style').includes('opacity: 0.6')).toBeTruthy();
   });
 
   test('does not render invalid node', () => {
-    wrapper = shallow(
-      <GraphNodeDisplay
-        detail={mockData}
-        labelKey="source.name"
-        node={null}
-      />,
+    const { container } = render(
+      <svg>
+        <GraphNodeDisplay
+          detail={mockData}
+          labelKey="source.name"
+          node={null}
+        />
+      </svg>,
     );
-    expect(wrapper.find('circle.node')).toHaveLength(0);
-    wrapper.unmount();
+
+    expect(container.querySelectorAll('circle')).toHaveLength(0);
   });
 
   test('successfully applies drag function to node (doesn\'t test triggering)', () => {
     const applyDrag = jest.fn();
-    wrapper = mount(
-      <GraphNodeDisplay
-        applyDrag={applyDrag}
-        labelKey="source.name"
-        node={mockData}
-      />,
+    const { container } = render(
+      <svg>
+        <GraphNodeDisplay
+          applyDrag={applyDrag}
+          labelKey="source.name"
+          node={mockData}
+        />
+      </svg>,
     );
+
+    const group = container.querySelector('g');
     expect(applyDrag.mock.calls.length).toBe(0);
-    wrapper.find('g').first().simulate('drag');
-    wrapper.find('g').first().simulate('dragstart');
+    fireEvent.drag(group);
+    fireEvent.dragStart(group);
   });
 });

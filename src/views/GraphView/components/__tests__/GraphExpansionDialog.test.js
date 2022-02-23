@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import testSchema from '@/services/schema';
@@ -23,8 +23,8 @@ const testNode = {
 };
 
 describe('<GraphExpansionDialog />', () => {
-  test('does not crash', () => {
-    mount(
+  test('does not crash', async () => {
+    render(
       <GraphExpansionDialog
         node={testNode}
         onClose={jest.fn()}
@@ -36,5 +36,7 @@ describe('<GraphExpansionDialog />', () => {
         schema={testSchema}
       />,
     );
+
+    await expect(screen.findByText('Select Edges to Expand')).resolves.toBeTruthy();
   });
 });

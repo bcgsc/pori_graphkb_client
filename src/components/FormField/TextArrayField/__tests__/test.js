@@ -5,7 +5,9 @@ import {
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { mount } from 'enzyme';
+import {
+  fireEvent, prettyDOM, render, screen,
+} from '@testing-library/react';
 import React from 'react';
 
 import TextArrayField from '..';
@@ -13,122 +15,142 @@ import TextArrayField from '..';
 
 describe('TextArrayField', () => {
   test('Add value with Enter', () => {
-    const wrapper = mount((
+    render(
       <TextArrayField
+        label="test"
         name="test"
         onChange={jest.fn()}
-      />
-    ));
+      />,
+    );
     // input the text and hit the enter key
-    const textElement = wrapper.find(TextField);
-    textElement.prop('onKeyDown')(
+    fireEvent.keyDown(
+      screen.getByLabelText('test'),
       { key: 'Enter', target: { value: 'someElement' } },
     );
-    wrapper.update();
-    // should now be a single chip element
-    expect(wrapper.find(Chip)).toHaveLength(1);
+
+    expect(screen.getByText('someElement')).toBeTruthy();
+    expect(screen.getByLabelText('test').value).toEqual('');
   });
 
   test('Add value with button', () => {
-    const wrapper = mount((
+    render(
       <TextArrayField
+        label="test"
         name="test"
         onChange={jest.fn()}
-      />
-    ));
+      />,
+    );
     // input the text
-    const textElement = wrapper.find(TextField);
-    textElement.prop('onChange')(
+    fireEvent.change(
+      screen.getByLabelText('test'),
       { target: { value: 'someElement' } },
     );
-    wrapper.update();
-    // hit the add button
-    wrapper.find(IconButton).prop('onClick')();
-    wrapper.update();
-    // should now be a single chip element
-    expect(wrapper.find(Chip)).toHaveLength(1);
+
+    const button = screen.getByLabelText('add');
+    fireEvent.click(button);
+
+    expect(screen.getByText('someElement')).toBeTruthy();
+    expect(screen.getByLabelText('test').value).toEqual('');
   });
 
   test('Delete added value with backspace', () => {
-    const wrapper = mount((
+    render(
       <TextArrayField
+        label="test"
         name="test"
         onChange={jest.fn()}
-      />
-    ));
+      />,
+    );
     // input the text and hit the enter key
-    wrapper.find(TextField).prop('onKeyDown')(
+    fireEvent.keyDown(
+      screen.getByLabelText('test'),
       { key: 'Enter', target: { value: 'someElement' } },
     );
-    wrapper.update();
     // should now be a single chip element
-    expect(wrapper.find(Chip)).toHaveLength(1);
-    wrapper.find(TextField).prop('onKeyDown')(
+    expect(screen.getByText('someElement')).toBeTruthy();
+    expect(screen.getByLabelText('test').value).toEqual('');
+
+    fireEvent.keyDown(
+      screen.getByLabelText('test'),
       { key: 'Backspace', target: { value: '' } },
     );
-    wrapper.update();
+
     // should not be any chips
-    expect(wrapper.find(Chip)).toHaveLength(0);
+    expect(screen.queryByText('someElement')).toBeFalsy();
   });
 
   test('Delete added value with clear', () => {
-    const wrapper = mount((
+    render(
       <TextArrayField
+        label="test"
         name="test"
         onChange={jest.fn()}
-      />
-    ));
+      />,
+    );
     // input the text and hit the enter key
-    const textElement = wrapper.find(TextField);
-    textElement.prop('onKeyDown')(
+    fireEvent.keyDown(
+      screen.getByLabelText('test'),
       { key: 'Enter', target: { value: 'someElement' } },
     );
+
     // should now be a single chip element
-    wrapper.update();
-    expect(wrapper.find(Chip)).toHaveLength(1);
-    // now delete the newly added chip
-    wrapper.find(Chip).prop('onDelete')();
-    // should not have any chips now
-    wrapper.update();
-    expect(wrapper.find(Chip)).toHaveLength(0);
+    const chip = screen.getByText('someElement');
+    expect(chip).toBeTruthy();
+    expect(screen.getByLabelText('test').value).toEqual('');
+
+    fireEvent.click(chip.nextElementSibling);
+    // should not be any chips
+    expect(screen.queryByText('someElement')).toBeFalsy();
   });
 
   test('Delete initial value with clear', () => {
-    const wrapper = mount((
+    const onChange = jest.fn();
+    render(
       <TextArrayField
+        label="test"
         name="test"
-        onChange={jest.fn()}
+        onChange={onChange}
         value={['someElement']}
-      />
-    ));
-    // input the text and hit the enter key
-    expect(wrapper.find(Chip)).toHaveLength(1);
-    expect(wrapper.find(CancelIcon)).toHaveLength(1);
+      />,
+    );
+
+    const chip = screen.getByText('someElement');
+    expect(chip).toBeTruthy();
+
     // now delete the newly added chip
-    wrapper.find(Chip).prop('onDelete')();
+    fireEvent.click(chip.nextElementSibling);
     // should not have any chips now
-    wrapper.update();
-    expect(wrapper.find(Chip)).toHaveLength(1);
-    expect(wrapper.find(RefreshIcon)).toHaveLength(1);
+    expect(onChange).toHaveBeenCalledWith({
+      target: {
+        name: 'test',
+        value: [],
+      },
+    });
   });
 
   test('Add duplicate value', () => {
-    const wrapper = mount((
+    const onChange = jest.fn();
+    render(
       <TextArrayField
+        label="test"
         name="test"
-        onChange={jest.fn()}
+        onChange={onChange}
         value={['someElement']}
-      />
-    ));
-    expect(wrapper.find(Chip)).toHaveLength(1);
+      />,
+    );
+
+    const chip = screen.getByText('someElement');
+    expect(chip).toBeTruthy();
+
     // input the text and hit the enter key
-    wrapper.find(TextField).prop('onKeyDown')(
+    fireEvent.keyDown(
+      screen.getByLabelText('test'),
       { key: 'Enter', target: { value: 'someElement' } },
     );
-    wrapper.update();
-    expect(wrapper.find(TextField).prop('helperText')).toContain('Elements must be unique');
+
+    expect(screen.getByText('Elements must be unique', { exact: false })).toBeTruthy();
     // should now be a single chip element
-    expect(wrapper.find(Chip)).toHaveLength(1);
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   afterEach(() => {

@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import GraphLegend from '../GraphComponent/GraphLegend/GraphLegend';
@@ -7,7 +7,7 @@ import { PropsMap } from '../GraphComponent/kbgraph';
 describe('<GraphLegend />', () => {
   test('does not crash', () => {
     const onChange = jest.fn();
-    const wrapper = mount(
+    render(
       <GraphLegend
         graphOptions={{
           nodesLegend: true,
@@ -23,10 +23,10 @@ describe('<GraphLegend />', () => {
       />,
     );
 
-    wrapper.find('button[name="nodesLegend"]').simulate('click');
-    expect(onChange.mock.calls.length).toBe(1);
+    fireEvent.click(screen.getByLabelText('nodes legend'));
+    expect(onChange).toHaveBeenCalledTimes(1);
 
-    wrapper.find('button[name="linksLegend"]').simulate('click');
-    expect(onChange.mock.calls.length).toBe(2);
+    fireEvent.click(screen.getByLabelText('links legend'));
+    expect(onChange).toHaveBeenCalledTimes(2);
   });
 });

@@ -250,6 +250,7 @@ class TextArrayField extends Component {
         />
         <div className="text-array-field__btns">
           <IconButton
+            aria-label="add"
             color="primary"
             disabled={disabled}
             onClick={this.handleAddCurrent}

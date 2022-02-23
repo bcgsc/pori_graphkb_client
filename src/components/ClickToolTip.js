@@ -82,7 +82,7 @@ class ClickToolTip extends React.Component {
             title={title}
             {...rest}
           >
-            <HelpIcon color="primary" focusable />
+            <HelpIcon aria-label="show tooltip" color="primary" focusable />
           </Tooltip>
         </div>
       </ClickAwayListener>

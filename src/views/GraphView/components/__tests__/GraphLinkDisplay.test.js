@@ -1,4 +1,4 @@
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import GraphLinkDisplay from '../GraphComponent/GraphLinkDisplay/GraphLinkDisplay';
@@ -23,54 +23,65 @@ const mockData = {
 
 
 describe('<GraphLinkDisplay />', () => {
-  let wrapper;
-
   test('renders svg g element with nested paths', () => {
-    wrapper = shallow(
-      <GraphLinkDisplay
-        link={mockData}
-      />,
+    const { container } = render(
+      <svg>
+        <GraphLinkDisplay
+          link={mockData}
+        />
+      </svg>,
     );
-    expect(wrapper.type()).toBe('g');
-    wrapper.children().forEach(child => expect(child.type()).toBe('path'));
+
+    const group = container.querySelector('g');
+    expect(group).toBeTruthy();
+    Array.from(group.children).forEach(child => expect(child.tagName).toBe('path'));
   });
 
   test('renders label correctly', () => {
     mockData.source.y = mockData.target.y;
-    wrapper = shallow(
-      <GraphLinkDisplay
-        labelKey="name"
-        link={mockData}
-      />,
+
+    render(
+      <svg>
+        <GraphLinkDisplay
+          labelKey="name"
+          link={mockData}
+        />
+      </svg>,
     );
-    expect(wrapper.type()).toBe('g');
-    expect(wrapper.children('text').text()).toBe('link');
+    const link = screen.getByText('link').closest('text');
+    expect(link).toBeTruthy();
   });
 
   test('reduces opacity if link is not selected for detail viewing', () => {
     mockData.source.x = mockData.target.x;
     const detail = { '@rid': '#2' };
-    wrapper = shallow(
-      <GraphLinkDisplay
-        actionsNode={{ data: detail }}
-        detail={detail}
-        labelKey="source.name"
-        link={mockData}
-      />,
+
+    render(
+      <svg>
+        <GraphLinkDisplay
+          actionsNode={{ data: detail }}
+          detail={detail}
+          labelKey="source.name"
+          link={mockData}
+        />
+      </svg>,
     );
 
-    expect(wrapper.find('path.link').props().style.strokeOpacity).toBe(0.4);
+    const link = screen.getByText('link source').closest('text');
+
+    expect(link.getAttribute('opacity')).toEqual('0.4');
   });
 
   test('invalid link', () => {
     mockData.source = mockData.target;
-    wrapper = shallow(
+    render(
       <GraphLinkDisplay
         detail={mockData}
         labelKey="source.name"
         link={mockData}
       />,
     );
-    expect(wrapper.find('path.link')).toHaveLength(0);
+
+    expect(screen.queryByText('link source')).toBeFalsy();
   });
 });

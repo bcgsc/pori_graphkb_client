@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import React, {
   lazy,
-  Suspense, useState,
+  Suspense, useMemo, useState,
 } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
@@ -45,9 +45,11 @@ function Main() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeLink, setActiveLink] = useState('');
 
+  const value = useMemo(() => ({ activeLink, setActiveLink }), [activeLink]);
+
   return (
     <div className="main-view">
-      <ActiveLinkContext.Provider value={{ activeLink, setActiveLink }}>
+      <ActiveLinkContext.Provider value={value}>
         <MainNav
           isOpen={drawerOpen}
           onChange={({ isOpen }) => {

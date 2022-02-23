@@ -21,8 +21,9 @@ describe('ReviewDialog', () => {
     jest.clearAllMocks();
   });
 
+  const auth = { user: { '@rid': '#20:0' } };
+
   beforeEach(() => {
-    const auth = { user: { '@rid': '#20:0' } };
     ({ getByText, queryByText, getAllByText } = render(
       <AuthContext.Provider value={auth}>
         <SnackbarProvider onEnter={snackbarSpy}>

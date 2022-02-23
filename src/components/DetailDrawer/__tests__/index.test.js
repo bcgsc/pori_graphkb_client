@@ -83,9 +83,11 @@ const statementNode = {
   '@rid': '#12:0',
 };
 
+const auth = {};
+
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <AuthContext.Provider value={{}}>
+    <AuthContext.Provider value={auth}>
       {children}
     </AuthContext.Provider>
   </BrowserRouter>

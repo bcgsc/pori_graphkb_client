@@ -6,27 +6,6 @@ import React from 'react';
 import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsPanel';
 import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
-/* eslint-disable react/prop-types */
-jest.mock('../../../../components/DropDownSelect', () => function ({
-  options = [], value, onChange, name,
-}) {
-  const handleChange = (event) => {
-    const option = options.find(
-      (opt) => opt === event.currentTarget.value,
-    );
-    onChange({ target: { value: option, name } });
-  };
-  return (
-    <select data-testid="$" onChange={handleChange} value={value}>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  );
-});
-
 describe('<GraphOptionsPanel />', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -94,12 +73,12 @@ describe('<GraphOptionsPanel />', () => {
   });
 
   test('options changes trigger the handler', () => {
-    const { getByTestId } = render(
+    render(
       <GraphOptionsPanel {...defaultProps} />,
     );
 
-    const edgeLabelInput = getByTestId('linkLabelProp');
-    fireEvent.change(edgeLabelInput, { target: { name: 'linkLabelProp', value: 'test' } });
+    const edgeLabelInput = screen.getByLabelText('Label edges by');
+    fireEvent.change(edgeLabelInput, { target: { name: 'linkLabelProp', value: '@class' } });
 
     expect(handleGraphOptionsChange.mock.calls.length).toBeGreaterThan(0);
   });

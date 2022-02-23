@@ -1,5 +1,6 @@
 /* eslint-disable */
-import '@babel/polyfill';
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import 'whatwg-fetch'; // fetch() polyfill for making API calls.
 
 if (typeof Promise === 'undefined') {

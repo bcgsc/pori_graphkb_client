@@ -1,6 +1,6 @@
 const TREE_LINK = 'SubClassOf';
 
-const getId = node => (node.data
+const getId = (node) => (node.data
   ? node.data['@rid']
   : node['@rid'] || node);
 
@@ -23,7 +23,7 @@ const computeNodeLevels = (graphLinks) => {
     }
   });
 
-  const queue = Object.values(nodes).filter(node => node.parents.length === 0);
+  const queue = Object.values(nodes).filter((node) => node.parents.length === 0);
   const ranks = {};
 
   queue.forEach((root) => {
@@ -43,7 +43,6 @@ const computeNodeLevels = (graphLinks) => {
   return ranks;
 };
 
-
 const copyURLToClipBoard = (snackbar) => {
   const URL = window.location.href;
   // create temp dummy element to select and copy text to clipboard
@@ -59,8 +58,8 @@ const copyURLToClipBoard = (snackbar) => {
 };
 
 export {
-  getId,
   computeNodeLevels,
   copyURLToClipBoard,
+  getId,
   TREE_LINK,
 };

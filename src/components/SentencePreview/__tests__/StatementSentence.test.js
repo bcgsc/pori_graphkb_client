@@ -5,7 +5,6 @@ import React from 'react';
 
 import StatementSentence from '../StatementSentence';
 
-
 describe('StatementSentence', () => {
   test('placeholders used when no content given', () => {
     const { getByText } = render(

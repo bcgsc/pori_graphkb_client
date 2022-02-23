@@ -71,9 +71,9 @@ class APIConnectionFailureError extends ErrorMixin {
 
 export {
   AbortError,
+  APIConnectionFailureError,
   AuthenticationError,
   AuthorizationError,
   BadRequestError,
   RecordExistsError,
-  APIConnectionFailureError,
 };

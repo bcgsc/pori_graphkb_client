@@ -20,15 +20,16 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
 const TWO_WEEK_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
 
-const JumpToRecord = ({ data }) => (
-  <Link className="activity-view__jump-to-record" target="_blank" to={schema.getLink(data)}>
-    <OpenInNewIcon />
-    {data['@rid']}
-  </Link>
-);
+function JumpToRecord({ data }) {
+  return (
+    <Link className="activity-view__jump-to-record" target="_blank" to={schema.getLink(data)}>
+      <OpenInNewIcon />
+      {data['@rid']}
+    </Link>
+  );
+}
 
 JumpToRecord.propTypes = {
   data: PropTypes.shape({
@@ -45,7 +46,7 @@ JumpToRecord.propTypes = {
  * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
  * @param {Array.<object>} props.values the edge records
  */
-const ActivityView = () => {
+function ActivityView() {
   const grid = useGrid();
 
   const currentTime = new Date().getTime(); // current time stamp in seconds
@@ -147,7 +148,7 @@ const ActivityView = () => {
           data={recentRecords}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
-          getRowNodeId={data => data['@rid']}
+          getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -155,7 +156,6 @@ const ActivityView = () => {
       </div>
     </div>
   );
-};
-
+}
 
 export default ActivityView;

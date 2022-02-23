@@ -22,7 +22,6 @@ import SteppedForm from './SteppedForm';
 
 const { schema: { PositionalVariant, CategoryVariant, Position } } = schema;
 
-
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,
   [
@@ -40,9 +39,7 @@ const leftoverPositionalProps = omit(
     'displayName',
   ],
 );
-const { fields: positionalFields } = sortAndGroupFields(
-  { properties: leftoverPositionalProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
-);
+const { fields: positionalFields } = sortAndGroupFields({ properties: leftoverPositionalProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW });
 
 const leftoverCategoryProps = omit(
   CategoryVariant.properties,
@@ -54,14 +51,11 @@ const leftoverCategoryProps = omit(
     'displayName',
   ],
 );
-const { fields: categoryFields } = sortAndGroupFields(
-  { properties: leftoverCategoryProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
-);
+const { fields: categoryFields } = sortAndGroupFields({ properties: leftoverCategoryProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW });
 
-const coordinateOptions = Position.descendantTree(true).map(m => ({
+const coordinateOptions = Position.descendantTree(true).map((m) => ({
   label: m.name, value: m.name, key: m.name, caption: m.description,
 }));
-
 
 const MAJOR_FORM_TYPES = {
   SUB: 'Substitution',
@@ -71,7 +65,6 @@ const MAJOR_FORM_TYPES = {
   OTHER_WITH_POS: 'Other Variant',
   OTHER: 'Other Variant without Position Information',
 };
-
 
 const pickInputType = (record) => {
   if (record['@class'] === 'PositionalVariant') {
@@ -96,9 +89,9 @@ const pickInputType = (record) => {
  * @param {function} props.onSubmit the handler to be called when the form is submitted
  * @param {function} props.onError the handler to be called when the submission throws an error
  */
-const VariantForm = ({
+function VariantForm({
   onSubmit, onError, value, formVariant,
-}) => {
+}) {
   let defaultCoordinateType;
 
   if (value.break1Start) {
@@ -167,7 +160,6 @@ const VariantForm = ({
       onError({ error: err, content });
     }
   }, [formVariant, onError, onSubmit, snackbar]);
-
 
   const handleDeleteAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
@@ -283,7 +275,7 @@ const VariantForm = ({
             hasPositions
               ? leftoverPositionalProps
               : leftoverCategoryProps,
-          ).map(p => p.name)
+          ).map((p) => p.name)
         }
         label="Optional Information"
       >
@@ -305,8 +297,7 @@ const VariantForm = ({
       </FormStepWrapper>
     </SteppedForm>
   );
-};
-
+}
 
 VariantForm.propTypes = {
   onError: PropTypes.func.isRequired,

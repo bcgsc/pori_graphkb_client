@@ -8,7 +8,6 @@ import { AuthContext } from '@/components/Auth';
 
 import ReviewDialog from '../ReviewDialog';
 
-
 describe('ReviewDialog', () => {
   let getByText;
   let queryByText;
@@ -36,7 +35,6 @@ describe('ReviewDialog', () => {
       </AuthContext.Provider>,
     ));
   });
-
 
   test('shows add review button', () => {
     expect(getByText('ADD REVIEW')).toBeInTheDocument();

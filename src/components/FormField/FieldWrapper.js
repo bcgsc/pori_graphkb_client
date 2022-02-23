@@ -8,12 +8,13 @@ import React from 'react';
  * @param {string} props.className optional/additional css class names
  * @param {string} props.type the input field type
  */
-const FieldWrapper = ({ children, className, type }) => (
-  <ListItem className={`form-field ${type && `form-field--${type}`} ${className}`} component="li">
-    {children}
-  </ListItem>
-);
-
+function FieldWrapper({ children, className, type }) {
+  return (
+    <ListItem className={`form-field ${type && `form-field--${type}`} ${className}`} component="li">
+      {children}
+    </ListItem>
+  );
+}
 
 FieldWrapper.propTypes = {
   children: PropTypes.element.isRequired,
@@ -25,6 +26,5 @@ FieldWrapper.defaultProps = {
   className: '',
   type: '',
 };
-
 
 export default FieldWrapper;

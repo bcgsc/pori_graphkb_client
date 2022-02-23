@@ -25,7 +25,7 @@ import schema from '@/services/schema';
  *
  * @note all remaining properties are passed to the RecordAutocomplete component
  */
-const FilteredRecordAutocomplete = ({
+function FilteredRecordAutocomplete({
   linkedClassName,
   defaultFilterClassName,
   disabled,
@@ -35,7 +35,7 @@ const FilteredRecordAutocomplete = ({
   error,
   name,
   ...rest
-}) => {
+}) {
   const [selectedClassName, setSelectedClassName] = useState(
     defaultFilterClassName || linkedClassName,
   );
@@ -44,7 +44,6 @@ const FilteredRecordAutocomplete = ({
     const { target: { value } } = event;
     setSelectedClassName(value);
   }, [setSelectedClassName]);
-
 
   const model = schema.get(linkedClassName);
 
@@ -62,7 +61,7 @@ const FilteredRecordAutocomplete = ({
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
-            options={filterOptions || [...model.descendantTree(false).map(m => m.name)]}
+            options={filterOptions || [...model.descendantTree(false).map((m) => m.name)]}
             value={selectedClassName}
           />
         )}
@@ -74,14 +73,13 @@ const FilteredRecordAutocomplete = ({
           name={name}
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
-            : `Search for an Existing ${selectedClassName} Record`
-          }
+            : `Search for an Existing ${selectedClassName} Record`}
         />
       </div>
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
     </FormControl>
   );
-};
+}
 
 FilteredRecordAutocomplete.propTypes = {
   linkedClassName: PropTypes.string.isRequired,
@@ -102,6 +100,5 @@ FilteredRecordAutocomplete.defaultProps = {
   helperText: '',
   error: false,
 };
-
 
 export default FilteredRecordAutocomplete;

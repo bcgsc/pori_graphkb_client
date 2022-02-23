@@ -32,7 +32,7 @@ const DEFAULT_BASE_VARIANT = 'Position';
  * @param {bool} props.required flag to indicate this field must be filled
  * @param {string} props.variant the position class model name
  */
-const PositionForm = ({
+function PositionForm({
   baseVariant,
   clearable,
   disabled,
@@ -45,9 +45,9 @@ const PositionForm = ({
   value,
   variant: initialVariant,
   ...props
-}) => {
+}) {
   const positionVariants = schema.schema[baseVariant || DEFAULT_BASE_VARIANT]
-    .descendantTree(true).map(m => m.name);
+    .descendantTree(true).map((m) => m.name);
   const [variant, setVariant] = useState(initialVariant);
 
   let PositionComponent;
@@ -105,7 +105,7 @@ const PositionForm = ({
       <FormHelperText error={error}>{helperText}</FormHelperText>
     </FormControl>
   );
-};
+}
 
 PositionForm.propTypes = {
   name: PropTypes.string.isRequired,
@@ -132,6 +132,5 @@ PositionForm.defaultProps = {
   value: null,
   variant: '',
 };
-
 
 export default PositionForm;

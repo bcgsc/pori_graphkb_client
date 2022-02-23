@@ -11,8 +11,7 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 
-
-const NotationParser = () => {
+function NotationParser() {
   const [text, setText] = useState('');
   const [parsed, setParsed] = useState(null);
   const [error, setError] = useState(null);
@@ -45,7 +44,7 @@ const NotationParser = () => {
     }
   });
 
-  const header = Object.keys(content).sort().filter(col => content[col]);
+  const header = Object.keys(content).sort().filter((col) => content[col]);
 
   return (
     <div className="notation-parser">
@@ -69,7 +68,7 @@ const NotationParser = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {header.map(col => (
+          {header.map((col) => (
             <TableRow key={col}>
               <TableCell>{col}</TableCell>
               <TableCell>{content[col]}</TableCell>
@@ -80,6 +79,6 @@ const NotationParser = () => {
       )}
     </div>
   );
-};
+}
 
 export default NotationParser;

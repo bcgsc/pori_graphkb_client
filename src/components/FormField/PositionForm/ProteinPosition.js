@@ -9,13 +9,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
-
 const {
   schema: {
     ProteinPosition: { properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT },
   },
 } = schema;
-
 
 /**
  * Protein Position Input form
@@ -27,13 +25,13 @@ const {
  * @param {bool} props.required flag to indicate this field must be filled
  * @param {bool} props.disabled flag to indicate this field is disabled
  */
-const ProteinPosition = ({
+function ProteinPosition({
   onChange,
   value,
   name,
   required,
   disabled,
-}) => {
+}) {
   const { pos: initialPos, refAA: initialRefAA } = value || {};
   const [position, setPosition] = useState(initialPos);
   const [positionError, setPositionError] = useState('');
@@ -112,7 +110,7 @@ const ProteinPosition = ({
       </FieldWrapper>
     </>
   );
-};
+}
 
 ProteinPosition.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -130,6 +128,5 @@ ProteinPosition.defaultProps = {
   name: '',
   disabled: false,
 };
-
 
 export default ProteinPosition;

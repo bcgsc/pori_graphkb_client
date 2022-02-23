@@ -1,4 +1,3 @@
-
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
@@ -99,7 +98,7 @@ const getRowsFromBlocks = async ({
     ));
   }
   const data = [];
-  (await Promise.all(blockRequests)).forEach(block => data.push(...block));
+  (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
     api.queryClient.setQueryData(
@@ -110,13 +109,12 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
-
 /**
  * Shows the search result filters and an edit button
  */
-const DataView = ({
+function DataView({
   location: { search: initialSearch }, blockSize, history,
-}) => {
+}) {
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
@@ -133,7 +131,7 @@ const DataView = ({
     ['/query', payload],
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
-      select: response => response[0]?.count,
+      select: (response) => response[0]?.count,
     },
   );
 
@@ -200,14 +198,13 @@ const DataView = ({
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
-
   const { data: detailPanelRow } = useQuery(
     ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(detailsRowId),
-      onError: err => handleError(err),
-      select: response => response[0],
+      onError: (err) => handleError(err),
+      select: (response) => response[0],
     },
   );
 
@@ -227,7 +224,6 @@ const DataView = ({
   const handleOpenOptionsMenu = useCallback(({ currentTarget = null } = {}) => {
     setOptionsMenuAnchor(currentTarget);
   }, []);
-
 
   const handleClickExport = useCallback(async () => {
     const gridApi = grid.ref?.current?.api;
@@ -317,7 +313,8 @@ const DataView = ({
     <div className={
         `data-view ${detailPanelIsOpen
           ? 'data-view--squished'
-          : ''}`}
+          : ''}`
+}
     >
       <div className="data-view__header">
         <ActiveFilters search={search} />
@@ -386,8 +383,7 @@ const DataView = ({
       />
     </div>
   );
-};
-
+}
 
 DataView.propTypes = {
   history: HistoryPropType.isRequired,

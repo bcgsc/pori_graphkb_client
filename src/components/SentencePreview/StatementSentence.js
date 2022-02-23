@@ -6,8 +6,7 @@ import schema from '@/services/schema';
 
 import SentencePreview from '.';
 
-
-const StatementSentence = ({ content: record }) => {
+function StatementSentence({ content: record }) {
   const { content, highlighted } = sentenceTemplates.generateStatementSentence(schema.schemaDefn, record);
 
   return (
@@ -16,7 +15,7 @@ const StatementSentence = ({ content: record }) => {
       highlighted={highlighted}
     />
   );
-};
+}
 
 StatementSentence.propTypes = {
   content: StatementPropType,

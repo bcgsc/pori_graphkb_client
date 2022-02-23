@@ -8,7 +8,6 @@ import api from '@/services/api';
 
 import RecordAutocomplete from '..';
 
-
 describe('RecordAutocomplete', () => {
   test.todo('does not allow text input when disabled');
 

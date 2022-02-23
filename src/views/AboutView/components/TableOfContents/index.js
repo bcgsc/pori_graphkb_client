@@ -8,18 +8,20 @@ import React from 'react';
 
 import LetterIcon from '@/components/LetterIcon';
 
-const TableOfContents = ({ sections, baseRoute }) => (
-  <List>
-    {sections.map(({ id, label }) => (
-      <ListItem key={id}>
-        <LetterIcon value={label.slice(0, 1)} />
-        <ListItemText>
-          <a href={`${baseRoute}#${id}`}> {label}</a>
-        </ListItemText>
-      </ListItem>
-    ))}
-  </List>
-);
+function TableOfContents({ sections, baseRoute }) {
+  return (
+    <List>
+      {sections.map(({ id, label }) => (
+        <ListItem key={id}>
+          <LetterIcon value={label.slice(0, 1)} />
+          <ListItemText>
+            <a href={`${baseRoute}#${id}`}> {label}</a>
+          </ListItemText>
+        </ListItem>
+      ))}
+    </List>
+  );
+}
 
 TableOfContents.propTypes = {
   baseRoute: PropTypes.string.isRequired,

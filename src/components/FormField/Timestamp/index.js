@@ -3,9 +3,9 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-const Timestamp = ({
+function Timestamp({
   value, name, onChange, ...rest
-}) => {
+}) {
   const [displayValue, setDisplayValue] = useState('');
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Timestamp = ({
       value={displayValue}
     />
   );
-};
+}
 
 Timestamp.propTypes = {
   name: PropTypes.string.isRequired,

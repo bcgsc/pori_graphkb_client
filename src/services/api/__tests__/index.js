@@ -1,6 +1,4 @@
-
 import api from '..';
-
 
 describe('api methods test', () => {
   describe('getSearchFromQuery', () => {

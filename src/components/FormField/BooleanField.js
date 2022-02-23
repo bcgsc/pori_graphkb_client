@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 /**
  * RadioForm Field for a boolean form fieldset
  *
@@ -22,7 +21,7 @@ import React from 'react';
  * @param {boolean} props.required flag to indicate this field must be filled
  * @param {string|boolean} props.value the current value
  */
-const BooleanField = (props) => {
+function BooleanField(props) {
   const {
     disabled,
     error,
@@ -54,7 +53,7 @@ const BooleanField = (props) => {
         </FormLabel>
         <RadioGroup
           name={name}
-          onChange={e => onChange(e)}
+          onChange={(e) => onChange(e)}
           style={{ flexDirection: 'row' }}
           value={value}
         >
@@ -65,7 +64,7 @@ const BooleanField = (props) => {
       </FormControl>
     </div>
   );
-};
+}
 
 BooleanField.propTypes = {
   name: PropTypes.string.isRequired,

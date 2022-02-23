@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 
 import schema from '@/services/schema';
 
-
 const PUBMED_BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov';
 
 /**
@@ -23,41 +22,43 @@ const PUBMED_BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov';
  * @param {function} props.onClick the onClick handler function
  * @param {string} props.journalName the name of the journal the article was published in
  */
-const PubmedCard = ({
+function PubmedCard({
   title, sourceId, recordId, onClick, journalName,
-}) => (
-  <Card className="pubmed-card" elevation={3}>
-    <CardContent>
-      <Typography color="textSecondary">
-        PMID:{sourceId}
-      </Typography>
-      <a href={`${PUBMED_BASE_URL}/${sourceId}`} rel="noopener noreferrer" target="_blank">
-        {`${PUBMED_BASE_URL}/${sourceId}`}
-      </a>
-      {title && (<Typography className="pubmed-card__title" variant="h2">{title}</Typography>)}
-      {journalName && (
+}) {
+  return (
+    <Card className="pubmed-card" elevation={3}>
+      <CardContent>
+        <Typography color="textSecondary">
+          PMID:{sourceId}
+        </Typography>
+        <a href={`${PUBMED_BASE_URL}/${sourceId}`} rel="noopener noreferrer" target="_blank">
+          {`${PUBMED_BASE_URL}/${sourceId}`}
+        </a>
+        {title && (<Typography className="pubmed-card__title" variant="h2">{title}</Typography>)}
+        {journalName && (
         <Typography variant="subtitle1">
           {journalName}
         </Typography>
-      )}
-    </CardContent>
-    <CardActions className="pubmed-card__actions">
-      {!recordId
-        ? (
-          <Button onClick={onClick}>Import&nbsp;<InputIcon /></Button>
-        ) : (
-          <Link
-            target="_blank"
-            to={schema.getLink({ '@rid': recordId, '@class': 'Publication' })}
-          >
-            <IconButton>
-              <OpenInNewIcon />
-            </IconButton>
-          </Link>
         )}
-    </CardActions>
-  </Card>
-);
+      </CardContent>
+      <CardActions className="pubmed-card__actions">
+        {!recordId
+          ? (
+            <Button onClick={onClick}>Import&nbsp;<InputIcon /></Button>
+          ) : (
+            <Link
+              target="_blank"
+              to={schema.getLink({ '@rid': recordId, '@class': 'Publication' })}
+            >
+              <IconButton>
+                <OpenInNewIcon />
+              </IconButton>
+            </Link>
+          )}
+      </CardActions>
+    </Card>
+  );
+}
 
 PubmedCard.propTypes = {
   sourceId: PropTypes.string.isRequired,

@@ -8,9 +8,9 @@ import React from 'react';
 
 import AdvancedSearchView from '..';
 
-jest.mock('@/components/RecordAutocomplete', () => (({
+jest.mock('@/components/RecordAutocomplete', () => (function ({
   value, onChange, name, label,
-}) => {
+}) {
   const handleChange = () => {
     onChange({ target: { value: [{ displayName: 'value', '@rid': '1:1' }], name } });
   };
@@ -25,19 +25,19 @@ jest.mock('@/components/RecordAutocomplete', () => (({
 }));
 
 /* eslint-disable react/prop-types */
-jest.mock('@/components/DropDownSelect', () => ({
+jest.mock('@/components/DropDownSelect', () => function ({
   options = [], value, onChange, name, innerProps: { 'data-testid': testId = 'select' } = {},
-}) => {
+}) {
   const handleChange = (event) => {
     const option = options.find(
-      opt => (opt.value === undefined ? opt : opt.value) === event.currentTarget.value,
+      (opt) => (opt.value === undefined ? opt : opt.value) === event.currentTarget.value,
     );
 
     onChange({ target: { value: option.value === undefined ? option : option.value, name } });
   };
   return (
     <select data-testid={testId} onChange={handleChange} value={value}>
-      {options.map(opt => (
+      {options.map((opt) => (
         <option key={opt.key || opt} value={opt.value === undefined ? opt : opt.value}>
           {opt.label || opt}
         </option>
@@ -55,7 +55,7 @@ describe('AdvancedSearchView', () => {
   const mockPush = jest.fn();
 
   const mockHistory = {
-    push: event => mockPush(event),
+    push: (event) => mockPush(event),
   };
 
   let getByTestId;
@@ -81,7 +81,6 @@ describe('AdvancedSearchView', () => {
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D');
   });
-
 
   test('renders new filter group correctly', async () => {
     await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });

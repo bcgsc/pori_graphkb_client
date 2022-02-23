@@ -22,14 +22,13 @@ import StatementReviewRow from './StatementReview';
  * @property {function} props.onChange parent change handler function
  * @property {string} props.name the name of this field (for propogating change events)
  */
-const StatementReviewsTable = (props) => {
+function StatementReviewsTable(props) {
   const {
     values,
     variant,
     onChange,
     name,
   } = props;
-
 
   const handleDeleteReview = ({ index }) => {
     const newValue = [...values.slice(0, index), ...values.slice(index + 1)];
@@ -65,7 +64,7 @@ const StatementReviewsTable = (props) => {
       </Table>
     </div>
   );
-};
+}
 
 StatementReviewsTable.propTypes = {
   name: PropTypes.string.isRequired,

@@ -20,8 +20,7 @@ import React from 'react';
 
 import { GeneralRecordPropType } from '@/components/types';
 
-
-const DefaultOptionComponent = (option, disabled) => {
+function DefaultOptionComponent(option, disabled) {
   const key = option.key === undefined
     ? option
     : option.key;
@@ -53,7 +52,7 @@ const DefaultOptionComponent = (option, disabled) => {
       />
     </MenuItem>
   );
-};
+}
 
 /**
  * Component to select options from a list of defined options.
@@ -79,7 +78,7 @@ function DropDownSelect(props) {
     IconComponent,
   } = props;
 
-  const optionsDisplay = options.map(option => children(option, disabled));
+  const optionsDisplay = options.map((option) => children(option, disabled));
 
   let InputComponent = Input;
 
@@ -109,8 +108,7 @@ function DropDownSelect(props) {
       <Select
         IconComponent={disabled
           ? 'span'
-          : IconComponent
-        }
+          : IconComponent}
         input={<InputComponent id={`option-select-${name}`} name={name} />}
         inputProps={innerProps}
         onChange={onChange}
@@ -132,7 +130,6 @@ const SelectOptionPropType = PropTypes.shape({
   label: PropTypes.string,
   caption: PropTypes.string,
 });
-
 
 /**
  * @namespace

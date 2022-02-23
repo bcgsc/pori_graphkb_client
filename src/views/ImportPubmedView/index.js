@@ -17,8 +17,7 @@ import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
-
-const ImportPubmedView = (props) => {
+function ImportPubmedView(props) {
   const { history } = props;
   const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
@@ -30,8 +29,8 @@ const ImportPubmedView = (props) => {
     ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
-      onError: err => handleErrorSaveLocation(err, history),
-      select: response => response[0]?.['@rid'],
+      onError: (err) => handleErrorSaveLocation(err, history),
+      select: (response) => response[0]?.['@rid'],
     },
   );
 
@@ -57,7 +56,7 @@ const ImportPubmedView = (props) => {
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(text),
-      onError: err => handleErrorSaveLocation(err, history),
+      onError: (err) => handleErrorSaveLocation(err, history),
     },
   );
 
@@ -109,7 +108,7 @@ const ImportPubmedView = (props) => {
         placeholder="Enter a PubMed ID ex. 1234"
         value={text}
       />
-      {currentRecords?.map(rec => (
+      {currentRecords?.map((rec) => (
         <PubmedCard
           key={rec['@rid']}
           abstract={rec.description}
@@ -133,7 +132,7 @@ const ImportPubmedView = (props) => {
       )}
     </div>
   );
-};
+}
 
 ImportPubmedView.propTypes = {
   history: PropTypes.object.isRequired,

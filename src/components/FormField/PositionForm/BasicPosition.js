@@ -9,14 +9,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
-
 const {
   schema: {
     GenomicPosition: { properties: { pos: posProperty } },
     CdsPosition: { properties: { offset: offsetProperty } },
   },
 } = schema;
-
 
 /**
  * Basic Position and Position with offset form
@@ -30,14 +28,14 @@ const {
  * @param {bool} props.required flag to indicate this field must be filled
  * @param {bool} props.disabled flag to indicate this field is disabled
  */
-const BasicPositionForm = ({
+function BasicPositionForm({
   onChange,
   variant,
   value,
   name,
   required,
   disabled,
-}) => {
+}) {
   const { pos: initialPos, offset: initialOffset } = value || {};
   const [position, setPosition] = useState(initialPos);
   const [positionError, setPositionError] = useState('');
@@ -88,7 +86,6 @@ const BasicPositionForm = ({
 
   const isOffsetVariant = Boolean(schema.get(variant).properties.offset);
 
-
   return (
     <>
       <FieldWrapper>
@@ -125,7 +122,7 @@ const BasicPositionForm = ({
       )}
     </>
   );
-};
+}
 
 BasicPositionForm.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -151,6 +148,5 @@ BasicPositionForm.defaultProps = {
   disabled: false,
   value: null,
 };
-
 
 export default BasicPositionForm;

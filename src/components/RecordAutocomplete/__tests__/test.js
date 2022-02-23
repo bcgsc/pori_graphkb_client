@@ -15,7 +15,6 @@ const spy = jest
   .spyOn(api, 'post')
   .mockImplementation(() => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }]);
 
-
 describe('RecordAutocomplete (data-fetching)', () => {
   test('singleLoad triggers query', async () => {
     const placeholder = 'input something';

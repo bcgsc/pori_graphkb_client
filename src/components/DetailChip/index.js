@@ -32,7 +32,7 @@ import { Link } from 'react-router-dom';
  * @property {function} props.getLink finds routeName for displayed record
  * @property {string} props.title title of card. Will usually be record displayName
  */
-const DefaultPopupComponent = (props) => {
+function DefaultPopupComponent(props) {
   const {
     details,
     getDetails,
@@ -63,7 +63,7 @@ const DefaultPopupComponent = (props) => {
         <Table>
           <TableBody>
             {retrievedDetails && Object.keys(retrievedDetails).sort().map(
-              name => (
+              (name) => (
                 <TableRow key={name} className="detail-popover__row">
                   <TableCell>
                     <Typography variant="h6">{name}</Typography>
@@ -79,7 +79,7 @@ const DefaultPopupComponent = (props) => {
       </CardContent>
     </Card>
   );
-};
+}
 
 DefaultPopupComponent.propTypes = {
   label: PropTypes.string.isRequired,
@@ -91,9 +91,9 @@ DefaultPopupComponent.propTypes = {
 };
 
 DefaultPopupComponent.defaultProps = {
-  getDetails: d => d,
+  getDetails: (d) => d,
   details: {},
-  valueToString: s => `${s}`,
+  valueToString: (s) => `${s}`,
   getLink: null,
   title: null,
 };
@@ -145,7 +145,6 @@ function DetailChip(props) {
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
 
   return (
     <div className="detail-chip" {...rest}>
@@ -199,9 +198,9 @@ DetailChip.defaultProps = {
   PopUpProps: null,
   className: '',
   details: {},
-  getDetails: d => d,
+  getDetails: (d) => d,
   onDelete: null,
-  valueToString: s => `${s}`,
+  valueToString: (s) => `${s}`,
   getLink: null,
   title: null,
 };

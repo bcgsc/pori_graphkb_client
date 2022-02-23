@@ -21,8 +21,7 @@ import GettingStarted from './components/GettingStarted';
 import Matching from './components/Matching';
 import AboutNotation from './components/Notation';
 
-
-const AboutView = (props) => {
+function AboutView(props) {
   const { location: { pathname: currentUri } } = props;
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -49,7 +48,6 @@ const AboutView = (props) => {
   useEffect(() => {
     setTabIndex(uriLookup[currentUri]);
   }, [uriLookup, currentUri]);
-
 
   const handleTabChange = (event, value) => {
     setTabIndex(value);
@@ -83,8 +81,7 @@ const AboutView = (props) => {
       </div>
     </div>
   );
-};
-
+}
 
 AboutView.propTypes = {
   location: LocationPropType.isRequired,

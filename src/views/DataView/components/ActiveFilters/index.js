@@ -27,7 +27,6 @@ import schema from '@/services/schema';
 
 import JSONView from './JSONView';
 
-
 const extractRids = (obj) => {
   const recordIds = [];
 
@@ -47,8 +46,7 @@ const extractRids = (obj) => {
   return Array.from(new Set(recordIds));
 };
 
-
-const ActiveFilters = ({ search }) => {
+function ActiveFilters({ search }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const { payload, routeName } = useMemo(() => api.getQueryFromSearch({ search, schema }), [search]);
   const recordIds = useMemo(() => extractRids(payload), [payload]);
@@ -86,7 +84,6 @@ const ActiveFilters = ({ search }) => {
     }
   }, [anchorEl]);
 
-
   const ValueComponent = useCallback(({ value }) => {
     if (recordHash[value]) {
       return (<Chip label={`${recordHash[value]} (${value})`} />);
@@ -97,7 +94,6 @@ const ActiveFilters = ({ search }) => {
   const handleCopyToClipboard = useCallback(() => {
     copy(JSON.stringify(payload));
   }, [payload]);
-
 
   return (
     <>
@@ -141,7 +137,7 @@ const ActiveFilters = ({ search }) => {
       </div>
     </>
   );
-};
+}
 
 ActiveFilters.propTypes = {
   search: PropTypes.string.isRequired,

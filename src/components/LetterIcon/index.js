@@ -4,16 +4,18 @@ import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const LetterIcon = ({
+function LetterIcon({
   value, variant, color, onClick,
-}) => (
-  <Button
-    className={`letter-icon letter-icon--${variant} letter-icon--${color}`}
-    disabled={!onClick}
-    onClick={onClick}
-  >{value}
-  </Button>
-);
+}) {
+  return (
+    <Button
+      className={`letter-icon letter-icon--${variant} letter-icon--${color}`}
+      disabled={!onClick}
+      onClick={onClick}
+    >{value}
+    </Button>
+  );
+}
 
 LetterIcon.propTypes = {
   value: PropTypes.string.isRequired,

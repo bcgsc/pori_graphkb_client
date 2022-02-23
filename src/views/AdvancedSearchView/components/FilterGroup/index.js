@@ -52,7 +52,7 @@ function FilterGroup({
             filterValue = schema.getLabel(filter.value);
           } else if (Array.isArray(filterValue)) {
             const filterValueArr = [...filterValue];
-            filterValue = (filterValueArr.map(val => schema.getLabel(val))).join(' ');
+            filterValue = (filterValueArr.map((val) => schema.getLabel(val))).join(' ');
           } else if (filterValue && DATE_FIELDS.includes(filter.attr)) {
             filterValue = format(new Date(filterValue), 'yyyy-MM-dd\'T\'HH:mm');
           } else if (typeof filterValue === 'string') {

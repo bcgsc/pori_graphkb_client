@@ -1,6 +1,5 @@
 import { chunkSentence } from '..';
 
-
 describe('chunkSentence', () => {
   test('chunk with spaces', () => {
     const sentence = 'Craft beer knausgaard schlitz skateboard offal fingerstache';

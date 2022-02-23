@@ -6,11 +6,13 @@ import { AuthContext } from '@/components/Auth';
 
 import MainNav from '../MainNav';
 
+const auth = {};
+
 describe('<MainNav />', () => {
   test('correctly renders', () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={{}}>
+        <AuthContext.Provider value={auth}>
           <MainNav />
         </AuthContext.Provider>
       </BrowserRouter>,

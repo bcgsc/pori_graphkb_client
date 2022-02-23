@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import '@testing-library/jest-dom/extend-expect';
 
 import { fireEvent, render } from '@testing-library/react';

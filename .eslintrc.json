@@ -1,7 +1,6 @@
 {
     "env": {
         "browser": true,
-        "cypress/globals": true,
         "es6": true,
         "jest": true,
         "node": true
@@ -9,10 +8,11 @@
     "extends": [
         "eslint:recommended",
         "airbnb",
+        "airbnb/hooks",
         "plugin:jest/recommended",
         "plugin:jest-formatting/recommended"
     ],
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -21,7 +21,6 @@
         "sourceType": "module"
     },
     "plugins": [
-        "cypress",
         "react",
         "babel",
         "react-hooks",
@@ -128,7 +127,9 @@
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "warn",
         "react/sort-comp": "warn",
-        "simple-import-sort/sort": "error",
+        "react/jsx-props-no-spreading": "off",
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
         "sort-imports": "off"
     },
     "settings": {

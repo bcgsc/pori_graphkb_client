@@ -33,8 +33,6 @@ Thumbs.db
 /src/index.css
 /jsdoc
 /build
-/cypress/videos
-/cypress/screenshots
 
 # webpack build
 /public/*

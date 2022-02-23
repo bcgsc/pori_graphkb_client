@@ -108,21 +108,16 @@ function AdminTable({ onChange, records, variant }) {
     },
   ]);
 
-  function Actions({ data: record }) {
-    return (
-      <IconButton onClick={() => handleOpenEditDialog(record)}>
-        <EditIcon />
-      </IconButton>
-    );
-  }
+  const Actions = useCallback(({ data: record }) => (
+    <IconButton onClick={() => handleOpenEditDialog(record)}>
+      <EditIcon />
+    </IconButton>
+  ), []);
   Actions.propTypes = {
     data: PropTypes.object.isRequired,
   };
 
-  function EmailLink({ value: email }) {
-    return <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>;
-  }
-
+  const EmailLink = useCallback(({ value: email }) => <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>, []);
   EmailLink.propTypes = {
     value: PropTypes.string.isRequired,
   };
@@ -165,7 +160,7 @@ function AdminTable({ onChange, records, variant }) {
             resizable: true,
             width: 150,
           }}
-          frameworkComponents={{ EmailLink, Actions }}
+          frameworkComponents={{ Actions, EmailLink }}
           pagination
           paginationAutoPageSize
           rowData={records}

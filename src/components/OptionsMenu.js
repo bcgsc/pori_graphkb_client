@@ -1,3 +1,4 @@
+/* eslint-disable react/static-property-placement */
 import {
   Collapse, ListItemIcon, ListItemText,
   MenuItem, MenuList,

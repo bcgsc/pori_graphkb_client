@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import '@testing-library/jest-dom/extend-expect';
 
 import {

@@ -252,8 +252,8 @@ function RecordForm({
               DELETE
             </ActionButton>
           )
-          : (<div />) // for spacing issues only
-          }
+          // for spacing issues only
+          : (<div />)}
         {actionInProgress && (
         <CircularProgress size={50} />
         )}
@@ -274,8 +274,8 @@ function RecordForm({
                 : 'SUBMIT'}
             </ActionButton>
           )
-          : (<div />) // for spacing issues only
-          }
+          // for spacing issues only
+          : (<div />)}
       </div>
     </Paper>
   );

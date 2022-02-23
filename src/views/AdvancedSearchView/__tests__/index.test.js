@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import '@testing-library/jest-dom/extend-expect';
 
 import {
@@ -24,7 +25,6 @@ jest.mock('@/components/RecordAutocomplete', () => (function ({
   );
 }));
 
-/* eslint-disable react/prop-types */
 jest.mock('@/components/DropDownSelect', () => function ({
   options = [], value, onChange, name, innerProps: { 'data-testid': testId = 'select' } = {},
 }) {

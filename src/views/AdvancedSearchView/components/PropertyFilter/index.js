@@ -37,6 +37,7 @@ const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   return prop1.localeCompare(prop2);
 };
 
+// eslint-disable-next-line default-param-last
 const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {
     return OPERATORS.filter((op) => ['CONTAINSTEXT', '='].includes(op.label));

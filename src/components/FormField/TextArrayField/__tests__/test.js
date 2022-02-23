@@ -1,12 +1,5 @@
 import {
-  Chip,
-  IconButton,
-  TextField,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import {
-  fireEvent, prettyDOM, render, screen,
+  fireEvent, render, screen,
 } from '@testing-library/react';
 import React from 'react';
 

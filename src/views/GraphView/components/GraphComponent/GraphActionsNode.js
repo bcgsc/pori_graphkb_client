@@ -47,9 +47,9 @@ function GraphActionsNode(props) {
   const actionsRing = [];
   options.forEach((option, i) => {
     const l = options.length;
-    const offset = 1 / l * Math.PI;
-    const startAngle = (i + 1) / l * 2 * Math.PI + offset;
-    const endAngle = i / l * 2 * Math.PI + offset;
+    const offset = (1 / l) * Math.PI;
+    const startAngle = ((i + 1) / l) * 2 * Math.PI + offset;
+    const endAngle = (i / l) * 2 * Math.PI + offset;
 
     const start = {
       x: DETAILS_RING_RADIUS * Math.cos(startAngle),
@@ -78,7 +78,7 @@ function GraphActionsNode(props) {
       'L', start.x, start.y,
     ].join(' ');
 
-    const angle = (2 * i + 1) / l * Math.PI + offset;
+    const angle = ((2 * i + 1) / l) * Math.PI + offset;
     const dx = DETAILS_RING_RADIUS * Math.cos(angle) * ICON_POSITION_COEFFICIENT;
     const dy = DETAILS_RING_RADIUS * Math.sin(angle) * ICON_POSITION_COEFFICIENT;
 
@@ -96,7 +96,7 @@ function GraphActionsNode(props) {
         />
         <g
           fill={option.disabled && option.disabled(actionsNode) ? '#ccc' : '#555'}
-          transform={`translate(${dx - ICON_DIMS * SCALE / 2}, ${dy - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
+          transform={`translate(${dx - (ICON_DIMS * SCALE) / 2}, ${dy - (ICON_DIMS * SCALE) / 2}) scale(${SCALE})`}
         >
           <path d={ICON_MAP[option.name.toLowerCase()]} />
           <text

@@ -113,9 +113,7 @@ function FieldGroup({
       fields.push(wrapper);
     }
   });
-  return (
-    <>{fields}</>
-  );
+  return fields;
 }
 
 FieldGroup.propTypes = {

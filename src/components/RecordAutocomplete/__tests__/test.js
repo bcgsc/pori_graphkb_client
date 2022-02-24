@@ -1,9 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import {
-  fireEvent, render,
-  wait, waitForElement,
-} from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 
@@ -31,15 +28,16 @@ describe('RecordAutocomplete (data-fetching)', () => {
       </QueryClientProvider>,
     );
 
-    await wait(() => {
+    await waitFor(() => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
     // click action to render the newly fetched popup options
     fireEvent.click(getByLabelText('Open'));
-    const [bob, alice] = await waitForElement(() => [getByText('bob (#1:0)'), getByText('alice (#1:1)')]);
-    expect(bob).toBeInTheDocument();
-    expect(alice).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('bob (#1:0)')).toBeInTheDocument();
+      expect(getByText('alice (#1:1)')).toBeInTheDocument();
+    });
   });
 
   test.todo('query triggered on input change');

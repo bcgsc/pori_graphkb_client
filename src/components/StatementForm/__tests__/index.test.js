@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom/extend-expect';
 
 import {
-  fireEvent, render, screen, wait,
+  fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
@@ -51,7 +51,7 @@ const selectFromAutocomplete = async (label, option, search = 'anything') => {
   fireEvent.change(input, { target: { value: search } });
 
   // make sure dropdown is visible
-  await wait(() => {
+  await waitFor(() => {
     expect(screen.getByText(option)).toBeInTheDocument();
   });
 
@@ -61,7 +61,7 @@ const selectFromAutocomplete = async (label, option, search = 'anything') => {
   input.blur();
 
   // verify option was selected
-  await wait(() => {
+  await waitFor(() => {
     expect(screen.getByText(option)).toBeInTheDocument();
   });
 };
@@ -147,7 +147,7 @@ describe('StatementForm', () => {
           createdBy: '23:9',
         }],
       };
-      await wait(() => {
+      await waitFor(() => {
         expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
       });
     });

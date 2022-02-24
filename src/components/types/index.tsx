@@ -21,6 +21,20 @@ const BASE_PROPERTIES = {
   displayName: PropTypes.string,
 };
 
+interface UserRecordType {
+  '@rid'?: string;
+  '@class'?: string;
+  uuid?: string;
+  createdAt?: number;
+  deletedAt?: number;
+}
+
+interface GeneralRecordType extends UserRecordType {
+  createdBy?: UserRecordType;
+  name?: string;
+  displayName?: string;
+}
+
 /**
  * Represents a general record type from schema
  */
@@ -68,3 +82,5 @@ export {
   LocationPropType,
   StatementPropType,
 };
+
+export type { GeneralRecordType, UserRecordType };

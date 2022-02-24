@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   Chip,
+  ChipProps as MuiChipProps,
   Divider,
   IconButton,
   Popover,
@@ -19,25 +20,32 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+interface DefaultPopupComponentProps {
+  /** description of object. Defaults to title of card if title is not present */
+  label: string;
+  /** record object. properties will be extracted to be displayed */
+  details?: Record<string, unknown>;
+  /** converts objs to string value for display */
+  valueToString?: (arg: unknown) => string;
+  /** finds routeName for displayed record */
+  getLink?: (arg: Record<string, unknown> | undefined) => string;
+  getDetails?: (arg?: Record<string, unknown>) => Record<string, unknown> | undefined;
+  /** title of card. Will usually be record displayName */
+  title?: string;
+}
+
 /**
  * Default card pop up component displayed outlining details of record.
- * @property {object} props
- * @property {object} props.details record object. properties will be extracted to be displayed
- * @property {string} props.label description of object. Defaults to title of card if title is not present
- * @property {function} props.valueToString converts objs to string value for display
- * @property {function} props.getLink finds routeName for displayed record
- * @property {string} props.title title of card. Will usually be record displayName
  */
-function DefaultPopupComponent(props) {
+function DefaultPopupComponent(props: DefaultPopupComponentProps) {
   const {
     details,
-    getDetails,
+    getDetails = (d) => d,
     label,
-    valueToString,
+    valueToString = (s) => `${s}`,
     getLink,
     title,
   } = props;
@@ -81,15 +89,6 @@ function DefaultPopupComponent(props) {
   );
 }
 
-DefaultPopupComponent.propTypes = {
-  label: PropTypes.string.isRequired,
-  details: PropTypes.object,
-  getDetails: PropTypes.func,
-  getLink: PropTypes.func,
-  title: PropTypes.string,
-  valueToString: PropTypes.func,
-};
-
 DefaultPopupComponent.defaultProps = {
   getDetails: (d) => d,
   details: {},
@@ -98,22 +97,34 @@ DefaultPopupComponent.defaultProps = {
   title: null,
 };
 
+interface DetailChipProps<PopProps extends Record<string, unknown>> {
+  /** label for the record */
+  label: string;
+  /** record to be displayed in chip. */
+  details?: Record<string, unknown>;
+  /** function handler for the user clicking the X on the chip */
+  onDelete?: () => void;
+  /** function to call on details values */
+  valueToString?: () => string;
+  /** properties passed to the chip element */
+  ChipProps?: Partial<MuiChipProps>;
+  /** function to retrieve the details from the details object */
+  getDetails?: (arg: Record<string, unknown>) => Record<string, unknown>;
+  /** the title for the pop-up card (defaults to the chip label) */
+  title?: string;
+  /** function component constructor */
+  PopUpComponent?: (renderProps: PopProps & Partial<DetailChipProps<any>>) => JSX.Element;
+  /** props for PopUpComponent so that it mounts correctly */
+  PopUpProps?: PopProps;
+  className?: string;
+  getLink?: unknown;
+}
+
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
- *
- * @param {obejct} props
- * @property {string} props.label - label for the record
- * @property {Object} props.details - record to be displayed in chip.
- * @property {function} props.onDelete - function handler for the user clicking the X on the chip
- * @property {function} props.valueToString - function to call on details values
- * @property {object} props.ChipProps - properties passed to the chip element
- * @property {function} props.getDetails function to retrieve the details from the details object
- * @property {string} props.title the title for the pop-up card (defaults to the chip label)
- * @property {function} props.PopUpComponent function component constructor
- * @property {object} props.PopUpProps props for PopUpComponent so that it mounts correctly
  */
-function DetailChip(props) {
+function DetailChip<P extends Record<string, unknown>>(props: DetailChipProps<P>) {
   const {
     details,
     onDelete,
@@ -124,7 +135,7 @@ function DetailChip(props) {
     ChipProps,
     getLink,
     title,
-    PopUpComponent,
+    PopUpComponent = DefaultPopupComponent as any,
     PopUpProps,
     ...rest
   } = props;
@@ -173,20 +184,6 @@ function DetailChip(props) {
     </div>
   );
 }
-
-DetailChip.propTypes = {
-  label: PropTypes.string.isRequired,
-  ChipProps: PropTypes.object,
-  PopUpComponent: PropTypes.func,
-  PopUpProps: PropTypes.object,
-  className: PropTypes.string,
-  details: PropTypes.object,
-  getDetails: PropTypes.func,
-  getLink: PropTypes.func,
-  onDelete: PropTypes.func,
-  title: PropTypes.string,
-  valueToString: PropTypes.func,
-};
 
 DetailChip.defaultProps = {
   ChipProps: {

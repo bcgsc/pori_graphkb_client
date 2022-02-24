@@ -1,11 +1,21 @@
-import { TextField } from '@material-ui/core';
+import { BaseTextFieldProps, TextField, TextFieldProps } from '@material-ui/core';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-function Timestamp({
-  value, name, onChange, ...rest
-}) {
+interface TimestampProps extends BaseTextFieldProps {
+  name: string;
+  onChange(...args: unknown[]): unknown;
+  value?: any;
+  inputProps?: TextFieldProps['inputProps']
+}
+
+function Timestamp(props: TimestampProps) {
+  const {
+    value,
+    name,
+    onChange,
+    ...rest
+  } = props;
   const [displayValue, setDisplayValue] = useState('');
 
   useEffect(() => {
@@ -30,11 +40,6 @@ function Timestamp({
   );
 }
 
-Timestamp.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.any,
-};
 Timestamp.defaultProps = {
   value: '',
 };

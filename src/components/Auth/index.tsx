@@ -4,12 +4,11 @@ import { Button, CircularProgress, Typography } from '@material-ui/core';
 import fetchIntercept from 'fetch-intercept';
 import jwtDecode from 'jwt-decode';
 import Keycloak from 'keycloak-js';
-import { PropTypes } from 'prop-types';
 import React, {
-  createContext, useContext, useEffect, useLayoutEffect, useMemo,
+  createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo,
 } from 'react';
 import { useMutation } from 'react-query';
-import { Route } from 'react-router-dom';
+import { Route, RouteProps } from 'react-router-dom';
 
 import api from '@/services/api';
 
@@ -127,18 +126,23 @@ AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function Centered({ children }) {
+function Centered({ children }: { children: ReactNode }) {
   return (
     <div className="auth-centered">
       {children}
     </div>
   );
 }
-Centered.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
-function AuthenticatedRoute(props) {
+interface AuthenticatedRouteProps extends Pick<RouteProps, 'component' | 'path'> {
+  /**
+   * if true, only admin users may access this route
+   * @default false
+   */
+  admin?: boolean;
+}
+
+function AuthenticatedRoute(props: AuthenticatedRouteProps) {
   const { admin, component, path } = props;
   const auth = useAuth();
 
@@ -192,12 +196,6 @@ function AuthenticatedRoute(props) {
     <Route component={component} path={path} />
   );
 }
-
-AuthenticatedRoute.propTypes = {
-  component: PropTypes.object.isRequired,
-  path: PropTypes.string.isRequired,
-  admin: PropTypes.bool,
-};
 
 AuthenticatedRoute.defaultProps = {
   admin: false,

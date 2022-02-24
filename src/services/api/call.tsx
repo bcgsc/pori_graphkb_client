@@ -8,15 +8,23 @@ import {
   RecordExistsError,
 } from '../errors';
 
+export interface RequestCallOptions {
+  /** always return a list for succesful requests */
+  forceListReturn?: boolean;
+  forceRecordReturn?: boolean;
+}
+
 /**
  * Sends request to server, appending all global headers and handling responses and errors.
- * @param {string} endpoint - URL endpoint
- * @param {Object} init - Request properties.
- * @param {Object} requestOptions - options to be passed to the Request contstructor
- * @param {object} callOptions - other options
- * @param {object} callOptions.forceListReturn - always return a list for succesful requests
  */
-async function request(endpoint, requestOptions, callOptions) {
+async function request(
+  /** URL endpoint */
+  endpoint: string,
+  /** Request properties. */
+  requestOptions: RequestInit,
+  /** options to be passed to the Request for succesful requests */
+  callOptions?: RequestCallOptions
+) {
   if (
     requestOptions.method !== 'GET'
     && !['/query', '/parse', '/token'].includes(endpoint)

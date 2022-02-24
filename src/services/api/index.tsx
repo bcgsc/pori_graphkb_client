@@ -7,7 +7,7 @@ import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
 
-import { request } from './call';
+import { request, RequestCallOptions } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
@@ -29,10 +29,10 @@ const MAX_SUGGESTIONS = 50;
 
 /**
  * Sends PATCH request to api.
- * @param {string} endpoint - URL endpoint.
+ * @param endpoint - URL endpoint.
  * @param {Object} payload - PATCH payload.
  */
-const patch = (endpoint, payload, callOptions) => {
+const patch = (endpoint: string, payload: Record<string, unknown>, callOptions?: RequestCallOptions) => {
   // strip out the display name to have it force-regenerate
   const { displayName, ...changes } = payload;
   const init = {
@@ -46,7 +46,7 @@ const patch = (endpoint, payload, callOptions) => {
  * Sends GET request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const get = (endpoint, callOptions) => {
+const get = (endpoint: string, callOptions?: RequestCallOptions) => {
   const init = {
     method: 'GET',
   };
@@ -58,7 +58,7 @@ const get = (endpoint, callOptions) => {
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-const post = (endpoint, payload, callOptions) => {
+const post = (endpoint: string, payload: Record<string, unknown>, callOptions?: RequestCallOptions) => {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),
@@ -70,7 +70,7 @@ const post = (endpoint, payload, callOptions) => {
  * Sends DELETE request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const del = (endpoint, callOptions) => {
+const del = (endpoint: string, callOptions?: RequestCallOptions) => {
   const init = {
     method: 'DELETE',
   };
@@ -83,7 +83,7 @@ const del = (endpoint, callOptions) => {
  * @returns the function to retrieve the query request body based on some input text
  */
 const getDefaultSuggestionQueryBody = (model) => (textInput) => {
-  let body = {};
+  let body: Record<string, unknown> = {};
 
   if (kbSchema.util.looksLikeRID(textInput)) {
     body = {
@@ -114,7 +114,7 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
  * generated at the top of dataview
  */
 const encodeQueryComplexToSearch = (content, modelName = 'V') => {
-  const payload = {};
+  const payload: Record<string, unknown> = {};
   payload['@class'] = modelName;
 
   if (content) {

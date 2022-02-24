@@ -34,7 +34,7 @@ const DEFAULT_CUTOFF = 25;
  * 'null' if the value is null or undefined.
  * @param {any} obj - Object to be formatted.
  */
-const castToExist = (obj) => {
+const castToExist = (obj: unknown): string | undefined => {
   if (Array.isArray(obj)) {
     if (obj.length > 0) {
       return obj.join(', ');
@@ -47,7 +47,7 @@ const castToExist = (obj) => {
       return (
         (typeof v !== 'object' || typeof v !== 'function')
         && !k.startsWith('@'));
-    })[1].toString();
+    }).[1].toString();
   }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };
@@ -56,12 +56,9 @@ const castToExist = (obj) => {
  * Parses a string and capitalizes known acronyms.
  * @param {string | Array.<string>} str - String to be parsed.
  */
-const parseAcronyms = (str) => {
-  let words = str;
+const parseAcronyms = (str: string | string[]) => {
+  let words = !Array.isArray(str) ? str.split(' ') : str;
 
-  if (!Array.isArray(str)) {
-    words = str.split(' ');
-  }
   ACRONYMS.forEach((acronym) => {
     const re = new RegExp(`^${acronym}*$`, 'ig');
     words.forEach((word, i) => {
@@ -87,9 +84,9 @@ const shortenString = (str, cutoff = DEFAULT_CUTOFF) => {
  * @example
  * > anticamelCase('genomeScience')
  * > 'Genome Science'
- * @param {string} str - camelCase'd string.
+ * @param str - camelCase'd string.
  */
-const antiCamelCase = (str) => {
+const antiCamelCase = (str: string): string => {
   let accstr = str.toString();
   if (accstr.startsWith('@')) accstr = accstr.slice(1);
   let words = [accstr];
@@ -107,7 +104,7 @@ const antiCamelCase = (str) => {
       array.push(word);
     }
     return array;
-  }, []);
+  }, [] as string[]);
 
   accstr = parseAcronyms(words).trim();
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);
@@ -115,9 +112,9 @@ const antiCamelCase = (str) => {
 
 /**
  * Infers the KB type string of a JS object.
- * @param {any} obj - input object.
+ * @param obj - input object.
  */
-const parseKBType = (obj) => {
+const parseKBType = (obj: unknown): string => {
   if (typeof obj === 'number') {
     if (Number.isInteger(obj)) {
       return 'integer';
@@ -138,9 +135,9 @@ const parseKBType = (obj) => {
 
 /**
  * Capitalizes sentences in input string.
- * @param {string} str - input string.
+ * @param str - input string.
  */
-const formatStr = (str) => {
+const formatStr = (str: string): string => {
   const newSentence = /\.\s\w/g;
   const ret = parseAcronyms(castToExist(str))
     .trim()
@@ -151,13 +148,13 @@ const formatStr = (str) => {
 /**
  * Expands edges to field property names, with either 'in_' or 'out_'
  * appended to them.
- * @param {Array.<string>} edges - list of edge classes.
+ * @param edges - list of edge classes.
  */
-const expandEdges = (edges) => edges.reduce((r, edge) => {
+const expandEdges = (edges: string[]): string[] => edges.reduce((r, edge) => {
   r.push(`in_${edge}`);
   r.push(`out_${edge}`);
   return r;
-}, []);
+}, [] as string[]);
 
 /**
  * Returns the plaintext representation of a value in order to be loaded into
@@ -165,7 +162,7 @@ const expandEdges = (edges) => edges.reduce((r, edge) => {
  * @param {any} value - Value
  * @param {string} key - Object Key.
  */
-const getTSVRepresentation = (value, key) => {
+const getTSVRepresentation = (value: unknown, key: string) => {
   if (typeof value !== 'object') {
     return (value || '').toString().replace(/[\r\n\t]/g, ' ');
   }
@@ -239,7 +236,7 @@ const flatten = (obj) => {
  * @param {boolean} [isQuery=false] - If true, object will be flattened in order to be
  * passed to qs.stringify.
  */
-const parsePayload = (form, properties = null, extraProps = [], isQuery = false) => {
+const parsePayload = (form, properties: unknown[] | null = null, extraProps: string[] = [], isQuery = false) => {
   const payload = properties ? {} : form;
 
   if (properties) {
@@ -337,7 +334,7 @@ const positionInit = (x, y, i, n) => {
  * Parses permission value and converts to binary representation as a bit
  * array, LSD at index 0.
  *
- * @param {number} permissionValue - Permission value as a decimal value.
+ * @param permissionValue - Permission value as a decimal value.
  *
  * @example
  * >parsePermission(7)
@@ -347,7 +344,7 @@ const positionInit = (x, y, i, n) => {
  * >parsePermission(8)
  * [0, 0, 0, 1]
  */
-const parsePermission = (permissionValue) => {
+const parsePermission = (permissionValue: number): number[] => {
   let pv = permissionValue;
   const retstr = [0, 0, 0, 0];
 
@@ -365,15 +362,15 @@ const parsePermission = (permissionValue) => {
  * @param {Object} kbClass - Knowledgebase class object as defined in the schema.
  * @param {string} type - KB class type.
  */
-const getPropOfType = (kbClass, type) => Object.values(kbClass)
+const getPropOfType = (kbClass, type: string) => Object.values(kbClass)
   .filter((prop) => prop.type === type);
 
 /**
  * Sorting method to pass into Array.sort().
- * @param {Array.<string>} [order=[]] - order for props to be sorted in.
- * @param {string} [prop='name'] - nested property to sort objects by.
+ * @param order - order for props to be sorted in.
+ * @param prop - nested property to sort objects by.
  */
-const sortFields = (order = [], prop = 'name') => (a, b) => {
+const sortFields = (order: string[] = [], prop = 'name') => (a, b) => {
   const sortA = prop ? a[prop] : a;
   const sortB = prop ? b[prop] : b;
 
@@ -445,7 +442,7 @@ const massageRecordExistsError = (error) => {
   return message;
 };
 
-const hashRecordsByRID = (data) => {
+function hashRecordsByRID<Obj extends {'@rid': string }>(data: Obj[]) {
   const newData = {};
   data.forEach((obj) => {
     if (obj) {

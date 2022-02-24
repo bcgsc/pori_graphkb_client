@@ -7,7 +7,7 @@ const {
   TABLE_DEFAULT_NEIGHBORS,
 } = config;
 
-const buildLooseSearch = (cls, name) => ({
+const buildLooseSearch = (cls: string, name: string) => ({
   queryType: 'similarTo',
   target: {
     target: cls,

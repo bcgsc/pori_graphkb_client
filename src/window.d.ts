@@ -7,6 +7,8 @@ declare global {
       KEYCLOAK_ROLE: string;
       CONTACT_EMAIL: string;
       CONTACT_TICKET_URL: string;
+      IS_DEMO: string;
+      API_BASE_URL: string;
     }
   }
 }

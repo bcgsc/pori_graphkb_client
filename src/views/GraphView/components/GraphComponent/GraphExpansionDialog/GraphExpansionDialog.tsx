@@ -13,21 +13,46 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import schema from '@/services/schema';
 
+interface GraphExpansionDialogProps {
+  /** handler for user clicking away or cancelling. */
+  onClose: (...args: unknown[]) => void;
+  /** handler for confirming expansion. */
+  onExpand: React.ComponentProps<typeof Button>['onClick'];
+  /** toggles staged/unstaged state for a single
+ * edge. */
+  onStage(rid: string): void;
+  /** toggles selecting all/none of staged
+ * edges. */
+  onStageAll: React.ComponentProps<typeof ListItem>['onClick'];
+  /** toggles staged/unstaged state for edges
+ * of a single class. */
+  onStageClass: (edge: unknown) => React.ComponentProps<typeof Button>['onClick'];
+  /** Dialog open state */
+  open: boolean;
+  /** list of edge RID's that will be
+ * excluded in node expansion. (unstaged) */
+  expandExclusions?: string[];
+  /** list of all currently rendered graph
+ * links. */
+  links?: unknown[];
+  /** Graph node staged for expansion. */
+  node?: object;
+}
+
 /**
  * Dialog opened when a user attempts to open a heavily connected node.
  */
-function GraphExpansionDialog(props) {
+function GraphExpansionDialog(props: GraphExpansionDialogProps) {
   const {
     node,
     open,
     onClose,
-    links,
-    expandExclusions,
+    links = [],
+    expandExclusions = [],
     onExpand,
     onStageAll,
     onStage,
@@ -136,35 +161,6 @@ function GraphExpansionDialog(props) {
     </Dialog>
   );
 }
-
-/**
- * @namespace
- * @property {Object} node - Graph node staged for expansion.
- * @property {boolean} open - Dialog open state
- * @property {function} onClose - handler for user clicking away or cancelling.
- * @property {Array.<Object>} links - list of all currently rendered graph
- * links.
- * @property {Array.<string>} expandExclusions - list of edge RID's that will be
- * excluded in node expansion. (unstaged)
- * @property {function} onExpand - handler for confirming expansion.
- * @property {function} onStageAll - toggles selecting all/none of staged
- * edges.
- * @property {function} onStage - toggles staged/unstaged state for a single
- * edge.
- * @property {function} onStageClass - toggles staged/unstaged state for edges
- * of a single class.
- */
-GraphExpansionDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onExpand: PropTypes.func.isRequired,
-  onStage: PropTypes.func.isRequired,
-  onStageAll: PropTypes.func.isRequired,
-  onStageClass: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  expandExclusions: PropTypes.arrayOf(PropTypes.string),
-  links: PropTypes.array,
-  node: PropTypes.object,
-};
 
 GraphExpansionDialog.defaultProps = {
   node: null,

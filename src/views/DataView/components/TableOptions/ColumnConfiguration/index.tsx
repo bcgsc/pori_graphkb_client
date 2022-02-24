@@ -10,8 +10,13 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TreeItem from '@material-ui/lab/TreeItem';
 import TreeView from '@material-ui/lab/TreeView';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+
+interface ColumnConfigurationProps {
+  gridRef?: any;
+  isOpen?: boolean;
+  onClose?: React.ComponentProps<typeof Dialog>['onClose'];
+}
 
 /**
  * shows list of checkboxes where each checkbox is a column.
@@ -20,11 +25,12 @@ import React, { useCallback, useEffect, useState } from 'react';
  * columns that are currently visible will already be checked, and clicking a checkbox will swap the visibility of that column.
  * labels for the columns/groups should match those visible in the grid
  */
-const ColumnConfiguration = ({
-  onClose,
-  isOpen,
-  gridRef,
-}) => {
+const ColumnConfiguration = (props: ColumnConfigurationProps) => {
+  const {
+    onClose,
+    isOpen = false,
+    gridRef,
+  } = props;
   const [columns, setColumns] = useState([]);
   const [openCols, setOpenCols] = useState({});
 
@@ -138,12 +144,6 @@ const ColumnConfiguration = ({
     </Dialog>
   );
   return result;
-};
-
-ColumnConfiguration.propTypes = {
-  gridRef: PropTypes.any,
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
 };
 
 ColumnConfiguration.defaultProps = {

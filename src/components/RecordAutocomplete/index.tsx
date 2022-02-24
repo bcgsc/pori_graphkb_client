@@ -3,7 +3,6 @@ import './index.scss';
 import { CircularProgress, ListSubheader, TextField } from '@material-ui/core';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
@@ -48,26 +47,46 @@ const sortByGroup = (a, b) => {
   return 0;
 };
 
+interface RecordAutocompleteProps {
+  /** function to get body of request ot /query endpoint */
+  getQueryBody(...args: unknown[]): unknown;
+  /** the name of the field, used for propgating events */
+  name: string;
+  /** Additional css class name to use on the main select component */
+  className?: string;
+  /** flag to indicate this input is disabled */
+  disabled?: boolean;
+  /** Error message */
+  errorText?: string;
+  helperText?: string;
+  /**  flag to indicate this field accepts multiple records */
+  isMulti?: boolean;
+  /** the label for this form field */
+  label?: string;
+  /**
+   * the minimum length of characters required before the async options handler is called
+   * @default 1
+   */
+  minSearchLength?: number;
+  /** the parent handler function */
+  onChange?(...args: unknown[]): unknown;
+  /**
+   * the text placeholder for the search box
+   * @default 'Search Records by Name or ID'
+   */
+  placeholder?: string;
+  /** flag to indicate that this field must be filled */
+  required?: boolean;
+  /** load the initial options and do not requery */
+  singleLoad?: boolean;
+  /** the initial selected value(s) */
+  value?: object | object[];
+}
+
 /**
   * Autocomplete dropdown component for inputs which take 1 or multiple records as input
-  *
-  * @property {object} props
-  * @property {boolean} props.disabled flag to indicate this input is disabled
-  * @property {boolean} props.isMulti flag to indicate this field accepts multiple records
-  * @property {boolean} props.required flag to indicate that this field must be filled
-  * @property {function} props.itemToString function to convert option objects to display label
-  * @property {function} props.onChange the parent handler function
-  * @property {Number} props.minSearchLength the minimum length of characters required before the async options handler is called
-  * @property {object|Array.<object>} props.value the initial selected value(s)
-  * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
-  * @property {string} props.className Additional css class name to use on the main select component
-  * @property {string} props.errorText Error message
-  * @property {string} props.label the label for this form field
-  * @property {string} props.name the name of the field, used for propgating events
-  * @property {string} props.placeholder the text placeholder for the search box
-  * @property {boolean} props.singleLoad load the initial options and do not requery
   */
-function RecordAutocomplete(props) {
+function RecordAutocomplete(props: RecordAutocompleteProps) {
   const {
     className,
     disabled,
@@ -278,23 +297,6 @@ function RecordAutocomplete(props) {
     />
   );
 }
-
-RecordAutocomplete.propTypes = {
-  getQueryBody: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  errorText: PropTypes.string,
-  helperText: PropTypes.string,
-  isMulti: PropTypes.bool,
-  label: PropTypes.string,
-  minSearchLength: PropTypes.number,
-  onChange: PropTypes.func,
-  placeholder: PropTypes.string,
-  required: PropTypes.bool,
-  singleLoad: PropTypes.bool,
-  value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
-};
 
 RecordAutocomplete.defaultProps = {
   className: '',

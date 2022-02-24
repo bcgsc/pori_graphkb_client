@@ -7,7 +7,6 @@ import './index.scss';
 
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 
@@ -26,16 +25,15 @@ const isReversed = (nodeId, { out: src, in: tgt }) => {
   return false;
 };
 
+interface EdgeTableProps {
+  recordId: string;
+}
+
 /**
- * Given some source node, summarizes the related nodes by their relationship class
- * and the node they are related to
- *
- * @param {object} props
- * @param {function} props.itemToKey the function to create a uique key for each edge record
- * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
- * @param {Array.<object>} props.values the edge records
- */
-function EdgeTable({ recordId }) {
+  * Given some source node, summarizes the related nodes by their relationship class
+  * and the node they are related to
+  */
+function EdgeTable({ recordId }: EdgeTableProps) {
   const grid = useGrid();
 
   const { data: edges, isFetching } = useQuery(
@@ -84,7 +82,7 @@ function EdgeTable({ recordId }) {
     }
   }, [edges, grid.ref, isFetching]);
 
-  const renderCellRenderer = ({ value: cellValue }) => (<RecordIdLink {...cellValue} />); // eslint-disable-line react/prop-types
+  const renderCellRenderer = ({ value: cellValue }) => (<RecordIdLink {...cellValue} />);
 
   if (!isFetching && (!edges || edges.length === 0)) {
     return null;
@@ -136,9 +134,5 @@ function EdgeTable({ recordId }) {
     </div>
   );
 }
-
-EdgeTable.propTypes = {
-  recordId: PropTypes.string.isRequired,
-};
 
 export default EdgeTable;

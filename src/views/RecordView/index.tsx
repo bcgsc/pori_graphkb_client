@@ -3,17 +3,16 @@ import './index.scss';
 import {
   CircularProgress,
 } from '@material-ui/core';
-import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
-import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
 import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
@@ -45,7 +44,19 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   return schema.getModel(defaultModelName || 'V').name;
 };
 
-function RecordView(props) {
+interface RecordViewProps {
+  history: RouteComponentProps['history'];
+  match: {
+    path?: string,
+    params?: {
+      rid?: string,
+      modelName?: string,
+      variant?: string
+    }
+  };
+}
+
+function RecordView(props: RecordViewProps) {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
 
   const [modelName, setModelName] = useState(modelNameParam || '');
@@ -171,17 +182,5 @@ function RecordView(props) {
     />
   );
 }
-
-RecordView.propTypes = {
-  history: HistoryPropType.isRequired,
-  match: propTypes.shape({
-    path: propTypes.string,
-    params: propTypes.shape({
-      rid: propTypes.string,
-      modelName: propTypes.string,
-      variant: propTypes.string,
-    }),
-  }).isRequired,
-};
 
 export default RecordView;

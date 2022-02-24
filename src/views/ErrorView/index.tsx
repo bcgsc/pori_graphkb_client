@@ -7,11 +7,16 @@ import './index.scss';
 import { Button, Tooltip, Typography } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { copy } from 'copy-to-clipboard';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function EmailReportError(props) {
+interface EmailReportErrorProps {
+  body: string;
+  linkText: string;
+  subject: string;
+}
+
+function EmailReportError(props: EmailReportErrorProps) {
   const { linkText, body, subject } = props;
   return (
     <a href={`mailto:${
@@ -26,12 +31,6 @@ function EmailReportError(props) {
     </a>
   );
 }
-
-EmailReportError.propTypes = {
-  body: PropTypes.string.isRequired,
-  linkText: PropTypes.string.isRequired,
-  subject: PropTypes.string.isRequired,
-};
 
 /**
  * View for displaying uncaught error messages.

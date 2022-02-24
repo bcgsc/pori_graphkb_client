@@ -4,7 +4,6 @@
 
 import './GraphLinkDisplay.scss';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import config from '@/static/config';
@@ -16,13 +15,34 @@ const FADED_OPACITY = 0.4;
 const START_OFFSET = '20%';
 
 const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
+interface GraphLinkDisplayProps {
+  /** Graph link object. */
+  link: object;
+  /** Node decorator object. */
+  actionsNode?: object;
+  /**
+   * color of link. CSS color syntax(es).
+   * @default '#999'
+   */
+  color?: string;
+  /** Node currently opened in detail drawer. */
+  detail?: object;
+  /** current filter string value. */
+  filter?: string;
+  /** handler for clicking link. */
+  handleClick?: React.MouseEventHandler<SVGPathElement | SVGTextElement>;
+  /** property to label link by. */
+  labelKey?: string;
+  /** SVG end marker identifier. */
+  marker?: string;
+}
 
 /**
- * Display component for graph link objects. Rendered as a straight link from a
- * source node to a target. With an arrow marker on the end, hovering just
- * outside the target node bounds.
- */
-function GraphLinkDisplay(props) {
+  * Display component for graph link objects. Rendered as a straight link from a
+  * source node to a target. With an arrow marker on the end, hovering just
+  * outside the target node bounds.
+  */
+function GraphLinkDisplay(props: GraphLinkDisplayProps) {
   const {
     link,
     color,
@@ -53,11 +73,11 @@ function GraphLinkDisplay(props) {
   }
 
   const faded = (detail && detail['@rid'] !== link.data['@rid'])
-    || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
-    || (filter && !label.includes(filter.toLowerCase()));
+     || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
+     || (filter && !label.includes(filter.toLowerCase()));
   const bold = (detail && detail['@rid'] === link.data['@rid'])
-    || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
-    || (filter && label.includes(filter.toLowerCase()));
+     || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
+     || (filter && label.includes(filter.toLowerCase()));
 
   let opacity = DEFAULT_OPACITY;
 
@@ -108,47 +128,25 @@ function GraphLinkDisplay(props) {
         style={{ opacity, strokeOpacity: opacity }}
       />
       {labelKey && (
-        <text
-          className="link-label"
-          fill={color}
-          onClick={handleClick}
-          opacity={opacity}
+      <text
+        className="link-label"
+        fill={color}
+        onClick={handleClick}
+        opacity={opacity}
+      >
+        <textPath
+          baselineShift={LABEL_BASELINE_SHIFT}
+          href={`#link${link.data['@rid']}`}
+          side={left ? 'left' : 'right'}
+          startOffset={START_OFFSET}
         >
-          <textPath
-            baselineShift={LABEL_BASELINE_SHIFT}
-            href={`#link${link.data['@rid']}`}
-            side={left ? 'left' : 'right'}
-            startOffset={START_OFFSET}
-          >
-            {label}
-          </textPath>
-        </text>
+          {label}
+        </textPath>
+      </text>
       )}
     </g>
   );
 }
-
-/**
- * @namespace
- * @property {Object} link - Graph link object.
- * @property {Object} detail - Node currently opened in detail drawer.
- * @property {string} labelKey - property to label link by.
- * @property {string} color - color of link. CSS color syntax(es).
- * @property {function} handleClick - handler for clicking link.
- * @property {Object} actionsNode - Node decorator object.
- * @property {string} marker - SVG end marker identifier.
- * @property {string} filter - current filter string value.
- */
-GraphLinkDisplay.propTypes = {
-  link: PropTypes.object.isRequired,
-  actionsNode: PropTypes.object,
-  color: PropTypes.string,
-  detail: PropTypes.object,
-  filter: PropTypes.string,
-  handleClick: PropTypes.func,
-  labelKey: PropTypes.string,
-  marker: PropTypes.string,
-};
 
 GraphLinkDisplay.defaultProps = {
   detail: null,

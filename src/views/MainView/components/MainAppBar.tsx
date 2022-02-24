@@ -14,7 +14,6 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
-import PropTypes from 'prop-types';
 import React, {
   useRef,
   useState,
@@ -27,9 +26,18 @@ import { useAuth } from '@/components/Auth';
 
 import MenuLink from './MenuLink';
 
-function MainAppBar({
-  onDrawerChange, drawerOpen, onLinkChange,
-}) {
+interface MainAppBarProps {
+  onDrawerChange: (isOpen: boolean) => void;
+  onLinkChange: (arg: { isOpen: boolean, activeLink: string }) => void;
+  drawerOpen?: boolean;
+}
+
+function MainAppBar(props: MainAppBarProps) {
+  const {
+    onDrawerChange,
+    drawerOpen = false,
+    onLinkChange,
+  } = props;
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
   const auth = useAuth();
 
@@ -129,12 +137,6 @@ function MainAppBar({
     </AppBar>
   );
 }
-
-MainAppBar.propTypes = {
-  onDrawerChange: PropTypes.func.isRequired,
-  onLinkChange: PropTypes.func.isRequired,
-  drawerOpen: PropTypes.bool,
-};
 
 MainAppBar.defaultProps = {
   drawerOpen: false,

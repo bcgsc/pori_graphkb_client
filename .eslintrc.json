@@ -80,14 +80,6 @@
         "react-hooks/exhaustive-deps": "warn",
         "react-hooks/rules-of-hooks": "error",
         "react/destructuring-assignment": "warn",
-        "react/forbid-prop-types": [
-            "warn",
-            {
-                "checkChildContextTypes": false,
-                "checkContextTypes": false,
-                "forbid": []
-            }
-        ],
         "react/jsx-sort-props": [
             "error",
             {
@@ -99,16 +91,6 @@
                 "reservedFirst": [
                     "key"
                 ]
-            }
-        ],
-        "react/sort-prop-types": [
-            "error",
-            {
-                "callbacksLast": false,
-                "ignoreCase": false,
-                "requiredFirst": true,
-                "sortShapeProp": false,
-                "noSortAlphabetically": false
             }
         ],
         "react/jsx-one-expression-per-line": "off",

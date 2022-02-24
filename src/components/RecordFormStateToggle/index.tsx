@@ -4,28 +4,42 @@ import EditIcon from '@material-ui/icons/Create';
 import GraphIcon from '@material-ui/icons/Timeline';
 import ViewIcon from '@material-ui/icons/Visibility';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
 
+type VariantName = 'view' | 'edit' | 'graph';
+
+interface RecordFormStateToggleProps {
+  /** if true, edit button is shown */
+  allowEdit?: boolean;
+  /**
+   * message displayed in confirmation dialog
+   * @default 'Are you sure?'
+   */
+  message?: string;
+  /** parent handler function to toggle states */
+  onClick?: (nextVariant: VariantName) => void;
+  /** flag to check whether confirmation is needed */
+  requireConfirm?: boolean;
+  /**
+   * starting variant value
+   * @default 'view'
+   */
+  value?: VariantName;
+}
+
 /**
  * Toggle Button Navigation to switch between modes or settings.
- *
- * @property {object} props
- * @property {function} props.onClick parent handler function to toggle states
- * @property {bool} props.allowEdit if true, edit button is shown
- * @property {bool} props.requireConfirm flag to check whether confirmation is needed
- * @property {string} props.message message displayed in confirmation dialog
- * @property {string} props.value starting variant value
  */
-function RecordFormStateToggle({
-  onClick,
-  requireConfirm,
-  message,
-  value: inputValue,
-  allowEdit,
-}) {
+function RecordFormStateToggle(props: RecordFormStateToggleProps) {
+  const {
+    onClick = () => {},
+    requireConfirm,
+    message = 'Are you sure?',
+    value: inputValue = 'view',
+    allowEdit,
+  } = props;
   const [value, setValue] = useState(inputValue);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -100,14 +114,6 @@ function RecordFormStateToggle({
     </>
   );
 }
-
-RecordFormStateToggle.propTypes = {
-  allowEdit: PropTypes.bool,
-  message: PropTypes.string,
-  onClick: PropTypes.func,
-  requireConfirm: PropTypes.bool,
-  value: PropTypes.oneOf(['view', 'edit', 'graph']),
-};
 
 RecordFormStateToggle.defaultProps = {
   onClick: () => {},

@@ -1,11 +1,20 @@
 import './index.scss';
 
 import { OpenInNew } from '@material-ui/icons';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function RecordIdLink({ recordId, recordClass }) {
+interface RecordIdLinkProps {
+  recordClass: string;
+  recordId: string;
+}
+
+function RecordIdLink(props: RecordIdLinkProps) {
+  const {
+    recordId,
+    recordClass,
+  } = props;
+
   if (!recordId || !recordClass) {
     return null;
   }
@@ -28,10 +37,5 @@ function RecordIdLink({ recordId, recordClass }) {
     </Link>
   );
 }
-
-RecordIdLink.propTypes = {
-  recordClass: PropTypes.string.isRequired,
-  recordId: PropTypes.string.isRequired,
-};
 
 export default RecordIdLink;

@@ -9,13 +9,13 @@ import {
 import { Timeline as TimelineIcon } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
   useState,
 } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';
@@ -97,7 +97,11 @@ const ROOT_TERM_MAPPING = {
 
 const DEBOUNCE_MS = 100;
 
-function MatchView(props) {
+interface MatchViewProps {
+  history: RouteComponentProps['history'];
+}
+
+function MatchView(props: MatchViewProps) {
   const { history } = props;
   const snackbar = useSnackbar();
   const [text, setText] = useState('');
@@ -261,9 +265,5 @@ function MatchView(props) {
     </div>
   );
 }
-
-MatchView.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default MatchView;

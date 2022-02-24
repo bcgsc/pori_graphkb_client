@@ -8,7 +8,6 @@ import {
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
@@ -20,7 +19,7 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -29,6 +28,17 @@ import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
+
+interface StatementFormProps {
+  navigateToGraph: (...args: unknown[]) => unknown;
+  title: string;
+  onError?: (arg: { error: unknown, content: unknown }) => void;
+  onSubmit?: (formContent?: unknown) => void;
+  onTopClick?: (formContent: unknown) => void;
+  rid?: string;
+  value?: GeneralRecordType;
+  variant?: string;
+}
 
 /**
  * Form/View that displays the contents of a single node
@@ -40,16 +50,17 @@ const FIELD_EXCLUSIONS = ['groupRestrictions'];
  * @property {value} props.value values of individual properties of passed class model
  * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
-function StatementForm({
-  value: initialValue,
-  title,
-  onTopClick,
-  onSubmit,
-  onError,
-  variant,
-  navigateToGraph,
-  ...rest
-}) {
+function StatementForm(props: StatementFormProps) {
+  const {
+    value: initialValue = {},
+    title,
+    onTopClick,
+    onSubmit = () => {},
+    onError = () => {},
+    variant,
+    navigateToGraph,
+    ...rest
+  } = props;
   const { data: diagnosticData } = useQuery(['/query', {
     queryType: 'similarTo',
     target: {
@@ -388,17 +399,6 @@ function StatementForm({
     </Paper>
   );
 }
-
-StatementForm.propTypes = {
-  navigateToGraph: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  onError: PropTypes.func,
-  onSubmit: PropTypes.func,
-  onTopClick: PropTypes.func,
-  rid: PropTypes.string,
-  value: GeneralRecordPropType,
-  variant: PropTypes.string,
-};
 
 StatementForm.defaultProps = {
   onError: () => {},

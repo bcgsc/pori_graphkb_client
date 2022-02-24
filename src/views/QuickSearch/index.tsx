@@ -14,8 +14,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import api from '@/services/api';
 
@@ -25,10 +25,8 @@ const MIN_WORD_LENGTH = 3;
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
- *
- * @property {Object} props.history - Application routing history object.
  */
-function QuickSearch({ history }) {
+function QuickSearch({ history }: RouteComponentProps) {
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -181,9 +179,5 @@ function QuickSearch({ history }) {
     </div>
   );
 }
-
-QuickSearch.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default QuickSearch;

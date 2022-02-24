@@ -1,10 +1,20 @@
 import { titleCase } from 'change-case';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import SentencePreview from '.';
 
-function EdgeSentence({ srcRecord, tgtRecord, type }) {
+interface EdgeSentenceProps {
+  type: string;
+  srcRecord?: object | null;
+  tgtRecord?: object | null;
+}
+
+function EdgeSentence(props: EdgeSentenceProps) {
+  const {
+    srcRecord,
+    tgtRecord,
+    type,
+  } = props;
   let edgeType = titleCase(type);
 
   if (edgeType.endsWith('Of')) {
@@ -37,12 +47,6 @@ function EdgeSentence({ srcRecord, tgtRecord, type }) {
     />
   );
 }
-
-EdgeSentence.propTypes = {
-  type: PropTypes.string.isRequired,
-  srcRecord: PropTypes.object,
-  tgtRecord: PropTypes.object,
-};
 
 EdgeSentence.defaultProps = {
   srcRecord: null,

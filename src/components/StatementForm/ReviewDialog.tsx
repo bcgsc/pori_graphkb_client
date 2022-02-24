@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
@@ -21,14 +20,23 @@ import schema from '@/services/schema';
 
 const MODEL_NAME = 'StatementReview';
 
+interface AddReviewDialogProps {
+  onClose: () => void;
+  onSubmit: (content: object, updateAmalgamated: boolean) => void;
+  isOpen?: boolean;
+}
+
 /**
  * Form/View that displays the contents of a single node
  *
  * @property {function} props.onClose parent handler
  */
-function AddReviewDialog({
-  onSubmit, isOpen, onClose,
-}) {
+function AddReviewDialog(props: AddReviewDialogProps) {
+  const {
+    onSubmit,
+    isOpen = false,
+    onClose,
+  } = props;
   const snackbar = useSnackbar();
   const auth = useAuth();
   const { comment, status } = schema.get(MODEL_NAME).properties;
@@ -110,12 +118,6 @@ function AddReviewDialog({
     </Dialog>
   );
 }
-
-AddReviewDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool,
-};
 
 AddReviewDialog.defaultProps = {
   isOpen: false,

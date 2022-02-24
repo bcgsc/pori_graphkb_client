@@ -1,10 +1,9 @@
 import './index.scss';
 
 import { Typography } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
 
-const chunkSentence = (sentence, words) => {
+const chunkSentence = (sentence: string, words: string[]) => {
   const chunksMap = new Map();
 
   words.forEach((word) => {
@@ -65,12 +64,19 @@ const chunkSentence = (sentence, words) => {
   return chunks;
 };
 
-/**
- * @param {Object} props
- * @param {string} props.content the sentence
- * @param {Array.<string>} props.highlighted list of words to emphasize from the sentence
- */
-function SentencePreview({ content, highlighted }) {
+interface SentencePreviewProps {
+  /** the sentence */
+  content: string;
+  /** list of words to emphasize from the sentence */
+  highlighted?: string[];
+}
+
+function SentencePreview(props: SentencePreviewProps) {
+  const {
+    content,
+    highlighted = [],
+  } = props;
+
   if (!content || !content.length) {
     return null;
   }
@@ -91,11 +97,6 @@ function SentencePreview({ content, highlighted }) {
     </Typography>
   );
 }
-
-SentencePreview.propTypes = {
-  content: PropTypes.string.isRequired,
-  highlighted: PropTypes.array,
-};
 
 SentencePreview.defaultProps = {
   highlighted: [],

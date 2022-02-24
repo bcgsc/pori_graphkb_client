@@ -3,7 +3,6 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { useQuery } from 'react-query';
 
@@ -12,12 +11,18 @@ import LetterIcon from '@/components/LetterIcon';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-/**
- * @param {Object} props
- * @param {string} props.name the class model name
- * @param {string} props.description the class description
- */
-function ClassDescription({ name, description }) {
+interface ClassDescriptionProps {
+  /** the class description */
+  description: string;
+  /** the class model name */
+  name: string;
+}
+
+function ClassDescription(props: ClassDescriptionProps) {
+  const {
+    name,
+    description,
+  } = props;
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     ['/query', { target: name, neighbors: 1, limit: 1 }],
     async ({ queryKey: [route, body] }) => {
@@ -80,10 +85,5 @@ function ClassDescription({ name, description }) {
     </React.Fragment>
   );
 }
-
-ClassDescription.propTypes = {
-  description: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-};
 
 export default ClassDescription;

@@ -6,9 +6,9 @@ import {
 } from '@material-ui/core';
 import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 import handleErrorSaveLocation from '@/services/util';
@@ -17,7 +17,7 @@ import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
-function ImportPubmedView(props) {
+function ImportPubmedView(props: RouteComponentProps) {
   const { history } = props;
   const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
@@ -133,9 +133,5 @@ function ImportPubmedView(props) {
     </div>
   );
 }
-
-ImportPubmedView.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default ImportPubmedView;

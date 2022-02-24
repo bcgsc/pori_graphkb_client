@@ -5,7 +5,6 @@ import {
   Paper, Typography,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
@@ -16,7 +15,7 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -28,27 +27,39 @@ import RelatedVariantsTable from './RelatedVariantsTable';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
+interface RecordFormProps {
+  /** redirects to graph view with current record as initial node */
+  navigateToGraph: (...args: unknown[]) => unknown;
+  /** the title for this form */
+  title: string;
+  /** name of class model to be displayed */
+  modelName?: string;
+  onError?: (arg: { error: unknown, content: unknown }) => void;
+  onSubmit?: (formContent?: unknown) => void;
+  onTopClick?: (formContent: unknown) => void;
+  /** the record id of the current record for the form */
+  rid?: string;
+  /** values of individual properties of passed class model */
+  value?: GeneralRecordType;
+  /** the type of NodeForm to create */
+  variant?: string;
+}
+
 /**
  * Form/View that displays the contents of a single node
- *
- * @property {string} props.variant the type of NodeForm to create
- * @property {string} props.rid the record id of the current record for the form
- * @property {string} props.title the title for this form
- * @property {string} props.modelName name of class model to be displayed
- * @property {value} props.value values of individual properties of passed class model
- * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
-function RecordForm({
-  value: initialValue,
-  modelName,
-  title,
-  onTopClick,
-  onSubmit,
-  onError,
-  variant,
-  navigateToGraph,
-  ...rest
-}) {
+function RecordForm(props: RecordFormProps) {
+  const {
+    value: initialValue,
+    modelName,
+    title,
+    onTopClick,
+    onSubmit = () => {},
+    onError = () => {},
+    variant,
+    navigateToGraph,
+    ...rest
+  } = props;
   const snackbar = useSnackbar();
   const auth = useAuth();
 
@@ -280,18 +291,6 @@ function RecordForm({
     </Paper>
   );
 }
-
-RecordForm.propTypes = {
-  navigateToGraph: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  modelName: PropTypes.string,
-  onError: PropTypes.func,
-  onSubmit: PropTypes.func,
-  onTopClick: PropTypes.func,
-  rid: PropTypes.string,
-  value: GeneralRecordPropType,
-  variant: PropTypes.string,
-};
 
 RecordForm.defaultProps = {
   modelName: null,

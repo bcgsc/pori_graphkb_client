@@ -42,6 +42,7 @@ function Timestamp(props: TimestampProps) {
 
 Timestamp.defaultProps = {
   value: '',
+  inputProps: undefined,
 };
 
 export default Timestamp;

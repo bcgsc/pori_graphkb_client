@@ -9,7 +9,6 @@ import { Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { AgGridReact } from 'ag-grid-react';
 import { formatDistanceToNow } from 'date-fns';
-import PropTypes from 'prop-types';
 import React, {
   useEffect, useRef,
 } from 'react';
@@ -22,7 +21,13 @@ import schema from '@/services/schema';
 
 const TWO_WEEK_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
 
-function JumpToRecord({ data }) {
+interface JumpToRecordProps {
+  data: {
+    '@rid': string
+  };
+}
+
+function JumpToRecord({ data }: JumpToRecordProps) {
   return (
     <Link className="activity-view__jump-to-record" target="_blank" to={schema.getLink(data)}>
       <OpenInNewIcon />
@@ -31,21 +36,6 @@ function JumpToRecord({ data }) {
   );
 }
 
-JumpToRecord.propTypes = {
-  data: PropTypes.shape({
-    '@rid': PropTypes.string.isRequired,
-  }).isRequired,
-};
-
-/**
- * Given some source node, summarizes the related nodes by their relationship class
- * and the node they are related to
- *
- * @param {object} props
- * @param {function} props.itemToKey the function to create a uique key for each edge record
- * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
- * @param {Array.<object>} props.values the edge records
- */
 function ActivityView() {
   const grid = useGrid();
 

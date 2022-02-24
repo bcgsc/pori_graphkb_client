@@ -8,7 +8,6 @@ import {
   Stepper,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
@@ -17,16 +16,32 @@ import useObject from '@/components/hooks/useObject';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 
-/**
- * @param {object} props
- * @param {Array.<FormStepWrapper>} children the children of a SteppedForm should be FormStepWrapper elements
- * @param {string} modelName the db class model the form is based on
- * @param {Object.<string,Property>} properties property definitions for the form fields
- * @param {function} onSubmit handler to call on form submission
- */
-function SteppedForm({
-  children, modelName, properties, onSubmit, className, value, formVariant, onDelete,
-}) {
+interface SteppedFormProps {
+  /** the children of a SteppedForm should be FormStepWrapper elements */
+  children: React.ReactNode;
+  /** the db class model the form is based on */
+  modelName: string;
+  onDelete: (formContent: unknown) => void;
+  /** handler to call on form submission */
+  onSubmit: (formContent: unknown) => void;
+  /** property definitions for the form fields */
+  properties: object;
+  className?: string;
+  formVariant?: string;
+  value?: object;
+}
+
+function SteppedForm(props: SteppedFormProps) {
+  const {
+    children,
+    modelName,
+    properties,
+    onSubmit,
+    className,
+    value,
+    formVariant,
+    onDelete,
+  } = props;
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
@@ -123,17 +138,6 @@ function SteppedForm({
     </FormContext.Provider>
   );
 }
-
-SteppedForm.propTypes = {
-  children: PropTypes.node.isRequired,
-  modelName: PropTypes.string.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  properties: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  formVariant: PropTypes.string,
-  value: PropTypes.object,
-};
 
 SteppedForm.defaultProps = {
   className: '',

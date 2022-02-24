@@ -4,10 +4,10 @@ import React, {
   useCallback,
   useEffect, useState,
 } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import ActionButton from '@/components/ActionButton';
 import ModelSelect from '@/components/ModelSelect';
-import { HistoryPropType } from '@/components/types';
 import api from '@/services/api';
 
 import AddFilterGroupButton from './components/AddFilterGroupButton';
@@ -22,7 +22,7 @@ import useFilterGroups from './components/useFilterGroups';
  *
  * @property {object} props.history history router object to navigate to different views
  */
-function AdvancedSearchView({ history }) {
+function AdvancedSearchView({ history }: RouteComponentProps) {
   // set up current model for search
   const [modelName, setModelName] = useState('Statement');
   const {
@@ -99,9 +99,5 @@ function AdvancedSearchView({ history }) {
     </div>
   );
 }
-
-AdvancedSearchView.propTypes = {
-  history: HistoryPropType.isRequired,
-};
 
 export default AdvancedSearchView;

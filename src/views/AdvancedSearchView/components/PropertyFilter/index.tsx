@@ -3,7 +3,6 @@ import './index.scss';
 import {
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -68,15 +67,23 @@ const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, sub
   return options;
 };
 
+interface PropertyFilterProps {
+  /** name of target model of query */
+  modelName: string;
+  onSubmit: (result: unknown) => void;
+  className?: string;
+}
+
 /**
  * Form to choose a filter to add (property, value, operator)
- *
- * @property {string} props.modelName name of target model of query
- * @property {object} props.history history router object to navigate to different views
  */
-function PropertyFilter({
-  modelName, onSubmit, className,
-}) {
+function PropertyFilter(props: PropertyFilterProps) {
+  const {
+    modelName,
+    onSubmit,
+    className,
+  } = props;
+
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState([]);
   const [propertyModel, setPropertyModel] = useState({
@@ -357,12 +364,6 @@ function PropertyFilter({
     </>
   );
 }
-
-PropertyFilter.propTypes = {
-  modelName: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  className: PropTypes.string,
-};
 
 PropertyFilter.defaultProps = {
   className: '',

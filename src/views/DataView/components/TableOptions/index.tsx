@@ -3,7 +3,6 @@ import './index.scss';
 import {
   Popover,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import OptionsMenu from '@/components/OptionsMenu';
@@ -13,12 +12,20 @@ import ColumnConfiguration from './ColumnConfiguration';
 
 const { MAX_EXPORT_SIZE } = config;
 
-const TableOptions = ({
-  onExportToTsv,
-  anchorEl,
-  onClose,
-  gridRef,
-}) => {
+interface TableOptionsProps {
+  anchorEl?: React.ReactElement;
+  gridRef?: any;
+  onClose?: () => void;
+  onExportToTsv?: (arg: false) => void;
+}
+
+const TableOptions = (props: TableOptionsProps) => {
+  const {
+    onExportToTsv = () => {},
+    anchorEl,
+    onClose = () => {},
+    gridRef,
+  } = props;
   const [columnControlIsOpen, setColumnControlIsOpen] = useState(false);
 
   const handleExportAllToTsv = useCallback(() => {
@@ -69,13 +76,6 @@ const TableOptions = ({
     </>
   );
   return result;
-};
-
-TableOptions.propTypes = {
-  anchorEl: PropTypes.element,
-  gridRef: PropTypes.any,
-  onClose: PropTypes.func,
-  onExportToTsv: PropTypes.func,
 };
 
 TableOptions.defaultProps = {

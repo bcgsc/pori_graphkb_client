@@ -3,12 +3,23 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import LetterIcon from '@/components/LetterIcon';
 
-function TableOfContents({ sections, baseRoute }) {
+interface TableOfContentsProps {
+  baseRoute: string;
+  sections: {
+    id: string,
+    label: string
+  }[];
+}
+
+function TableOfContents(props: TableOfContentsProps) {
+  const {
+    sections,
+    baseRoute,
+  } = props;
   return (
     <List>
       {sections.map(({ id, label }) => (
@@ -22,13 +33,5 @@ function TableOfContents({ sections, baseRoute }) {
     </List>
   );
 }
-
-TableOfContents.propTypes = {
-  baseRoute: PropTypes.string.isRequired,
-  sections: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-  })).isRequired,
-};
 
 export default TableOfContents;

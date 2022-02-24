@@ -15,7 +15,6 @@ import * as d3Select from 'd3-selection';
 import * as d3Zoom from 'd3-zoom';
 import isObject from 'lodash.isobject';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -79,24 +78,28 @@ const initialGraphData = {
   graphObjects: {},
 };
 
+interface GraphComponentProps {
+  /** graph data in the format of { '@rid': {data}, ... } */
+  data: object;
+  getRecord: (...args: unknown[]) => unknown;
+  /** Method to handle closing of detail drawer. */
+  handleDetailDrawerClose: () => void;
+  /** Method to handle opening of detail drawer. */
+  handleDetailDrawerOpen: (...args: unknown[]) => void;
+  handleError: (error: unknown) => void;
+  /** record ID of node currently selected for detail viewing. */
+  detail?: object;
+  /** list of valid edge classes. */
+  edgeTypes?: string[];
+  /** parent handler to save state in URL */
+  handleGraphStateSave?: (nodeRIDs: string[]) => void;
+}
+
 /**
- * Component for displaying query results in force directed graph form.
- * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
- *
- * @property {object} props
- * graph object is clicked.
- * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
- * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
- * @property {Object} props.detail - record ID of node currently selected for detail viewing.
- * in the initial query.
- * @property {Object} props.data - graph data in the format of { '@rid': {data}, ... }
- * @property {Array.<string>} props.nodesRIDs - an array of node RIDs to fetch ex. ['#25:0', '#56:9']
- * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
- * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
- * graph.
- * @property {function} props.handleGraphStateSave - parent handler to save state in URL
- */
-function GraphComponent(props) {
+  * Component for displaying query results in force directed graph form.
+  * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
+  */
+function GraphComponent(props: GraphComponentProps) {
   const snackbar = useSnackbar();
   const { data: initialData } = props;
 
@@ -156,7 +159,7 @@ function GraphComponent(props) {
    * node coloring to avoid sending full graph state over limited URL.
    */
   const saveGraphStatetoURL = (graphNodes) => {
-    const { handleGraphStateSave, handleError } = props;
+    const { handleGraphStateSave = () => {}, handleError } = props;
     const withoutStatementData = [];
 
     /* Because properties types like linkset are uni-directional, we need to
@@ -273,7 +276,7 @@ function GraphComponent(props) {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
-    const { edgeTypes } = props;
+    const { edgeTypes = [] } = props;
     let {
       nodes, // eslint-disable-line no-shadow
       links, // eslint-disable-line no-shadow
@@ -923,7 +926,7 @@ function GraphComponent(props) {
    * Removes node and all corresponding edges/links from the graph.
    */
   const handleNodeHide = () => {
-    const { edgeTypes, handleDetailDrawerClose } = props;
+    const { edgeTypes = [], handleDetailDrawerClose } = props;
 
     if (nodes.length === 1) return;
     const i = nodes.indexOf(actionsNode);
@@ -1205,17 +1208,6 @@ function GraphComponent(props) {
     </div>
   );
 }
-
-GraphComponent.propTypes = {
-  data: PropTypes.object.isRequired,
-  getRecord: PropTypes.func.isRequired,
-  handleDetailDrawerClose: PropTypes.func.isRequired,
-  handleDetailDrawerOpen: PropTypes.func.isRequired,
-  handleError: PropTypes.func.isRequired,
-  detail: PropTypes.object,
-  edgeTypes: PropTypes.arrayOf(PropTypes.string),
-  handleGraphStateSave: PropTypes.func,
-};
 
 GraphComponent.defaultProps = {
   detail: null,

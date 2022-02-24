@@ -1,12 +1,12 @@
 import { sentenceTemplates } from '@bcgsc-pori/graphkb-schema';
 import React from 'react';
 
-import { StatementPropType } from '@/components/types';
+import { StatementType } from '@/components/types';
 import schema from '@/services/schema';
 
 import SentencePreview from '.';
 
-function StatementSentence({ content: record }) {
+function StatementSentence({ content: record }: { content?: StatementType }) {
   const { content, highlighted } = sentenceTemplates.generateStatementSentence(schema.schemaDefn, record);
 
   return (
@@ -16,10 +16,6 @@ function StatementSentence({ content: record }) {
     />
   );
 }
-
-StatementSentence.propTypes = {
-  content: StatementPropType,
-};
 
 StatementSentence.defaultProps = {
   content: {},

@@ -10,7 +10,6 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useState,
@@ -18,6 +17,18 @@ import React, {
 
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { FORM_VARIANT } from '@/components/util';
+
+interface AdminTableProps {
+  /** handler to be triggered when data changes */
+  onChange: () => void
+  /** List of records. */
+  records?: object[];
+  /**
+   * the table variant (user or usergroup)
+   * @default 'User'
+   */
+  variant?: 'User' | 'UserGroup';
+}
 
 /**
  * Component for managing AdminView User form state.
@@ -27,7 +38,12 @@ import { FORM_VARIANT } from '@/components/util';
  * @property {Array} props.records List of records.
  * @property {function} props.onChange handler to be triggered when data changes
  */
-function AdminTable({ onChange, records, variant }) {
+function AdminTable(props: AdminTableProps) {
+  const {
+    onChange,
+    records,
+    variant = 'User',
+  } = props;
   const [recordOpen, setRecordOpen] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -113,14 +129,8 @@ function AdminTable({ onChange, records, variant }) {
       <EditIcon />
     </IconButton>
   ), []);
-  Actions.propTypes = {
-    data: PropTypes.object.isRequired,
-  };
 
   const EmailLink = useCallback(({ value: email }) => <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>, []);
-  EmailLink.propTypes = {
-    value: PropTypes.string.isRequired,
-  };
 
   return (
     <div className="admin-table">
@@ -170,12 +180,6 @@ function AdminTable({ onChange, records, variant }) {
     </div>
   );
 }
-
-AdminTable.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  records: PropTypes.arrayOf(PropTypes.object),
-  variant: PropTypes.oneOf(['User', 'UserGroup']),
-};
 
 AdminTable.defaultProps = {
   records: null,

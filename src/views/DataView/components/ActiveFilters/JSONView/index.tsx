@@ -1,29 +1,40 @@
 import './index.scss';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+
+interface IndentProps {
+  indent?: string;
+  level?: number;
+}
 
 /* eslint-disable react/no-array-index-key */
 
-function Indent({ level, indent }) {
+function Indent(props: IndentProps) {
+  const { level = 0, indent = '  ' } = props;
   return <pre className={`json-view__indent json-view__indent--level-${level}`}>{indent.repeat(level)}</pre>;
 }
-
-Indent.propTypes = {
-  indent: PropTypes.string,
-  level: PropTypes.number,
-};
 
 Indent.defaultProps = {
   indent: '  ',
   level: 0,
 };
 
-const DefaultValueComponent = ({ value }) => JSON.stringify(value);
+const DefaultValueComponent: React.FunctionComponent<{ value: unknown }> = ({ value }) => JSON.stringify(value);
 
-function ValueView({
-  name, value, ValueComponent, ...rest
-}) {
+interface ValueViewProps extends IndentProps {
+  value: unknown;
+  ValueComponent?: React.FunctionComponent<{ value: unknown }>;
+  name?: string;
+}
+
+function ValueView(props: ValueViewProps): JSX.Element {
+  const {
+    name,
+    value,
+    ValueComponent = DefaultValueComponent,
+    ...rest
+  } = props;
+
   return (
     <div>
       <Indent {...rest} />
@@ -34,20 +45,27 @@ function ValueView({
   );
 }
 
-ValueView.propTypes = {
-  value: PropTypes.any.isRequired,
-  ValueComponent: PropTypes.func,
-  name: PropTypes.string,
-};
-
 ValueView.defaultProps = {
   name: '',
   ValueComponent: DefaultValueComponent,
+  indent: '  ',
+  level: 0,
 };
 
-function ObjectView({
-  data, level, closingBrace, ...rest
-}) {
+interface ObjectViewProps {
+  data: object;
+  closingBrace?: string;
+  level?: number;
+}
+
+function ObjectView(props: ObjectViewProps): JSX.Element {
+  const {
+    data,
+    level = 0,
+    closingBrace,
+    ...rest
+  } = props;
+
   return (
     <>
       {Object.entries(data).map(([key, value]) => {
@@ -90,20 +108,25 @@ function ObjectView({
   );
 }
 
-ObjectView.propTypes = {
-  data: PropTypes.object.isRequired,
-  closingBrace: PropTypes.string,
-  level: PropTypes.number,
-};
-
 ObjectView.defaultProps = {
   level: 0,
   closingBrace: '}',
 };
 
-function ArrayView({
-  data, level, closingBrace, ...rest
-}) {
+interface ArrayViewProps {
+  data: unknown[];
+  closingBrace?: string;
+  level?: number;
+}
+
+function ArrayView(props: ArrayViewProps): JSX.Element {
+  const {
+    data,
+    level = 0,
+    closingBrace,
+    ...rest
+  } = props;
+
   return (
     <>
       {data.map((value, key) => {
@@ -129,18 +152,12 @@ function ArrayView({
   );
 }
 
-ArrayView.propTypes = {
-  data: PropTypes.array.isRequired,
-  closingBrace: PropTypes.string,
-  level: PropTypes.number,
-};
-
 ArrayView.defaultProps = {
   level: 0,
   closingBrace: ']',
 };
 
-function JSONView(props) {
+function JSONView(props): JSX.Element {
   return (
     <>
       <div><span>{'{'}</span></div>

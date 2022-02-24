@@ -9,7 +9,6 @@ import TreeIcon from '@material-ui/icons/AccountTree';
 import CancelIcon from '@material-ui/icons/Cancel';
 import ShareIcon from '@material-ui/icons/Share';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import LetterIcon from '@/components/LetterIcon';
@@ -17,18 +16,24 @@ import schema from '@/services/schema';
 
 import { DATE_FIELDS } from '../constants';
 
-/**
- * Displays Filter Groups and filter chips.
- *
- * @property {object} filterGroup single filter group with the following format
- * @property {integer} filterGroup.key index or key of filterGroup
- * @property {string} filterGroup.name name of current filterGroup
- * @property {ArrayOf<Filters>} filterGroup.filters array of filters with format {attr, value, operator}
- * @property {function} handleDelete parent handler function to delete filterGroup
- */
-function FilterGroup({
-  name, filters = [], onDelete, onSelect, isSelected, onDeleteFilter,
-}) {
+interface FilterGroupProps {
+  filters: unknown[];
+  name: string;
+  isSelected?: boolean;
+  onDelete?: (name: string) => void;
+  onDeleteFilter?: (filterIndex: number, name: string) => void;
+  onSelect?: React.ComponentProps<typeof LetterIcon>['onClick'];
+}
+
+function FilterGroup(props: FilterGroupProps) {
+  const {
+    name,
+    filters = [],
+    onDelete,
+    onSelect = () => {},
+    isSelected,
+    onDeleteFilter,
+  } = props;
   const handleDeleteFilter = useCallback((filterIndex) => {
     onDeleteFilter(filterIndex, name);
   }, [name, onDeleteFilter]);
@@ -98,15 +103,6 @@ function FilterGroup({
     </Paper>
   );
 }
-
-FilterGroup.propTypes = {
-  filters: PropTypes.array.isRequired,
-  name: PropTypes.string.isRequired,
-  isSelected: PropTypes.bool,
-  onDelete: PropTypes.func,
-  onDeleteFilter: PropTypes.func,
-  onSelect: PropTypes.func,
-};
 
 FilterGroup.defaultProps = {
   isSelected: false,

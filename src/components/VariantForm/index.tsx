@@ -4,7 +4,6 @@ import { schema } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@material-ui/core';
 import omit from 'lodash.omit';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -82,16 +81,25 @@ const pickInputType = (record) => {
   return MAJOR_FORM_TYPES.OTHER;
 };
 
+interface VariantFormProps {
+  /** the handler to be called when the submission throws an error */
+  onError: (arg: { error: unknown, content: unknown }) => void;
+  /** the handler to be called when the form is submitted */
+  onSubmit: (result: unknown | null) => void;
+  formVariant?: string;
+  value?: object;
+}
+
 /**
  * Input form for new Variants
- *
- * @param {object} props
- * @param {function} props.onSubmit the handler to be called when the form is submitted
- * @param {function} props.onError the handler to be called when the submission throws an error
  */
-function VariantForm({
-  onSubmit, onError, value, formVariant,
-}) {
+function VariantForm(props: VariantFormProps) {
+  const {
+    onSubmit,
+    onError,
+    value = {},
+    formVariant,
+  } = props;
   let defaultCoordinateType;
 
   if (value.break1Start) {
@@ -148,7 +156,7 @@ function VariantForm({
       : 'edited';
 
     try {
-      const result = await formVariant === FORM_VARIANT.NEW
+      const result = await (formVariant === FORM_VARIANT.NEW)
         ? api.post(routeName, payload)
         : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
 
@@ -298,13 +306,6 @@ function VariantForm({
     </SteppedForm>
   );
 }
-
-VariantForm.propTypes = {
-  onError: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  formVariant: PropTypes.string,
-  value: PropTypes.object,
-};
 
 VariantForm.defaultProps = {
   value: {},

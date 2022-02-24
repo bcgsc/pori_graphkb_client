@@ -1,15 +1,14 @@
 import './index.scss';
 
-import { Button } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { Button, ButtonProps } from '@material-ui/core';
 import React from 'react';
 
-function AddFilterGroupButton({ onClick }) {
-  return <Button className="add-filter-group" onClick={onClick}>Add New Filter Group</Button>;
+interface AddFilterGroupButtonProps {
+  onClick: NonNullable<ButtonProps['onClick']>;
 }
 
-AddFilterGroupButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
+function AddFilterGroupButton({ onClick }: AddFilterGroupButtonProps) {
+  return <Button className="add-filter-group" onClick={onClick}>Add New Filter Group</Button>;
+}
 
 export default AddFilterGroupButton;

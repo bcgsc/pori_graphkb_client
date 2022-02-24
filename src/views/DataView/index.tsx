@@ -8,7 +8,6 @@ import {
 import Tooltip from '@material-ui/core/Tooltip';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -16,10 +15,10 @@ import React, {
   useState,
 } from 'react';
 import { useIsFetching, useQuery } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
-import { HistoryPropType, LocationPropType } from '@/components/types';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
@@ -109,12 +108,21 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
+interface DataViewProps {
+  history: RouteComponentProps['history'];
+  location: RouteComponentProps['location'];
+  blockSize?: number;
+}
+
 /**
  * Shows the search result filters and an edit button
  */
-function DataView({
-  location: { search: initialSearch }, blockSize, history,
-}) {
+function DataView(props: DataViewProps) {
+  const {
+    location: { search: initialSearch },
+    blockSize = 100,
+    history,
+  } = props;
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
@@ -384,12 +392,6 @@ function DataView({
     </div>
   );
 }
-
-DataView.propTypes = {
-  history: HistoryPropType.isRequired,
-  location: LocationPropType.isRequired,
-  blockSize: PropTypes.number,
-};
 
 DataView.defaultProps = {
   blockSize: 100,

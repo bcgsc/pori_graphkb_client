@@ -22,7 +22,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -53,7 +53,7 @@ const movePropToTop = (properties, propToBeMovedToTop) => {
 interface DetailDrawerProps {
   isEdge?: boolean;
   /** Ontology to be displayed in drawer. */
-  node?: unknown;
+  node?: GeneralRecordType;
   /** Function triggered on @material-ui/Drawer onClose event. */
   onClose?(...args: unknown[]): unknown;
 }

@@ -4,7 +4,6 @@ import {
   MenuItem,
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useState,
 } from 'react';
@@ -14,19 +13,31 @@ import {
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
 
+interface MenuLinkProps {
+  /** text label of navigation link */
+  label: string;
+  /** callback fn for when this item is clicked */
+  onClick: (route: string, arg: string | null) => void;
+  /** link route name */
+  route: string;
+  group?: boolean;
+  icon?: object;
+  /** if true, text will be indented */
+  inset?: boolean;
+}
+
 /**
  * Text link with optional icon to navigate through application
- *
- * @property {string} route link route name
- * @property {string} label text label of navigation link
- * @property {bool} inset if true, text will be indented
- * @property {boolean} topLevel indicates if topLevel link i.e Search, Add
- * @property {function} onClick callback fn for when this item is clicked
- * @property {string} activeLink the current page(link) the user is on
  */
-function MenuLink({
-  route, label, icon, inset, group, onClick,
-}) {
+function MenuLink(props: MenuLinkProps) {
+  const {
+    route,
+    label,
+    icon,
+    inset,
+    group,
+    onClick,
+  } = props;
   const { activeLink, setActiveLink } = useContext(ActiveLinkContext);
   const [isSelected, setIsSelected] = useState(false);
 
@@ -55,15 +66,6 @@ function MenuLink({
     </Link>
   );
 }
-
-MenuLink.propTypes = {
-  label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  route: PropTypes.string.isRequired,
-  group: PropTypes.bool,
-  icon: PropTypes.object,
-  inset: PropTypes.bool,
-};
 
 MenuLink.defaultProps = {
   icon: null,

@@ -5,25 +5,26 @@ import TreeIcon from '@material-ui/icons/AccountTree';
 import HelpIcon from '@material-ui/icons/HelpOutline';
 import ShareIcon from '@material-ui/icons/Share';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import HelpDialog from './HelpDialog';
 
+interface RecordFormStateToggleProps {
+  disabled?: boolean;
+  onChange?: (e: { target: { value: unknown } }) => void;
+  /** starting variant value */
+  value?: '' | 'keyword' | 'tree';
+}
+
 /**
  * Toggle Button Navigation to switch between modes or settings.
- *
- * @property {object} props
- * @property {function} props.onClick parent handler function to toggle states
- * @property {bool} props.requireConfirm flag to check whether confirmation is needed
- * @property {string} props.message message displayed in confirmation dialog
- * @property {string} props.value starting variant value
  */
-function RecordFormStateToggle({
-  onChange,
-  value: inputValue,
-  disabled,
-}) {
+function RecordFormStateToggle(props: RecordFormStateToggleProps) {
+  const {
+    onChange = () => {},
+    value: inputValue,
+    disabled,
+  } = props;
   const [value, setValue] = useState(inputValue);
   const [helpIsOpen, setHelpIsOpen] = useState(false);
 
@@ -80,12 +81,6 @@ function RecordFormStateToggle({
     </div>
   );
 }
-
-RecordFormStateToggle.propTypes = {
-  disabled: PropTypes.bool,
-  onChange: PropTypes.func,
-  value: PropTypes.oneOf(['', 'keyword', 'tree']),
-};
 
 RecordFormStateToggle.defaultProps = {
   onChange: () => {},

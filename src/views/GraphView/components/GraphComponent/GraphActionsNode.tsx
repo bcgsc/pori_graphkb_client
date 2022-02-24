@@ -1,7 +1,3 @@
-/**
- * @module /components/GraphActionsNode
- */
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import config from '@/static/config';
@@ -24,13 +20,26 @@ const ICON_MAP = {
   expand: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z',
 };
 
+interface GraphActionsNodeProps {
+  /** Currently selected object. */
+  actionsNode?: object;
+  /** yes/no flag determining whether selected object is */
+  edge?: boolean;
+  /** List of options, each must be in the form: */
+  options?: {
+    name: string,
+    action?: (...args: unknown[]) => unknown,
+    disabled?: (...args: unknown[]) => boolean
+  }[];
+}
+
 /**
  * Component for displaying ring-shaped panel containing possible actions for
  * selected node. This component handles geometry and rendering ONLY.
  */
-function GraphActionsNode(props) {
+function GraphActionsNode(props: GraphActionsNodeProps) {
   const {
-    options,
+    options = [],
     actionsNode,
     edge,
   } = props;
@@ -119,28 +128,6 @@ function GraphActionsNode(props) {
     </g>
   );
 }
-
-/**
- * @namespace
- * @property {array} options - List of options, each must be in the form:
- *    option: {
- *      name: [string]
- *      action: [(any) => any]
- *      disabled?: [(any) => boolean}
- *    }
- * @property {Object} actionsNode - Currently selected object.
- * @property {boolean} edge - yes/no flag determining whether selected object is
- * an edge or not
- */
-GraphActionsNode.propTypes = {
-  actionsNode: PropTypes.object,
-  edge: PropTypes.bool,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    action: PropTypes.func,
-    disabled: PropTypes.func,
-  })),
-};
 
 GraphActionsNode.defaultProps = {
   options: [],

@@ -25,9 +25,23 @@ const keycloak = Keycloak({
   realm_access: { roles: [window._env_.KEYCLOAK_ROLE] },
 });
 
-const AuthContext = createContext(undefined);
+type AuthContextState = {
+  login: () => void;
+  logout: () => void;
+  isAuthenticating: boolean;
+  error: unknown;
+  authenticationToken?: string;
+  authorizationToken?: string;
+  isAuthenticated?: boolean;
+  isAdmin?: boolean;
+  hasWriteAccess?: boolean;
+  user?: { '@rid': string; name: string; groups: { name: string }[] };
+  username?: string;
+};
 
-const useAuth = () => {
+const AuthContext = createContext<AuthContextState | undefined>(undefined);
+
+const useAuth = (): AuthContextState => {
   const state = useContext(AuthContext);
 
   if (!state) {
@@ -43,7 +57,7 @@ function AuthProvider(props) {
   const {
     mutate: logInOrOut, isLoading: isAuthenticating, data, error,
   } = useMutation(
-    async ({ loggingIn }) => {
+    async ({ loggingIn }: { loggingIn: boolean }) => {
       if (loggingIn) {
         const loggedIn = await keycloak.init({
           checkLoginIframe: false,
@@ -56,7 +70,7 @@ function AuthProvider(props) {
         }
 
         const { kbToken: authorizationToken } = await api.post('/token', { keyCloakToken: keycloak.token });
-        const { user } = jwtDecode(authorizationToken);
+        const { user } = jwtDecode(authorizationToken) as { user: NonNullable<AuthContextState['user']> };
 
         await keycloak.loadUserInfo();
         // eslint-disable-next-line camelcase
@@ -98,7 +112,7 @@ function AuthProvider(props) {
     return unregister;
   }, [authorizationToken]);
 
-  const auth = useMemo(() => ({
+  const auth = useMemo<AuthContextState>(() => ({
     login: () => {
       if (!isAuthenticating) {
         logInOrOut({ loggingIn: true });
@@ -122,9 +136,6 @@ function AuthProvider(props) {
     </AuthContext.Provider>
   );
 }
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 function Centered({ children }: { children: ReactNode }) {
   return (

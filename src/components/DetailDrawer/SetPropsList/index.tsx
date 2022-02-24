@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
@@ -20,8 +19,6 @@ import util from '@/services/util';
 
 /**
    * sorts properties alphabetically by class and then displayname
-   *
-   * @param {Arrayof.<Objects>} value holds an array of Property Models
    */
 const sortProps = (value) => {
   const sortedValues = value.sort((a, b) => {
@@ -33,17 +30,24 @@ const sortProps = (value) => {
   return sortedValues;
 };
 
+interface SetPropsListProps {
+  handleExpand?(...args: unknown[]): unknown;
+  /** props to be displayed for submenu */
+  identifiers?: object[];
+  /** opened dropdowns in drawer */
+  opened?: string[];
+  /** link/embedded property model */
+  prop?: object;
+  /** contains link/embedded records */
+  value?: object;
+}
+
 /**
    * Renders properties that are set types. i.e Embedded set and link set.
-   * @param {PropertyModel} prop link/embedded property model
-   * @param {Arrayof<Objects>}  value contains link/embedded records
-   * @param {Arrayof<string>} opened opened dropdowns in drawer
-   * @param {Arrayof<string>} identifiers props to be displayed for submenu
-   *
    */
-function SetPropsList(props) {
+function SetPropsList(props: SetPropsListProps) {
   const {
-    prop, value, identifiers, opened, handleExpand,
+    prop = {}, value = {}, identifiers = [], opened = [], handleExpand = () => {},
   } = props;
   const { type, name } = prop;
   if (value.length === 0) return null;
@@ -115,14 +119,6 @@ function SetPropsList(props) {
     </React.Fragment>
   );
 }
-
-SetPropsList.propTypes = {
-  handleExpand: PropTypes.func,
-  identifiers: PropTypes.arrayOf(PropTypes.object),
-  opened: PropTypes.arrayOf(PropTypes.string),
-  prop: PropTypes.object,
-  value: PropTypes.object,
-};
 
 SetPropsList.defaultProps = {
   handleExpand: () => {},

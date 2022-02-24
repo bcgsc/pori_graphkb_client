@@ -8,27 +8,35 @@ import {
 } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
+interface LinkEmbeddedPropListProps {
+  /** property formatting function */
+  formatOtherProps(...args: unknown[]): unknown;
+  /** adds prop to opened object and handles expansion */
+  handleExpand?(...args: unknown[]): unknown;
+  /** props to be displayed for submenu */
+  identifiers?: object[];
+  /** is the prop nested */
+  isNested?: boolean;
+  /** opened dropdowns in drawer */
+  opened?: string[];
+  /** link/embedded property model */
+  prop?: object;
+  /** contains link/embedded records */
+  value?: object;
+}
+
 /**
-   * Renders formatted link/embedded props.
-   *
-   * @property {PropertyModel} prop link/embedded property model
-   * @property {bool} isNested is the prop nested
-   * @property {Arrayof<Objects>}  value contains link/embedded records
-   * @property {Arrayof<string>} opened opened dropdowns in drawer
-   * @property {Arrayof<string>} identifiers props to be displayed for submenu
-   * @property {function} formatOtherProps property formatting function
-   * @property {function} handleExpand adds prop to opened object and handles expansion
-   */
-function LinkEmbeddedPropList(props) {
+ * Renders formatted link/embedded props.
+ */
+function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   const {
-    prop, isNested, value, identifiers, handleExpand, formatOtherProps, opened,
+    prop = {}, isNested, value = {}, identifiers = [], handleExpand, formatOtherProps, opened = [],
   } = props;
   const { name, type } = prop;
   let previewStr;
@@ -92,16 +100,6 @@ function LinkEmbeddedPropList(props) {
     </React.Fragment>
   );
 }
-
-LinkEmbeddedPropList.propTypes = {
-  formatOtherProps: PropTypes.func.isRequired,
-  handleExpand: PropTypes.func,
-  identifiers: PropTypes.arrayOf(PropTypes.object),
-  isNested: PropTypes.bool,
-  opened: PropTypes.arrayOf(PropTypes.string),
-  prop: PropTypes.object,
-  value: PropTypes.object,
-};
 
 LinkEmbeddedPropList.defaultProps = {
   handleExpand: () => {},

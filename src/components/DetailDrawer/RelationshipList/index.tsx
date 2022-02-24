@@ -15,22 +15,29 @@ import {
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LinkIcon from '@material-ui/icons/Link';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import schema from '@/services/schema';
 
+interface RelationshipListProps {
+  /** formats metadata properties */
+  formatMetadata(...args: unknown[]): unknown;
+  /** formats non-metadata properties */
+  formatOtherProps(...args: unknown[]): unknown;
+  /** adds link to opened list */
+  handleLinkExpand(...args: unknown[]): unknown;
+  /** edge record opened */
+  linkOpen?: object;
+  /** Record being displayed. */
+  record?: object;
+}
+
 /**
    * Formats record relationships.
-   * @property {Object} record - Record being displayed.
-   * @property {Object} linkOpen - edge record opened
-   * @property {function} handleLinkExpand - adds link to opened list
-   * @property {function} formatMetadata - formats metadata properties
-   * @property {function} formatOtherProps - formats non-metadata properties
    */
-function RelationshipList(props) {
+function RelationshipList(props: RelationshipListProps) {
   const {
-    linkOpen, record, handleLinkExpand, formatMetadata, formatOtherProps,
+    linkOpen, record = {}, handleLinkExpand, formatMetadata, formatOtherProps,
   } = props;
   // Checks subclasses
   const edges = schema.getEdges(record);
@@ -100,14 +107,6 @@ function RelationshipList(props) {
     </List>
   );
 }
-
-RelationshipList.propTypes = {
-  formatMetadata: PropTypes.func.isRequired,
-  formatOtherProps: PropTypes.func.isRequired,
-  handleLinkExpand: PropTypes.func.isRequired,
-  linkOpen: PropTypes.object,
-  record: PropTypes.object,
-};
 
 RelationshipList.defaultProps = {
   linkOpen: {},

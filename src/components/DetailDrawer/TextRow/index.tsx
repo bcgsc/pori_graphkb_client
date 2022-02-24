@@ -7,7 +7,6 @@ import {
 } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import schema from '@/services/schema';
@@ -16,19 +15,28 @@ import util from '@/services/util';
 const DATE_KEYS = ['createdAt', 'deletedAt', 'updatedAt'];
 const MAX_STRING_LENGTH = 64;
 
+interface TextRowProps {
+  /** if true, list item is indented. */
+  isNested: boolean;
+  /** if true, locks list item open. */
+  isStatic: boolean;
+  /** array containing opened property models */
+  opened: object[];
+  /** adds clicked props to opened object */
+  handleExpand?(...args: unknown[]): unknown;
+  /** property key. */
+  name?: string;
+  /** property value */
+  value?: object;
+}
+
 /**
    * Formats a key/value pair where string is value. Either formats it
    * as a string row or a collapsable row depending on length
-   * @property {string} name - property key.
-   * @property {string} value - property value
-   * @property {boolean} isStatic - if true, locks list item open.
-   * @property {boolean} isNested - if true, list item is indented.
-   * @property {object} opened - array containing opened property models
-   * @property {function} handleExpand - adds clicked props to opened object
    */
-function TextRow(props) {
+function TextRow(props: TextRowProps) {
   const {
-    name, value, isStatic, isNested, opened, handleExpand,
+    name = '', value = {}, isStatic, isNested, opened, handleExpand = () => {},
   } = props;
 
   function LongValue() {
@@ -118,15 +126,6 @@ function TextRow(props) {
 
   return formattedString;
 }
-
-TextRow.propTypes = {
-  isNested: PropTypes.bool.isRequired,
-  isStatic: PropTypes.bool.isRequired,
-  opened: PropTypes.arrayOf(PropTypes.object).isRequired,
-  handleExpand: PropTypes.func,
-  name: PropTypes.string,
-  value: PropTypes.object,
-};
 
 TextRow.defaultProps = {
   handleExpand: () => {},

@@ -6,19 +6,15 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended",
         "airbnb",
+        "airbnb-typescript",
         "airbnb/hooks",
+        "plugin:@typescript-eslint/recommended",
         "plugin:jest/recommended",
         "plugin:jest-formatting/recommended"
     ],
-    "parser": "@babel/eslint-parser",
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "react",
@@ -90,15 +86,6 @@
                 "checkChildContextTypes": false,
                 "checkContextTypes": false,
                 "forbid": []
-            }
-        ],
-        "react/jsx-filename-extension": [
-            "warn",
-            {
-                "extensions": [
-                    ".js",
-                    ".jsx"
-                ]
             }
         ],
         "react/jsx-sort-props": [

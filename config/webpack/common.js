@@ -10,7 +10,6 @@ const { GenerateSW } = require('workbox-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-
 const createBaseConfig = ({
   define = {}, mode = 'production', sourceMap = false, outputPath, baseUrl = '/',
 } = {}) => {
@@ -46,7 +45,7 @@ const createBaseConfig = ({
         ],
       },
       {
-        test: /\.js$/,
+        test: /\.[tj]sx?$/,
         include: INCLUDE,
         use: [
           'babel-loader',
@@ -73,7 +72,6 @@ const createBaseConfig = ({
       },
     ],
   };
-
 
   const plugins = [
     // copy the dynamic env js file
@@ -175,13 +173,12 @@ const createBaseConfig = ({
     }),
   ];
 
-
   return {
     mode,
     context: SRC_PATH,
     entry: [
       './polyfills.js',
-      './index.js',
+      './index.tsx',
     ],
     output: {
       path: outputPath,
@@ -212,7 +209,7 @@ const createBaseConfig = ({
     devtool: sourceMap ? 'eval' : false,
     plugins,
     resolve: {
-      extensions: ['.js', '.jsx', '.json'],
+      extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
         '@': SRC_PATH,
       },

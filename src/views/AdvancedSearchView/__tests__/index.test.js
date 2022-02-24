@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import {
   fireEvent,
   render,
+  screen,
 } from '@testing-library/react';
 import React from 'react';
 
@@ -58,45 +59,42 @@ describe('AdvancedSearchView', () => {
     push: event => mockPush(event),
   };
 
-  let getByTestId;
-  let getByText;
-
-  beforeEach(() => {
-    ({
-      getByTestId, getByText,
-    } = render(
+  test('search button fires correctly', () => {
+    render(
       <AdvancedSearchView
         history={mockHistory}
       />,
-    ));
-  });
-
-  test('add filter button is disabled on render', async () => {
-    expect(getByText('add to selected group')).toBeInTheDocument();
-    expect(getByText('add to selected group')).toBeDisabled();
-  });
-
-  test('search button fires correctly', () => {
-    fireEvent.click(getByText('Search'));
+    );
+    fireEvent.click(screen.getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D');
   });
 
 
   test('renders new filter group correctly', async () => {
-    await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-    await fireEvent.change(getByTestId('value-select'), { target: { name: 'value', value: [{ displayName: 'value', '@rid': '1:1' }] } });
-    expect(getByText('add to selected group')).toBeInTheDocument();
-    expect(getByText('add to selected group')).not.toBeDisabled();
-    await fireEvent.click(getByText('add to selected group'));
-    expect(getByText('relevance IN value (1:1)')).toBeInTheDocument();
+    render(
+      <AdvancedSearchView
+        history={mockHistory}
+      />,
+    );
+    fireEvent.change(screen.getByTestId('prop-select'), { target: { value: 'relevance' } });
+    fireEvent.change(screen.getByTestId('value-select'), { target: { name: 'value', value: [{ displayName: 'value', '@rid': '1:1' }] } });
+    expect(screen.getByText('add to selected group')).toBeInTheDocument();
+    expect(screen.getByText('add to selected group')).not.toBeDisabled();
+    fireEvent.click(screen.getByText('add to selected group'));
+    expect(screen.getByText('relevance IN value (1:1)')).toBeInTheDocument();
   });
 
   test('fires new search correctly', async () => {
-    await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-    await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }], name: 'value' } });
-    await fireEvent.click(getByText('add to selected group'));
-    fireEvent.click(getByText('Search'));
+    render(
+      <AdvancedSearchView
+        history={mockHistory}
+      />,
+    );
+    fireEvent.change(screen.getByTestId('prop-select'), { target: { value: 'relevance' } });
+    fireEvent.change(screen.getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }], name: 'value' } });
+    fireEvent.click(screen.getByText('add to selected group'));
+    fireEvent.click(screen.getByText('Search'));
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjpbeyJvcGVyYXRvciI6IklOIiwicmVsZXZhbmNlIjpbIjE6MSJdfV19');
   });

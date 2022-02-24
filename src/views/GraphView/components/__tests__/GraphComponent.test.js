@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
 
 import {
-  act,
   fireEvent,
   render,
+  waitFor,
 } from '@testing-library/react';
 import React from 'react';
 
@@ -108,17 +108,19 @@ describe('<GraphComponent />', () => {
   test('clicking nodes and links calls appropriate handlers', async () => {
     const { container } = dom;
     const graphNode = container.querySelector('circle.node');
-    await act(() => fireEvent.click(graphNode));
+    fireEvent.click(graphNode);
     const graphLink = container.querySelector('path.link');
-    await act(() => fireEvent.click(graphLink));
+    fireEvent.click(graphLink);
 
 
     fireEvent.click(container.querySelector('#details'));
     fireEvent.click(container.querySelector('div.svg-wrapper svg'));
-    await act(() => fireEvent.click(graphNode));
+    fireEvent.click(graphNode);
 
-    expect(handleDetailDrawerOpen).toHaveBeenCalledTimes(4);
-    expect(handleDetailDrawerClose).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(handleDetailDrawerOpen).toHaveBeenCalledTimes(4);
+      expect(handleDetailDrawerClose).toHaveBeenCalledTimes(2);
+    });
   });
 
   test('svg click handling clears detail drawer', async () => {
@@ -126,8 +128,10 @@ describe('<GraphComponent />', () => {
     expect(handleDetailDrawerClose).toHaveBeenCalledTimes(1);
     const graphNode = container.querySelector('circle.node');
 
-    await act(() => fireEvent.click(graphNode));
+    fireEvent.click(graphNode);
     fireEvent.click(container.querySelector('div.svg-wrapper svg'));
-    expect(handleDetailDrawerClose).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(handleDetailDrawerClose).toHaveBeenCalledTimes(2);
+    });
   });
 });

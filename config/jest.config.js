@@ -23,7 +23,7 @@ module.exports = {
     [
       'jest-junit',
       {
-        output: '<rootDir>/coverage/junit.xml',
+        outputFile: '<rootDir>/coverage/junit.xml',
       },
     ],
   ],
@@ -34,7 +34,7 @@ module.exports = {
     'jest-canvas-mock',
   ],
   testRegex: 'src.*__tests__.*.jsx?$',
-  testEnvironment: 'jest-environment-jsdom-fourteen',
+  testEnvironment: 'jsdom',
   testURL: 'http://localhost',
   transform: {
     '^.+\\.(js|jsx|mjs)$': '<rootDir>/node_modules/babel-jest',

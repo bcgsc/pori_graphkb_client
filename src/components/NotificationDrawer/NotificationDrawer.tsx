@@ -7,16 +7,24 @@ import {
   LinearProgress,
 } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
+
+interface NotificationDrawerProps {
+  /** Callback for successful submission. */
+  handleFinish?: (() => void) | null;
+  /** Flag to tell if request is loading. */
+  loading?: boolean;
+  /** Flag for opening the drawer. */
+  open?: boolean;
+}
 
 /**
  * Component with notification drawer for when user submits a form.
  * @param {Object} props - Component props.
  */
-function NotificationDrawer(props) {
+function NotificationDrawer(props: NotificationDrawerProps) {
   const {
     open,
     handleFinish,
@@ -57,18 +65,6 @@ function NotificationDrawer(props) {
     </Drawer>
   );
 }
-
-/**
- * @namespace
- * @property {boolean} loading - Flag to tell if request is loading.
- * @property {boolean} open - Flag for opening the drawer.
- * @property {function} handleFinish - Callback for successful submission.
- */
-NotificationDrawer.propTypes = {
-  handleFinish: PropTypes.func,
-  loading: PropTypes.bool,
-  open: PropTypes.bool,
-};
 
 NotificationDrawer.defaultProps = {
   loading: false,

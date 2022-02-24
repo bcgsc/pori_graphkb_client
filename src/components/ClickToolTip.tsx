@@ -5,25 +5,22 @@ import {
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import { boundMethod } from 'autobind-decorator';
-import PropTypes from 'prop-types';
 import React from 'react';
+
+interface ClickToolTipProps {
+  className?: string;
+  style?: object;
+  /** the text to be displayed */
+  title?: string;
+}
 
 /**
  * Tooltip that will work on mobile and brings up the
  * help message by click/focus/hover etc
  *
- * @property {object} props
- * @property {string} props.title the text to be displayed
- *
  * Any extra arguments passed as props are applied to the inner Tooltip Component
  */
-class ClickToolTip extends React.Component {
-  static propTypes = {
-    className: PropTypes.string,
-    style: PropTypes.object,
-    title: PropTypes.string,
-  };
-
+class ClickToolTip extends React.Component<ClickToolTipProps, { isOpen: boolean }> {
   static defaultProps = {
     title: '',
     className: '',

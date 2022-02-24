@@ -1,7 +1,6 @@
 import './index.scss';
 
 import { List } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 
 import FormContext from '@/components/FormContext';
@@ -38,22 +37,26 @@ const filterNullFields = (orderingList, formContent) => {
   return newOrdering;
 };
 
+interface FieldGroupProps {
+  model: object;
+  /** the property names in order to be rendered (array of array of strings for groups) */
+  ordering: string | string[][];
+  /** if field should be disabled */
+  disabled?: boolean;
+  /** fields to be excluded from rendering */
+  exclusions?: string[];
+}
+
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
- *
- * @param {ClassModel} props.model
- * @param {Array.<Array.<string>|string>} props.ordering the property names in order to be rendered (array of array of strings for groups)
- * @param {Object} content the form content keyed by property name
- * @param {Object} errors form errors keyed by property name
- * @param {Array.<string>} exclusions fields to be excluded from rendering
- * @param {function} onChange parent form handler to pass to fields
- * @param {bool} formIsDirty if the form has been modified at all
- * @param {String} variant one of ['new', 'edit', 'search]
- * @param {bool} disabled if field should be disabled
  */
-function FieldGroup({
-  model, ordering, exclusions, disabled,
-}) {
+function FieldGroup(props: FieldGroupProps) {
+  const {
+    model,
+    ordering,
+    exclusions,
+    disabled,
+  } = props;
   const { formVariant, formContent } = useContext(FormContext);
   const { properties: { out, in: tgt, ...properties } } = model;
 
@@ -115,16 +118,6 @@ function FieldGroup({
   });
   return fields;
 }
-
-FieldGroup.propTypes = {
-  model: PropTypes.object.isRequired,
-  ordering: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.string),
-  ])).isRequired,
-  disabled: PropTypes.bool,
-  exclusions: PropTypes.arrayOf(PropTypes.string),
-};
 
 FieldGroup.defaultProps = {
   exclusions: [],

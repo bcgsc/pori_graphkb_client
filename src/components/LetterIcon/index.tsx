@@ -1,12 +1,28 @@
 import './index.scss';
 
-import { Button } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { Button, ButtonProps } from '@material-ui/core';
 import React from 'react';
 
-function LetterIcon({
-  value, variant, color, onClick,
-}) {
+interface LetterIconProps {
+  value: string;
+  /**
+   * @default 'secondary'
+   */
+  color?: 'primary' | 'secondary';
+  onClick?: ButtonProps['onClick'];
+  /**
+   * @default 'contained'
+   */
+  variant?: 'outlined' | 'contained';
+}
+
+function LetterIcon(props: LetterIconProps) {
+  const {
+    value,
+    variant,
+    color,
+    onClick,
+  } = props;
   return (
     <Button
       className={`letter-icon letter-icon--${variant} letter-icon--${color}`}
@@ -16,13 +32,6 @@ function LetterIcon({
     </Button>
   );
 }
-
-LetterIcon.propTypes = {
-  value: PropTypes.string.isRequired,
-  color: PropTypes.oneOf(['primary', 'secondary']),
-  onClick: PropTypes.func,
-  variant: PropTypes.oneOf(['outlined', 'contained']),
-};
 
 LetterIcon.defaultProps = {
   variant: 'contained',

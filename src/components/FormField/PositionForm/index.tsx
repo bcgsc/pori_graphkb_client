@@ -8,7 +8,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -19,19 +18,35 @@ import ProteinPosition from './ProteinPosition';
 
 const DEFAULT_BASE_VARIANT = 'Position';
 
-/**
- * @param {object} props
- * @param {function} props.onChange change handler
- * @param {bool} props.clearable can this position be removed/deleted/set to null
- * @param {bool} props.disabled flag to indicate this field is disabled
- * @param {bool} props.error indicates there is an outstanding error
- * @param {string} props.helperText text to be displayed below the input field
- * @param {string} props.label label to display above the field
- * @param {object} props.value the initial value
- * @param {string} props.name the form field name to pass up to the change handler
- * @param {bool} props.required flag to indicate this field must be filled
- * @param {string} props.variant the position class model name
- */
+interface PositionFormProps {
+  name: string;
+  /** change handler */
+  onChange: (e: { target: { name: string, value: null | object } }) => void;
+  /**
+   * @default 'Position'
+   */
+  baseVariant?: string;
+  /**
+   * can this position be removed/deleted/set to null
+   * @default true
+   */
+  clearable?: boolean;
+  /** flag to indicate this field is disabled */
+  disabled?: boolean;
+  /** indicates there is an outstanding error */
+  error?: boolean;
+  /** text to be displayed below the input field */
+  helperText?: string;
+  /** label to display above the field */
+  label?: string;
+  /** flag to indicate this field must be filled */
+  required?: boolean;
+  /** the initial value */
+  value?: object;
+  /** the position class model name */
+  variant?: string;
+}
+
 function PositionForm({
   baseVariant,
   clearable,
@@ -45,7 +60,7 @@ function PositionForm({
   value,
   variant: initialVariant,
   ...props
-}) {
+}: PositionFormProps) {
   const positionVariants = schema.schema[baseVariant || DEFAULT_BASE_VARIANT]
     .descendantTree(true).map((m) => m.name);
   const [variant, setVariant] = useState(initialVariant);
@@ -106,20 +121,6 @@ function PositionForm({
     </FormControl>
   );
 }
-
-PositionForm.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  baseVariant: PropTypes.string,
-  clearable: PropTypes.bool,
-  disabled: PropTypes.bool,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  value: PropTypes.object,
-  variant: PropTypes.string,
-};
 
 PositionForm.defaultProps = {
   baseVariant: DEFAULT_BASE_VARIANT,

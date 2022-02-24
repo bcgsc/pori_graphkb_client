@@ -12,7 +12,6 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import schema from '@/services/schema';
@@ -22,9 +21,9 @@ const { constants: { PERMISSIONS } } = kbSchema;
 /* eslint-disable no-bitwise */
 
 /**
-* For a mapping of class names to the single permissions value, split these by operation types
-* for display as checkboxes
-*/
+ * For a mapping of class names to the single permissions value, split these by operation types
+ * for display as checkboxes
+ */
 const splitPermissionsByOperation = (permissions) => {
   const permByModelName = {};
 
@@ -56,24 +55,34 @@ const splitPermissionsByOperation = (permissions) => {
   return permByModelName;
 };
 
+interface PermissionsTableProps {
+  /** field name to use in simulating events */
+  name: string;
+  /** handler to propogate changes to the parent form */
+  onChange: (e: { target: { name: string, value: object } }) => unknown;
+  /** flag to indicate this field cannot be edited */
+  disabled?: boolean;
+  /** the current permissions set */
+  value?: object;
+}
+
 /**
- * Table to display permissions state for a certain user group.
- * @property {Object} props - Component props.
- * @property {bool} props.disabled flag to indicate this field cannot be edited
- * @property {func} props.onChange handler to propogate changes to the parent form
- * @property {string} props.name field name to use in simulating events
- * @property {object} props.value the current permissions set
- */
-function PermissionsTable({
-  value, disabled, onChange, name,
-}) {
+  * Table to display permissions state for a certain user group.
+  */
+function PermissionsTable(props: PermissionsTableProps) {
+  const {
+    value,
+    disabled,
+    onChange,
+    name,
+  } = props;
   const [content, setContent] = useState(value || {});
   const [topBoxes, setTopboxes] = useState({});
 
   /**
-   * Handle the user clicking a checkbox to either clear or check it
-   * when the modelName is not given and is null, assumes a checkAll event
-   */
+    * Handle the user clicking a checkbox to either clear or check it
+    * when the modelName is not given and is null, assumes a checkAll event
+    */
   const handleClick = useCallback((operation, currModelName = null) => {
     const newContent = { ...content };
     const newTopBoxes = { ...topBoxes };
@@ -171,13 +180,6 @@ function PermissionsTable({
     </div>
   );
 }
-
-PermissionsTable.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  value: PropTypes.object,
-};
 
 PermissionsTable.defaultProps = {
   value: {},

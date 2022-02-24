@@ -4,7 +4,6 @@ import { schema } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
@@ -15,23 +14,36 @@ const {
   },
 } = schema;
 
+interface ProteinPositionProps {
+  /** change handler */
+  onChange: (e: { target: { name: string, value: { '@class': string, pos: number | undefined, refAA: unknown } } }) => void;
+  /** the initial value */
+  value: {
+    pos?: number,
+    refAA?: string
+  };
+  /** flag to indicate this field is disabled */
+  disabled?: boolean;
+  /** the form field name to pass up to the change handler */
+  name?: string;
+  /**
+   * flag to indicate this field must be filled
+   * @default true
+   */
+  required?: boolean;
+}
+
 /**
  * Protein Position Input form
- *
- * @param {object} props
- * @param {function} props.onChange change handler
- * @param {object} props.value the initial value
- * @param {string} props.name the form field name to pass up to the change handler
- * @param {bool} props.required flag to indicate this field must be filled
- * @param {bool} props.disabled flag to indicate this field is disabled
  */
-function ProteinPosition({
-  onChange,
-  value,
-  name,
-  required,
-  disabled,
-}) {
+function ProteinPosition(props: ProteinPositionProps) {
+  const {
+    onChange,
+    value,
+    name = '',
+    required,
+    disabled,
+  } = props;
   const { pos: initialPos, refAA: initialRefAA } = value || {};
   const [position, setPosition] = useState(initialPos);
   const [positionError, setPositionError] = useState('');
@@ -111,17 +123,6 @@ function ProteinPosition({
     </>
   );
 }
-
-ProteinPosition.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.shape({
-    pos: PropTypes.number,
-    refAA: PropTypes.string,
-  }).isRequired,
-  disabled: PropTypes.bool,
-  name: PropTypes.string,
-  required: PropTypes.bool,
-};
 
 ProteinPosition.defaultProps = {
   required: true,

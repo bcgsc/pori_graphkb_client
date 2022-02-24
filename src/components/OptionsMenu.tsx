@@ -1,22 +1,23 @@
 /* eslint-disable react/static-property-placement */
 import {
   Collapse, ListItemIcon, ListItemText,
-  MenuItem, MenuList,
+  MenuItem, MenuItemProps, MenuList,
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { boundMethod } from 'autobind-decorator';
-import PropTypes from 'prop-types';
 import React from 'react';
 
-class OptionsMenu extends React.Component {
-  static propTypes = {
-    options: PropTypes.arrayOf(
-      PropTypes.shape({ label: PropTypes.string.isRequired, content: PropTypes.object, handler: PropTypes.func }),
-    ).isRequired,
-    className: PropTypes.string,
-  };
+interface OptionsMenuProps {
+  options: {
+    label: string,
+    content?: object,
+    handler?: MenuItemProps['onClick']
+  }[];
+  className?: string;
+}
 
+class OptionsMenu extends React.Component<OptionsMenuProps, { expandedOption: unknown }> {
   static defaultProps = {
     className: '',
   };

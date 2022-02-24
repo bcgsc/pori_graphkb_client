@@ -68,7 +68,7 @@ interface DropDownSelectProps {
   /** Parent property to bind output data to. */
   value?: GeneralRecordType | string;
   /** Parent function to trigger on item select. */
-  onChange?: () => void;
+  onChange?: SelectProps['onChange'];
   /** DOM node name property. */
   name?: string;
   /** Component label text. */

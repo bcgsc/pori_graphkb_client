@@ -5,7 +5,6 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import { Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, {
   useEffect,
 } from 'react';
@@ -16,7 +15,13 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-function JumpToRecord({ data }) {
+interface JumpToRecordProps {
+  data: {
+    '@rid': string
+  };
+}
+
+function JumpToRecord({ data }: JumpToRecordProps) {
   return (
     <Link className="query-results-table__jump-to-record" target="_blank" to={schema.getLink(data)}>
       <OpenInNewIcon />
@@ -25,23 +30,26 @@ function JumpToRecord({ data }) {
   );
 }
 
-JumpToRecord.propTypes = {
-  data: PropTypes.shape({
-    '@rid': PropTypes.string.isRequired,
-  }).isRequired,
-};
+interface QueryResultsTableProps {
+  columnDefs: object[];
+  /** the body of the query request */
+  queryBody: object;
+  /** the title to put above the table */
+  title: string;
+  description?: string;
+}
 
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
- *
- * @param {object} props
- * @param {object} props.queryBody the body of the query request
- * @param {string} props.title the title to put above the table
  */
-function QueryResultsTable({
-  columnDefs, queryBody, title, description,
-}) {
+function QueryResultsTable(props: QueryResultsTableProps) {
+  const {
+    columnDefs,
+    queryBody,
+    title,
+    description,
+  } = props;
   const grid = useGrid();
 
   const { data, isFetching } = useQuery(['/query', queryBody], async ({ queryKey: [route, body] }) => api.post(route, body));
@@ -84,13 +92,6 @@ function QueryResultsTable({
     </div>
   );
 }
-
-QueryResultsTable.propTypes = {
-  columnDefs: PropTypes.arrayOf(PropTypes.object).isRequired,
-  queryBody: PropTypes.object.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-};
 
 QueryResultsTable.defaultProps = {
   description: '',

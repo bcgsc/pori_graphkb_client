@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-query';
 
@@ -20,21 +19,25 @@ import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
 import api from '@/services/api';
 
-/**
- * Displays a linked record row + detail chip in EmbeddedListTable.
- *
- * @property {object} props.value single linked record or review
- * @property {string} props.variant one of ['view', 'edit'] mode
- * @property {object} props.content full record which has link to value
- * @property {function} props.onChange parent handler function to update record
- */
-function StatementReview({
-  value,
-  index,
-  variant,
-  onDelete,
-  label,
-}) {
+interface StatementReviewProps {
+  index: number;
+  label: string;
+  onDelete: (arg: { index: number }) => void;
+  value: object;
+  /**
+   * @default 'view'
+   */
+  variant?: 'view' | 'edit';
+}
+
+function StatementReview(props: StatementReviewProps) {
+  const {
+    value,
+    index,
+    variant,
+    onDelete,
+    label,
+  } = props;
   const {
     status, createdBy, comment,
   } = value;
@@ -136,14 +139,6 @@ function StatementReview({
     </React.Fragment>
   );
 }
-
-StatementReview.propTypes = {
-  index: PropTypes.number.isRequired,
-  label: PropTypes.string.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  value: PropTypes.object.isRequired,
-  variant: PropTypes.string,
-};
 
 StatementReview.defaultProps = {
   variant: 'view',

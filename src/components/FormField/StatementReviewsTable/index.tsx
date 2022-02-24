@@ -8,23 +8,30 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import StatementReviewRow from './StatementReview';
 
+interface StatementReviewsTableProps {
+  /** the name of this field (for propogating change events) */
+  name: string;
+  /** parent change handler function */
+  onChange:(e: { target: { name: string, value: object[] } }) => void;
+  /** linked records to be displayed in table */
+  values?: object[];
+  /**
+   * mode that dialog is in
+   * @default 'view'
+   */
+  variant?: 'view' | 'edit';
+}
+
 /**
  * Table to display related linked records as detailChips in embedded link set.
- *
- * @property {Arrayof(objects)} props.values linked records to be displayed in table
- * @property {object} props.values record content to be displayed
- * @property {string} props.variant mode that dialog is in. One of ['view','edit'].
- * @property {function} props.onChange parent change handler function
- * @property {string} props.name the name of this field (for propogating change events)
  */
-function StatementReviewsTable(props) {
+function StatementReviewsTable(props: StatementReviewsTableProps) {
   const {
-    values,
+    values = [],
     variant,
     onChange,
     name,
@@ -65,13 +72,6 @@ function StatementReviewsTable(props) {
     </div>
   );
 }
-
-StatementReviewsTable.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  values: PropTypes.arrayOf(PropTypes.object),
-  variant: PropTypes.string,
-};
 
 StatementReviewsTable.defaultProps = {
   values: [],

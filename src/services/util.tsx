@@ -42,12 +42,14 @@ const castToExist = (obj: unknown): string | undefined => {
     return 'null';
   }
   if (obj && typeof obj === 'object') {
-    return Object.entries(obj).find((e) => {
+    const entry = Object.entries(obj).find((e) => {
       const [k, v] = e;
       return (
         (typeof v !== 'object' || typeof v !== 'function')
         && !k.startsWith('@'));
-    }).[1].toString();
+    });
+
+    return entry?.[1].toString();
   }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };

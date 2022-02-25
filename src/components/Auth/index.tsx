@@ -22,8 +22,11 @@ const keycloak = Keycloak({
   realm: window._env_.KEYCLOAK_REALM,
   clientId: window._env_.KEYCLOAK_CLIENT_ID,
   url: window._env_.KEYCLOAK_URL,
-  realm_access: { roles: [window._env_.KEYCLOAK_ROLE] },
 });
+
+type KeycloakUserInfo = {
+  preferred_username?: string;
+} | undefined;
 
 type AuthContextState = {
   login: () => void;
@@ -69,12 +72,16 @@ function AuthProvider(props: { children: ReactNode }) {
           await keycloak.login({ redirectUri: window.location.href });
         }
 
+        if (!keycloak.tokenParsed?.realm_access?.roles.includes(window._env_.KEYCLOAK_ROLE)) {
+          throw new Error(`Missing realm role. User must have role ${window._env_.KEYCLOAK_ROLE} to access this app.`);
+        }
+
         const { kbToken: authorizationToken } = await api.authenticate(keycloak.token);
         const { user } = jwtDecode(authorizationToken) as { user: NonNullable<AuthContextState['user']> };
 
         await keycloak.loadUserInfo();
         // eslint-disable-next-line camelcase
-        const username = keycloak.userInfo?.preferred_username || user?.name;
+        const username = (keycloak.userInfo as KeycloakUserInfo)?.preferred_username || user?.name;
 
         return {
           authenticationToken: keycloak.token,
@@ -171,7 +178,7 @@ function AuthenticatedRoute(props: AuthenticatedRouteProps) {
         <Centered>
           <Typography color="error" gutterBottom variant="h2">Error Authenticating</Typography>
           <Typography paragraph>An Error occurred while authenticating. please logout and try again or contact your administrator if the problem persists</Typography>
-          <Typography paragraph>{auth.error?.message}</Typography>
+          <Typography paragraph>{auth.error instanceof Error ? auth.error?.message : String(auth.error)}</Typography>
           <Button onClick={auth.logout}>logout</Button>
         </Centered>
       </Route>

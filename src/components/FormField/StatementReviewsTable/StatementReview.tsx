@@ -117,11 +117,11 @@ function StatementReview(props: StatementReviewProps) {
               variant: 'outlined',
               color: 'secondary',
             }}
+            details={details}
             label={previewStr}
             PopUpComponent={ReviewComponent}
             PopUpProps={{ onDelete }}
             title={label}
-            value={details}
             valueToString={
               (record) => {
                 if (record && record.name) {

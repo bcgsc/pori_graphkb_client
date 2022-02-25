@@ -278,10 +278,10 @@ function GraphComponent(props: GraphComponentProps) {
   const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
     const { edgeTypes = [] } = props;
     let {
-      nodes, // eslint-disable-line no-shadow
-      links, // eslint-disable-line no-shadow
-      graphObjects, // eslint-disable-line no-shadow
-      expandable, // eslint-disable-line no-shadow
+      nodes, // eslint-disable-line @typescript-eslint/no-shadow
+      links, // eslint-disable-line @typescript-eslint/no-shadow
+      graphObjects, // eslint-disable-line @typescript-eslint/no-shadow
+      expandable, // eslint-disable-line @typescript-eslint/no-shadow
     } = prevstate;
 
     if (data[node['@rid']]) {

@@ -51,7 +51,7 @@ const useAuth = (): AuthContextState => {
   return state;
 };
 
-function AuthProvider(props) {
+function AuthProvider(props: { children: ReactNode }) {
   const { children } = props;
 
   const {

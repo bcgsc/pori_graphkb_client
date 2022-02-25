@@ -53,7 +53,7 @@ const RelatedVariantsTable = ({ recordId }) => {
   );
 
   useEffect(() => {
-    const gridApi = grid.ref?.current.api;
+    const gridApi = grid.ref?.current?.api;
 
     if (gridApi && !isFetching) {
       gridApi.setRowData(variants);

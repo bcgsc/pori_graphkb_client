@@ -238,17 +238,13 @@ function DetailDrawer(props: DetailDrawerProps) {
           </div>
           {auth.hasWriteAccess && (
           <Link target="_blank" to={`/edit/${recordClass}/${recordId}`}>
-            <IconButton
-              variant="outlined"
-            >
+            <IconButton>
               <EditIcon />
             </IconButton>
           </Link>
           )}
           <Link target="_blank" to={`/view/${recordClass}/${recordId}`}>
-            <IconButton
-              variant="outlined"
-            >
+            <IconButton>
               <OpenInNewIcon />
             </IconButton>
           </Link>

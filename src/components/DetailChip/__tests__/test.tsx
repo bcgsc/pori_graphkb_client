@@ -77,6 +77,7 @@ describe('DetailChip', () => {
   test('doesnt crash if you only pass required props', () => {
     render(
       <DetailChip
+        details={undefined}
         label="Please oh please don't crash"
       />,
     );

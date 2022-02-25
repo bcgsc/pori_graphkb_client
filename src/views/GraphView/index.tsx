@@ -36,7 +36,7 @@ function GraphView({ history }: RouteComponentProps) {
   }, [history, search]);
 
   const { data: graphData } = useQuery(
-    ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
+    ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }] as const,
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(recordIds.length),

@@ -19,6 +19,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
+import { GeneralRecordType } from '@/components/types';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
@@ -84,7 +85,7 @@ const getRowsFromBlocks = async ({
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
 
-  const blockRequests = [];
+  const blockRequests: Promise<GeneralRecordType[]>[] = [];
 
   for (let block = firstBlock; block <= lastBlock; block += blockSize) {
     const payload = getQueryPayload({
@@ -92,11 +93,11 @@ const getRowsFromBlocks = async ({
     });
 
     blockRequests.push(api.queryClient.fetchQuery(
-      ['/query', payload],
+      ['/query', payload] as const,
       async ({ queryKey: [route, body] }) => api.post(route, body),
     ));
   }
-  const data = [];
+  const data: GeneralRecordType[] = [];
   (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
@@ -136,7 +137,7 @@ function DataView(props: DataViewProps) {
   }), [search]);
 
   const { data: totalRows = null } = useQuery(
-    ['/query', payload],
+    ['/query', payload] as const,
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       select: (response) => response[0]?.count,
@@ -207,7 +208,7 @@ function DataView(props: DataViewProps) {
   }, [history, search]);
 
   const { data: detailPanelRow } = useQuery(
-    ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
+    ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }] as const,
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(detailsRowId),

@@ -69,7 +69,7 @@ function StatementForm(props: StatementFormProps) {
       filters: { name: 'diagnostic indicator' },
     },
     returnProperties: ['name'],
-  }], async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
 
   const { data: therapeuticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -79,7 +79,7 @@ function StatementForm(props: StatementFormProps) {
       filters: { name: 'therapeutic efficacy' },
     },
     returnProperties: ['name'],
-  }], async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
 
   const { data: prognosticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -89,7 +89,7 @@ function StatementForm(props: StatementFormProps) {
       filters: { name: 'prognostic indicator' },
     },
     returnProperties: ['name'],
-  }], async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
 
   const snackbar = useSnackbar();
   const auth = useAuth();

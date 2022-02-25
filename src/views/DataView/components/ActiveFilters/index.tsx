@@ -61,7 +61,7 @@ function ActiveFilters({ search }: ActiveFiltersProps) {
         target: recordIds,
         returnProperties: ['@class', '@rid', 'name', 'displayName'],
       },
-    ],
+    ] as const,
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(recordIds.length),

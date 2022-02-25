@@ -99,7 +99,7 @@ function RecordView(props: RecordViewProps) {
   const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
-    [`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }],
+    [`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }] as const,
     async ({ queryKey: [route, options] }) => {
       if (!model) {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });

@@ -26,7 +26,7 @@ function ImportPubmedView(props: RouteComponentProps) {
 
   // fetch the pubmed source record
   const { data: source } = useQuery(
-    ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
+    ['/query', { target: 'Source', filters: { name: 'pubmed' } }] as const,
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       onError: (err) => handleErrorSaveLocation(err, history),
@@ -52,7 +52,7 @@ function ImportPubmedView(props: RouteComponentProps) {
           ],
         },
       },
-    ],
+    ] as const,
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(text),

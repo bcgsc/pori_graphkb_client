@@ -43,7 +43,7 @@ function StatementReview(props: StatementReviewProps) {
   } = value;
 
   const { data: author = createdBy } = useQuery(
-    ['/query', { target: [createdBy] }],
+    ['/query', { target: [createdBy] }] as const,
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: !createdBy['@rid'],

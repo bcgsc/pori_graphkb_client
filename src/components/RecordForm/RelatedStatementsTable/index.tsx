@@ -58,7 +58,7 @@ function RelatedStatementsTable({ recordId }: RelatedStatementsTableProps) {
         'evidence.displayName',
         'subject.displayName',
       ],
-    }],
+    }] as const,
     async ({ queryKey: [route, body] }) => api.post(route, body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );

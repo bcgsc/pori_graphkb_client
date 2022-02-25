@@ -84,7 +84,7 @@ function RecordForm(props: RecordFormProps) {
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.post(routeName, payload);
+      return api.post<GeneralRecordType>(routeName, payload);
     },
     {
       onSuccess: (result) => {

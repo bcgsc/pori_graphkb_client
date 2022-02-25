@@ -25,4 +25,6 @@ interface StatementType extends GeneralRecordType {
   subject: GeneralRecordType;
 }
 
-export type { GeneralRecordType, StatementType, UserRecordType };
+export type {
+  GeneralRecordType, StatementType, UserRecordType,
+};

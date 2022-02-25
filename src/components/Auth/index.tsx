@@ -69,7 +69,7 @@ function AuthProvider(props) {
           await keycloak.login({ redirectUri: window.location.href });
         }
 
-        const { kbToken: authorizationToken } = await api.post('/token', { keyCloakToken: keycloak.token });
+        const { kbToken: authorizationToken } = await api.authenticate(keycloak.token);
         const { user } = jwtDecode(authorizationToken) as { user: NonNullable<AuthContextState['user']> };
 
         await keycloak.loadUserInfo();

@@ -69,7 +69,7 @@ function StatementForm(props: StatementFormProps) {
       filters: { name: 'diagnostic indicator' },
     },
     returnProperties: ['name'],
-  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [_, body] }) => api.query(body));
 
   const { data: therapeuticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -79,7 +79,7 @@ function StatementForm(props: StatementFormProps) {
       filters: { name: 'therapeutic efficacy' },
     },
     returnProperties: ['name'],
-  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [_, body] }) => api.query(body));
 
   const { data: prognosticData } = useQuery(['/query', {
     queryType: 'similarTo',
@@ -89,7 +89,7 @@ function StatementForm(props: StatementFormProps) {
       filters: { name: 'prognostic indicator' },
     },
     returnProperties: ['name'],
-  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [_, body] }) => api.query(body));
 
   const snackbar = useSnackbar();
   const auth = useAuth();
@@ -176,7 +176,7 @@ function StatementForm(props: StatementFormProps) {
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.post(routeName, payload);
+      return api.post<GeneralRecordType>(routeName, payload);
     },
     {
       onSuccess: (result) => {

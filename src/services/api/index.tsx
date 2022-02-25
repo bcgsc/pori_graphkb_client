@@ -7,6 +7,8 @@ import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
 
+import { GeneralRecordType } from '@/components/types';
+
 import { request, RequestCallOptions } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
@@ -32,7 +34,7 @@ const MAX_SUGGESTIONS = 50;
  * @param endpoint - URL endpoint.
  * @param {Object} payload - PATCH payload.
  */
-const patch = (endpoint: string, payload: Record<string, unknown>) => {
+const patch = (endpoint: string, payload: Record<string, unknown>): Promise<GeneralRecordType> => {
   // strip out the display name to have it force-regenerate
   const { displayName, ...changes } = payload;
   const init = {
@@ -54,16 +56,40 @@ const get = (endpoint: string, callOptions?: RequestCallOptions) => {
 };
 
 /**
- * Sends POST request to api.
+ * Sends POST request to api to create a new record.
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-function post<R extends string>(endpoint: R, payload: Record<string, unknown>) {
+function post<Resp = unknown>(endpoint: string, payload?: Record<string, unknown>): Promise<Resp> {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),
   };
   return request(endpoint, init);
+}
+
+/**
+ * Sends POST request to api to the query endpoint
+ * @param {Object} payload - POST payload.
+ */
+function query<Record = GeneralRecordType>(payload: unknown): Promise<Record[]> {
+  const init = {
+    method: 'POST',
+    body: jc.stringify(payload),
+  };
+  return request('/query', init);
+}
+
+/**
+ * Sends POST request to token endpoint to get gkb token
+ * @param keyCloakToken - keycloak token
+ */
+function authenticate(keyCloakToken: string | undefined): Promise<{ kbToken: string }> {
+  const init = {
+    method: 'POST',
+    body: jc.stringify({ keyCloakToken }),
+  };
+  return request('/token', init);
 }
 
 /**
@@ -141,4 +167,6 @@ export default {
   post,
   getDefaultSuggestionQueryBody,
   queryClient,
+  query,
+  authenticate,
 };

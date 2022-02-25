@@ -45,7 +45,7 @@ function RelatedVariantsTable({ recordId }: RelatedVariantsTableProps) {
       '@class',
       'displayName',
     ],
-  }] as const, async ({ queryKey: [route, body] }) => api.post(route, body));
+  }] as const, async ({ queryKey: [_, body] }) => api.query(body));
 
   useEffect(() => {
     const gridApi = grid.ref?.current.api;

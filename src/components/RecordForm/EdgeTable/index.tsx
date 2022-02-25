@@ -44,7 +44,7 @@ function EdgeTable({ recordId }: EdgeTableProps) {
         neighbors: 3,
       },
     ] as const,
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     {
       select: (response) => {
         const [record] = response;

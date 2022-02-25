@@ -59,7 +59,7 @@ function RelatedStatementsTable({ recordId }: RelatedStatementsTableProps) {
         'subject.displayName',
       ],
     }] as const,
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );
 

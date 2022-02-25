@@ -94,7 +94,7 @@ const getRowsFromBlocks = async ({
 
     blockRequests.push(api.queryClient.fetchQuery(
       ['/query', payload] as const,
-      async ({ queryKey: [route, body] }) => api.post(route, body),
+      async ({ queryKey: [_, body] }) => api.query(body),
     ));
   }
   const data: GeneralRecordType[] = [];
@@ -138,7 +138,7 @@ function DataView(props: DataViewProps) {
 
   const { data: totalRows = null } = useQuery(
     ['/query', payload] as const,
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     {
       select: (response) => response[0]?.count,
     },
@@ -209,7 +209,7 @@ function DataView(props: DataViewProps) {
 
   const { data: detailPanelRow } = useQuery(
     ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }] as const,
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: Boolean(detailsRowId),
       onError: (err) => handleError(err),

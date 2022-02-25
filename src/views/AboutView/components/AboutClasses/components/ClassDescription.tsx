@@ -25,11 +25,12 @@ function ClassDescription(props: ClassDescriptionProps) {
   } = props;
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     ['/query', { target: name, neighbors: 1, limit: 1 }] as const,
-    async ({ queryKey: [route, body] }) => {
-      const [result] = await api.post(route, body);
-      return result;
+    async ({ queryKey: [_, body] }) => api.query(body),
+    {
+      staleTime: Infinity,
+      throwOnError: false,
+      select: (response) => response[0],
     },
-    { staleTime: Infinity, throwOnError: false },
   );
 
   const { isFetching: countIsFetching, data: count } = useQuery(

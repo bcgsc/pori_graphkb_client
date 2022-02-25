@@ -37,7 +37,7 @@ function GraphView({ history }: RouteComponentProps) {
 
   const { data: graphData } = useQuery(
     ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }] as const,
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),
       onSuccess: (recordHash) => {
@@ -65,7 +65,7 @@ function GraphView({ history }: RouteComponentProps) {
       try {
         const [fullRecord] = await queryClient.fetchQuery(
           ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
-          async ({ queryKey: [route, body] }) => api.post(route, body),
+          async ({ queryKey: [_, body] }) => api.query(body),
         );
 
         if (!fullRecord) {
@@ -96,7 +96,7 @@ function GraphView({ history }: RouteComponentProps) {
     if (!fullRecord) {
       [fullRecord] = await queryClient.fetchQuery(
         key,
-        async ({ queryKey: [route, body] }) => api.post(route, body),
+        async ({ queryKey: [_, body] }) => api.query(body),
       );
     }
     return fullRecord;

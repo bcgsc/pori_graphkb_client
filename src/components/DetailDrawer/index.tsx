@@ -132,7 +132,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         const linkEmbeddedProps = (
           <LinkEmbeddedPropList
-            // eslint-disable-next-line no-use-before-define
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             formatOtherProps={formatOtherProps}
             handleExpand={handleExpand}
             identifiers={identifiers}

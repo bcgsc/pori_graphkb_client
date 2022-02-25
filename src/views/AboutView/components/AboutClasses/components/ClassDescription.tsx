@@ -28,7 +28,6 @@ function ClassDescription(props: ClassDescriptionProps) {
     async ({ queryKey: [_, body] }) => api.query(body),
     {
       staleTime: Infinity,
-      throwOnError: false,
       select: (response) => response[0],
     },
   );

@@ -59,7 +59,7 @@ const castToExist = (obj: unknown): string | undefined => {
  * @param {string | Array.<string>} str - String to be parsed.
  */
 const parseAcronyms = (str: string | string[]) => {
-  let words = !Array.isArray(str) ? str.split(' ') : str;
+  const words = !Array.isArray(str) ? str.split(' ') : str;
 
   ACRONYMS.forEach((acronym) => {
     const re = new RegExp(`^${acronym}*$`, 'ig');
@@ -444,7 +444,7 @@ const massageRecordExistsError = (error) => {
   return message;
 };
 
-function hashRecordsByRID<Obj extends {'@rid': string }>(data: Obj[]) {
+function hashRecordsByRID<Obj extends { '@rid': string }>(data: Obj[]) {
   const newData = {};
   data.forEach((obj) => {
     if (obj) {
@@ -452,7 +452,7 @@ function hashRecordsByRID<Obj extends {'@rid': string }>(data: Obj[]) {
     }
   });
   return newData;
-};
+}
 
 export default {
   hashRecordsByRID,

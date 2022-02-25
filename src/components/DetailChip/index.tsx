@@ -23,15 +23,18 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-interface DefaultPopupComponentProps {
+type ValueOf<T> = T extends Partial<Record<string, unknown>> ? T[keyof T] : undefined;
+type Obj = Partial<Record<string, any>> | undefined;
+
+interface DefaultPopupComponentProps<Details extends Obj> {
   /** description of object. Defaults to title of card if title is not present */
   label: string;
   /** record object. properties will be extracted to be displayed */
-  details?: Record<string, unknown>;
+  details: Details;
   /** converts objs to string value for display */
-  valueToString?: (arg: unknown) => string;
+  valueToString?: (arg: ValueOf<Details>) => string;
   /** finds routeName for displayed record */
-  getLink?: (arg: Record<string, unknown> | undefined) => string;
+  getLink?: (arg: Details) => string;
   /** title of card. Will usually be record displayName */
   title?: string;
 }
@@ -39,11 +42,11 @@ interface DefaultPopupComponentProps {
 /**
  * Default card pop up component displayed outlining details of record.
  */
-function DefaultPopupComponent(props: DefaultPopupComponentProps) {
+function DefaultPopupComponent<Details extends Obj>(props: DefaultPopupComponentProps<Details>) {
   const {
     details: retrievedDetails,
     label,
-    valueToString = (s) => `${s}`,
+    valueToString = (s: unknown) => `${s}`,
     getLink,
     title,
   } = props;
@@ -86,27 +89,29 @@ function DefaultPopupComponent(props: DefaultPopupComponentProps) {
 }
 
 DefaultPopupComponent.defaultProps = {
-  details: {},
   valueToString: (s) => `${s}`,
   getLink: null,
   title: null,
 };
 
-interface DetailChipProps<PopProps extends Record<string, unknown>> {
+interface DetailChipProps<
+  PopProps extends Record<string, unknown>,
+  Details extends Obj,
+> {
   /** label for the record */
   label: string;
   /** record to be displayed in chip. */
-  details?: Record<string, unknown>;
+  details: Details;
   /** function handler for the user clicking the X on the chip */
   onDelete?: () => void;
   /** function to call on details values */
-  valueToString?: () => string;
+  valueToString?: (details: Details) => (string | undefined);
   /** properties passed to the chip element */
   ChipProps?: Partial<MuiChipProps>;
   /** the title for the pop-up card (defaults to the chip label) */
   title?: string;
   /** function component constructor */
-  PopUpComponent?: (renderProps: PopProps & DefaultPopupComponentProps) => JSX.Element;
+  PopUpComponent?: (renderProps: PopProps & DefaultPopupComponentProps<Details>) => JSX.Element;
   /** props for PopUpComponent so that it mounts correctly */
   PopUpProps?: PopProps;
   className?: string;
@@ -117,7 +122,10 @@ interface DetailChipProps<PopProps extends Record<string, unknown>> {
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
  */
-function DetailChip<P extends Record<string, unknown>>(props: DetailChipProps<P>) {
+function DetailChip<
+PopProps extends Record<string, unknown>,
+Details extends Obj,
+>(props: DetailChipProps<PopProps, Details>) {
   const {
     details,
     onDelete,
@@ -186,7 +194,6 @@ DetailChip.defaultProps = {
   PopUpComponent: DefaultPopupComponent,
   PopUpProps: null,
   className: '',
-  details: {},
   onDelete: null,
   valueToString: (s) => `${s}`,
   getLink: null,

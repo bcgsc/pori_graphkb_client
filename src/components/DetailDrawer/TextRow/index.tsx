@@ -21,7 +21,7 @@ interface TextRowProps {
   /** if true, locks list item open. */
   isStatic: boolean;
   /** array containing opened property models */
-  opened: object[];
+  opened: string[];
   /** adds clicked props to opened object */
   handleExpand?(...args: unknown[]): unknown;
   /** property key. */

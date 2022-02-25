@@ -20,13 +20,13 @@ interface LinkEmbeddedPropListProps {
   /** adds prop to opened object and handles expansion */
   handleExpand?(...args: unknown[]): unknown;
   /** props to be displayed for submenu */
-  identifiers?: object[];
+  identifiers?: string[];
   /** is the prop nested */
   isNested?: boolean;
   /** opened dropdowns in drawer */
   opened?: string[];
   /** link/embedded property model */
-  prop?: object;
+  prop?: { name?: string; type?: unknown };
   /** contains link/embedded records */
   value?: object;
 }

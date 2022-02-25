@@ -27,7 +27,7 @@ interface RelationshipListProps {
   /** adds link to opened list */
   handleLinkExpand(...args: unknown[]): unknown;
   /** edge record opened */
-  linkOpen?: object;
+  linkOpen?: object | null;
   /** Record being displayed. */
   record?: object;
 }

@@ -33,7 +33,7 @@ const sortProps = (value) => {
 interface SetPropsListProps {
   handleExpand?(...args: unknown[]): unknown;
   /** props to be displayed for submenu */
-  identifiers?: object[];
+  identifiers?: string[];
   /** opened dropdowns in drawer */
   opened?: string[];
   /** link/embedded property model */

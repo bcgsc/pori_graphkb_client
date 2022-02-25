@@ -71,13 +71,13 @@ function DetailDrawer(props: DetailDrawerProps) {
 
   const auth = useAuth();
 
-  const [opened, setOpened] = useState([]);
+  const [opened, setOpened] = useState<string[]>([]);
 
   /**
    * Toggles collapsed list item.
    * @param {string} key - list item key.
    */
-  const handleExpand = (key) => {
+  const handleExpand = (key: string) => {
     if (opened.includes(key)) {
       opened.splice(opened.indexOf(key), 1);
     } else {
@@ -108,7 +108,7 @@ function DetailDrawer(props: DetailDrawerProps) {
    * @param {Array.<Object>} properties - List of property models to display.
    * @param {boolean} isNested - Nested flag.
    */
-  const formatProps = (record, properties, isNested) => {
+  const formatProps = (record: GeneralRecordType, properties, isNested: boolean) => {
     const identifiers = ['displayName', '@rid', 'sourceId'];
     const updatedProperties = movePropToTop(properties, 'displayName');
 
@@ -177,7 +177,7 @@ function DetailDrawer(props: DetailDrawerProps) {
    * @param {Object} record - Record to be formatted.
    * @param {boolean} isNested - Nested flag.
    */
-  const formatMetadata = (record, isNested) => formatProps(record, schema.getMetadata(), isNested);
+  const formatMetadata = (record: GeneralRecordType, isNested: boolean) => formatProps(record, schema.getMetadata(), isNested);
 
   /**
    * Formats non-identifying, non-metadata properties of the input record.

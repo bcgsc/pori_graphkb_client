@@ -32,7 +32,6 @@ interface DefaultPopupComponentProps {
   valueToString?: (arg: unknown) => string;
   /** finds routeName for displayed record */
   getLink?: (arg: Record<string, unknown> | undefined) => string;
-  getDetails?: (arg?: Record<string, unknown>) => Record<string, unknown> | undefined;
   /** title of card. Will usually be record displayName */
   title?: string;
 }
@@ -42,15 +41,12 @@ interface DefaultPopupComponentProps {
  */
 function DefaultPopupComponent(props: DefaultPopupComponentProps) {
   const {
-    details,
-    getDetails = (d) => d,
+    details: retrievedDetails,
     label,
     valueToString = (s) => `${s}`,
     getLink,
     title,
   } = props;
-
-  const retrievedDetails = getDetails(details);
 
   return (
     <Card>
@@ -90,7 +86,6 @@ function DefaultPopupComponent(props: DefaultPopupComponentProps) {
 }
 
 DefaultPopupComponent.defaultProps = {
-  getDetails: (d) => d,
   details: {},
   valueToString: (s) => `${s}`,
   getLink: null,
@@ -108,12 +103,10 @@ interface DetailChipProps<PopProps extends Record<string, unknown>> {
   valueToString?: () => string;
   /** properties passed to the chip element */
   ChipProps?: Partial<MuiChipProps>;
-  /** function to retrieve the details from the details object */
-  getDetails?: (arg: Record<string, unknown>) => Record<string, unknown>;
   /** the title for the pop-up card (defaults to the chip label) */
   title?: string;
   /** function component constructor */
-  PopUpComponent?: (renderProps: PopProps & Partial<DetailChipProps<any>>) => JSX.Element;
+  PopUpComponent?: (renderProps: PopProps & DefaultPopupComponentProps) => JSX.Element;
   /** props for PopUpComponent so that it mounts correctly */
   PopUpProps?: PopProps;
   className?: string;
@@ -129,7 +122,6 @@ function DetailChip<P extends Record<string, unknown>>(props: DetailChipProps<P>
     details,
     onDelete,
     className,
-    getDetails,
     label,
     valueToString,
     ChipProps,
@@ -195,7 +187,6 @@ DetailChip.defaultProps = {
   PopUpProps: null,
   className: '',
   details: {},
-  getDetails: (d) => d,
   onDelete: null,
   valueToString: (s) => `${s}`,
   getLink: null,

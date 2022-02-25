@@ -154,8 +154,8 @@ function RecordAutocomplete(props: RecordAutocompleteProps) {
   }
 
   const { data: options, isLoading } = useQuery(
-    ['/query', searchBody, { forceListReturn: true }] as const,
-    ({ queryKey: [route, body, opts] }) => api.post(route, body, opts),
+    ['/query', searchBody] as const,
+    ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled,
       onError: (err) => {

@@ -32,14 +32,14 @@ const MAX_SUGGESTIONS = 50;
  * @param endpoint - URL endpoint.
  * @param {Object} payload - PATCH payload.
  */
-const patch = (endpoint: string, payload: Record<string, unknown>, callOptions?: RequestCallOptions) => {
+const patch = (endpoint: string, payload: Record<string, unknown>) => {
   // strip out the display name to have it force-regenerate
   const { displayName, ...changes } = payload;
   const init = {
     method: 'PATCH',
     body: jc.stringify(changes),
   };
-  return request(endpoint, init, callOptions);
+  return request(endpoint, init);
 };
 
 /**
@@ -58,24 +58,24 @@ const get = (endpoint: string, callOptions?: RequestCallOptions) => {
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-const post = (endpoint: string, payload: Record<string, unknown>, callOptions?: RequestCallOptions) => {
+function post<R extends string>(endpoint: R, payload: Record<string, unknown>) {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),
   };
-  return request(endpoint, init, callOptions);
-};
+  return request(endpoint, init);
+}
 
 /**
  * Sends DELETE request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const del = (endpoint: string, callOptions?: RequestCallOptions) => {
+const del = (endpoint: string) => {
   const init = {
     method: 'DELETE',
   };
 
-  return request(endpoint, init, callOptions);
+  return request(endpoint, init);
 };
 
 /**

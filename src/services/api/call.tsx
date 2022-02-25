@@ -11,7 +11,6 @@ import {
 export interface RequestCallOptions {
   /** always return a list for succesful requests */
   forceListReturn?: boolean;
-  forceRecordReturn?: boolean;
 }
 
 /**
@@ -23,7 +22,7 @@ async function request(
   /** Request properties. */
   requestOptions: RequestInit,
   /** options to be passed to the Request for succesful requests */
-  callOptions?: RequestCallOptions
+  callOptions?: RequestCallOptions,
 ) {
   if (
     requestOptions.method !== 'GET'
@@ -76,11 +75,6 @@ async function request(
 
     if (callOptions?.forceListReturn && !Array.isArray(result)) {
       result = [result];
-    } else if (Array.isArray(result) && callOptions?.forceRecordReturn) {
-      if (result.length > 1) {
-        throw new BadRequestError(`expected a single record but found multiple (${result.length})`);
-      }
-      [result] = result;
     }
     return result;
   }

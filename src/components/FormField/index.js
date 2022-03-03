@@ -196,10 +196,6 @@ const FormField = ({
       required: mandatory,
       value,
       helperText,
-      innerProps,
-      DetailChipProps: {
-        getLink: schema.getLink,
-      },
     };
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
@@ -242,20 +238,6 @@ const FormField = ({
       propComponent = (
         <RecordAutocomplete
           {...autoProps}
-          DetailChipProps={{
-            ...autoProps.DetailChipProps,
-            valueToString: (record) => {
-              if (record && record['@rid']) {
-                return schema.getLabel(record, false);
-              }
-              if (Array.isArray(record)) {
-                return `Array(${record.length})`;
-              }
-              return `${record}`;
-            },
-          }}
-          getOptionLabel={opt => schema.getLabel(opt, false)}
-          innerProps={innerProps}
         />
       );
     }

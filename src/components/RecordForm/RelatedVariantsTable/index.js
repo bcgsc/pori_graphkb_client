@@ -50,7 +50,7 @@ function RelatedVariantsTable({ recordId }) {
   }], async ({ queryKey: [route, body] }) => api.post(route, body));
 
   useEffect(() => {
-    const gridApi = grid.ref?.current.api;
+    const gridApi = grid.ref?.current?.api;
 
     if (gridApi && !isFetching) {
       gridApi.setRowData(variants);

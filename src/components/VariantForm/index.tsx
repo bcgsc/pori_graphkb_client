@@ -40,7 +40,8 @@ const leftoverPositionalProps = omit(
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
-  { properties: leftoverPositionalProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
+  { properties: leftoverPositionalProps },
+  { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
 const leftoverCategoryProps = omit(
@@ -54,7 +55,8 @@ const leftoverCategoryProps = omit(
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
-  { properties: leftoverCategoryProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
+  { properties: leftoverCategoryProps },
+  { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
 const coordinateOptions = Position.descendantTree(true).map((m) => ({

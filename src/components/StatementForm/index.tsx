@@ -116,12 +116,10 @@ const StatementForm = ({
     return '';
   }, [diagnosticData, prognosticData, therapeuticData]);
 
-  const form = useSchemaForm(
-    fieldDefs, initialValue, {
-      variant,
-      additionalValidationFn: checkLogicalStatement,
-    },
-  );
+  const form = useSchemaForm(fieldDefs, initialValue, {
+    variant,
+    additionalValidationFn: checkLogicalStatement,
+  });
   const {
     formIsDirty,
     setFormIsDirty,

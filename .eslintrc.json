@@ -129,7 +129,6 @@
         "react/prop-types": "off",
         "react/no-unstable-nested-components": "off",
         "prefer-object-spread": "off",
-        "function-paren-newline": "off",
         "react/static-property-placement": "off",
         "no-unused-vars": "off",
         "@typescript-eslint/no-shadow": "off",

@@ -42,7 +42,7 @@ const buildSearchFromParseVariant = (schema, variant) => {
     payload.filters.AND.push({ reference2: null });
   }
 
-  schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
+  schema.getProperties('PositionalVariant').filter((p) => !p.name.includes('Repr')).forEach((prop) => {
     if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
       const value = variant[prop.name];
 

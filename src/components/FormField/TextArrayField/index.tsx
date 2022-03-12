@@ -84,7 +84,7 @@ class TextArrayField extends Component {
       } else {
         value.push(text);
         this.setState({ value, textInputValue: '', textInputError: '' });
-        onChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+        onChange({ target: { name, value: value.filter((v) => !deleted.has(v)) } });
       }
     }
   }
@@ -119,9 +119,9 @@ class TextArrayField extends Component {
         deleted.add(text);
         this.setState({ deleted });
       } else {
-        this.setState({ value: value.filter(v => v !== text) });
+        this.setState({ value: value.filter((v) => v !== text) });
       }
-      onChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+      onChange({ target: { name, value: value.filter((v) => !deleted.has(v)) } });
     }
   }
 
@@ -139,7 +139,7 @@ class TextArrayField extends Component {
 
     deleted.delete(text);
     this.setState({ deleted });
-    onChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+    onChange({ target: { name, value: value.filter((v) => !deleted.has(v)) } });
   }
 
   /**
@@ -175,7 +175,7 @@ class TextArrayField extends Component {
         this.handleAdd(text);
       }
     } else if (key === 'Backspace') {
-      const removeValue = value.filter(v => !deleted.has(v)).pop();
+      const removeValue = value.filter((v) => !deleted.has(v)).pop();
 
       if (removeValue) {
         this.handleDelete(removeValue);

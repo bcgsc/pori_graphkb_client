@@ -35,7 +35,7 @@ function RelationshipList(props) {
   // Checks subclasses
   const edges = schema.getEdges(record);
 
-  const rid = rec => rec['@rid'] || rec;
+  const rid = (rec) => rec['@rid'] || rec;
 
   if (!edges || edges.length === 0) return null;
   return (

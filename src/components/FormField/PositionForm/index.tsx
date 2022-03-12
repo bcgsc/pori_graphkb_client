@@ -47,7 +47,7 @@ const PositionForm = ({
   ...props
 }) => {
   const positionVariants = schema.schema[baseVariant || DEFAULT_BASE_VARIANT]
-    .descendantTree(true).map(m => m.name);
+    .descendantTree(true).map((m) => m.name);
   const [variant, setVariant] = useState(initialVariant);
 
   let PositionComponent;

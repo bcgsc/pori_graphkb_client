@@ -31,14 +31,14 @@ jest.mock('@/components/DropDownSelect', () => ({
 }) => {
   const handleChange = (event) => {
     const option = options.find(
-      opt => (opt.value === undefined ? opt : opt.value) === event.currentTarget.value,
+      (opt) => (opt.value === undefined ? opt : opt.value) === event.currentTarget.value,
     );
 
     onChange({ target: { value: option.value === undefined ? option : option.value, name } });
   };
   return (
     <select data-testid={testId} onChange={handleChange} value={value}>
-      {options.map(opt => (
+      {options.map((opt) => (
         <option key={opt.key || opt} value={opt.value === undefined ? opt : opt.value}>
           {opt.label || opt}
         </option>
@@ -56,7 +56,7 @@ describe('AdvancedSearchView', () => {
   const mockPush = jest.fn();
 
   const mockHistory = {
-    push: event => mockPush(event),
+    push: (event) => mockPush(event),
   };
 
   test('search button fires correctly', () => {

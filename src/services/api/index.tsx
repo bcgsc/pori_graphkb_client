@@ -82,7 +82,7 @@ const del = (endpoint, callOptions) => {
  * @param {ClassModel} model the schema model to use to generate the search function
  * @returns the function to retrieve the query request body based on some input text
  */
-const getDefaultSuggestionQueryBody = model => (textInput) => {
+const getDefaultSuggestionQueryBody = (model) => (textInput) => {
   let body = {};
 
   if (kbSchema.util.looksLikeRID(textInput)) {

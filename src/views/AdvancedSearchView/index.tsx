@@ -74,7 +74,7 @@ function AdvancedSearchView({ history }) {
         onSubmit={addFilterToGroup}
       />
       <div className="advanced-search__filters">
-        {Object.keys(groups).map(groupId => (
+        {Object.keys(groups).map((groupId) => (
           <FilterGroup
             key={groupId}
             filters={groups[groupId]}

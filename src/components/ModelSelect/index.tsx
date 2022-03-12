@@ -24,7 +24,7 @@ const ModelSelect = ({
   const model = value || defaultValue;
 
   useEffect(() => {
-    const models = schema.get(baseModel).descendantTree(!includeAbstract).map(m => ({
+    const models = schema.get(baseModel).descendantTree(!includeAbstract).map((m) => ({
       label: m.name, value: m.name, caption: m.description, key: m.name,
     })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);

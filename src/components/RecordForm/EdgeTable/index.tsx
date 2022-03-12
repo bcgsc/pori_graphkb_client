@@ -127,7 +127,7 @@ const EdgeTable = ({ recordId }) => {
           ]}
           defaultColDef={{ resizable: true, sortable: true }}
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']}
+          getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll

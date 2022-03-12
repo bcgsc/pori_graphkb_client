@@ -134,7 +134,7 @@ ArrayView.defaultProps = {
   closingBrace: ']',
 };
 
-const JSONView = props => (
+const JSONView = (props) => (
   <>
     <div><span>{'{'}</span></div>
     <ObjectView {...props} />

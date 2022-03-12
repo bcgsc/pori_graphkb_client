@@ -53,7 +53,7 @@ const BooleanField = (props) => {
         </FormLabel>
         <RadioGroup
           name={name}
-          onChange={e => onChange(e)}
+          onChange={(e) => onChange(e)}
           style={{ flexDirection: 'row' }}
           value={value}
         >

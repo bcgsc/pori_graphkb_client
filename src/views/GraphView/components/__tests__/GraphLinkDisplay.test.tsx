@@ -33,7 +33,7 @@ describe('<GraphLinkDisplay />', () => {
 
     const group = container.querySelector('g');
     expect(group).toBeTruthy();
-    Array.from(group.children).forEach(child => expect(child.tagName).toBe('path'));
+    Array.from(group.children).forEach((child) => expect(child.tagName).toBe('path'));
   });
 
   test('renders label correctly', () => {

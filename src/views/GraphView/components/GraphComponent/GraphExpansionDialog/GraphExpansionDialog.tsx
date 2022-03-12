@@ -58,12 +58,12 @@ function GraphExpansionDialog(props) {
           {(edges || []).reduce((array, edge) => {
             if (
               !array.includes(edge['@class'])
-              && !links.find(l => l.getId() === edge['@rid'])
+              && !links.find((l) => l.getId() === edge['@rid'])
             ) {
               array.push(edge['@class']);
             }
             return array;
-          }, []).map(edge => (
+          }, []).map((edge) => (
             <ListItem
               key={edge}
               className="expand-links-type"
@@ -101,7 +101,7 @@ function GraphExpansionDialog(props) {
             const target = inRid === node['@rid'] ? edge.out : edge.in;
 
             if (target['@rid'] === node['@rid']
-              || links.find(l => l.getId() === edge['@rid'])) {
+              || links.find((l) => l.getId() === edge['@rid'])) {
               return null;
             }
             const classLabel = schema.get(edge['@class'])[inRid === node['@rid'] ? 'reverseName' : 'name'];

@@ -19,7 +19,7 @@ const DataViewFooter = ({
   selectedRecords, onError, history, statusMessage, totalRows,
 }) => {
   const handleSwapToGraph = useCallback(() => {
-    const nodeRIDs = selectedRecords.map(node => node['@rid']);
+    const nodeRIDs = selectedRecords.map((node) => node['@rid']);
     navigateToGraph(nodeRIDs, history, onError);
   }, [history, onError, selectedRecords]);
 

@@ -35,8 +35,8 @@ const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
 const ABSTRACT_CLASSES = Object.values(schema.schema)
-  .filter(m => m.isAbstract && m.name !== 'Variant')
-  .map(m => m.name);
+  .filter((m) => m.isAbstract && m.name !== 'Variant')
+  .map((m) => m.name);
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
@@ -86,7 +86,7 @@ const Main = () => {
               <AuthenticatedRoute
                 component={NewRecordSelectView}
                 path={`/:variant(new)/:modelName(${
-                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map(m => m.toLowerCase())].join('|')
+                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map((m) => m.toLowerCase())].join('|')
                 })`}
               />
               <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />

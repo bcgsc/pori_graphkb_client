@@ -49,7 +49,7 @@ const GraphView = ({ history }) => {
           );
         });
       },
-      select: response => util.hashRecordsByRID(response),
+      select: (response) => util.hashRecordsByRID(response),
     },
   );
 

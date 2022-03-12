@@ -146,7 +146,7 @@ const ActivityView = () => {
           data={recentRecords}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
-          getRowNodeId={data => data['@rid']}
+          getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll

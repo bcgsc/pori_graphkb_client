@@ -73,7 +73,7 @@ const QueryResultsTable = ({
           data={data}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
-          getRowNodeId={rowData => rowData['@rid']}
+          getRowNodeId={(rowData) => rowData['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll

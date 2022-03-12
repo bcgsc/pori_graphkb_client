@@ -62,7 +62,7 @@ function SetPropsList(props) {
         </ListItemText>
       </ListItem>
       <List dense disablePadding>
-        {type === 'linkset' && values.map(item => (
+        {type === 'linkset' && values.map((item) => (
           <>
             <ListItem key={item['@rid']} button dense onClick={() => handleExpand(item)}>
               <div className="nested-spacer" />
@@ -79,7 +79,7 @@ function SetPropsList(props) {
               {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
             <Collapse in={!!opened.includes(item)} unmountOnExit>
-              {identifiers.map(propName => (
+              {identifiers.map((propName) => (
                 <List dense disablePadding>
                   <ListItem>
                     <ListItemText>
@@ -100,7 +100,7 @@ function SetPropsList(props) {
             </Collapse>
           </>
         ))}
-        { type === 'embeddedset' && values.map(item => (
+        { type === 'embeddedset' && values.map((item) => (
           <ListItem key={item} dense>
             <div className="nested-spacer" />
             <ListItemText

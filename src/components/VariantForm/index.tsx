@@ -57,7 +57,7 @@ const { fields: categoryFields } = sortAndGroupFields(
   { properties: leftoverCategoryProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = Position.descendantTree(true).map(m => ({
+const coordinateOptions = Position.descendantTree(true).map((m) => ({
   label: m.name, value: m.name, key: m.name, caption: m.description,
 }));
 
@@ -279,7 +279,7 @@ const VariantForm = ({
             hasPositions
               ? leftoverPositionalProps
               : leftoverCategoryProps,
-          ).map(p => p.name)
+          ).map((p) => p.name)
         }
         label="Optional Information"
       >

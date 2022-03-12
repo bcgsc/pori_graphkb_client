@@ -99,15 +99,15 @@ const StatementForm = ({
         if (subjectClass !== 'ClinicalTrial') {
           return 'eligibility statements should have a ClinicalTrial subject';
         }
-      } else if (diagnosticData.some(r => r.name === relevanceName)) {
+      } else if (diagnosticData.some((r) => r.name === relevanceName)) {
         if (subjectClass !== 'Disease') {
           return 'diagnostic statements should have a Disease subject';
         }
-      } else if (therapeuticData.some(r => r.name === relevanceName)) {
+      } else if (therapeuticData.some((r) => r.name === relevanceName)) {
         if (subjectClass !== 'Therapy') {
           return 'therapeutic statements should have a Therapy subject';
         }
-      } else if (prognosticData.some(r => r.name === relevanceName)) {
+      } else if (prognosticData.some((r) => r.name === relevanceName)) {
         if (subjectName !== 'patient') {
           return 'prognostic statements should have the Vocabulary record "patient" for the subject';
         }

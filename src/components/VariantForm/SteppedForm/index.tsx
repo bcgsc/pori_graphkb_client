@@ -69,12 +69,12 @@ const SteppedForm = ({
         nonLinear
         orientation="vertical"
       >
-        {React.Children.toArray(children).filter(child => child).map((child, index) => {
+        {React.Children.toArray(children).filter((child) => child).map((child, index) => {
           if (!child) {
             return child;
           }
           const { fields, label } = child.props;
-          const errors = fields.some(f => formErrors[f]);
+          const errors = fields.some((f) => formErrors[f]);
           return (
             <Step>
               <StepButton

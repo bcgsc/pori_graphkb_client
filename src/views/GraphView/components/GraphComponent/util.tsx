@@ -1,6 +1,6 @@
 const TREE_LINK = 'SubClassOf';
 
-const getId = node => (node.data
+const getId = (node) => (node.data
   ? node.data['@rid']
   : node['@rid'] || node);
 
@@ -23,7 +23,7 @@ const computeNodeLevels = (graphLinks) => {
     }
   });
 
-  const queue = Object.values(nodes).filter(node => node.parents.length === 0);
+  const queue = Object.values(nodes).filter((node) => node.parents.length === 0);
   const ranks = {};
 
   queue.forEach((root) => {

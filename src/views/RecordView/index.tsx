@@ -104,8 +104,8 @@ const RecordView = (props) => {
     },
     {
       enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
-      onError: err => handleError({ error: err }),
-      onSuccess: result => result && setModelName(result['@class']),
+      onError: (err) => handleError({ error: err }),
+      onSuccess: (result) => result && setModelName(result['@class']),
     },
   );
 

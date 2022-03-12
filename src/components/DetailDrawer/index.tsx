@@ -41,7 +41,7 @@ import TextRow from './TextRow';
    * @property {string} propToBeMovedToTop property to be promoted to top of array for display
    */
 const movePropToTop = (properties, propToBeMovedToTop) => {
-  const propIndex = properties.findIndex(prop => prop.name === propToBeMovedToTop);
+  const propIndex = properties.findIndex((prop) => prop.name === propToBeMovedToTop);
   const updatedProperties = [...properties];
 
   if (propIndex !== 0 && propIndex !== -1) {
@@ -93,7 +93,7 @@ function DetailDrawer(props) {
   const handleLinkExpand = (key) => {
     if (linkOpen === key) {
       setLinkOpen(null);
-      setOpened(opened.filter(o => !o.includes(key)));
+      setOpened(opened.filter((o) => !o.includes(key)));
     } else {
       setLinkOpen(key);
     }
@@ -186,13 +186,13 @@ function DetailDrawer(props) {
     const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(record)
-      .map(key => ({ name: key, type: util.parseKBType(record[key]) }));
+      .map((key) => ({ name: key, type: util.parseKBType(record[key]) }));
 
     if (schema && schema.getProperties(record)) {
       properties = schema.getProperties(record);
     }
     const propsList = Object.values(properties)
-      .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
+      .filter((prop) => !identifiers.map((id) => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
 

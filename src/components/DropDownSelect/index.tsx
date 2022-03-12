@@ -78,7 +78,7 @@ function DropDownSelect(props) {
     IconComponent,
   } = props;
 
-  const optionsDisplay = options.map(option => children(option, disabled));
+  const optionsDisplay = options.map((option) => children(option, disabled));
 
   let InputComponent = Input;
 

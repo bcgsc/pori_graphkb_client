@@ -24,7 +24,7 @@ import Timestamp from './Timestamp';
 
 const POSITION_CLASSES = [
   'Position',
-  ...schema.schema.Position.descendantTree(false).map(m => m.name),
+  ...schema.schema.Position.descendantTree(false).map((m) => m.name),
 ];
 
 /**
@@ -204,7 +204,7 @@ const FormField = ({
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
         autoProps.filterOptions = [
-          ...schema.schema.Variant.descendantTree(false).map(m => m.name),
+          ...schema.schema.Variant.descendantTree(false).map((m) => m.name),
           'Disease',
           'CatalogueVariant',
         ];

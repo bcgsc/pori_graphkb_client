@@ -17,7 +17,7 @@ import DetailChip from '../DetailChip';
 
 const MIN_TERM_LENGTH = 3;
 
-const getGroup = option => (option.source && option.source.displayName
+const getGroup = (option) => (option.source && option.source.displayName
   ? option.source.displayName
   : 'no source');
 
@@ -99,10 +99,10 @@ const RecordAutocomplete = (props) => {
   useEffect(() => {
     if (searchTerm) {
       const terms = searchTerm.split(' ');
-      const searchTerms = terms.filter(term => term); // remove empty/null terms
+      const searchTerms = terms.filter((term) => term); // remove empty/null terms
 
       if (terms.length > 1) {
-        const badTerms = searchTerms.filter(term => term.length < MIN_TERM_LENGTH);
+        const badTerms = searchTerms.filter((term) => term.length < MIN_TERM_LENGTH);
 
         if (badTerms.length) {
           const badLengthText = `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
@@ -119,8 +119,8 @@ const RecordAutocomplete = (props) => {
       if (!singleLoad) {
         const terms = debouncedSearchTerm.split(' ');
         searchTerms = terms
-          .filter(term => term)
-          .filter(term => term.length >= MIN_TERM_LENGTH)
+          .filter((term) => term)
+          .filter((term) => term.length >= MIN_TERM_LENGTH)
           .join(' ');
       }
       return getQueryBody(searchTerms);
@@ -143,7 +143,7 @@ const RecordAutocomplete = (props) => {
         console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
         console.error(err);
       },
-      select: response => response.sort(sortByGroup),
+      select: (response) => response.sort(sortByGroup),
     },
   );
 
@@ -194,12 +194,12 @@ const RecordAutocomplete = (props) => {
 
   const filterOptions = useCallback((opts, { inputValue }) => {
     if (singleLoad) {
-      return opts.filter(option => [
+      return opts.filter((option) => [
         option.name,
         option.sourceId,
         option.displayName,
       ].some(
-        tgt => tgt && tgt.toLowerCase().includes(inputValue.toLowerCase()),
+        (tgt) => tgt && tgt.toLowerCase().includes(inputValue.toLowerCase()),
       ));
     }
 
@@ -212,7 +212,7 @@ const RecordAutocomplete = (props) => {
       disabled={disabled}
       filterOptions={filterOptions}
       filterSelectedOptions
-      getOptionLabel={option => schema.getLabel(option)}
+      getOptionLabel={(option) => schema.getLabel(option)}
       getOptionSelected={(option, value_) => option['@rid'] === value_['@rid']}
       groupBy={getGroup}
       ListboxProps={{
@@ -226,7 +226,7 @@ const RecordAutocomplete = (props) => {
       onInputChange={handleInputChange}
       options={options ?? []}
       popupIcon={<SearchIcon />}
-      renderGroup={params => [
+      renderGroup={(params) => [
         <ListSubheader
           key={params.key}
           className="record-autocomplete__group-title"
@@ -236,7 +236,7 @@ const RecordAutocomplete = (props) => {
         </ListSubheader>,
         params.children,
       ]}
-      renderInput={params => (
+      renderInput={(params) => (
         <TextField
           {...params}
           disabled={disabled || (!isMulti && Boolean(selectedValues.length))}

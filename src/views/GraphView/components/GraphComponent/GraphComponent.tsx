@@ -191,7 +191,7 @@ function GraphComponent(props) {
   const initSimulation = (sim, graphOpt) => {
     sim.force(
       'link',
-      d3Force.forceLink().id(d => d.getId()),
+      d3Force.forceLink().id((d) => d.getId()),
     ).force(
       'collide',
       d3Force.forceCollide(graphOpt.collisionRadius),
@@ -454,11 +454,11 @@ function GraphComponent(props) {
       const partitions = Math.max(...[0, ...Object.values(ranks)]) + 2;
       const partitionSize = wrapper.current.clientHeight / partitions;
       // partial force https://stackoverflow.com/questions/39575319/partial-forces-on-nodes-in-d3-js
-      const subclassYForce = d3Force.forceY(node => (partitions - ranks[getId(node)] - 1) * partitionSize);
+      const subclassYForce = d3Force.forceY((node) => (partitions - ranks[getId(node)] - 1) * partitionSize);
       const init = subclassYForce.initialize;
 
       subclassYForce.initialize = (allNodes) => {
-        init(allNodes.filter(node => ranks[getId(node)] !== undefined));
+        init(allNodes.filter((node) => ranks[getId(node)] !== undefined));
       };
 
       sim.force('y', subclassYForce);
@@ -473,7 +473,7 @@ function GraphComponent(props) {
             return 5 * graphOpts.linkStrength;
           }
           return graphOpts.linkStrength;
-        }).id(d => d.getId()),
+        }).id((d) => d.getId()),
     );
 
     const ticked = () => {
@@ -730,7 +730,7 @@ function GraphComponent(props) {
    *
    * @param {object} record record data. Node data returned from api
    */
-  const isFullyExpanded = record => !schema.getEdges(record).some(edge => !links.find(l => l.getId() === edge['@rid']));
+  const isFullyExpanded = (record) => !schema.getEdges(record).some((edge) => !links.find((l) => l.getId() === edge['@rid']));
 
   /**
    * Calls the api and renders neighbor nodes of the input node onto the graph.
@@ -787,7 +787,7 @@ function GraphComponent(props) {
   const handleExpandRequest = (node) => {
     const nodeIsHeavilyConnected = (currNode) => {
       const nodeEdges = schema.getEdges(currNode);
-      const edgesToBeRendered = nodeEdges.filter(edge => !(links.find(l => l.getId() === edge['@rid'])));
+      const edgesToBeRendered = nodeEdges.filter((edge) => !(links.find((l) => l.getId() === edge['@rid'])));
       return (edgesToBeRendered.length > HEAVILY_CONNECTED);
     };
 
@@ -938,7 +938,7 @@ function GraphComponent(props) {
       if (record[edgeType] && record[edgeType].length !== 0) {
         record[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
-          const j = links.findIndex(l => l.data['@rid'] === edgeRid);
+          const j = links.findIndex((l) => l.data['@rid'] === edgeRid);
 
           if (j !== -1) {
             const link = links[j];
@@ -1004,7 +1004,7 @@ function GraphComponent(props) {
    * Selects/Deselects all options in the expand node dialog.
    */
   const handleExpandCheckAll = () => {
-    const allEdges = schema.getEdges(expandNode).map(e => e['@rid']);
+    const allEdges = schema.getEdges(expandNode).map((e) => e['@rid']);
     let newExpandExclusions = [];
 
     if (expandExclusions.length !== allEdges.length) {
@@ -1017,7 +1017,7 @@ function GraphComponent(props) {
    * Expands all links of specified class on the expand node.
    * @param {string} cls - KB edge class name to be expanded.
    */
-  const handleExpandByClass = cls => () => {
+  const handleExpandByClass = (cls) => () => {
     const updatedExpandExclusions = [];
     schema.getEdges(expandNode).forEach((edge) => {
       if (edge['@class'] !== cls) {
@@ -1059,7 +1059,7 @@ function GraphComponent(props) {
       {
         name: 'Details',
         action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
-        disabled: link => link.getId() === (detail || {})['@rid'],
+        disabled: (link) => link.getId() === (detail || {})['@rid'],
       },
       {
         name: 'Hide',
@@ -1070,7 +1070,7 @@ function GraphComponent(props) {
       {
         name: 'Details',
         action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true)),
-        disabled: node => node.getId() === (detail || {})['@rid'],
+        disabled: (node) => node.getId() === (detail || {})['@rid'],
       },
       {
         name: 'Close',
@@ -1079,7 +1079,7 @@ function GraphComponent(props) {
       {
         name: 'Expand',
         action: () => handleExpandRequest(actionsNode),
-        disabled: node => !expandable[node.getId()],
+        disabled: (node) => !expandable[node.getId()],
       },
       {
         name: 'Hide',
@@ -1096,7 +1096,7 @@ function GraphComponent(props) {
     />
   );
 
-  const linksDisplay = links.map(link => (
+  const linksDisplay = links.map((link) => (
     <GraphLinkDisplay
       key={link.getId()}
       actionsNode={actionsNode}
@@ -1109,7 +1109,7 @@ function GraphComponent(props) {
     />
   ));
 
-  const nodesDisplay = nodes.map(node => (
+  const nodesDisplay = nodes.map((node) => (
     <GraphNodeDisplay
       key={node.getId()}
       applyDrag={applyDrag}

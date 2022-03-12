@@ -102,11 +102,11 @@ const RelatedStatementsTable = ({ recordId }) => {
             },
             {
               headerName: 'conditions',
-              valueGetter: ({ data }) => data.conditions.map(c => c.displayName).join('; '),
+              valueGetter: ({ data }) => data.conditions.map((c) => c.displayName).join('; '),
             },
             {
               headerName: 'evidence',
-              valueGetter: ({ data }) => data.evidence.map(c => c.displayName).join('; '),
+              valueGetter: ({ data }) => data.evidence.map((c) => c.displayName).join('; '),
             },
             {
               headerName: 'Actions',
@@ -121,7 +121,7 @@ const RelatedStatementsTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']} // eslint-disable-line react/prop-types
+          getRowNodeId={(data) => data['@rid']} // eslint-disable-line react/prop-types
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll

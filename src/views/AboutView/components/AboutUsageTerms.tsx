@@ -40,7 +40,7 @@ const AboutUsageTerms = () => {
         GraphKB Terms of Use
       </Typography>
       <TableOfContext baseRoute="about/terms" sections={data?.content ?? []} />
-      {data?.content.map(sectionDatum => (
+      {data?.content.map((sectionDatum) => (
         <div key={sectionDatum.id}>
           <Typography id={sectionDatum.id} variant="h3">
             {sectionDatum.label}

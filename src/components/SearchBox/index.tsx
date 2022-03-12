@@ -35,7 +35,7 @@ const SearchBox = ({
   return (
     <div
       className={`search-box ${className}`}
-      onKeyUp={event => event.keyCode === ENTER_KEYCODE && onSubmit(searchText)}
+      onKeyUp={(event) => event.keyCode === ENTER_KEYCODE && onSubmit(searchText)}
       role="textbox"
       tabIndex={0}
     >

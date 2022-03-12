@@ -48,7 +48,7 @@ const sortAndGroupFields = (model, opt = {}) => {
     // assume each field only can belong to a single group, overwrite others
     const key = groupItems.slice().sort((p1, p2) => p1.localeCompare(p2)).join('-');
     const groupDefn = {
-      fields: groupItems.filter(fname => properties[fname]),
+      fields: groupItems.filter((fname) => properties[fname]),
       mandatory: false,
       generated: true,
       name: key,
@@ -91,11 +91,11 @@ const sortAndGroupFields = (model, opt = {}) => {
     } = (groupMap[prop.name] || prop);
 
     const isAboveFold = fields
-      ? fields.some(fname => aboveFold.includes(fname))
+      ? fields.some((fname) => aboveFold.includes(fname))
       : aboveFold.includes(name);
 
     const isBelowFold = fields
-      ? fields.some(fname => belowFold.includes(fname))
+      ? fields.some((fname) => belowFold.includes(fname))
       : belowFold.includes(name);
 
     const mustBeFilled = (
@@ -132,7 +132,7 @@ const cleanLinkedRecords = (content) => {
     if (content[key] !== undefined) {
       if (Array.isArray(content[key])) {
         try {
-          const ridArr = content[key].map(rec => (rec['@rid']));
+          const ridArr = content[key].map((rec) => (rec['@rid']));
 
           if (content[key].length === 1) {
             newContent[key] = ridArr.join();

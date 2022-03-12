@@ -74,7 +74,7 @@ const ColumnConfiguration = ({
   }, [gridRef, isOpen]);
 
   const handleToggleColumn = useCallback((colId, show) => {
-    setOpenCols(prev => ({ ...prev, [colId]: show }));
+    setOpenCols((prev) => ({ ...prev, [colId]: show }));
     const columnApi = gridRef?.current?.columnApi;
 
     if (columnApi) {
@@ -102,7 +102,7 @@ const ColumnConfiguration = ({
                   label={column.title}
                   nodeId={column.id}
                 >
-                  {column.children.map(child => (
+                  {column.children.map((child) => (
                     <TreeItem
                       key={child.id}
                       className="column-configuration__item"

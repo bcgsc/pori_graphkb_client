@@ -76,7 +76,7 @@ RadioSelect.defaultProps = {
   onChange: () => {},
   className: '',
   value: null,
-  optionToKey: o => o.key || o,
+  optionToKey: (o) => o.key || o,
 };
 
 export default RadioSelect;

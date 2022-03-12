@@ -80,7 +80,7 @@ function GraphOptionsPanel(props) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
+        {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map((help) => (
           <React.Fragment key={help.title}>
             <Typography gutterBottom variant="h6">
               {help.title}
@@ -95,10 +95,10 @@ function GraphOptionsPanel(props) {
   );
 
   const nodeLabelBy = Object.keys(propsMap.nodeProps || {})
-    .filter(prop => propsMap.nodeProps[prop]
+    .filter((prop) => propsMap.nodeProps[prop]
         && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
   const nodeColorBy = Object.keys(propsMap.nodeProps || {})
-    .filter(prop => propsMap.nodeProps[prop]
+    .filter((prop) => propsMap.nodeProps[prop]
         && propsMap.nodeProps[prop].length <= 20
         && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
 
@@ -149,7 +149,7 @@ function GraphOptionsPanel(props) {
                     checked={!!(graphOptions.nodePreview)}
                     color="secondary"
                     name="nodePreview"
-                    onChange={e => handleGraphOptionsChange({
+                    onChange={(e) => handleGraphOptionsChange({
                       target: {
                         value: e.target.checked,
                         name: e.target.name,
@@ -177,7 +177,7 @@ function GraphOptionsPanel(props) {
                     color="secondary"
                     disabled={!graphOptions.nodesColor}
                     name="nodesLegend"
-                    onChange={e => handleGraphOptionsChange({
+                    onChange={(e) => handleGraphOptionsChange({
                       target: {
                         value: e.target.checked,
                         name: e.target.name,
@@ -220,7 +220,7 @@ function GraphOptionsPanel(props) {
                     color="secondary"
                     disabled={linkLegendDisabled || !graphOptions.linksColor}
                     name="linksLegend"
-                    onChange={e => handleGraphOptionsChange({
+                    onChange={(e) => handleGraphOptionsChange({
                       target: {
                         value: e.target.checked,
                         name: e.target.name,
@@ -241,7 +241,7 @@ function GraphOptionsPanel(props) {
                     checked={!!(graphOptions.isTreeLayout)}
                     color="secondary"
                     name="isTreeLayout"
-                    onChange={e => handleGraphOptionsChange({
+                    onChange={(e) => handleGraphOptionsChange({
                       target: {
                         value: e.target.checked,
                         name: e.target.name,

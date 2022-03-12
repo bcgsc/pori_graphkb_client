@@ -123,7 +123,7 @@ const PermissionsTable = ({
         <TableHead>
           <TableRow className="permissions-table__header">
             <TableCell size="small" />
-            {operationOrder.map(operation => (
+            {operationOrder.map((operation) => (
               <TableCell key={operation} padding="checkbox">
                 {operation}
               </TableCell>
@@ -131,7 +131,7 @@ const PermissionsTable = ({
           </TableRow>
           <TableRow>
             <TableCell size="small" />
-            {operationOrder.map(operation => (
+            {operationOrder.map((operation) => (
               <TableCell key={operation} padding="checkbox">
                 <Checkbox
                   checked={topBoxes[operation]}
@@ -151,7 +151,7 @@ const PermissionsTable = ({
                   <TableCell size="small">
                     {modelName}:
                   </TableCell>
-                  {operationOrder.map(operation => (
+                  {operationOrder.map((operation) => (
                     <TableCell key={operation} padding="checkbox">
                       {(permission[operation] !== null && (
                       <Checkbox

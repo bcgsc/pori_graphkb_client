@@ -16,14 +16,14 @@ jest.mock('../../DropDownSelect', () => ({
 }) => {
   const handleChange = (event) => {
     const option = options.find(
-      opt => opt === event.currentTarget.value,
+      (opt) => opt === event.currentTarget.value,
     );
 
     onChange({ target: { value: option, name } });
   };
   return (
     <select data-testid="select" onChange={handleChange} value={value}>
-      {options.map(opt => (
+      {options.map((opt) => (
         <option key={opt} value={opt}>
           {opt.label || opt}
         </option>

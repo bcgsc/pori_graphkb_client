@@ -98,7 +98,7 @@ const getRowsFromBlocks = async ({
     ));
   }
   const data = [];
-  (await Promise.all(blockRequests)).forEach(block => data.push(...block));
+  (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
     api.queryClient.setQueryData(
@@ -131,7 +131,7 @@ const DataView = ({
     ['/query', payload],
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
-      select: response => response[0]?.count,
+      select: (response) => response[0]?.count,
     },
   );
 
@@ -203,8 +203,8 @@ const DataView = ({
     async ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: Boolean(detailsRowId),
-      onError: err => handleError(err),
-      select: response => response[0],
+      onError: (err) => handleError(err),
+      select: (response) => response[0],
     },
   );
 

@@ -44,7 +44,7 @@ const StatementReview = ({
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: !createdBy['@rid'],
-      select: response => response[0],
+      select: (response) => response[0],
     },
   );
 

@@ -120,7 +120,7 @@ const MatchView = (props) => {
       }
 
       const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
-        queries.map(async query => queryClient.fetchQuery(
+        queries.map(async (query) => queryClient.fetchQuery(
           ['/query', query],
           async ({ queryKey: [route, body] }) => api.post(route, body),
           { staleTime: Infinity },
@@ -147,7 +147,7 @@ const MatchView = (props) => {
       };
     },
     {
-      onError: err => handleErrorSaveLocation(err, history),
+      onError: (err) => handleErrorSaveLocation(err, history),
     },
   );
 
@@ -174,7 +174,7 @@ const MatchView = (props) => {
   }, []);
 
   const handleJumpToGraph = useCallback(() => {
-    navigateToGraph(matches.map(m => m['@rid']), history, (err) => {
+    navigateToGraph(matches.map((m) => m['@rid']), history, (err) => {
       snackbar.enqueueSnackbar(err, { variant: 'error' });
     });
   }, [history, matches, snackbar]);
@@ -250,7 +250,7 @@ const MatchView = (props) => {
         ))}
 
       <div className="match-view__matches">
-        {matches.map(match => (
+        {matches.map((match) => (
           <DetailChip
             key={match['@rid']}
             details={{ ...match, source: match.source.displayName }}

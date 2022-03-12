@@ -103,7 +103,7 @@ const QuickSearch = ({ history }) => {
         .trim()
         .toLowerCase()
         .split(/\s+/)
-        .filter(word => word.length >= MIN_WORD_LENGTH);
+        .filter((word) => word.length >= MIN_WORD_LENGTH);
 
       if (!trimmed.length) {
         setErrorMessage(`Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`);
@@ -146,7 +146,7 @@ const QuickSearch = ({ history }) => {
       <div className="search__bar">
         <div
           className="search__main"
-          onKeyUp={event => event.keyCode === ENTER_KEYCODE && handleSubmit()}
+          onKeyUp={(event) => event.keyCode === ENTER_KEYCODE && handleSubmit()}
           role="textbox"
           tabIndex={0}
         >

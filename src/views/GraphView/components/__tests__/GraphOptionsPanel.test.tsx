@@ -12,13 +12,13 @@ jest.mock('../../../../components/DropDownSelect', () => ({
 }) => {
   const handleChange = (event) => {
     const option = options.find(
-      opt => opt === event.currentTarget.value,
+      (opt) => opt === event.currentTarget.value,
     );
     onChange({ target: { value: option, name } });
   };
   return (
     <select data-testid={`${name}`} onChange={handleChange} value={value}>
-      {options.map(opt => (
+      {options.map((opt) => (
         <option key={opt} value={opt}>
           {opt}
         </option>
@@ -38,7 +38,7 @@ describe('<GraphOptionsPanel />', () => {
   ];
 
   const propsMap = new PropsMap();
-  testNodes.forEach(t => propsMap.loadNode(t));
+  testNodes.forEach((t) => propsMap.loadNode(t));
 
   const handleDialogClose = jest.fn();
   const handleGraphOptionsChange = jest.fn();

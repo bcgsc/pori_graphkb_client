@@ -53,7 +53,7 @@ const CytobandPosition = ({
 
   return (
     <>
-      {[arm, majorBand, minorBand].map(model => (
+      {[arm, majorBand, minorBand].map((model) => (
         <FieldWrapper key={model.name}>
           <TextField
             disabled={disabled}

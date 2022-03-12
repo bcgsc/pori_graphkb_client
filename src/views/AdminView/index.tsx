@@ -65,7 +65,7 @@ const AdminView = () => {
       <div className="admin__email-all">
         <a
           href={`mailto:?subject=GraphKB&cc=graphkb@bcgsc.ca&bcc=${
-            users.filter(user => user.email).map(user => user.email).join(',')
+            users.filter((user) => user.email).map((user) => user.email).join(',')
           }`}
           rel="noopener noreferrer"
           target="_blank"

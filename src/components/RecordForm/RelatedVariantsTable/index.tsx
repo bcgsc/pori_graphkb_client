@@ -100,7 +100,7 @@ const RelatedVariantsTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']} // eslint-disable-line react/prop-types
+          getRowNodeId={(data) => data['@rid']} // eslint-disable-line react/prop-types
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll

@@ -30,8 +30,8 @@ describe('schema service', () => {
 
     test('Returns edges', () => {
       const edges = Object.values(testSchema.schema)
-        .filter(model => model.inherits && model.inherits.includes('E'))
-        .map(model => model.name);
+        .filter((model) => model.inherits && model.inherits.includes('E'))
+        .map((model) => model.name);
       expect(testSchema.getEdges()).toEqual(edges);
 
       const testNode = {

@@ -2,7 +2,7 @@ import './index.scss';
 
 import { Button, CircularProgress, Typography } from '@material-ui/core';
 import fetchIntercept from 'fetch-intercept';
-import * as jwt from 'jsonwebtoken';
+import jwtDecode from 'jwt-decode';
 import Keycloak from 'keycloak-js';
 import { PropTypes } from 'prop-types';
 import React, {
@@ -57,7 +57,7 @@ const AuthProvider = (props) => {
         }
 
         const { kbToken: authorizationToken } = await api.post('/token', { keyCloakToken: keycloak.token });
-        const { user } = jwt.decode(authorizationToken);
+        const { user } = jwtDecode(authorizationToken);
 
         await keycloak.loadUserInfo();
         // eslint-disable-next-line camelcase

@@ -39,7 +39,7 @@ describe('StatementReviewsTable', () => {
     updateContent: () => {},
   };
 
-  test('does not crash with empty reviews array ', () => {
+  test('does not crash with empty reviews array', () => {
     render(
       <QueryClientProvider client={api.queryClient}>
         <StatementReviewsTable
@@ -54,7 +54,7 @@ describe('StatementReviewsTable', () => {
     expect(screen.getAllByRole('row')).toHaveLength(1);
   });
 
-  test('displays correct number of chips ', () => {
+  test('displays correct number of chips', () => {
     render(
       <QueryClientProvider client={api.queryClient}>
         <StatementReviewsTable

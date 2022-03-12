@@ -49,7 +49,7 @@ describe('schema service', () => {
     });
   });
 
-  describe('getLabel/getPreview tests ', () => {
+  describe('getLabel/getPreview tests', () => {
     test('returns a primitive value back', () => {
       const mockRID = '#19:0';
       const label = testSchema.getLabel(mockRID);

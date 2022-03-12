@@ -202,7 +202,7 @@ describe('DetailDrawer', () => {
       });
     });
 
-    test('handles node property type linkset correctly ', async () => {
+    test('handles node property type linkset correctly', async () => {
       const {
         getByText, queryByText, queryAllByText,
       } = dom;

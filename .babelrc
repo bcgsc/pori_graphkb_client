@@ -4,6 +4,7 @@
             "modules": false,
             "loose": true // https://github.com/babel/babel/issues/11622
         }],
+        "@babel/preset-typescript",
         "@babel/preset-react"
     ],
     "plugins": [
@@ -15,12 +16,14 @@
         "test": {
             "presets": [
                 "@babel/preset-env",
+                "@babel/preset-typescript",
                 "@babel/preset-react"
             ]
         },
         "local": {
             "presets": [
                 "@babel/preset-env",
+                "@babel/preset-typescript",
                 "@babel/preset-react"
             ]
         }

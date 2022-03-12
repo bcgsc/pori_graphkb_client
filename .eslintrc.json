@@ -6,19 +6,15 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended",
         "airbnb",
+        "airbnb-typescript",
         "airbnb/hooks",
+        "plugin:@typescript-eslint/recommended",
         "plugin:jest/recommended",
         "plugin:jest-formatting/recommended"
     ],
-    "parser": "@babel/eslint-parser",
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "react",
@@ -92,15 +88,6 @@
                 "forbid": []
             }
         ],
-        "react/jsx-filename-extension": [
-            "warn",
-            {
-                "extensions": [
-                    ".js",
-                    ".jsx"
-                ]
-            }
-        ],
         "react/jsx-sort-props": [
             "error",
             {
@@ -141,7 +128,6 @@
         "simple-import-sort/exports": "off",
         "max-classes-per-file": "off",
         "no-mixed-operators": "off",
-        "default-param-last": "off",
         "react/prop-types": "off",
         "react/no-unstable-nested-components": "off",
         "prefer-object-spread": "off",
@@ -151,7 +137,10 @@
         "react/static-property-placement": "off",
         "react/jsx-fragments": "off",
         "no-unused-vars": "off",
-        "simple-import-sort/imports": "off"
+        "simple-import-sort/imports": "off",
+        "@typescript-eslint/no-shadow": "off",
+        "@typescript-eslint/default-param-last": "off",
+        "@typescript-eslint/no-use-before-define": "off"
     },
     "settings": {
         "import/resolver": {

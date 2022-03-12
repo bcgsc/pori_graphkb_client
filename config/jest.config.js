@@ -8,8 +8,8 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
-    '<rootDir>/src/services/**/**.{js,jsx,mjs}',
-    '<rootDir>/src/**/**components/**/**.{js,jsx,mjs}',
+    '<rootDir>/src/services/**/**.{js,jsx,mjs,ts,tsx}',
+    '<rootDir>/src/**/**components/**/**.{js,jsx,mjs,ts,tsx}',
   ],
   coverageReporters: [
     'clover',
@@ -33,14 +33,14 @@ module.exports = {
     '<rootDir>/config/jest/windowEnvMock.js',
     'jest-canvas-mock',
   ],
-  testRegex: 'src.*__tests__.*.jsx?$',
+  testRegex: 'src.*__tests__.*.[tj]sx?$',
   testEnvironment: 'jsdom',
   testURL: 'http://localhost',
   transform: {
-    '^.+\\.(js|jsx|mjs)$': '<rootDir>/node_modules/babel-jest',
+    '^.+\\.(js|jsx|mjs|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
     '^.+\\.js$': 'babel-jest',
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
-    '^(?!.*\\.(js|jsx|mjs|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
+    '^(?!.*\\.(js|jsx|mjs|css|json|ts|tsx)$)': '<rootDir>/config/jest/fileTransform.js',
   },
   transformIgnorePatterns: [
     '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
@@ -56,5 +56,7 @@ module.exports = {
     'jsx',
     'node',
     'mjs',
+    'ts',
+    'tsx',
   ],
 };

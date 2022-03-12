@@ -132,7 +132,6 @@
         "prefer-object-spread": "off",
         "function-paren-newline": "off",
         "jest/valid-title": "off",
-        "function-call-argument-newline": "off",
         "react/static-property-placement": "off",
         "no-unused-vars": "off",
         "@typescript-eslint/no-shadow": "off",

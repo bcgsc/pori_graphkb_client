@@ -248,10 +248,10 @@ const RecordAutocomplete = (props) => {
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <React.Fragment>
+              <>
                 {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
-              </React.Fragment>
+              </>
             ),
             disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
           }}

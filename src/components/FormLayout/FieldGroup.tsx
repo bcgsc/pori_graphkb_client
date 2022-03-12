@@ -114,7 +114,7 @@ const FieldGroup = ({
     }
   });
   return (
-    <React.Fragment>{fields}</React.Fragment>
+    <>{fields}</>
   );
 };
 

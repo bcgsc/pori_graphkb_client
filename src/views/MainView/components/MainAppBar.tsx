@@ -77,8 +77,7 @@ const MainAppBar = ({
             <Typography color="inherit" variant="h6">
               {auth.isAuthenticated
                 ? auth.username
-                : 'Logged Out'
-              }
+                : 'Logged Out'}
             </Typography>
           </Button>
           <Popover

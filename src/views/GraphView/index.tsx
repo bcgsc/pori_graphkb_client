@@ -107,7 +107,8 @@ const GraphView = ({ history }) => {
     <div className={
       `data-view ${detailPanelIsOpen
         ? 'data-view--squished'
-        : ''}`}
+        : ''}`
+}
     >
       <div className="data-view__content--graph-view">
         {graphData && (

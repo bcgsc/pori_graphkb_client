@@ -166,8 +166,7 @@ const QuickSearch = ({ history }) => {
             onChange={handleInputChange}
             placeholder={hgvs
               ? 'Search Statements by HGVS Shorthand'
-              : 'Search Statements by Keyword'
-            }
+              : 'Search Statements by Keyword'}
             value={value}
           />
           <FormControlLabel

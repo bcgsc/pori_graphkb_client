@@ -69,8 +69,7 @@ function GraphLegend(props) {
                   </ListItemIcon>
                   <ListItemText primary={typeof key === 'object'
                     ? key.displayName || util.antiCamelCase(key.name)
-                    : key
-                                          }
+                    : key}
                   />
                 </ListItem>
               ))}

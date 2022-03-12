@@ -108,8 +108,7 @@ function DropDownSelect(props) {
       <Select
         IconComponent={disabled
           ? 'span'
-          : IconComponent
-        }
+          : IconComponent}
         input={<InputComponent id={`option-select-${name}`} name={name} />}
         inputProps={innerProps}
         onChange={onChange}

@@ -313,7 +313,8 @@ const DataView = ({
     <div className={
         `data-view ${detailPanelIsOpen
           ? 'data-view--squished'
-          : ''}`}
+          : ''}`
+}
     >
       <div className="data-view__header">
         <ActiveFilters search={search} />

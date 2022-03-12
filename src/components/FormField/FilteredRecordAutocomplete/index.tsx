@@ -73,8 +73,7 @@ const FilteredRecordAutocomplete = ({
           name={name}
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
-            : `Search for an Existing ${selectedClassName} Record`
-          }
+            : `Search for an Existing ${selectedClassName} Record`}
         />
       </div>
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}

@@ -154,8 +154,7 @@ function GraphOptionsPanel(props) {
                         value: e.target.checked,
                         name: e.target.name,
                       },
-                    })
-                      }
+                    })}
                   />
                   )}
                 label="Label nodes by preview"
@@ -182,8 +181,7 @@ function GraphOptionsPanel(props) {
                         value: e.target.checked,
                         name: e.target.name,
                       },
-                    })
-                      }
+                    })}
                   />
                   )}
                 label="Show Nodes Coloring Legend"
@@ -216,7 +214,8 @@ function GraphOptionsPanel(props) {
                     checked={
                         graphOptions.linksLegend
                         && graphOptions.linksColor
-                        && !linkLegendDisabled}
+                        && !linkLegendDisabled
+}
                     color="secondary"
                     disabled={linkLegendDisabled || !graphOptions.linksColor}
                     name="linksLegend"
@@ -225,8 +224,7 @@ function GraphOptionsPanel(props) {
                         value: e.target.checked,
                         name: e.target.name,
                       },
-                    })
-                      }
+                    })}
                   />
                   )}
                 label="Show Links Coloring Legend"
@@ -246,8 +244,7 @@ function GraphOptionsPanel(props) {
                         value: e.target.checked,
                         name: e.target.name,
                       },
-                    })
-                      }
+                    })}
                   />
                   )}
                 label="Use a Weak Tree layout"

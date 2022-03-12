@@ -121,7 +121,6 @@
         // all rules below are temporarily disabled in order for eslint to pass
         // after updating. these should be fixed and re-enabled
         "react/function-component-definition": "off",
-        "react/jsx-curly-newline": "off",
         "react/jsx-no-constructed-context-values": "off",
         "react/jsx-no-useless-fragment": "off",
         "jest/no-conditional-expect": "off",

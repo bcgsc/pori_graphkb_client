@@ -53,8 +53,7 @@ const ClassDescription = ({ name, description }) => {
       <ListItem>
         <LetterIcon value={count === ''
           ? name.slice(0, 1)
-          : count
-          }
+          : count}
         />
         <ListItemText primary={name} secondary={description} />
       </ListItem>

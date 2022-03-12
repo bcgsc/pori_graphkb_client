@@ -264,16 +264,14 @@ const RecordForm = ({
               disabled={actionInProgress || (formHasErrors && formIsDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
-                : handleNewAction
-                }
+                : handleNewAction}
               requireConfirm={false}
               size="large"
               variant="contained"
             >
               {variant === FORM_VARIANT.EDIT
                 ? 'SUBMIT CHANGES'
-                : 'SUBMIT'
-                }
+                : 'SUBMIT'}
             </ActionButton>
           )
           : (<div />) // for spacing issues only

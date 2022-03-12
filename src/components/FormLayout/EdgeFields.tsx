@@ -4,7 +4,6 @@ import React from 'react';
 import FormField from '@/components/FormField';
 import schema from '@/services/schema';
 
-
 /**
  * Renders the two edge specific input fields (out/in)
  *
@@ -42,7 +41,6 @@ const EdgeFields = ({
   </React.Fragment>
 );
 
-
 EdgeFields.propTypes = {
   model: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
@@ -51,6 +49,5 @@ EdgeFields.propTypes = {
 EdgeFields.defaultProps = {
   disabled: false,
 };
-
 
 export default EdgeFields;

@@ -6,7 +6,6 @@ import api from '@/services/api';
 
 import StatementReviewsTable from '..';
 
-
 describe('StatementReviewsTable', () => {
   afterEach(() => {
     jest.clearAllMocks();

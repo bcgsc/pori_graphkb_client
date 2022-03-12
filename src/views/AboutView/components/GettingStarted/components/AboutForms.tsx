@@ -12,7 +12,6 @@ import singleAutocomplete1 from '@/static/images/single-autocomplete-1.png';
 import singleAutocomplete2 from '@/static/images/single-autocomplete-2.png';
 import singleAutocomplete3 from '@/static/images/single-autocomplete-3.png';
 
-
 const AboutForms = () => (
   <>
     <Typography id="about-forms" variant="h2">

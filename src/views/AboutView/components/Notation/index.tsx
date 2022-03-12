@@ -7,7 +7,6 @@ import React from 'react';
 
 import NotationParser from './components/NotationParser';
 
-
 const AboutNotation = () => (
   <div className="about-page__content about-notation">
     <Typography variant="h2">Positional Variant Notation in GraphKB</Typography>
@@ -43,6 +42,5 @@ const AboutNotation = () => (
     </List>
   </div>
 );
-
 
 export default AboutNotation;

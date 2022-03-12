@@ -5,7 +5,6 @@ import React from 'react';
 
 import CytobandPosition from '../CytobandPosition';
 
-
 describe('CytobandPosition', () => {
   test('shows all fields', () => {
     const { getByText } = render(<CytobandPosition onChange={jest.fn()} value={{}} />);

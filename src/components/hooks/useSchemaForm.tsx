@@ -78,7 +78,6 @@ const useSchemaForm = (
     }
   }, [formContent || {}, additionalValidationFn]);
 
-
   // check the initial content for errors
   useDeepCompareEffect(() => {
     replaceContent(initialValue);

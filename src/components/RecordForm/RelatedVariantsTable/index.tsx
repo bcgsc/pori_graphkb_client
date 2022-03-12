@@ -15,7 +15,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 
-
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
@@ -114,6 +113,5 @@ const RelatedVariantsTable = ({ recordId }) => {
 RelatedVariantsTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default RelatedVariantsTable;

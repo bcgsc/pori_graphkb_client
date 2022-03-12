@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 
-
 const NotationParser = () => {
   const [text, setText] = useState('');
   const [parsed, setParsed] = useState(null);

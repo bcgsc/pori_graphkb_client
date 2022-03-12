@@ -19,7 +19,6 @@ import config from '@/static/config';
 
 import GraphComponent from './components/GraphComponent';
 
-
 const { DEFAULT_NEIGHBORS } = config;
 
 /**
@@ -82,15 +81,12 @@ const GraphView = ({ history }) => {
     }
   }, [handleError, queryClient]);
 
-
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
     navigateToGraph(nodeRIDs, history, handleError);
   }, [handleError, history]);
 
-
   const edges = schema.getEdges();
   const expandedEdgeTypes = util.expandEdges(edges);
-
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -151,6 +147,5 @@ const GraphView = ({ history }) => {
 GraphView.propTypes = {
   history: HistoryPropType.isRequired,
 };
-
 
 export default GraphView;

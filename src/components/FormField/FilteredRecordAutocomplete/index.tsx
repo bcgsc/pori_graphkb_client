@@ -45,7 +45,6 @@ const FilteredRecordAutocomplete = ({
     setSelectedClassName(value);
   }, [setSelectedClassName]);
 
-
   const model = schema.get(linkedClassName);
 
   const getQueryBody = useMemo(() => api.getDefaultSuggestionQueryBody(
@@ -102,6 +101,5 @@ FilteredRecordAutocomplete.defaultProps = {
   helperText: '',
   error: false,
 };
-
 
 export default FilteredRecordAutocomplete;

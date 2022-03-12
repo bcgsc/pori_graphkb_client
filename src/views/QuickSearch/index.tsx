@@ -22,7 +22,6 @@ import api from '@/services/api';
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
 
-
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
@@ -50,7 +49,6 @@ const QuickSearch = ({ history }) => {
       });
     }
   }, [errorMessage, history, value]);
-
 
   /**
    * Stringifies all queryable properties of parsed variant.
@@ -95,7 +93,6 @@ const QuickSearch = ({ history }) => {
       }
     }
   }, [hgvs, history, searchByHGVS, searchKeyword, value, variant]);
-
 
   // validate
   useEffect(() => {

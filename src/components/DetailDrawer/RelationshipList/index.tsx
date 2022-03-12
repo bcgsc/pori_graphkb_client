@@ -20,7 +20,6 @@ import React from 'react';
 
 import schema from '@/services/schema';
 
-
 /**
    * Formats record relationships.
    * @property {Object} record - Record being displayed.
@@ -101,7 +100,6 @@ function RelationshipList(props) {
     </List>
   );
 }
-
 
 RelationshipList.propTypes = {
   formatMetadata: PropTypes.func.isRequired,

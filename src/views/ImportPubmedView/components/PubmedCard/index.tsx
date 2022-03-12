@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 
 import schema from '@/services/schema';
 
-
 const PUBMED_BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov';
 
 /**

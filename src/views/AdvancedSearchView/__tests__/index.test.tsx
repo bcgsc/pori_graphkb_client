@@ -70,7 +70,6 @@ describe('AdvancedSearchView', () => {
     expect(mockPush).toHaveBeenCalledWith('/data/table?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D');
   });
 
-
   test('renders new filter group correctly', async () => {
     render(
       <AdvancedSearchView

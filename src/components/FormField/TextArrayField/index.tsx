@@ -12,7 +12,6 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-
 /**
  * Field which stores a list of non-redundant strings from user typed input.
  * Allows the user to clear options if they were entered and not passed in from

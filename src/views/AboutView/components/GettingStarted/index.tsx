@@ -18,7 +18,6 @@ import AboutGraphView from './components/AboutGraphView';
 import AboutQuerying from './components/AboutQuerying';
 import AboutStatements from './components/AboutStatements';
 
-
 const GettingStarted = () => {
   const sections = [
     'Welcome',

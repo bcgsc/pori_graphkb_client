@@ -17,7 +17,6 @@ import useObject from '@/components/hooks/useObject';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 
-
 /**
  * @param {object} props
  * @param {Array.<FormStepWrapper>} children the children of a SteppedForm should be FormStepWrapper elements
@@ -124,7 +123,6 @@ const SteppedForm = ({
     </FormContext.Provider>
   );
 };
-
 
 SteppedForm.propTypes = {
   children: PropTypes.node.isRequired,

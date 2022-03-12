@@ -113,7 +113,6 @@ const PermissionsTable = ({
     onChange({ target: { name, value: newContent } });
   }, [content, name, onChange, topBoxes]);
 
-
   const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
   const permByModelName = splitPermissionsByOperation(content || {});
   const modelOrder = Object.keys(permByModelName).sort();
@@ -172,7 +171,6 @@ const PermissionsTable = ({
     </div>
   );
 };
-
 
 PermissionsTable.propTypes = {
   name: PropTypes.string.isRequired,

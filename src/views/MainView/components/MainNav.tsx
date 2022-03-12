@@ -117,7 +117,6 @@ const MainNav = ({ isOpen, onChange }) => {
   );
 };
 
-
 MainNav.propTypes = {
   isOpen: PropTypes.bool,
   onChange: PropTypes.func,

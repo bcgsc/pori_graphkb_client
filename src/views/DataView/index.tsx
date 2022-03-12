@@ -1,4 +1,3 @@
-
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
@@ -110,7 +109,6 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
-
 /**
  * Shows the search result filters and an edit button
  */
@@ -200,7 +198,6 @@ const DataView = ({
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
-
   const { data: detailPanelRow } = useQuery(
     ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
     async ({ queryKey: [route, body] }) => api.post(route, body),
@@ -227,7 +224,6 @@ const DataView = ({
   const handleOpenOptionsMenu = useCallback(({ currentTarget = null } = {}) => {
     setOptionsMenuAnchor(currentTarget);
   }, []);
-
 
   const handleClickExport = useCallback(async () => {
     const gridApi = grid.ref?.current?.api;
@@ -387,7 +383,6 @@ const DataView = ({
     </div>
   );
 };
-
 
 DataView.propTypes = {
   history: HistoryPropType.isRequired,

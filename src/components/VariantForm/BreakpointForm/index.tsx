@@ -9,7 +9,6 @@ import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import schema from '@/services/schema';
 
-
 /**
  * Handles the form for a single breakpoint (start and end) with the reference element it is
  * associated with

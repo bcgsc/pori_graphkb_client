@@ -86,5 +86,4 @@ NewRecordView.propTypes = {
   match: propTypes.object.isRequired,
 };
 
-
 export default NewRecordView;

@@ -22,7 +22,6 @@ import schema from '@/services/schema';
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
 
-
 const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   if (prop1.startsWith('break1') && prop2.startsWith('break1')) {
     prop1 = prop1.replace('break1', '');
@@ -37,7 +36,6 @@ const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   }
   return prop1.localeCompare(prop2);
 };
-
 
 const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {

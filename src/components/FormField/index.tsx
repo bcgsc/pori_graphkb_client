@@ -288,7 +288,6 @@ const FormField = ({
   );
 };
 
-
 FormField.propTypes = {
   model: PropTypes.shape({
     format: PropTypes.string,
@@ -331,7 +330,6 @@ FormField.propTypes = {
   label: PropTypes.string,
 };
 
-
 FormField.defaultProps = {
   className: '',
   disabled: false,
@@ -340,6 +338,5 @@ FormField.defaultProps = {
   helperText: '',
   baseModel: '',
 };
-
 
 export default FormField;

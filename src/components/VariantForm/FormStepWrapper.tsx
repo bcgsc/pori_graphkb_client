@@ -1,7 +1,5 @@
-
 import PropTypes from 'prop-types';
 import React from 'react'; // eslint-disable-line no-unused-vars
-
 
 /**
  * Component to pass the step props to (label and fields) which is not actually displayed

@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 /**
  * RadioForm Field for a boolean form fieldset
  *

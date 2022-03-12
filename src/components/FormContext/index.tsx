@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 /**
  * @typedef FormContext
  * Passes user values to wrapped consumers.

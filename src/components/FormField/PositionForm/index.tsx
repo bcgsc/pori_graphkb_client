@@ -133,5 +133,4 @@ PositionForm.defaultProps = {
   variant: '',
 };
 
-
 export default PositionForm;

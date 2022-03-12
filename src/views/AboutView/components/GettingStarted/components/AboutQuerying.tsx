@@ -11,7 +11,6 @@ import {
 
 import queryResults from '@/static/images/table-view.png';
 
-
 const AboutQuerying = () => (
   <>
     <Typography id="about-page__querying" variant="h2">

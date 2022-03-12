@@ -9,7 +9,6 @@ import { useQuery } from 'react-query';
 
 import api from '@/services/api';
 
-
 const AboutMain = () => {
   const theme = useTheme();
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';

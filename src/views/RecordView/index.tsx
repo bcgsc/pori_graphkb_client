@@ -25,7 +25,6 @@ const DEFAULT_TITLES = {
   [FORM_VARIANT.VIEW]: 'Record Contents',
 };
 
-
 const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
   let defaultModelName = modelName;
 
@@ -46,7 +45,6 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   return schema.getModel(defaultModelName || 'V').name;
 };
 
-
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
 
@@ -62,7 +60,6 @@ const RecordView = (props) => {
       }
     }
   }, [path, modelNameParam, variant, history]);
-
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -111,7 +108,6 @@ const RecordView = (props) => {
       onSuccess: result => result && setModelName(result['@class']),
     },
   );
-
 
   // redirect when the user clicks the top right button
   const onTopClick = useCallback(() => {
@@ -187,6 +183,5 @@ RecordView.propTypes = {
     }),
   }).isRequired,
 };
-
 
 export default RecordView;

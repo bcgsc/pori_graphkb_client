@@ -42,7 +42,6 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   );
 }));
 
-
 const originalError = console.error;
 
 console.error = (msg) => {
@@ -50,7 +49,6 @@ console.error = (msg) => {
     originalError(msg);
   }
 };
-
 
 describe('RecordForm', () => {
   afterEach(() => {
@@ -85,7 +83,6 @@ describe('RecordForm', () => {
         </QueryClientProvider>,
       );
     });
-
 
     test('shows edit button', () => {
       expect(screen.getByText('Edit')).toBeInTheDocument();
@@ -133,7 +130,6 @@ describe('RecordForm', () => {
         </QueryClientProvider>,
       );
     });
-
 
     test('shows view button', () => {
       expect(screen.getByText('View')).toBeInTheDocument();

@@ -1,4 +1,3 @@
-
 import {
   Collapse,
   Divider,
@@ -16,7 +15,6 @@ import util from '@/services/util';
 
 const DATE_KEYS = ['createdAt', 'deletedAt', 'updatedAt'];
 const MAX_STRING_LENGTH = 64;
-
 
 /**
    * Formats a key/value pair where string is value. Either formats it

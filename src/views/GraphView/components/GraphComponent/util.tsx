@@ -43,7 +43,6 @@ const computeNodeLevels = (graphLinks) => {
   return ranks;
 };
 
-
 const copyURLToClipBoard = (snackbar) => {
   const URL = window.location.href;
   // create temp dummy element to select and copy text to clipboard

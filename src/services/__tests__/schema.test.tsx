@@ -2,7 +2,6 @@ import { schema as SCHEMA_DEFN } from '@bcgsc-pori/graphkb-schema';
 
 import testSchema from '../schema';
 
-
 describe('schema service', () => {
   describe('Retrieving classmodels and properties', () => {
     test('gets classes properly', () => {

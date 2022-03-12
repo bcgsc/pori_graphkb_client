@@ -28,7 +28,6 @@ const AboutUsageTerms = () => {
   const requiresSigning = Boolean(!data || !user || !user.signedLicenseAt || user.signedLicenseAt < data.enactedAt);
   const isSigned = !requiresSigning || hasSigned;
 
-
   const handleConfirmSign = useCallback(async () => {
     await api.post('/license/sign');
     snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });

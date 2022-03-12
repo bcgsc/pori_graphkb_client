@@ -19,7 +19,6 @@ import {
 } from '@/components/util';
 import schema from '@/services/schema';
 
-
 const MODEL_NAME = 'StatementReview';
 
 /**
@@ -58,7 +57,6 @@ const AddReviewDialog = ({
       onSubmit(content, updateAmalgamated);
     }
   }, [auth, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
-
 
   return (
     <Dialog

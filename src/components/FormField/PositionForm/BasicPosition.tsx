@@ -9,14 +9,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
-
 const {
   schema: {
     GenomicPosition: { properties: { pos: posProperty } },
     CdsPosition: { properties: { offset: offsetProperty } },
   },
 } = schema;
-
 
 /**
  * Basic Position and Position with offset form
@@ -88,7 +86,6 @@ const BasicPositionForm = ({
 
   const isOffsetVariant = Boolean(schema.get(variant).properties.offset);
 
-
   return (
     <>
       <FieldWrapper>
@@ -151,6 +148,5 @@ BasicPositionForm.defaultProps = {
   disabled: false,
   value: null,
 };
-
 
 export default BasicPositionForm;

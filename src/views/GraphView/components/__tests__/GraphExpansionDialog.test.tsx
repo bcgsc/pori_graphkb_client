@@ -5,7 +5,6 @@ import testSchema from '@/services/schema';
 
 import GraphExpansionDialog from '../GraphComponent/GraphExpansionDialog/GraphExpansionDialog';
 
-
 const testNode = {
   '@rid': '1',
   sourceId: 'hi',

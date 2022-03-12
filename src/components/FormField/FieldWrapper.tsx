@@ -14,7 +14,6 @@ const FieldWrapper = ({ children, className, type }) => (
   </ListItem>
 );
 
-
 FieldWrapper.propTypes = {
   children: PropTypes.element.isRequired,
   className: PropTypes.string,
@@ -25,6 +24,5 @@ FieldWrapper.defaultProps = {
   className: '',
   type: '',
 };
-
 
 export default FieldWrapper;

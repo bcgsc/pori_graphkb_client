@@ -15,7 +15,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 
-
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
@@ -73,7 +72,6 @@ const RelatedStatementsTable = ({ recordId }) => {
       gridApi.sizeColumnsToFit();
     }
   }, [grid.ref, isFetching, statements]);
-
 
   const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
 
@@ -136,6 +134,5 @@ const RelatedStatementsTable = ({ recordId }) => {
 RelatedStatementsTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default RelatedStatementsTable;

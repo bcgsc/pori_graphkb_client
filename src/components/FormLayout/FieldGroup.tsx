@@ -118,7 +118,6 @@ const FieldGroup = ({
   );
 };
 
-
 FieldGroup.propTypes = {
   model: PropTypes.object.isRequired,
   ordering: PropTypes.arrayOf(PropTypes.oneOfType([
@@ -133,6 +132,5 @@ FieldGroup.defaultProps = {
   exclusions: [],
   disabled: false,
 };
-
 
 export default FieldGroup;

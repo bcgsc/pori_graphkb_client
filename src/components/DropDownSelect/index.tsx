@@ -20,7 +20,6 @@ import React from 'react';
 
 import { GeneralRecordPropType } from '@/components/types';
 
-
 const DefaultOptionComponent = (option, disabled) => {
   const key = option.key === undefined
     ? option
@@ -132,7 +131,6 @@ const SelectOptionPropType = PropTypes.shape({
   label: PropTypes.string,
   caption: PropTypes.string,
 });
-
 
 /**
  * @namespace

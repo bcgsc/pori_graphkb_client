@@ -109,7 +109,6 @@ const RecordForm = ({
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
 
-
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
       const { routeName } = schema.get(content);
@@ -283,7 +282,6 @@ const RecordForm = ({
     </Paper>
   );
 };
-
 
 RecordForm.propTypes = {
   navigateToGraph: PropTypes.func.isRequired,

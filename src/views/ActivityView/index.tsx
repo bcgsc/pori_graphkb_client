@@ -20,7 +20,6 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
 const TWO_WEEK_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
 
 const JumpToRecord = ({ data }) => (
@@ -156,6 +155,5 @@ const ActivityView = () => {
     </div>
   );
 };
-
 
 export default ActivityView;

@@ -34,11 +34,9 @@ const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-
 const ABSTRACT_CLASSES = Object.values(schema.schema)
   .filter(m => m.isAbstract && m.name !== 'Variant')
   .map(m => m.name);
-
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.

@@ -5,7 +5,6 @@ import DropDownSelect from '@/components/DropDownSelect';
 import RadioSelect from '@/components/RadioSelect';
 import schema from '@/services/schema';
 
-
 /**
  * Select a database model class
  *

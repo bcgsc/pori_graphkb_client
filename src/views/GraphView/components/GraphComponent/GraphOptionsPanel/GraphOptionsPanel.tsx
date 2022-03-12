@@ -277,5 +277,4 @@ GraphOptionsPanel.defaultProps = {
   linkLegendDisabled: true,
 };
 
-
 export default GraphOptionsPanel;

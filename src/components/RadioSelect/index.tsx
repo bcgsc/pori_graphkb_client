@@ -58,7 +58,6 @@ const RadioSelect = ({
   </MenuList>
 );
 
-
 RadioSelect.propTypes = {
   options: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string, PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),

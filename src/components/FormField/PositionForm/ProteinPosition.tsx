@@ -9,13 +9,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
-
 const {
   schema: {
     ProteinPosition: { properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT },
   },
 } = schema;
-
 
 /**
  * Protein Position Input form
@@ -130,6 +128,5 @@ ProteinPosition.defaultProps = {
   name: '',
   disabled: false,
 };
-
 
 export default ProteinPosition;

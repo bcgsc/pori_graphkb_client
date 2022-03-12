@@ -24,7 +24,6 @@ import schema from '@/services/schema';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
-
 /**
  * @param {object} props the input properties
  * @param {string} props.modelName the name of the schema model to use

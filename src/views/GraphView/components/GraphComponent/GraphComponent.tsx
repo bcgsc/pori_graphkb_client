@@ -47,7 +47,6 @@ import {
   TREE_LINK,
 } from './util';
 
-
 const {
   GRAPH_PROPERTIES: {
     ZOOM_BOUNDS,
@@ -230,7 +229,6 @@ function GraphComponent(props) {
     update({ allProps: updatedAllProps });
   }, [allProps, update]);
 
-
   /**
    * Adds a graphNode or graphLink to graphObjects.
    * @param {string} type one of ['link', 'node']
@@ -262,7 +260,6 @@ function GraphComponent(props) {
       pMap.loadLink(graphData);
     }
   }, [allProps, links, nodes]);
-
 
   /**
    * Processes node data and updates state with new nodes and links. Also
@@ -531,7 +528,6 @@ function GraphComponent(props) {
     update({ actionsNode: null });
   };
 
-
   /**
    * updates color mapping based on data properties of graphobject and selected
    * coloring key.
@@ -564,7 +560,6 @@ function GraphComponent(props) {
     }
     return colorMapping;
   };
-
 
   /**
    * Updates color scheme for the graph, for nodes or links via graphOptions.
@@ -1180,7 +1175,6 @@ function GraphComponent(props) {
           </div>
         </Tooltip>
       </div>
-
 
       <div className="svg-wrapper" ref={(node) => { wrapper.current = node; }}>
         <svg

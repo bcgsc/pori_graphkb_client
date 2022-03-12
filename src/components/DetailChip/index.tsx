@@ -146,7 +146,6 @@ function DetailChip(props) {
     setAnchorEl(event.currentTarget);
   };
 
-
   return (
     <div className="detail-chip" {...rest}>
       <Popover

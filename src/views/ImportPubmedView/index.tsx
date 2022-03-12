@@ -17,7 +17,6 @@ import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
-
 const ImportPubmedView = (props) => {
   const { history } = props;
   const snackbar = useSnackbar();

@@ -33,7 +33,6 @@ import RelationshipList from './RelationshipList';
 import SetPropsList from './SetPropsList';
 import TextRow from './TextRow';
 
-
 /**
    * Takes properties list to be displayed in detail drawer and promotes an inputted
    * property to top of the list. For display purposes.
@@ -327,7 +326,6 @@ DetailDrawer.propTypes = {
   node: GeneralRecordPropType,
   onClose: PropTypes.func,
 };
-
 
 DetailDrawer.defaultProps = {
   node: null,

@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-
 const EmailReportError = (props) => {
   const { linkText, body, subject } = props;
   return (
@@ -124,6 +123,5 @@ error text: ${message}`;
     </div>
   );
 };
-
 
 export default ErrorView;

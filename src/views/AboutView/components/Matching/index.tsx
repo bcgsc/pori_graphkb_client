@@ -69,7 +69,6 @@ const equivalentTermsQuery = (ontologyClass, term) => ({
   limit: MATCH_LIMIT,
 });
 
-
 const exludeRootTermsQuery = (ontologyClass, rootTerm) => ({
   target: {
     target: ontologyClass,
@@ -84,7 +83,6 @@ const exludeRootTermsQuery = (ontologyClass, rootTerm) => ({
   limit: MATCH_LIMIT,
 });
 
-
 const ROOT_TERM_MAPPING = {
   'copy variant': 'structural variant',
   amplification: 'structural variant',
@@ -98,7 +96,6 @@ const ROOT_TERM_MAPPING = {
 };
 
 const DEBOUNCE_MS = 100;
-
 
 const MatchView = (props) => {
   const { history } = props;

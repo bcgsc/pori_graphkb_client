@@ -15,7 +15,6 @@ import React, {
 import { HistoryPropType } from '@/components/types';
 import { navigateToGraph } from '@/components/util';
 
-
 const DataViewFooter = ({
   selectedRecords, onError, history, statusMessage, totalRows,
 }) => {
@@ -60,7 +59,6 @@ const DataViewFooter = ({
   );
 };
 
-
 DataViewFooter.propTypes = {
   history: HistoryPropType.isRequired,
   onError: PropTypes.func,
@@ -75,6 +73,5 @@ DataViewFooter.defaultProps = {
   statusMessage: '',
   totalRows: null,
 };
-
 
 export default DataViewFooter;

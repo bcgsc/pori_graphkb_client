@@ -151,5 +151,4 @@ ColumnConfiguration.defaultProps = {
   isOpen: false,
 };
 
-
 export default ColumnConfiguration;

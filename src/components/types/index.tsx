@@ -47,7 +47,6 @@ const StatementPropType = PropTypes.shape({
   }),
 });
 
-
 const LocationPropType = PropTypes.shape({
   hash: PropTypes.string,
   key: PropTypes.string,

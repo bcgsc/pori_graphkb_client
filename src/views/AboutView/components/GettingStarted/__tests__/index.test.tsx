@@ -8,7 +8,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import GettingStarted from '..';
 
-
 describe('GettingStarted', () => {
   afterEach(() => {
     jest.clearAllMocks();

@@ -8,7 +8,6 @@ const { schema: SCHEMA_DEFN } = kbSchema;
 
 const MAX_LABEL_LENGTH = 50;
 
-
 /**
  * Knowledgebase schema.
  */
@@ -170,7 +169,6 @@ class Schema {
     if (typeof parentCls === 'string') {
       parentCls = [parentCls];
     }
-
 
     return !!(this.get(cls)
       && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));

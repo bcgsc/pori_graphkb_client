@@ -8,7 +8,6 @@ import schema from '@/services/schema';
 
 import ClassDescription from './components/ClassDescription';
 
-
 const AboutClasses = () => {
   const models = Object.values(schema.schema)
     .filter(m => !m.embedded && !m.isAbstract && !m.isEdge)
@@ -44,6 +43,5 @@ const AboutClasses = () => {
     </div>
   );
 };
-
 
 export default AboutClasses;

@@ -16,7 +16,6 @@ import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
 const isReversed = (nodeId, { out: src, in: tgt }) => {
   if (src && tgt) {
     const srcId = src['@rid'] || src;
@@ -85,7 +84,6 @@ const EdgeTable = ({ recordId }) => {
     }
   }, [edges, grid.ref, isFetching]);
 
-
   const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink {...cellValue} /></>); // eslint-disable-line react/prop-types
 
   if (!isFetching && (!edges || edges.length === 0)) {
@@ -142,6 +140,5 @@ const EdgeTable = ({ recordId }) => {
 EdgeTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default EdgeTable;

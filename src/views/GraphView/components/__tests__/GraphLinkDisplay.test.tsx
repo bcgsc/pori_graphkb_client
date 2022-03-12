@@ -21,7 +21,6 @@ const mockData = {
   },
 };
 
-
 describe('<GraphLinkDisplay />', () => {
   test('renders svg g element with nested paths', () => {
     const { container } = render(

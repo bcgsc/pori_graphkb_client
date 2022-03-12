@@ -12,7 +12,6 @@ describe('useObject', () => {
     expect(result.current.content).toEqual({ name: 'alice' });
   });
 
-
   test('should replace content', () => {
     const { result } = renderHook(() => useObject({}));
 
@@ -22,7 +21,6 @@ describe('useObject', () => {
 
     expect(result.current.content).toEqual({ name: 'alice' });
   });
-
 
   test('should return object', () => {
     const { result } = renderHook(() => useObject({ name: 'alice' }));

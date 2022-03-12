@@ -29,7 +29,6 @@ const ACRONYMS = [
 ];
 const DEFAULT_CUTOFF = 25;
 
-
 /**
  * Casts a value to string form with minimal formatting. Sets the value to
  * 'null' if the value is null or undefined.
@@ -360,7 +359,6 @@ const parsePermission = (permissionValue) => {
   }
   return retstr;
 };
-
 
 /**
  * Returns a list of object class properties that are of a given type.

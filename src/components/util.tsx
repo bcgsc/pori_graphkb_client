@@ -6,7 +6,6 @@ const FORM_VARIANT = {
   EDIT: 'edit', VIEW: 'view', DELETE: 'delete', NEW: 'new', SEARCH: 'search',
 };
 
-
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'
  * described here is the collapsible block. Elements above the fold are in the top non-collapsed block
@@ -159,7 +158,6 @@ const cleanLinkedRecords = (content) => {
   return newContent;
 };
 
-
 const cleanUndefined = (content) => {
   const newContent = {};
 
@@ -174,7 +172,6 @@ const cleanUndefined = (content) => {
   });
   return newContent;
 };
-
 
 const cleanPayload = (payload) => {
   if (typeof payload !== 'object' || payload === null) {

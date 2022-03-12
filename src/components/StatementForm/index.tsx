@@ -28,7 +28,6 @@ import schema from '@/services/schema';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
-
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
 /**
@@ -393,7 +392,6 @@ const StatementForm = ({
     </Paper>
   );
 };
-
 
 StatementForm.propTypes = {
   navigateToGraph: PropTypes.func.isRequired,

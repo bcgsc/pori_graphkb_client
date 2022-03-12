@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
-
 /**
  * @param {Object} props
  * @param {function} props.onSubmit the handler when the seach icon is pressed or enter is hit
@@ -64,7 +63,6 @@ const SearchBox = ({
   );
 };
 
-
 SearchBox.propTypes = {
   className: PropTypes.string,
   error: PropTypes.bool,
@@ -74,7 +72,6 @@ SearchBox.propTypes = {
   value: PropTypes.string,
 };
 
-
 SearchBox.defaultProps = {
   onChange: () => {},
   onSubmit: () => {},
@@ -83,6 +80,5 @@ SearchBox.defaultProps = {
   helperText: '',
   className: '',
 };
-
 
 export default SearchBox;

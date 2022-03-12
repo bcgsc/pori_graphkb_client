@@ -10,7 +10,6 @@ import { AuthContext } from '@/components/Auth';
 
 import ReviewDialog from '../ReviewDialog';
 
-
 /* eslint-disable react/prop-types */
 jest.mock('../../DropDownSelect', () => ({
   options = [], value, onChange, name,
@@ -33,7 +32,6 @@ jest.mock('../../DropDownSelect', () => ({
   );
 });
 /* eslint-enable react/prop-types */
-
 
 describe('ReviewDialog formActions', () => {
   const onSubmitSpy = jest.fn();

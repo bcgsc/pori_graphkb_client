@@ -6,7 +6,6 @@ import React from 'react';
 
 import ModelSelect from '@/components/ModelSelect';
 
-
 const NewRecordSelectView = (props) => {
   const {
     history,
@@ -38,6 +37,5 @@ NewRecordSelectView.propTypes = {
   history: propTypes.object.isRequired,
   match: propTypes.object.isRequired,
 };
-
 
 export default NewRecordSelectView;

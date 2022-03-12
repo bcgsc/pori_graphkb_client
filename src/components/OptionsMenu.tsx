@@ -8,7 +8,6 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 class OptionsMenu extends React.Component {
   static propTypes = {
     options: PropTypes.arrayOf(
@@ -73,6 +72,5 @@ class OptionsMenu extends React.Component {
     );
   }
 }
-
 
 export default OptionsMenu;

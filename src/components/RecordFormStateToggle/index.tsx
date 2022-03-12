@@ -57,7 +57,6 @@ function RecordFormStateToggle({
     }
   }, [onClick, requireConfirm, value]);
 
-
   return (
     <>
       <ToggleButtonGroup

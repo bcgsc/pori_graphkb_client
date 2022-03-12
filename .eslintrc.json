@@ -118,7 +118,6 @@
         "sort-imports": "off",
         // all rules below are temporarily disabled in order for eslint to pass
         // after updating. these should be fixed and re-enabled
-        "no-multiple-empty-lines": "off",
         "react/function-component-definition": "off",
         "react/jsx-curly-newline": "off",
         "arrow-parens": "off",

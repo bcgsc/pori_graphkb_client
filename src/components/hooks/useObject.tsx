@@ -4,7 +4,6 @@ import {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-
 /**
  * Hook for a component that depends on an object parameter
  *
@@ -37,7 +36,6 @@ const useObject = (initialValue = {}) => {
     setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
-
   const replace = useCallback((newContent = {}) => {
     setContent({ type: 'replace', payload: newContent });
   }, [setContent]);
@@ -47,7 +45,6 @@ const useObject = (initialValue = {}) => {
     setContent({ type: 'replace', payload: rest });
   }, [content]);
 
-
   useDeepCompareEffect(() => {
     replace(initialValue || {});
   }, [initialValue || {}]);
@@ -56,6 +53,5 @@ const useObject = (initialValue = {}) => {
     content, updateField, replace, update, removeField,
   };
 };
-
 
 export default useObject;

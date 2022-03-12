@@ -295,8 +295,8 @@ class GraphOptions {
 }
 
 export {
+  GraphLink,
+  GraphNode,
   GraphOptions,
   PropsMap,
-  GraphNode,
-  GraphLink,
 };

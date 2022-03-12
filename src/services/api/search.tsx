@@ -143,5 +143,8 @@ const getSearchFromQuery = ({
 };
 
 export {
-  buildSearchFromParseVariant, getSearchFromQuery, getQueryFromSearch, DEFAULT_LIMIT,
+  buildSearchFromParseVariant,
+  DEFAULT_LIMIT,
+  getQueryFromSearch,
+  getSearchFromQuery,
 };

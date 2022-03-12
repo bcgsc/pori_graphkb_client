@@ -58,8 +58,8 @@ const copyURLToClipBoard = (snackbar) => {
 };
 
 export {
-  getId,
   computeNodeLevels,
   copyURLToClipBoard,
+  getId,
   TREE_LINK,
 };

@@ -58,7 +58,7 @@ const DATE_FIELDS = [
 ];
 
 export {
-  OPERATORS,
   BLACKLISTED_PROPERTIES,
   DATE_FIELDS,
+  OPERATORS,
 };

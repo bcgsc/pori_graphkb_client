@@ -244,12 +244,12 @@ const getNodeRIDsFromURL = (href) => {
 };
 
 export {
-  cleanLinkedRecords,
-  cleanUndefined,
-  sortAndGroupFields,
   CLASS_MODEL_PROP,
-  FORM_VARIANT,
+  cleanLinkedRecords,
   cleanPayload,
-  navigateToGraph,
+  cleanUndefined,
+  FORM_VARIANT,
   getNodeRIDsFromURL,
+  navigateToGraph,
+  sortAndGroupFields,
 };

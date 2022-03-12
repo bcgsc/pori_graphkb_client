@@ -202,5 +202,8 @@ AuthenticatedRoute.defaultProps = {
 };
 
 export {
-  AuthProvider, useAuth, AuthenticatedRoute, AuthContext,
+  AuthContext,
+  AuthenticatedRoute,
+  AuthProvider,
+  useAuth,
 };

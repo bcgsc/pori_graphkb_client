@@ -116,6 +116,8 @@
         "react/sort-comp": "warn",
         "react/jsx-props-no-spreading": "off",
         "sort-imports": "off",
+        "simple-import-sort/exports": "error",
+        "simple-import-sort/imports": "error",
         // all rules below are temporarily disabled in order for eslint to pass
         // after updating. these should be fixed and re-enabled
         "react/function-component-definition": "off",
@@ -124,7 +126,6 @@
         "react/jsx-no-constructed-context-values": "off",
         "react/jsx-no-useless-fragment": "off",
         "jest/no-conditional-expect": "off",
-        "simple-import-sort/exports": "off",
         "max-classes-per-file": "off",
         "no-mixed-operators": "off",
         "react/prop-types": "off",
@@ -136,7 +137,6 @@
         "react/static-property-placement": "off",
         "react/jsx-fragments": "off",
         "no-unused-vars": "off",
-        "simple-import-sort/imports": "off",
         "@typescript-eslint/no-shadow": "off",
         "@typescript-eslint/default-param-last": "off",
         "@typescript-eslint/no-use-before-define": "off"

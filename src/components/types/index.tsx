@@ -64,7 +64,7 @@ const HistoryPropType = PropTypes.shape({
 
 export {
   GeneralRecordPropType,
-  LocationPropType,
   HistoryPropType,
+  LocationPropType,
   StatementPropType,
 };

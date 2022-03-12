@@ -51,7 +51,6 @@ const createBaseConfig = ({
         include: INCLUDE,
         use: [
           'babel-loader',
-          'eslint-loader',
         ],
         sideEffects: false,
       },

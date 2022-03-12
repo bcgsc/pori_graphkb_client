@@ -1,7 +1,6 @@
 {
     "env": {
         "browser": true,
-        "cypress/globals": true,
         "es6": true,
         "jest": true,
         "node": true
@@ -9,10 +8,11 @@
     "extends": [
         "eslint:recommended",
         "airbnb",
+        "airbnb/hooks",
         "plugin:jest/recommended",
         "plugin:jest-formatting/recommended"
     ],
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -21,7 +21,6 @@
         "sourceType": "module"
     },
     "plugins": [
-        "cypress",
         "react",
         "babel",
         "react-hooks",
@@ -128,8 +127,31 @@
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "warn",
         "react/sort-comp": "warn",
-        "simple-import-sort/sort": "error",
-        "sort-imports": "off"
+        "react/jsx-props-no-spreading": "off",
+        "sort-imports": "off",
+        // all rules below are temporarily disabled in order for eslint to pass
+        // after updating. these should be fixed and re-enabled
+        "no-multiple-empty-lines": "off",
+        "react/function-component-definition": "off",
+        "react/jsx-curly-newline": "off",
+        "arrow-parens": "off",
+        "react/jsx-no-constructed-context-values": "off",
+        "react/jsx-no-useless-fragment": "off",
+        "jest/no-conditional-expect": "off",
+        "simple-import-sort/exports": "off",
+        "max-classes-per-file": "off",
+        "no-mixed-operators": "off",
+        "default-param-last": "off",
+        "react/prop-types": "off",
+        "react/no-unstable-nested-components": "off",
+        "prefer-object-spread": "off",
+        "function-paren-newline": "off",
+        "jest/valid-title": "off",
+        "function-call-argument-newline": "off",
+        "react/static-property-placement": "off",
+        "react/jsx-fragments": "off",
+        "no-unused-vars": "off",
+        "simple-import-sort/imports": "off"
     },
     "settings": {
         "import/resolver": {

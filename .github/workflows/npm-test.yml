@@ -11,6 +11,7 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
+      - run: npm run lint
       - run: npm test
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.6

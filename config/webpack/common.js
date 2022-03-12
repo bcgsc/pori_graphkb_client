@@ -46,7 +46,7 @@ const createBaseConfig = ({
         ],
       },
       {
-        test: /\.js$/,
+        test: /\.[tj]sx?$/,
         include: INCLUDE,
         use: [
           'babel-loader',
@@ -181,7 +181,7 @@ const createBaseConfig = ({
     context: SRC_PATH,
     entry: [
       './polyfills.js',
-      './index.js',
+      './index.tsx',
     ],
     output: {
       path: outputPath,
@@ -212,7 +212,7 @@ const createBaseConfig = ({
     devtool: sourceMap ? 'eval' : false,
     plugins,
     resolve: {
-      extensions: ['.js', '.jsx', '.json'],
+      extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
         '@': SRC_PATH,
       },

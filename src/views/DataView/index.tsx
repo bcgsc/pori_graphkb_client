@@ -310,12 +310,7 @@ const DataView = ({
     }
   }
   return (
-    <div className={
-        `data-view ${detailPanelIsOpen
-          ? 'data-view--squished'
-          : ''}`
-}
-    >
+    <div className={`data-view ${detailPanelIsOpen ? 'data-view--squished' : ''}`}>
       <div className="data-view__header">
         <ActiveFilters search={search} />
         <Tooltip title="click here for table and export options">

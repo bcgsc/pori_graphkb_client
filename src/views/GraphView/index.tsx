@@ -104,11 +104,8 @@ const GraphView = ({ history }) => {
   };
 
   return (
-    <div className={
-      `data-view ${detailPanelIsOpen
-        ? 'data-view--squished'
-        : ''}`
-}
+    <div
+      className={`data-view ${detailPanelIsOpen ? 'data-view--squished' : ''}`}
     >
       <div className="data-view__content--graph-view">
         {graphData && (
@@ -125,10 +122,10 @@ const GraphView = ({ history }) => {
               onRecordClicked={handleToggleDetailPanel}
             />
             {detailPanelRow && (
-            <DetailDrawer
-              node={detailPanelRow}
-              onClose={handleToggleDetailPanel}
-            />
+              <DetailDrawer
+                node={detailPanelRow}
+                onClose={handleToggleDetailPanel}
+              />
             )}
           </>
         )}
@@ -140,7 +137,6 @@ const GraphView = ({ history }) => {
           </div>
         )}
       </div>
-
     </div>
   );
 };

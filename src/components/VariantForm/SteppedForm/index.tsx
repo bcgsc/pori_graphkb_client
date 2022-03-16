@@ -112,11 +112,7 @@ const SteppedForm = ({
             onClick={handleSubmit}
             requireConfirm={false}
           >
-            {
-            formVariant === FORM_VARIANT.NEW
-              ? 'SUBMIT'
-              : 'SUBMIT CHANGES'
-          }
+            {formVariant === FORM_VARIANT.NEW ? 'SUBMIT' : 'SUBMIT CHANGES'}
           </ActionButton>
         </div>
       </Stepper>

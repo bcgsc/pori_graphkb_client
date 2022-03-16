@@ -127,7 +127,6 @@ const ImportPubmedView = (props) => {
           onClick={handleImport}
           sourceId={text}
           title={titleCase(externalRecord.name)}
-
         />
       )}
     </div>

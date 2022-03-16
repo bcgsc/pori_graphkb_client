@@ -28,27 +28,26 @@ const RelatedVariantsTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: variants, isFetching } = useQuery(
-    ['/query', {
-      target: 'Variant',
-      filters: {
-        OR: [
-          {
-            reference1: recordId,
-          },
-          {
-            reference2: recordId,
-          },
-          {
-            type: recordId,
-          },
-        ],
+    [
+      '/query',
+      {
+        target: 'Variant',
+        filters: {
+          OR: [
+            {
+              reference1: recordId,
+            },
+            {
+              reference2: recordId,
+            },
+            {
+              type: recordId,
+            },
+          ],
+        },
+        returnProperties: ['@rid', '@class', 'displayName'],
       },
-      returnProperties: [
-        '@rid',
-        '@class',
-        'displayName',
-      ],
-    }],
+    ],
     async ({ queryKey: [route, body] }) => api.post(route, body),
   );
 

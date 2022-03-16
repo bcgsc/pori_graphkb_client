@@ -52,11 +52,11 @@ const DefaultPopupComponent = (props) => {
             {title || label}
           </Typography>
           {getLink && getLink(retrievedDetails) && (
-          <Link target="_blank" to={getLink(retrievedDetails)}>
-            <IconButton>
-              <OpenInNewIcon />
-            </IconButton>
-          </Link>
+            <Link target="_blank" to={getLink(retrievedDetails)}>
+              <IconButton>
+                <OpenInNewIcon />
+              </IconButton>
+            </Link>
           )}
         </div>
         <Divider />

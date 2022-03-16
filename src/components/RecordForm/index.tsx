@@ -210,13 +210,13 @@ const RecordForm = ({
         </span>
         <div className={`header__actions header__actions--${variant}`}>
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-          <RecordFormStateToggle
-            allowEdit={auth.hasWriteAccess}
-            message="Are you sure? You will lose your changes."
-            onClick={handleToggleState}
-            requireConfirm={variant === 'edit' && formIsDirty}
-            value={variant}
-          />
+            <RecordFormStateToggle
+              allowEdit={auth.hasWriteAccess}
+              message="Are you sure? You will lose your changes."
+              onClick={handleToggleState}
+              requireConfirm={variant === 'edit' && formIsDirty}
+              value={variant}
+            />
           )}
         </div>
       </div>

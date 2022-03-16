@@ -49,24 +49,24 @@ const sortByGroup = (a, b) => {
 };
 
 /**
-  * Autocomplete dropdown component for inputs which take 1 or multiple records as input
-  *
-  * @property {object} props
-  * @property {boolean} props.disabled flag to indicate this input is disabled
-  * @property {boolean} props.isMulti flag to indicate this field accepts multiple records
-  * @property {boolean} props.required flag to indicate that this field must be filled
-  * @property {function} props.itemToString function to convert option objects to display label
-  * @property {function} props.onChange the parent handler function
-  * @property {Number} props.minSearchLength the minimum length of characters required before the async options handler is called
-  * @property {object|Array.<object>} props.value the initial selected value(s)
-  * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
-  * @property {string} props.className Additional css class name to use on the main select component
-  * @property {string} props.errorText Error message
-  * @property {string} props.label the label for this form field
-  * @property {string} props.name the name of the field, used for propgating events
-  * @property {string} props.placeholder the text placeholder for the search box
-  * @property {boolean} props.singleLoad load the initial options and do not requery
-  */
+ * Autocomplete dropdown component for inputs which take 1 or multiple records as input
+ *
+ * @property {object} props
+ * @property {boolean} props.disabled flag to indicate this input is disabled
+ * @property {boolean} props.isMulti flag to indicate this field accepts multiple records
+ * @property {boolean} props.required flag to indicate that this field must be filled
+ * @property {function} props.itemToString function to convert option objects to display label
+ * @property {function} props.onChange the parent handler function
+ * @property {Number} props.minSearchLength the minimum length of characters required before the async options handler is called
+ * @property {object|Array.<object>} props.value the initial selected value(s)
+ * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
+ * @property {string} props.className Additional css class name to use on the main select component
+ * @property {string} props.errorText Error message
+ * @property {string} props.label the label for this form field
+ * @property {string} props.name the name of the field, used for propgating events
+ * @property {string} props.placeholder the text placeholder for the search box
+ * @property {boolean} props.singleLoad load the initial options and do not requery
+ */
 const RecordAutocomplete = (props) => {
   const {
     className,

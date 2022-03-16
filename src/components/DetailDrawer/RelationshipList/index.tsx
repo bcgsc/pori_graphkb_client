@@ -21,13 +21,13 @@ import React from 'react';
 import schema from '@/services/schema';
 
 /**
-   * Formats record relationships.
-   * @property {Object} record - Record being displayed.
-   * @property {Object} linkOpen - edge record opened
-   * @property {function} handleLinkExpand - adds link to opened list
-   * @property {function} formatMetadata - formats metadata properties
-   * @property {function} formatOtherProps - formats non-metadata properties
-   */
+ * Formats record relationships.
+ * @property {Object} record - Record being displayed.
+ * @property {Object} linkOpen - edge record opened
+ * @property {function} handleLinkExpand - adds link to opened list
+ * @property {function} formatMetadata - formats metadata properties
+ * @property {function} formatOtherProps - formats non-metadata properties
+ */
 function RelationshipList(props) {
   const {
     linkOpen, record, handleLinkExpand, formatMetadata, formatOtherProps,

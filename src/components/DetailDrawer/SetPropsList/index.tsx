@@ -34,13 +34,13 @@ const sortProps = (value) => {
 };
 
 /**
-   * Renders properties that are set types. i.e Embedded set and link set.
-   * @param {PropertyModel} prop link/embedded property model
-   * @param {Arrayof<Objects>}  value contains link/embedded records
-   * @param {Arrayof<string>} opened opened dropdowns in drawer
-   * @param {Arrayof<string>} identifiers props to be displayed for submenu
-   *
-   */
+ * Renders properties that are set types. i.e Embedded set and link set.
+ * @param {PropertyModel} prop link/embedded property model
+ * @param {Arrayof<Objects>}  value contains link/embedded records
+ * @param {Arrayof<string>} opened opened dropdowns in drawer
+ * @param {Arrayof<string>} identifiers props to be displayed for submenu
+ *
+ */
 function SetPropsList(props) {
   const {
     prop, value, identifiers, opened, handleExpand,

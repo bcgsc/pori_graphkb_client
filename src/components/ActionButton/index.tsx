@@ -55,24 +55,20 @@ function ActionButton(props) {
         className="action-button__button"
         color={color}
         disabled={disabled}
-        onClick={
-            requireConfirm
-              ? handleOpenDialog
-              : onClick
-          }
+        onClick={requireConfirm ? handleOpenDialog : onClick}
         size={size}
         variant={variant}
       >
         {children}
       </Button>
       {requireConfirm && (
-      <ConfirmActionDialog
-        className="action-button__dialog"
-        isOpen={dialogOpen}
-        message={message}
-        onCancel={handleDialogCancel}
-        onConfirm={handleDialogConfirm}
-      />
+        <ConfirmActionDialog
+          className="action-button__dialog"
+          isOpen={dialogOpen}
+          message={message}
+          onCancel={handleDialogCancel}
+          onConfirm={handleDialogConfirm}
+        />
       )}
     </div>
   );

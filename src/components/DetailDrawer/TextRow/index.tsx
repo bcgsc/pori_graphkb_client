@@ -17,15 +17,15 @@ const DATE_KEYS = ['createdAt', 'deletedAt', 'updatedAt'];
 const MAX_STRING_LENGTH = 64;
 
 /**
-   * Formats a key/value pair where string is value. Either formats it
-   * as a string row or a collapsable row depending on length
-   * @property {string} name - property key.
-   * @property {string} value - property value
-   * @property {boolean} isStatic - if true, locks list item open.
-   * @property {boolean} isNested - if true, list item is indented.
-   * @property {object} opened - array containing opened property models
-   * @property {function} handleExpand - adds clicked props to opened object
-   */
+ * Formats a key/value pair where string is value. Either formats it
+ * as a string row or a collapsable row depending on length
+ * @property {string} name - property key.
+ * @property {string} value - property value
+ * @property {boolean} isStatic - if true, locks list item open.
+ * @property {boolean} isNested - if true, list item is indented.
+ * @property {object} opened - array containing opened property models
+ * @property {function} handleExpand - adds clicked props to opened object
+ */
 function TextRow(props) {
   const {
     name, value, isStatic, isNested, opened, handleExpand,
@@ -48,9 +48,7 @@ function TextRow(props) {
     return (
       <React.Fragment key={name}>
         <ListItem {...listItemProps} dense>
-          {isNested && (
-          <div className="nested-spacer" />
-          )}
+          {isNested && <div className="nested-spacer" />}
           <ListItemText className="detail-li-text">
             <Typography color={isNested ? 'textSecondary' : 'default'}>
               {util.antiCamelCase(name)}
@@ -60,9 +58,7 @@ function TextRow(props) {
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
-            {isNested && (
-            <div className="nested-spacer" />
-            )}
+            {isNested && <div className="nested-spacer" />}
             <ListItemText className="detail-li-text">
               {util.formatStr(schema.getPreview(value))}
             </ListItemText>
@@ -85,9 +81,7 @@ function TextRow(props) {
     return (
       <React.Fragment key={name}>
         <ListItem dense>
-          {isNested && (
-          <div className="nested-spacer" />
-          )}
+          {isNested && <div className="nested-spacer" />}
           <ListItemText className="detail-li-text">
             <div className="detail-identifiers">
               <Typography>

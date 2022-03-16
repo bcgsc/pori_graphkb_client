@@ -20,7 +20,8 @@ const isReversed = (nodeId, { out: src, in: tgt }) => {
   if (src && tgt) {
     const srcId = src['@rid'] || src;
     return srcId !== nodeId;
-  } if (!tgt) {
+  }
+  if (!tgt) {
     return true;
   }
   return false;

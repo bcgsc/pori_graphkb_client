@@ -22,21 +22,24 @@ import AdminTable from './components/AdminTable';
  */
 const AdminView = () => {
   const { data: users = [], refetch: refetchUsers } = useQuery(
-    ['/query', {
-      target: 'User',
-      neighbors: 2,
-      returnProperties: [
-        '@class',
-        '@rid',
-        'createdAt',
-        'email',
-        'groups.@class',
-        'groups.@rid',
-        'groups.name',
-        'name',
-        'signedLicenseAt',
-      ],
-    }],
+    [
+      '/query',
+      {
+        target: 'User',
+        neighbors: 2,
+        returnProperties: [
+          '@class',
+          '@rid',
+          'createdAt',
+          'email',
+          'groups.@class',
+          'groups.@rid',
+          'groups.name',
+          'name',
+          'signedLicenseAt',
+        ],
+      },
+    ],
     async ({ queryKey: [route, body] }) => api.post(route, body),
   );
 

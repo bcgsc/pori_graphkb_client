@@ -71,18 +71,18 @@ const BreakpointForm = ({
             }}
           />
           {uncertain && (
-          <FormField
-            baseModel={coordinateType}
-            clearable={false}
-            label={`end (${coordinateType})`}
-            model={{
-              ...model.properties.break1Start,
-              name: end,
-              mandatory: required,
-              linkedClass: schema.get(coordinateType),
-              description: 'end of the breakpoint range',
-            }}
-          />
+            <FormField
+              baseModel={coordinateType}
+              clearable={false}
+              label={`end (${coordinateType})`}
+              model={{
+                ...model.properties.break1Start,
+                name: end,
+                mandatory: required,
+                linkedClass: schema.get(coordinateType),
+                description: 'end of the breakpoint range',
+              }}
+            />
           )}
         </>
       )}

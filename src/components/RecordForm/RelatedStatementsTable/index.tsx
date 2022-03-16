@@ -28,39 +28,42 @@ const RelatedStatementsTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: statements, isFetching } = useQuery(
-    ['/query', {
-      target: 'Statement',
-      filters: {
-        OR: [
-          {
-            conditions: recordId,
-            operator: 'CONTAINS',
-          },
-          {
-            evidence: recordId,
-            operator: 'CONTAINS',
-          },
-          {
-            relevance: recordId,
-          },
-          {
-            subject: recordId,
-          },
-          {
-            evidenceLevel: recordId,
-            operator: 'CONTAINS',
-          },
+    [
+      '/query',
+      {
+        target: 'Statement',
+        filters: {
+          OR: [
+            {
+              conditions: recordId,
+              operator: 'CONTAINS',
+            },
+            {
+              evidence: recordId,
+              operator: 'CONTAINS',
+            },
+            {
+              relevance: recordId,
+            },
+            {
+              subject: recordId,
+            },
+            {
+              evidenceLevel: recordId,
+              operator: 'CONTAINS',
+            },
+          ],
+        },
+        returnProperties: [
+          '@rid',
+          '@class',
+          'relevance.displayName',
+          'conditions.displayName',
+          'evidence.displayName',
+          'subject.displayName',
         ],
       },
-      returnProperties: [
-        '@rid',
-        '@class',
-        'relevance.displayName',
-        'conditions.displayName',
-        'evidence.displayName',
-        'subject.displayName',
-      ],
-    }],
+    ],
     async ({ queryKey: [route, body] }) => api.post(route, body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );

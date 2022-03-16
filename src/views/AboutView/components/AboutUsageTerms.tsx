@@ -58,7 +58,7 @@ const AboutUsageTerms = () => {
               disabled={!requiresSigning}
               onChange={(_, value) => setHasAcknowledgedTerms(value)}
             />
-                    )}
+          )}
           label="I have read and understood the terms of use"
         />
         <ActionButton

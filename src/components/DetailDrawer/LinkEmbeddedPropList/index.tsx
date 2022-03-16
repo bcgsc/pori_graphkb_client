@@ -16,16 +16,16 @@ import schema from '@/services/schema';
 import util from '@/services/util';
 
 /**
-   * Renders formatted link/embedded props.
-   *
-   * @property {PropertyModel} prop link/embedded property model
-   * @property {bool} isNested is the prop nested
-   * @property {Arrayof<Objects>}  value contains link/embedded records
-   * @property {Arrayof<string>} opened opened dropdowns in drawer
-   * @property {Arrayof<string>} identifiers props to be displayed for submenu
-   * @property {function} formatOtherProps property formatting function
-   * @property {function} handleExpand adds prop to opened object and handles expansion
-   */
+ * Renders formatted link/embedded props.
+ *
+ * @property {PropertyModel} prop link/embedded property model
+ * @property {bool} isNested is the prop nested
+ * @property {Arrayof<Objects>}  value contains link/embedded records
+ * @property {Arrayof<string>} opened opened dropdowns in drawer
+ * @property {Arrayof<string>} identifiers props to be displayed for submenu
+ * @property {function} formatOtherProps property formatting function
+ * @property {function} handleExpand adds prop to opened object and handles expansion
+ */
 function LinkEmbeddedPropList(props) {
   const {
     prop, isNested, value, identifiers, handleExpand, formatOtherProps, opened,

@@ -85,22 +85,22 @@ const PositionForm = ({
         </IconButton>
       )}
       {positionVariants.length > 1 && (
-      <DropDownSelect
-        disabled={disabled}
-        onChange={handleVariantChange}
-        options={positionVariants}
-        value={variant}
-      />
+        <DropDownSelect
+          disabled={disabled}
+          onChange={handleVariantChange}
+          options={positionVariants}
+          value={variant}
+        />
       )}
       {(variant || positionVariants.length === 1) && (
-      <PositionComponent
-        disabled={disabled}
-        name={name}
-        onChange={onChange}
-        value={value}
-        variant={variant || positionVariants[0]}
-        {...props}
-      />
+        <PositionComponent
+          disabled={disabled}
+          name={name}
+          onChange={onChange}
+          value={value}
+          variant={variant || positionVariants[0]}
+          {...props}
+        />
       )}
       <FormHelperText error={error}>{helperText}</FormHelperText>
     </FormControl>

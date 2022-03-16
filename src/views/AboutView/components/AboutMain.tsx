@@ -77,19 +77,19 @@ const AboutMain = () => {
         </div>
       </div>
       {chartData && (
-      <Chart
-        chartType="BarChart"
-        data={chartData}
-        height="500px"
-        loader={<CircularProgress className="about-page__loader" />}
-        options={{
-          title: 'Statement Sources',
-          legend: 'none',
-          colors: [theme.palette.primary.main, theme.palette.secondary.main],
-          backgroundColor: 'transparent',
-        }}
-        width="100%"
-      />
+        <Chart
+          chartType="BarChart"
+          data={chartData}
+          height="500px"
+          loader={<CircularProgress className="about-page__loader" />}
+          options={{
+            title: 'Statement Sources',
+            legend: 'none',
+            colors: [theme.palette.primary.main, theme.palette.secondary.main],
+            backgroundColor: 'transparent',
+          }}
+          width="100%"
+        />
       )}
     </div>
   );

@@ -50,35 +50,53 @@ const StatementForm = ({
   navigateToGraph,
   ...rest
 }) => {
-  const { data: diagnosticData } = useQuery(['/query', {
-    queryType: 'similarTo',
-    target: {
-      queryType: 'ancestors',
-      target: 'Vocabulary',
-      filters: { name: 'diagnostic indicator' },
-    },
-    returnProperties: ['name'],
-  }], async ({ queryKey: [route, body] }) => api.post(route, body));
+  const { data: diagnosticData } = useQuery(
+    [
+      '/query',
+      {
+        queryType: 'similarTo',
+        target: {
+          queryType: 'ancestors',
+          target: 'Vocabulary',
+          filters: { name: 'diagnostic indicator' },
+        },
+        returnProperties: ['name'],
+      },
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+  );
 
-  const { data: therapeuticData } = useQuery(['/query', {
-    queryType: 'similarTo',
-    target: {
-      queryType: 'ancestors',
-      target: 'Vocabulary',
-      filters: { name: 'therapeutic efficacy' },
-    },
-    returnProperties: ['name'],
-  }], async ({ queryKey: [route, body] }) => api.post(route, body));
+  const { data: therapeuticData } = useQuery(
+    [
+      '/query',
+      {
+        queryType: 'similarTo',
+        target: {
+          queryType: 'ancestors',
+          target: 'Vocabulary',
+          filters: { name: 'therapeutic efficacy' },
+        },
+        returnProperties: ['name'],
+      },
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+  );
 
-  const { data: prognosticData } = useQuery(['/query', {
-    queryType: 'similarTo',
-    target: {
-      queryType: 'ancestors',
-      target: 'Vocabulary',
-      filters: { name: 'prognostic indicator' },
-    },
-    returnProperties: ['name'],
-  }], async ({ queryKey: [route, body] }) => api.post(route, body));
+  const { data: prognosticData } = useQuery(
+    [
+      '/query',
+      {
+        queryType: 'similarTo',
+        target: {
+          queryType: 'ancestors',
+          target: 'Vocabulary',
+          filters: { name: 'prognostic indicator' },
+        },
+        returnProperties: ['name'],
+      },
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
+  );
 
   const snackbar = useSnackbar();
   const auth = useAuth();
@@ -302,35 +320,33 @@ const StatementForm = ({
         </span>
         <div className={`header__actions header__actions--${variant}`}>
           {variant === FORM_VARIANT.EDIT && (
-          <Button
-            className="header__review-action"
-            disabled={actionInProgress}
-            onClick={() => setReviewDialogOpen(true)}
-            variant="outlined"
-          >
-            <LocalLibraryIcon
-              classes={{ root: 'review-icon' }}
-            />
-            Add Review
-          </Button>
+            <Button
+              className="header__review-action"
+              disabled={actionInProgress}
+              onClick={() => setReviewDialogOpen(true)}
+              variant="outlined"
+            >
+              <LocalLibraryIcon classes={{ root: 'review-icon' }} />
+              Add Review
+            </Button>
           )}
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-          <RecordFormStateToggle
-            allowEdit={auth.hasWriteAccess}
-            message="Are you sure? You will lose your changes."
-            onClick={handleToggleState}
-            requireConfirm={variant === 'edit' && formIsDirty}
-            value={variant}
-          />
+            <RecordFormStateToggle
+              allowEdit={auth.hasWriteAccess}
+              message="Are you sure? You will lose your changes."
+              onClick={handleToggleState}
+              requireConfirm={variant === 'edit' && formIsDirty}
+              value={variant}
+            />
           )}
         </div>
         {variant === FORM_VARIANT.EDIT && (
-        <ReviewDialog
-          isOpen={reviewDialogOpen}
-          onClose={() => setReviewDialogOpen(false)}
-          onSubmit={handleAddReview}
-        />
+          <ReviewDialog
+            isOpen={reviewDialogOpen}
+            onClose={() => setReviewDialogOpen(false)}
+            onSubmit={handleAddReview}
+          />
         )}
       </div>
 

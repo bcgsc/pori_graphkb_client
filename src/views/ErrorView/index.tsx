@@ -14,13 +14,10 @@ import { Link, useLocation } from 'react-router-dom';
 const EmailReportError = (props) => {
   const { linkText, body, subject } = props;
   return (
-    <a href={`mailto:${
-      window._env_.CONTACT_EMAIL
-    }?subject=${
-      encodeURIComponent(subject)
-    }&body=${
-      encodeURIComponent(body)
-    }`}
+    <a
+      href={`mailto:${window._env_.CONTACT_EMAIL}?subject=${encodeURIComponent(
+        subject,
+      )}&body=${encodeURIComponent(body)}`}
     >
       {linkText}
     </a>
@@ -90,31 +87,28 @@ error text: ${message}`;
         />
         .
       </Typography>
-      {stacktrace
-          && (
-            <div className="stacktrace">
-              <pre>
-                <code>
-                  {errorDetails}
-                </code>
-              </pre>
-              <Tooltip
-                disableHoverListener
-                onClose={() => setTooltipOpen(false)}
-                open={tooltipOpen}
-                title="Copied!"
-              >
-                <Button
-                  id="copy-button"
-                  onClick={handleCopyToClipboard}
-                  variant="outlined"
-                >
-                  Copy To Clipboard
-                  <AssignmentIcon />
-                </Button>
-              </Tooltip>
-            </div>
-          )}
+      {stacktrace && (
+        <div className="stacktrace">
+          <pre>
+            <code>{errorDetails}</code>
+          </pre>
+          <Tooltip
+            disableHoverListener
+            onClose={() => setTooltipOpen(false)}
+            open={tooltipOpen}
+            title="Copied!"
+          >
+            <Button
+              id="copy-button"
+              onClick={handleCopyToClipboard}
+              variant="outlined"
+            >
+              Copy To Clipboard
+              <AssignmentIcon />
+            </Button>
+          </Tooltip>
+        </div>
+      )}
       <Link to="/">
         <Button color="primary" variant="contained">
           Home

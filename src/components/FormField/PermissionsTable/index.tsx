@@ -22,9 +22,9 @@ const { constants: { PERMISSIONS } } = kbSchema;
 /* eslint-disable no-bitwise */
 
 /**
-* For a mapping of class names to the single permissions value, split these by operation types
-* for display as checkboxes
-*/
+ * For a mapping of class names to the single permissions value, split these by operation types
+ * for display as checkboxes
+ */
 const splitPermissionsByOperation = (permissions) => {
   const permByModelName = {};
 
@@ -143,29 +143,25 @@ const PermissionsTable = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {modelOrder.map(
-            (modelName) => {
-              const permission = permByModelName[modelName];
-              return (
-                <TableRow key={modelName} className="permissions-table__row">
-                  <TableCell size="small">
-                    {modelName}:
-                  </TableCell>
-                  {operationOrder.map((operation) => (
-                    <TableCell key={operation} padding="checkbox">
-                      {(permission[operation] !== null && (
+          {modelOrder.map((modelName) => {
+            const permission = permByModelName[modelName];
+            return (
+              <TableRow key={modelName} className="permissions-table__row">
+                <TableCell size="small">{modelName}:</TableCell>
+                {operationOrder.map((operation) => (
+                  <TableCell key={operation} padding="checkbox">
+                    {permission[operation] !== null && (
                       <Checkbox
                         checked={permission[operation] !== 0}
                         disabled={disabled}
                         onChange={() => handleClick(operation, modelName)}
                       />
-                      ))}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            },
-          )}
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

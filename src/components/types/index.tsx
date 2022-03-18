@@ -62,9 +62,38 @@ const HistoryPropType = PropTypes.shape({
   replace: PropTypes.func,
 });
 
+/**
+ * Represents a general record type from schema
+ */
+interface GeneralRecordType {
+  '@rid'?: string;
+  '@class'?: string;
+  uuid?: string;
+  createdAt?: number;
+  deletedAt?: number;
+  createdBy?: GeneralRecordType;
+  name?: string;
+  displayName?: string;
+}
+
+/**
+ * Represents general format of a statement class record
+ */
+interface StatementType extends GeneralRecordType {
+  conditions: GeneralRecordType[];
+  evidence: GeneralRecordType[];
+  relevance: GeneralRecordType;
+  subject: GeneralRecordType;
+}
+
 export {
   GeneralRecordPropType,
   HistoryPropType,
   LocationPropType,
   StatementPropType,
+};
+
+export type {
+  GeneralRecordType,
+  StatementType,
 };

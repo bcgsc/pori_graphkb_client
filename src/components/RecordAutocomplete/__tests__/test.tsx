@@ -9,8 +9,8 @@ import api from '@/services/api';
 import RecordAutocomplete from '..';
 
 const spy = jest
-  .spyOn(api, 'post')
-  .mockImplementation(() => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }]);
+  .spyOn(api, 'query')
+  .mockImplementation(async () => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }]);
 
 describe('RecordAutocomplete (data-fetching)', () => {
   test('singleLoad triggers query', async () => {

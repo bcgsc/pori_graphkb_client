@@ -48,7 +48,7 @@ const RelatedVariantsTable = ({ recordId }) => {
         returnProperties: ['@rid', '@class', 'displayName'],
       },
     ],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   useEffect(() => {

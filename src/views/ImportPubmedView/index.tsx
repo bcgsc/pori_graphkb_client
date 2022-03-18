@@ -11,6 +11,7 @@ import React, { useCallback, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
+import { GeneralRecordType } from '@/components/types';
 import handleErrorSaveLocation from '@/services/util';
 
 import SearchBox from '../../components/SearchBox';
@@ -27,7 +28,7 @@ const ImportPubmedView = (props) => {
   // fetch the pubmed source record
   const { data: source } = useQuery(
     ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
-    ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     {
       onError: (err) => handleErrorSaveLocation(err, history),
       select: (response) => response[0]?.['@rid'],
@@ -53,7 +54,7 @@ const ImportPubmedView = (props) => {
         },
       },
     ],
-    ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: Boolean(text),
       onError: (err) => handleErrorSaveLocation(err, history),
@@ -73,7 +74,7 @@ const ImportPubmedView = (props) => {
     async () => {
       if (externalRecord) {
         try {
-          const result = await api.post('/publications', { ...externalRecord, source });
+          const result = await api.post<GeneralRecordType>('/publications', { ...externalRecord, source });
           snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
           refetchCurrentRecords();
         } catch (err) {

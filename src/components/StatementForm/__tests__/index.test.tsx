@@ -15,11 +15,7 @@ import StatementForm from '..';
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.spyOn(api, 'post').mockImplementation((endpoint, payload) => {
-  // request to create statement
-  if (endpoint === '/statements') {
-    return payload;
-  }
+jest.spyOn(api, 'query').mockImplementation(async (payload) => {
   // to prevent other records causing validation error when running `checkLogicalStatement`
   if (payload.queryType === 'similarTo') {
     return [];
@@ -44,6 +40,8 @@ jest.spyOn(api, 'post').mockImplementation((endpoint, payload) => {
     },
   ];
 });
+
+jest.spyOn(api, 'post').mockImplementation(async (_, payload) => payload);
 
 const selectFromAutocomplete = async (label, option, search = 'anything') => {
   const input = screen.getByLabelText(label);

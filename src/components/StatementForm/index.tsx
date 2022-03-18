@@ -20,7 +20,7 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordPropType, GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -63,7 +63,7 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const { data: therapeuticData } = useQuery(
@@ -79,7 +79,7 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const { data: prognosticData } = useQuery(
@@ -95,7 +95,7 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const snackbar = useSnackbar();
@@ -183,7 +183,7 @@ const StatementForm = ({
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.post(routeName, payload);
+      return api.post<GeneralRecordType>(routeName, payload);
     },
     {
       onSuccess: (result) => {

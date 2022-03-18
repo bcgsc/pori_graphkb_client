@@ -56,7 +56,7 @@ const get = (endpoint: string, callOptions?: RequestCallOptions) => {
 };
 
 /**
- * Sends POST request to api.
+ * Sends POST request to api to create a new record.
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
@@ -66,6 +66,30 @@ function post<Resp = unknown>(endpoint: string, payload?: Record<string, unknown
     body: jc.stringify(payload),
   };
   return request(endpoint, init);
+}
+
+/**
+ * Sends POST request to api to the query endpoint
+ * @param {Object} payload - POST payload.
+ */
+function query<Record = GeneralRecordType>(payload: unknown): Promise<Record[]> {
+  const init = {
+    method: 'POST',
+    body: jc.stringify(payload),
+  };
+  return request('/query', init);
+}
+
+/**
+ * Sends POST request to token endpoint to get gkb token
+ * @param keyCloakToken - keycloak token
+ */
+function authenticate(keyCloakToken: string | undefined): Promise<{ kbToken: string }> {
+  const init = {
+    method: 'POST',
+    body: jc.stringify({ keyCloakToken }),
+  };
+  return request('/token', init);
 }
 
 /**
@@ -143,4 +167,6 @@ export default {
   post,
   getDefaultSuggestionQueryBody,
   queryClient,
+  query,
+  authenticate,
 };

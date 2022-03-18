@@ -20,8 +20,8 @@ import schema from '@/services/schema';
 const ClassDescription = ({ name, description }) => {
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     ['/query', { target: name, neighbors: 1, limit: 1 }],
-    async ({ queryKey: [route, body] }) => {
-      const [result] = await api.post(route, body);
+    async ({ queryKey: [_, body] }) => {
+      const [result] = await api.query(body);
       return result;
     },
     { staleTime: Infinity, throwOnError: false },

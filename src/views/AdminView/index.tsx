@@ -40,12 +40,12 @@ const AdminView = () => {
         ],
       },
     ],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const { data: groups = [], refetch: refetchGroups } = useQuery(
     ['/query', { target: 'UserGroup', neighbors: 2 }],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const handleUserChange = useCallback(() => {

@@ -4,14 +4,15 @@ import { Button, CircularProgress, Typography } from '@material-ui/core';
 import fetchIntercept from 'fetch-intercept';
 import jwtDecode from 'jwt-decode';
 import Keycloak from 'keycloak-js';
-import { PropTypes } from 'prop-types';
 import React, {
-  createContext, useContext, useEffect, useLayoutEffect, useMemo,
+  createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo,
 } from 'react';
 import { useMutation } from 'react-query';
-import { Route } from 'react-router-dom';
+import { Route, RouteProps } from 'react-router-dom';
 
 import api from '@/services/api';
+
+import { GeneralRecordType } from '../types';
 
 const dbRoles = {
   admin: 'admin',
@@ -26,7 +27,32 @@ const keycloak = Keycloak({
   realm_access: { roles: [window._env_.KEYCLOAK_ROLE] },
 });
 
-const AuthContext = createContext(undefined);
+interface DecodedKBToken {
+  user: GeneralRecordType & {
+    '@rid': string;
+    signedLicenseAt?: string | null;
+    name: string;
+    groups: { name: string }[];
+  };
+}
+
+interface AuthContextState {
+  login: () => void;
+  logout: () => void;
+  error: unknown | undefined;
+  isAuthenticating: boolean;
+
+  authenticationToken?: string;
+  authorizationToken?: string;
+  isAuthenticated?: boolean;
+  isAdmin?: boolean;
+  hasWriteAccess?: boolean;
+  user?: DecodedKBToken['user'];
+  username?: string;
+
+}
+
+const AuthContext = createContext<AuthContextState | undefined>(undefined);
 
 const useAuth = () => {
   const state = useContext(AuthContext);
@@ -38,13 +64,13 @@ const useAuth = () => {
   return state;
 };
 
-const AuthProvider = (props) => {
+const AuthProvider = (props: { children: ReactNode }) => {
   const { children } = props;
 
   const {
     mutate: logInOrOut, isLoading: isAuthenticating, data, error,
   } = useMutation(
-    async ({ loggingIn }) => {
+    async ({ loggingIn }: { loggingIn: boolean }) => {
       if (loggingIn) {
         const loggedIn = await keycloak.init({
           checkLoginIframe: false,
@@ -57,7 +83,7 @@ const AuthProvider = (props) => {
         }
 
         const { kbToken: authorizationToken } = await api.authenticate(keycloak.token);
-        const { user } = jwtDecode(authorizationToken);
+        const { user } = jwtDecode<DecodedKBToken>(authorizationToken);
 
         await keycloak.loadUserInfo();
         // eslint-disable-next-line camelcase
@@ -123,20 +149,20 @@ const AuthProvider = (props) => {
     </AuthContext.Provider>
   );
 };
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
-const Centered = ({ children }) => (
+const Centered = ({ children }: { children: ReactNode }) => (
   <div className="auth-centered">
     {children}
   </div>
 );
-Centered.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
-const AuthenticatedRoute = (props) => {
+interface AuthenticatedRouteProps {
+  component: NonNullable<RouteProps['component']>;
+  path: NonNullable<RouteProps['path']>;
+  admin?: boolean;
+}
+
+const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const { admin, component, path } = props;
   const auth = useAuth();
 
@@ -189,12 +215,6 @@ const AuthenticatedRoute = (props) => {
   return (
     <Route component={component} path={path} />
   );
-};
-
-AuthenticatedRoute.propTypes = {
-  component: PropTypes.object.isRequired,
-  path: PropTypes.string.isRequired,
-  admin: PropTypes.bool,
 };
 
 AuthenticatedRoute.defaultProps = {

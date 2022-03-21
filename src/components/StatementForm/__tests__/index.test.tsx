@@ -74,7 +74,6 @@ console.error = (msg) => {
   }
 };
 
-
 describe('StatementForm', () => {
   afterEach(() => {
     jest.clearAllMocks();

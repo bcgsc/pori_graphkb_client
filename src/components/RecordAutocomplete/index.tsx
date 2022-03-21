@@ -17,7 +17,7 @@ import DetailChip from '../DetailChip';
 
 const MIN_TERM_LENGTH = 3;
 
-const getGroup = option => (option.source && option.source.displayName
+const getGroup = (option) => (option.source && option.source.displayName
   ? option.source.displayName
   : 'no source');
 
@@ -49,24 +49,24 @@ const sortByGroup = (a, b) => {
 };
 
 /**
-  * Autocomplete dropdown component for inputs which take 1 or multiple records as input
-  *
-  * @property {object} props
-  * @property {boolean} props.disabled flag to indicate this input is disabled
-  * @property {boolean} props.isMulti flag to indicate this field accepts multiple records
-  * @property {boolean} props.required flag to indicate that this field must be filled
-  * @property {function} props.itemToString function to convert option objects to display label
-  * @property {function} props.onChange the parent handler function
-  * @property {Number} props.minSearchLength the minimum length of characters required before the async options handler is called
-  * @property {object|Array.<object>} props.value the initial selected value(s)
-  * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
-  * @property {string} props.className Additional css class name to use on the main select component
-  * @property {string} props.errorText Error message
-  * @property {string} props.label the label for this form field
-  * @property {string} props.name the name of the field, used for propgating events
-  * @property {string} props.placeholder the text placeholder for the search box
-  * @property {boolean} props.singleLoad load the initial options and do not requery
-  */
+ * Autocomplete dropdown component for inputs which take 1 or multiple records as input
+ *
+ * @property {object} props
+ * @property {boolean} props.disabled flag to indicate this input is disabled
+ * @property {boolean} props.isMulti flag to indicate this field accepts multiple records
+ * @property {boolean} props.required flag to indicate that this field must be filled
+ * @property {function} props.itemToString function to convert option objects to display label
+ * @property {function} props.onChange the parent handler function
+ * @property {Number} props.minSearchLength the minimum length of characters required before the async options handler is called
+ * @property {object|Array.<object>} props.value the initial selected value(s)
+ * @property {Function} props.getQueryBody function to get body of request ot /query endpoint
+ * @property {string} props.className Additional css class name to use on the main select component
+ * @property {string} props.errorText Error message
+ * @property {string} props.label the label for this form field
+ * @property {string} props.name the name of the field, used for propgating events
+ * @property {string} props.placeholder the text placeholder for the search box
+ * @property {boolean} props.singleLoad load the initial options and do not requery
+ */
 const RecordAutocomplete = (props) => {
   const {
     className,
@@ -99,10 +99,10 @@ const RecordAutocomplete = (props) => {
   useEffect(() => {
     if (searchTerm) {
       const terms = searchTerm.split(' ');
-      const searchTerms = terms.filter(term => term); // remove empty/null terms
+      const searchTerms = terms.filter((term) => term); // remove empty/null terms
 
       if (terms.length > 1) {
-        const badTerms = searchTerms.filter(term => term.length < MIN_TERM_LENGTH);
+        const badTerms = searchTerms.filter((term) => term.length < MIN_TERM_LENGTH);
 
         if (badTerms.length) {
           const badLengthText = `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
@@ -119,8 +119,8 @@ const RecordAutocomplete = (props) => {
       if (!singleLoad) {
         const terms = debouncedSearchTerm.split(' ');
         searchTerms = terms
-          .filter(term => term)
-          .filter(term => term.length >= MIN_TERM_LENGTH)
+          .filter((term) => term)
+          .filter((term) => term.length >= MIN_TERM_LENGTH)
           .join(' ');
       }
       return getQueryBody(searchTerms);
@@ -143,7 +143,7 @@ const RecordAutocomplete = (props) => {
         console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
         console.error(err);
       },
-      select: response => response.sort(sortByGroup),
+      select: (response) => response.sort(sortByGroup),
     },
   );
 
@@ -194,12 +194,12 @@ const RecordAutocomplete = (props) => {
 
   const filterOptions = useCallback((opts, { inputValue }) => {
     if (singleLoad) {
-      return opts.filter(option => [
+      return opts.filter((option) => [
         option.name,
         option.sourceId,
         option.displayName,
       ].some(
-        tgt => tgt && tgt.toLowerCase().includes(inputValue.toLowerCase()),
+        (tgt) => tgt && tgt.toLowerCase().includes(inputValue.toLowerCase()),
       ));
     }
 
@@ -212,7 +212,7 @@ const RecordAutocomplete = (props) => {
       disabled={disabled}
       filterOptions={filterOptions}
       filterSelectedOptions
-      getOptionLabel={option => schema.getLabel(option)}
+      getOptionLabel={(option) => schema.getLabel(option)}
       getOptionSelected={(option, value_) => option['@rid'] === value_['@rid']}
       groupBy={getGroup}
       ListboxProps={{
@@ -226,7 +226,7 @@ const RecordAutocomplete = (props) => {
       onInputChange={handleInputChange}
       options={options ?? []}
       popupIcon={<SearchIcon />}
-      renderGroup={params => [
+      renderGroup={(params) => [
         <ListSubheader
           key={params.key}
           className="record-autocomplete__group-title"
@@ -236,7 +236,7 @@ const RecordAutocomplete = (props) => {
         </ListSubheader>,
         params.children,
       ]}
-      renderInput={params => (
+      renderInput={(params) => (
         <TextField
           {...params}
           disabled={disabled || (!isMulti && Boolean(selectedValues.length))}
@@ -248,10 +248,10 @@ const RecordAutocomplete = (props) => {
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <React.Fragment>
+              <>
                 {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
-              </React.Fragment>
+              </>
             ),
             disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
           }}

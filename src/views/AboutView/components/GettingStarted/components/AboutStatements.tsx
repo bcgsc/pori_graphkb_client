@@ -5,7 +5,6 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 
-
 const AboutStatements = () => (
   <>
     <Typography variant="h2">

@@ -10,7 +10,6 @@ import graphActions from '@/static/images/graph-actions.png';
 // static content
 import graphResults from '@/static/images/graph-view.png';
 
-
 const AboutGraphView = () => (
   <>
     <Typography id="about-results-graph" variant="h2">

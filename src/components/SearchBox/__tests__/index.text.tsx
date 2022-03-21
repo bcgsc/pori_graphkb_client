@@ -5,7 +5,6 @@ import React from 'react';
 
 import SearchBox from '..';
 
-
 describe('SearchBox', () => {
   beforeEach(() => {
     jest.resetAllMocks();

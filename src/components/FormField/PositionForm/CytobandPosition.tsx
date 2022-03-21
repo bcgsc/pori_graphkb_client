@@ -12,7 +12,6 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 
 import FieldWrapper from '../FieldWrapper';
 
-
 const {
   schema: {
     CytobandPosition: {
@@ -21,7 +20,6 @@ const {
     },
   },
 } = schema;
-
 
 /**
  * Cytoband position form
@@ -55,7 +53,7 @@ const CytobandPosition = ({
 
   return (
     <>
-      {[arm, majorBand, minorBand].map(model => (
+      {[arm, majorBand, minorBand].map((model) => (
         <FieldWrapper key={model.name}>
           <TextField
             disabled={disabled}
@@ -89,6 +87,5 @@ CytobandPosition.defaultProps = {
   name: '',
   disabled: false,
 };
-
 
 export default CytobandPosition;

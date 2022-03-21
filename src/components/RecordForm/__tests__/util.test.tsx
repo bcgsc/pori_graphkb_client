@@ -1,6 +1,5 @@
 import { sortAndGroupFields } from '@/components/util';
 
-
 describe('util', () => {
   describe('sortAndGroupFields', () => {
     const testModel = {

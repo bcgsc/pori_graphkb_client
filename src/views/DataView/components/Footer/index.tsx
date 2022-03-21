@@ -15,12 +15,11 @@ import React, {
 import { HistoryPropType } from '@/components/types';
 import { navigateToGraph } from '@/components/util';
 
-
 const DataViewFooter = ({
   selectedRecords, onError, history, statusMessage, totalRows,
 }) => {
   const handleSwapToGraph = useCallback(() => {
-    const nodeRIDs = selectedRecords.map(node => node['@rid']);
+    const nodeRIDs = selectedRecords.map((node) => node['@rid']);
     navigateToGraph(nodeRIDs, history, onError);
   }, [history, onError, selectedRecords]);
 
@@ -60,7 +59,6 @@ const DataViewFooter = ({
   );
 };
 
-
 DataViewFooter.propTypes = {
   history: HistoryPropType.isRequired,
   onError: PropTypes.func,
@@ -75,6 +73,5 @@ DataViewFooter.defaultProps = {
   statusMessage: '',
   totalRows: null,
 };
-
 
 export default DataViewFooter;

@@ -19,7 +19,6 @@ import {
 } from '@/components/util';
 import schema from '@/services/schema';
 
-
 const MODEL_NAME = 'StatementReview';
 
 /**
@@ -37,9 +36,7 @@ const AddReviewDialog = ({
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
   // handle and store the form content
-  const form = useSchemaForm(
-    { comment, status }, {}, { variant: FORM_VARIANT.NEW },
-  );
+  const form = useSchemaForm({ comment, status }, {}, { variant: FORM_VARIANT.NEW });
   const {
     formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
   } = form;
@@ -58,7 +55,6 @@ const AddReviewDialog = ({
       onSubmit(content, updateAmalgamated);
     }
   }, [auth, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
-
 
   return (
     <Dialog

@@ -22,9 +22,9 @@ const { constants: { PERMISSIONS } } = kbSchema;
 /* eslint-disable no-bitwise */
 
 /**
-* For a mapping of class names to the single permissions value, split these by operation types
-* for display as checkboxes
-*/
+ * For a mapping of class names to the single permissions value, split these by operation types
+ * for display as checkboxes
+ */
 const splitPermissionsByOperation = (permissions) => {
   const permByModelName = {};
 
@@ -113,7 +113,6 @@ const PermissionsTable = ({
     onChange({ target: { name, value: newContent } });
   }, [content, name, onChange, topBoxes]);
 
-
   const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
   const permByModelName = splitPermissionsByOperation(content || {});
   const modelOrder = Object.keys(permByModelName).sort();
@@ -124,7 +123,7 @@ const PermissionsTable = ({
         <TableHead>
           <TableRow className="permissions-table__header">
             <TableCell size="small" />
-            {operationOrder.map(operation => (
+            {operationOrder.map((operation) => (
               <TableCell key={operation} padding="checkbox">
                 {operation}
               </TableCell>
@@ -132,7 +131,7 @@ const PermissionsTable = ({
           </TableRow>
           <TableRow>
             <TableCell size="small" />
-            {operationOrder.map(operation => (
+            {operationOrder.map((operation) => (
               <TableCell key={operation} padding="checkbox">
                 <Checkbox
                   checked={topBoxes[operation]}
@@ -144,35 +143,30 @@ const PermissionsTable = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {modelOrder.map(
-            (modelName) => {
-              const permission = permByModelName[modelName];
-              return (
-                <TableRow key={modelName} className="permissions-table__row">
-                  <TableCell size="small">
-                    {modelName}:
-                  </TableCell>
-                  {operationOrder.map(operation => (
-                    <TableCell key={operation} padding="checkbox">
-                      {(permission[operation] !== null && (
+          {modelOrder.map((modelName) => {
+            const permission = permByModelName[modelName];
+            return (
+              <TableRow key={modelName} className="permissions-table__row">
+                <TableCell size="small">{modelName}:</TableCell>
+                {operationOrder.map((operation) => (
+                  <TableCell key={operation} padding="checkbox">
+                    {permission[operation] !== null && (
                       <Checkbox
                         checked={permission[operation] !== 0}
                         disabled={disabled}
                         onChange={() => handleClick(operation, modelName)}
                       />
-                      ))}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            },
-          )}
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
   );
 };
-
 
 PermissionsTable.propTypes = {
   name: PropTypes.string.isRequired,

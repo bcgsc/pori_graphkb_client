@@ -8,17 +8,16 @@ import schema from '@/services/schema';
 
 import ClassDescription from './components/ClassDescription';
 
-
 const AboutClasses = () => {
   const models = Object.values(schema.schema)
-    .filter(m => !m.embedded && !m.isAbstract && !m.isEdge)
+    .filter((m) => !m.embedded && !m.isAbstract && !m.isEdge)
     .sort((m1, m2) => m1.name.localeCompare(m2.name))
-    .map(m => ({ name: m.name, description: m.description }));
+    .map((m) => ({ name: m.name, description: m.description }));
 
   const links = Object.values(schema.schema)
-    .filter(m => !m.embedded && !m.isAbstract && m.isEdge)
+    .filter((m) => !m.embedded && !m.isAbstract && m.isEdge)
     .sort((m1, m2) => m1.name.localeCompare(m2.name))
-    .map(m => ({ name: m.name, description: m.description }));
+    .map((m) => ({ name: m.name, description: m.description }));
 
   return (
     <div className="about-page__content">
@@ -44,6 +43,5 @@ const AboutClasses = () => {
     </div>
   );
 };
-
 
 export default AboutClasses;

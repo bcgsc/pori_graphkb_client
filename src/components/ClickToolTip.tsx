@@ -7,7 +7,6 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 /**
  * Tooltip that will work on mobile and brings up the
  * help message by click/focus/hover etc
@@ -89,6 +88,5 @@ class ClickToolTip extends React.Component {
     );
   }
 }
-
 
 export default ClickToolTip;

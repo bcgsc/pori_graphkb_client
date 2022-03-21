@@ -148,5 +148,4 @@ GraphActionsNode.defaultProps = {
   edge: false,
 };
 
-
 export default GraphActionsNode;

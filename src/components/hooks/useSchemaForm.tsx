@@ -68,7 +68,7 @@ const useSchemaForm = (
   }, [fieldDefs, ignoreMandatoryErrors]);
 
   useDeepCompareEffect(() => {
-    const errorState = Object.values(formErrors).some(err => err);
+    const errorState = Object.values(formErrors).some((err) => err);
     setFormHasErrors(errorState || additionalValidationError);
   }, [formErrors || {}, additionalValidationError]);
 
@@ -77,7 +77,6 @@ const useSchemaForm = (
       setAdditionalValidationError(additionalValidationFn(formContent));
     }
   }, [formContent || {}, additionalValidationFn]);
-
 
   // check the initial content for errors
   useDeepCompareEffect(() => {

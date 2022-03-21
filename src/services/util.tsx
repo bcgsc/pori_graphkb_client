@@ -29,7 +29,6 @@ const ACRONYMS = [
 ];
 const DEFAULT_CUTOFF = 25;
 
-
 /**
  * Casts a value to string form with minimal formatting. Sets the value to
  * 'null' if the value is null or undefined.
@@ -66,7 +65,7 @@ const parseAcronyms = (str) => {
   ACRONYMS.forEach((acronym) => {
     const re = new RegExp(`^${acronym}*$`, 'ig');
     words.forEach((word, i) => {
-      words[i] = word.replace(re, match => match.toUpperCase());
+      words[i] = word.replace(re, (match) => match.toUpperCase());
     });
   });
   return words.join(' ');
@@ -100,7 +99,7 @@ const antiCamelCase = (str) => {
   }
 
   words = words.reduce((array, word) => {
-    const newWords = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`);
+    const newWords = word.replace(/[A-Z]+|[0-9]+/g, (match) => ` ${match}`);
 
     if (newWords) {
       array.push(...newWords.split(' '));
@@ -145,7 +144,7 @@ const formatStr = (str) => {
   const newSentence = /\.\s\w/g;
   const ret = parseAcronyms(castToExist(str))
     .trim()
-    .replace(newSentence, match => match.toUpperCase());
+    .replace(newSentence, (match) => match.toUpperCase());
   return ret;
 };
 
@@ -154,7 +153,7 @@ const formatStr = (str) => {
  * appended to them.
  * @param {Array.<string>} edges - list of edge classes.
  */
-const expandEdges = edges => edges.reduce((r, edge) => {
+const expandEdges = (edges) => edges.reduce((r, edge) => {
   r.push(`in_${edge}`);
   r.push(`out_${edge}`);
   return r;
@@ -174,11 +173,11 @@ const getTSVRepresentation = (value, key) => {
     let list;
 
     if (key.startsWith('in_')) {
-      list = value.map(obj => obj.out['@rid'] || obj.out);
+      list = value.map((obj) => obj.out['@rid'] || obj.out);
     } else if (key.startsWith('out_')) {
-      list = value.map(obj => obj.in['@rid'] || obj.in);
+      list = value.map((obj) => obj.in['@rid'] || obj.in);
     } else {
-      list = value.map(obj => getTSVRepresentation(obj, key));
+      list = value.map((obj) => getTSVRepresentation(obj, key));
     }
     return list.join(', ');
   }
@@ -218,7 +217,7 @@ const flatten = (obj) => {
       if (typeof value === 'object') {
         value = flatten(value);
         Object.keys(value).forEach((k) => {
-          const flattenedKey = k.replace(regex, match => `${key}[${match}]`);
+          const flattenedKey = k.replace(regex, (match) => `${key}[${match}]`);
           flattened[flattenedKey] = value[k];
         });
       } else {
@@ -361,14 +360,13 @@ const parsePermission = (permissionValue) => {
   return retstr;
 };
 
-
 /**
  * Returns a list of object class properties that are of a given type.
  * @param {Object} kbClass - Knowledgebase class object as defined in the schema.
  * @param {string} type - KB class type.
  */
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
-  .filter(prop => prop.type === type);
+  .filter((prop) => prop.type === type);
 
 /**
  * Sorting method to pass into Array.sort().

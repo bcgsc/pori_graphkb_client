@@ -52,18 +52,18 @@ const DefaultPopupComponent = (props) => {
             {title || label}
           </Typography>
           {getLink && getLink(retrievedDetails) && (
-          <Link target="_blank" to={getLink(retrievedDetails)}>
-            <IconButton>
-              <OpenInNewIcon />
-            </IconButton>
-          </Link>
+            <Link target="_blank" to={getLink(retrievedDetails)}>
+              <IconButton>
+                <OpenInNewIcon />
+              </IconButton>
+            </Link>
           )}
         </div>
         <Divider />
         <Table>
           <TableBody>
             {retrievedDetails && Object.keys(retrievedDetails).sort().map(
-              name => (
+              (name) => (
                 <TableRow key={name} className="detail-popover__row">
                   <TableCell>
                     <Typography variant="h6">{name}</Typography>
@@ -91,9 +91,9 @@ DefaultPopupComponent.propTypes = {
 };
 
 DefaultPopupComponent.defaultProps = {
-  getDetails: d => d,
+  getDetails: (d) => d,
   details: {},
-  valueToString: s => `${s}`,
+  valueToString: (s) => `${s}`,
   getLink: null,
   title: null,
 };
@@ -145,7 +145,6 @@ function DetailChip(props) {
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
 
   return (
     <div className="detail-chip" {...rest}>
@@ -199,9 +198,9 @@ DetailChip.defaultProps = {
   PopUpProps: null,
   className: '',
   details: {},
-  getDetails: d => d,
+  getDetails: (d) => d,
   onDelete: null,
-  valueToString: s => `${s}`,
+  valueToString: (s) => `${s}`,
   getLink: null,
   title: null,
 };

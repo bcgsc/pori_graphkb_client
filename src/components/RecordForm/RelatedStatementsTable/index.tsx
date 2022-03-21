@@ -15,7 +15,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 
-
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
@@ -29,39 +28,43 @@ const RelatedStatementsTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: statements, isFetching } = useQuery(
-    ['/query', {
-      target: 'Statement',
-      filters: {
-        OR: [
-          {
-            conditions: recordId,
-            operator: 'CONTAINS',
-          },
-          {
-            evidence: recordId,
-            operator: 'CONTAINS',
-          },
-          {
-            relevance: recordId,
-          },
-          {
-            subject: recordId,
-          },
-          {
-            evidenceLevel: recordId,
-            operator: 'CONTAINS',
-          },
+    [
+      '/query',
+      {
+        target: 'Statement',
+        filters: {
+          OR: [
+            {
+              conditions: recordId,
+              operator: 'CONTAINS',
+            },
+            {
+              evidence: recordId,
+              operator: 'CONTAINS',
+            },
+            {
+              relevance: recordId,
+            },
+            {
+              subject: recordId,
+            },
+            {
+              evidenceLevel: recordId,
+              operator: 'CONTAINS',
+            },
+          ],
+        },
+        returnProperties: [
+          '@rid',
+          '@class',
+          'relevance.displayName',
+          'conditions.displayName',
+          'evidence.displayName',
+          'subject.displayName',
         ],
       },
-      returnProperties: [
-        '@rid',
-        '@class',
-        'relevance.displayName',
-        'conditions.displayName',
-        'evidence.displayName',
-        'subject.displayName',
-      ],
-    }], async ({ queryKey: [route, body] }) => api.post(route, body),
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );
 
@@ -73,7 +76,6 @@ const RelatedStatementsTable = ({ recordId }) => {
       gridApi.sizeColumnsToFit();
     }
   }, [grid.ref, isFetching, statements]);
-
 
   const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
 
@@ -104,11 +106,11 @@ const RelatedStatementsTable = ({ recordId }) => {
             },
             {
               headerName: 'conditions',
-              valueGetter: ({ data }) => data.conditions.map(c => c.displayName).join('; '),
+              valueGetter: ({ data }) => data.conditions.map((c) => c.displayName).join('; '),
             },
             {
               headerName: 'evidence',
-              valueGetter: ({ data }) => data.evidence.map(c => c.displayName).join('; '),
+              valueGetter: ({ data }) => data.evidence.map((c) => c.displayName).join('; '),
             },
             {
               headerName: 'Actions',
@@ -123,7 +125,7 @@ const RelatedStatementsTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']} // eslint-disable-line react/prop-types
+          getRowNodeId={(data) => data['@rid']} // eslint-disable-line react/prop-types
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -136,6 +138,5 @@ const RelatedStatementsTable = ({ recordId }) => {
 RelatedStatementsTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default RelatedStatementsTable;

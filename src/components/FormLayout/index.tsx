@@ -24,7 +24,6 @@ import schema from '@/services/schema';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
-
 /**
  * @param {object} props the input properties
  * @param {string} props.modelName the name of the schema model to use
@@ -64,62 +63,56 @@ const FormLayout = ({
 
   return (
     <div className={`form-layout ${className}`}>
-      { model && (
-      <>
-        <div className="form-layout__content form-layout__content--long">
-          {isStatement && formVariant !== FORM_VARIANT.SEARCH && (
-            <StatementSentence
-              content={formContent}
-            />
-          )}
-          {isEdge && formVariant !== FORM_VARIANT.SEARCH && (
-            <EdgeSentence
-              srcRecord={formContent.out}
-              tgtRecord={formContent.in}
-              type={model.name}
-            />
-          )}
-
-        </div>
-        <List className="form-layout__content">
-          {isEdge && (
-          <EdgeFields
-            disabled={disabled}
-            model={model}
-          />
-          )}
-          <FieldGroup
-            disabled={disabled}
-            exclusions={exclusions}
-            model={model}
-            ordering={fields}
-          />
-        </List>
-        {extraFields.length > 0 && (
+      {model && (
         <>
-          <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
-            <ListItemText
-              primary={
-                  isExpanded
-                    ? 'Close to hide optional fields'
-                    : 'Expand to see all optional fields'
-                }
-            />
-            {isExpanded ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-            <List className="form-layout__content">
-              <FieldGroup
-                disabled={disabled}
-                exclusions={exclusions}
-                model={model}
-                ordering={extraFields}
+          <div className="form-layout__content form-layout__content--long">
+            {isStatement && formVariant !== FORM_VARIANT.SEARCH && (
+              <StatementSentence
+                content={formContent}
               />
-            </List>
-          </Collapse>
+            )}
+            {isEdge && formVariant !== FORM_VARIANT.SEARCH && (
+              <EdgeSentence
+                srcRecord={formContent.out}
+                tgtRecord={formContent.in}
+                type={model.name}
+              />
+            )}
+          </div>
+          <List className="form-layout__content">
+            {isEdge && <EdgeFields disabled={disabled} model={model} />}
+            <FieldGroup
+              disabled={disabled}
+              exclusions={exclusions}
+              model={model}
+              ordering={fields}
+            />
+          </List>
+          {extraFields.length > 0 && (
+            <>
+              <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+                <ListItemText
+                  primary={
+                    isExpanded
+                      ? 'Close to hide optional fields'
+                      : 'Expand to see all optional fields'
+                  }
+                />
+                {isExpanded ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <List className="form-layout__content">
+                  <FieldGroup
+                    disabled={disabled}
+                    exclusions={exclusions}
+                    model={model}
+                    ordering={extraFields}
+                  />
+                </List>
+              </Collapse>
+            </>
+          )}
         </>
-        )}
-      </>
       )}
     </div>
   );

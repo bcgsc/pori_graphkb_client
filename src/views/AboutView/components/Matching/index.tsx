@@ -69,7 +69,6 @@ const equivalentTermsQuery = (ontologyClass, term) => ({
   limit: MATCH_LIMIT,
 });
 
-
 const exludeRootTermsQuery = (ontologyClass, rootTerm) => ({
   target: {
     target: ontologyClass,
@@ -84,7 +83,6 @@ const exludeRootTermsQuery = (ontologyClass, rootTerm) => ({
   limit: MATCH_LIMIT,
 });
 
-
 const ROOT_TERM_MAPPING = {
   'copy variant': 'structural variant',
   amplification: 'structural variant',
@@ -98,7 +96,6 @@ const ROOT_TERM_MAPPING = {
 };
 
 const DEBOUNCE_MS = 100;
-
 
 const MatchView = (props) => {
   const { history } = props;
@@ -123,7 +120,7 @@ const MatchView = (props) => {
       }
 
       const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
-        queries.map(async query => queryClient.fetchQuery(
+        queries.map(async (query) => queryClient.fetchQuery(
           ['/query', query],
           async ({ queryKey: [route, body] }) => api.post(route, body),
           { staleTime: Infinity },
@@ -150,7 +147,7 @@ const MatchView = (props) => {
       };
     },
     {
-      onError: err => handleErrorSaveLocation(err, history),
+      onError: (err) => handleErrorSaveLocation(err, history),
     },
   );
 
@@ -177,7 +174,7 @@ const MatchView = (props) => {
   }, []);
 
   const handleJumpToGraph = useCallback(() => {
-    navigateToGraph(matches.map(m => m['@rid']), history, (err) => {
+    navigateToGraph(matches.map((m) => m['@rid']), history, (err) => {
       snackbar.enqueueSnackbar(err, { variant: 'error' });
     });
   }, [history, matches, snackbar]);
@@ -253,7 +250,7 @@ const MatchView = (props) => {
         ))}
 
       <div className="match-view__matches">
-        {matches.map(match => (
+        {matches.map((match) => (
           <DetailChip
             key={match['@rid']}
             details={{ ...match, source: match.source.displayName }}

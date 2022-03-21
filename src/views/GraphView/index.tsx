@@ -19,7 +19,6 @@ import config from '@/static/config';
 
 import GraphComponent from './components/GraphComponent';
 
-
 const { DEFAULT_NEIGHBORS } = config;
 
 /**
@@ -50,7 +49,7 @@ const GraphView = ({ history }) => {
           );
         });
       },
-      select: response => util.hashRecordsByRID(response),
+      select: (response) => util.hashRecordsByRID(response),
     },
   );
 
@@ -82,15 +81,12 @@ const GraphView = ({ history }) => {
     }
   }, [handleError, queryClient]);
 
-
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
     navigateToGraph(nodeRIDs, history, handleError);
   }, [handleError, history]);
 
-
   const edges = schema.getEdges();
   const expandedEdgeTypes = util.expandEdges(edges);
-
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -108,10 +104,8 @@ const GraphView = ({ history }) => {
   };
 
   return (
-    <div className={
-      `data-view ${detailPanelIsOpen
-        ? 'data-view--squished'
-        : ''}`}
+    <div
+      className={`data-view ${detailPanelIsOpen ? 'data-view--squished' : ''}`}
     >
       <div className="data-view__content--graph-view">
         {graphData && (
@@ -128,10 +122,10 @@ const GraphView = ({ history }) => {
               onRecordClicked={handleToggleDetailPanel}
             />
             {detailPanelRow && (
-            <DetailDrawer
-              node={detailPanelRow}
-              onClose={handleToggleDetailPanel}
-            />
+              <DetailDrawer
+                node={detailPanelRow}
+                onClose={handleToggleDetailPanel}
+              />
             )}
           </>
         )}
@@ -143,7 +137,6 @@ const GraphView = ({ history }) => {
           </div>
         )}
       </div>
-
     </div>
   );
 };
@@ -151,6 +144,5 @@ const GraphView = ({ history }) => {
 GraphView.propTypes = {
   history: HistoryPropType.isRequired,
 };
-
 
 export default GraphView;

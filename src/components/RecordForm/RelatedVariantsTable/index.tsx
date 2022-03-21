@@ -15,7 +15,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import api from '@/services/api';
 
-
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
@@ -29,27 +28,27 @@ const RelatedVariantsTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: variants, isFetching } = useQuery(
-    ['/query', {
-      target: 'Variant',
-      filters: {
-        OR: [
-          {
-            reference1: recordId,
-          },
-          {
-            reference2: recordId,
-          },
-          {
-            type: recordId,
-          },
-        ],
+    [
+      '/query',
+      {
+        target: 'Variant',
+        filters: {
+          OR: [
+            {
+              reference1: recordId,
+            },
+            {
+              reference2: recordId,
+            },
+            {
+              type: recordId,
+            },
+          ],
+        },
+        returnProperties: ['@rid', '@class', 'displayName'],
       },
-      returnProperties: [
-        '@rid',
-        '@class',
-        'displayName',
-      ],
-    }], async ({ queryKey: [route, body] }) => api.post(route, body),
+    ],
+    async ({ queryKey: [route, body] }) => api.post(route, body),
   );
 
   useEffect(() => {
@@ -101,7 +100,7 @@ const RelatedVariantsTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={data => data['@rid']} // eslint-disable-line react/prop-types
+          getRowNodeId={(data) => data['@rid']} // eslint-disable-line react/prop-types
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -114,6 +113,5 @@ const RelatedVariantsTable = ({ recordId }) => {
 RelatedVariantsTable.propTypes = {
   recordId: PropTypes.string.isRequired,
 };
-
 
 export default RelatedVariantsTable;

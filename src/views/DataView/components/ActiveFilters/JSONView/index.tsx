@@ -32,13 +32,11 @@ const ValueView = ({
   </div>
 );
 
-
 ValueView.propTypes = {
   value: PropTypes.any.isRequired,
   ValueComponent: PropTypes.func,
   name: PropTypes.string,
 };
-
 
 ValueView.defaultProps = {
   name: '',
@@ -99,7 +97,6 @@ ObjectView.defaultProps = {
   closingBrace: '}',
 };
 
-
 const ArrayView = ({
   data, level, closingBrace, ...rest
 }) => (
@@ -137,7 +134,7 @@ ArrayView.defaultProps = {
   closingBrace: ']',
 };
 
-const JSONView = props => (
+const JSONView = (props) => (
   <>
     <div><span>{'{'}</span></div>
     <ObjectView {...props} />

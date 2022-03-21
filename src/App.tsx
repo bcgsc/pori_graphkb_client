@@ -60,7 +60,6 @@ const theme = createMuiTheme({
   },
 });
 
-
 const generateClassName = createGenerateClassName();
 const jss = create({
   ...jssPreset(),
@@ -69,7 +68,6 @@ const jss = create({
   injectFirst: true,
   generateClassName,
 });
-
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.

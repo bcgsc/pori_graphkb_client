@@ -5,7 +5,6 @@ import React from 'react';
 
 import BasicPosition from '../BasicPosition';
 
-
 describe('BasicPosition', () => {
   test('GenomicPosition variant shows only position field', () => {
     const { getByText, queryByText } = render(<BasicPosition value={{}} variant="GenomicPosition" />);

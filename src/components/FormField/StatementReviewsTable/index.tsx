@@ -30,7 +30,6 @@ const StatementReviewsTable = (props) => {
     name,
   } = props;
 
-
   const handleDeleteReview = ({ index }) => {
     const newValue = [...values.slice(0, index), ...values.slice(index + 1)];
     onChange({ target: { name, value: newValue } });

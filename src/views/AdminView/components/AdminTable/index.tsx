@@ -19,7 +19,6 @@ import React, {
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { FORM_VARIANT } from '@/components/util';
 
-
 /**
  * Component for managing AdminView User form state.
  *
@@ -89,7 +88,7 @@ const AdminTable = ({ onChange, records, variant }) => {
         headerName: 'groups',
         field: 'groups',
         flex: true,
-        valueGetter: ({ data: { groups } }) => groups?.map(group => group.name).join(', ') ?? '',
+        valueGetter: ({ data: { groups } }) => groups?.map((group) => group.name).join(', ') ?? '',
       },
     ]);
   }
@@ -174,7 +173,6 @@ const AdminTable = ({ onChange, records, variant }) => {
     </div>
   );
 };
-
 
 AdminTable.propTypes = {
   onChange: PropTypes.func.isRequired,

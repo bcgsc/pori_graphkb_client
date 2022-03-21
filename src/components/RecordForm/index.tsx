@@ -109,7 +109,6 @@ const RecordForm = ({
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
 
-
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
       const { routeName } = schema.get(content);
@@ -211,13 +210,13 @@ const RecordForm = ({
         </span>
         <div className={`header__actions header__actions--${variant}`}>
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-          <RecordFormStateToggle
-            allowEdit={auth.hasWriteAccess}
-            message="Are you sure? You will lose your changes."
-            onClick={handleToggleState}
-            requireConfirm={variant === 'edit' && formIsDirty}
-            value={variant}
-          />
+            <RecordFormStateToggle
+              allowEdit={auth.hasWriteAccess}
+              message="Are you sure? You will lose your changes."
+              onClick={handleToggleState}
+              requireConfirm={variant === 'edit' && formIsDirty}
+              value={variant}
+            />
           )}
         </div>
       </div>
@@ -253,8 +252,8 @@ const RecordForm = ({
               DELETE
             </ActionButton>
           )
-          : (<div />) // for spacing issues only
-          }
+          // for spacing issues only
+          : (<div />)}
         {actionInProgress && (
         <CircularProgress size={50} />
         )}
@@ -265,25 +264,22 @@ const RecordForm = ({
               disabled={actionInProgress || (formHasErrors && formIsDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
-                : handleNewAction
-                }
+                : handleNewAction}
               requireConfirm={false}
               size="large"
               variant="contained"
             >
               {variant === FORM_VARIANT.EDIT
                 ? 'SUBMIT CHANGES'
-                : 'SUBMIT'
-                }
+                : 'SUBMIT'}
             </ActionButton>
           )
-          : (<div />) // for spacing issues only
-          }
+          // for spacing issues only
+          : (<div />)}
       </div>
     </Paper>
   );
 };
-
 
 RecordForm.propTypes = {
   navigateToGraph: PropTypes.func.isRequired,

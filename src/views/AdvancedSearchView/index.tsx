@@ -15,7 +15,6 @@ import FilterGroup from './components/FilterGroup';
 import PropertyFilter from './components/PropertyFilter';
 import useFilterGroups from './components/useFilterGroups';
 
-
 /**
  * Advanced Search Form. Gives users most control on how they can query
  * the knowledgebase. Query consists of different filter groups with their own
@@ -42,7 +41,6 @@ function AdvancedSearchView({ history }) {
   useEffect(() => {
     setModelName(modelName || 'Statement');
   }, [modelName, reset]);
-
 
   const handleSubmit = useCallback(() => {
     try {
@@ -76,7 +74,7 @@ function AdvancedSearchView({ history }) {
         onSubmit={addFilterToGroup}
       />
       <div className="advanced-search__filters">
-        {Object.keys(groups).map(groupId => (
+        {Object.keys(groups).map((groupId) => (
           <FilterGroup
             key={groupId}
             filters={groups[groupId]}

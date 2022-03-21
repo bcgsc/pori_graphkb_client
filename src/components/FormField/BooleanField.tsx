@@ -9,7 +9,6 @@ import {
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 /**
  * RadioForm Field for a boolean form fieldset
  *
@@ -54,7 +53,7 @@ const BooleanField = (props) => {
         </FormLabel>
         <RadioGroup
           name={name}
-          onChange={e => onChange(e)}
+          onChange={(e) => onChange(e)}
           style={{ flexDirection: 'row' }}
           value={value}
         >

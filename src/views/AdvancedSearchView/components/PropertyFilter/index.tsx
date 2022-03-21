@@ -22,7 +22,6 @@ import schema from '@/services/schema';
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
 
-
 const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   if (prop1.startsWith('break1') && prop2.startsWith('break1')) {
     prop1 = prop1.replace('break1', '');
@@ -38,33 +37,32 @@ const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   return prop1.localeCompare(prop2);
 };
 
-
 const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {
-    return OPERATORS.filter(op => ['CONTAINSTEXT', '='].includes(op.label));
+    return OPERATORS.filter((op) => ['CONTAINSTEXT', '='].includes(op.label));
   }
   // check if property is iterable and set corresponding option values
   if (iterable) {
     if (currentVal && Array.isArray(currentVal) && currentVal.length > 1) {
-      return OPERATORS.filter(op => ['CONTAINSANY', 'CONTAINSALL', '='].includes(op.label));
+      return OPERATORS.filter((op) => ['CONTAINSANY', 'CONTAINSALL', '='].includes(op.label));
     }
-    return OPERATORS.filter(op => ['CONTAINS'].includes(op.label));
+    return OPERATORS.filter((op) => ['CONTAINS'].includes(op.label));
   }
   if (type === 'link') {
     if (currentVal && Array.isArray(currentVal) && currentVal.length > 0) {
-      return OPERATORS.filter(op => ['IN'].includes(op.label));
+      return OPERATORS.filter((op) => ['IN'].includes(op.label));
     }
-    return OPERATORS.filter(op => ['='].includes(op.label));
+    return OPERATORS.filter((op) => ['='].includes(op.label));
   }
 
-  let options = OPERATORS.filter(op => !op.iterable && op.label !== 'IN');
+  let options = OPERATORS.filter((op) => !op.iterable && op.label !== 'IN');
 
   if (type !== 'long' && type !== 'integer') {
-    options = options.filter(op => !op.isNumOperator || op.label === '=');
+    options = options.filter((op) => !op.isNumOperator || op.label === '=');
   }
 
   if (!(type === 'string') || name === '@rid') {
-    options = options.filter(op => !(op.label === 'CONTAINSTEXT'));
+    options = options.filter((op) => !(op.label === 'CONTAINSTEXT'));
   }
   return options;
 };
@@ -101,7 +99,7 @@ const PropertyFilter = ({
   useEffect(() => {
     const choices = [];
     schema.getQueryProperties(modelName)
-      .filter(p => !BLACKLISTED_PROPERTIES.includes(p.name))
+      .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
           if (prop.linkedClass) {
@@ -128,7 +126,7 @@ const PropertyFilter = ({
         defaultProperty = 'relevance';
       } if (['PositionalVariant', 'CategoryVariant'].includes(modelName)) {
         defaultProperty = 'reference1';
-      } else if (choices.find(c => c.label === 'name')) {
+      } else if (choices.find((c) => c.label === 'name')) {
         defaultProperty = 'name';
       }
       setProperty(defaultProperty);
@@ -139,7 +137,7 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel = { ...schema.getQueryProperties(modelName).find(p => p.name === prop), mandatory: true };
+      let newPropertyModel = { ...schema.getQueryProperties(modelName).find((p) => p.name === prop), mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
@@ -150,7 +148,7 @@ const PropertyFilter = ({
             newPropertyModel = newPropertyModel.linkedClass.properties[subProp];
 
             if (subProp === '@class') {
-              const choices = parentPropModel.linkedClass.subclasses.map(m => m.name);
+              const choices = parentPropModel.linkedClass.subclasses.map((m) => m.name);
 
               if (!parentPropModel.linkedClass.isAbstract) {
                 choices.push(parentPropModel.linkedClass.name);
@@ -172,7 +170,7 @@ const PropertyFilter = ({
 
   // set the subquery status
   useEffect(() => {
-    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
+    const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (
       originalPropertyModel
@@ -194,7 +192,7 @@ const PropertyFilter = ({
 
   // limit the choices for operators to select based on the property selected and the current value
   useEffect(() => {
-    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
+    const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property) {
       const choices = constructOperatorOptions(
@@ -206,24 +204,24 @@ const PropertyFilter = ({
 
       if (choices.length === 1) {
         setOperator(choices[0].value);
-      } else if (choices.find(c => c.label === 'CONTAINSTEXT')) {
+      } else if (choices.find((c) => c.label === 'CONTAINSTEXT')) {
         setOperator('CONTAINSTEXT');
       }
     }
   }, [formContent, modelName, property, subqueryType]);
 
   useEffect(() => {
-    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
+    const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
       const linkedModel = originalPropertyModel.linkedClass || schema.get('V');
-      setKeywordTargetOptions(linkedModel.descendantTree(false).map(m => m.name).sort());
+      setKeywordTargetOptions(linkedModel.descendantTree(false).map((m) => m.name).sort());
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);
 
   const handleAddFilter = useCallback(() => {
-    const originalPropertyModel = schema.getQueryProperties(modelName).find(p => p.name === property);
+    const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
     const [, subProp] = property.split('.');
     const result = {
       attr: property,

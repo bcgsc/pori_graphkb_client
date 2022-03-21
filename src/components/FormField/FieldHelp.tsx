@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -40,6 +39,5 @@ FieldHelp.defaultProps = {
   description: '',
   example: '',
 };
-
 
 export default FieldHelp;

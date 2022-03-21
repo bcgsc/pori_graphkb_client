@@ -44,7 +44,7 @@ const StatementReview = ({
     ({ queryKey: [route, body] }) => api.post(route, body),
     {
       enabled: !createdBy['@rid'],
-      select: response => response[0],
+      select: (response) => response[0],
     },
   );
 
@@ -77,16 +77,16 @@ const StatementReview = ({
           </Typography>
           <div className="review-card__action-button">
             {variant === 'edit' && (
-            <ActionButton
-              color="primary"
-              onClick={() => onDelete({ index })}
-              requireConfirm={false}
-              size="medium"
-              variant="contained"
-            >
-              Delete
-              <DeleteIcon />
-            </ActionButton>
+              <ActionButton
+                color="primary"
+                onClick={() => onDelete({ index })}
+                requireConfirm={false}
+                size="medium"
+                variant="contained"
+              >
+                Delete
+                <DeleteIcon />
+              </ActionButton>
             )}
           </div>
         </CardContent>
@@ -119,17 +119,15 @@ const StatementReview = ({
             PopUpProps={{ onDelete }}
             title={label}
             value={details}
-            valueToString={
-              (record) => {
-                if (record && record.name) {
-                  return record.name;
-                }
-                if (record && record['@rid']) {
-                  return record['@rid'];
-                }
-                return `${record}`;
+            valueToString={(record) => {
+              if (record && record.name) {
+                return record.name;
               }
-            }
+              if (record && record['@rid']) {
+                return record['@rid'];
+              }
+              return `${record}`;
+            }}
           />
         </TableCell>
       </TableRow>

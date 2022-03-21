@@ -65,7 +65,6 @@ const chunkSentence = (sentence, words) => {
   return chunks;
 };
 
-
 /**
  * @param {Object} props
  * @param {string} props.content the sentence
@@ -92,7 +91,6 @@ const SentencePreview = ({ content, highlighted }) => {
     </Typography>
   );
 };
-
 
 SentencePreview.propTypes = {
   content: PropTypes.string.isRequired,

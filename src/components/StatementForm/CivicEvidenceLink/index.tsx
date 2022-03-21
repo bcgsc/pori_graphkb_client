@@ -5,7 +5,6 @@ import React from 'react';
 
 import civicLogo from '@/static/images/civic_logo.png';
 
-
 const CivicEvidenceLink = ({ evidenceId }) => (
   <a
     className="civic-evidence-link"
@@ -19,7 +18,6 @@ const CivicEvidenceLink = ({ evidenceId }) => (
     />
   </a>
 );
-
 
 CivicEvidenceLink.propTypes = {
   evidenceId: PropTypes.string.isRequired,

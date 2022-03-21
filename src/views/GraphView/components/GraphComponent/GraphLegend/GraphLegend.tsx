@@ -59,7 +59,7 @@ function GraphLegend(props) {
               </IconButton>
             </div>
             <List className="node-colors" dense>
-              {Object.keys(graphOptions.nodesColors).map(key => (
+              {Object.keys(graphOptions.nodesColors).map((key) => (
                 <ListItem key={key}>
                   <ListItemIcon>
                     <div
@@ -69,8 +69,7 @@ function GraphLegend(props) {
                   </ListItemIcon>
                   <ListItemText primary={typeof key === 'object'
                     ? key.displayName || util.antiCamelCase(key.name)
-                    : key
-                                          }
+                    : key}
                   />
                 </ListItem>
               ))}
@@ -116,7 +115,7 @@ function GraphLegend(props) {
                 </IconButton>
               </div>
               <List className="node-colors" dense>
-                {Object.keys(graphOptions.linksColors).map(key => (
+                {Object.keys(graphOptions.linksColors).map((key) => (
                   <ListItem key={key}>
                     <ListItemIcon>
                       <div

@@ -84,5 +84,4 @@ TableOptions.defaultProps = {
   onClose: () => {},
 };
 
-
 export default TableOptions;

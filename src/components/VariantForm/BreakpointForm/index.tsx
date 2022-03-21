@@ -9,7 +9,6 @@ import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import schema from '@/services/schema';
 
-
 /**
  * Handles the form for a single breakpoint (start and end) with the reference element it is
  * associated with
@@ -72,18 +71,18 @@ const BreakpointForm = ({
             }}
           />
           {uncertain && (
-          <FormField
-            baseModel={coordinateType}
-            clearable={false}
-            label={`end (${coordinateType})`}
-            model={{
-              ...model.properties.break1Start,
-              name: end,
-              mandatory: required,
-              linkedClass: schema.get(coordinateType),
-              description: 'end of the breakpoint range',
-            }}
-          />
+            <FormField
+              baseModel={coordinateType}
+              clearable={false}
+              label={`end (${coordinateType})`}
+              model={{
+                ...model.properties.break1Start,
+                name: end,
+                mandatory: required,
+                linkedClass: schema.get(coordinateType),
+                description: 'end of the breakpoint range',
+              }}
+            />
           )}
         </>
       )}

@@ -114,10 +114,9 @@ const FieldGroup = ({
     }
   });
   return (
-    <React.Fragment>{fields}</React.Fragment>
+    <>{fields}</>
   );
 };
-
 
 FieldGroup.propTypes = {
   model: PropTypes.object.isRequired,
@@ -133,6 +132,5 @@ FieldGroup.defaultProps = {
   exclusions: [],
   disabled: false,
 };
-
 
 export default FieldGroup;

@@ -58,7 +58,6 @@ const RadioSelect = ({
   </MenuList>
 );
 
-
 RadioSelect.propTypes = {
   options: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string, PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),
@@ -77,7 +76,7 @@ RadioSelect.defaultProps = {
   onChange: () => {},
   className: '',
   value: null,
-  optionToKey: o => o.key || o,
+  optionToKey: (o) => o.key || o,
 };
 
 export default RadioSelect;

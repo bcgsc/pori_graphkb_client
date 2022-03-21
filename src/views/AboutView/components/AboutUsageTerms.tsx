@@ -28,7 +28,6 @@ const AboutUsageTerms = () => {
   const requiresSigning = Boolean(!data || !user || !user.signedLicenseAt || user.signedLicenseAt < data.enactedAt);
   const isSigned = !requiresSigning || hasSigned;
 
-
   const handleConfirmSign = useCallback(async () => {
     await api.post('/license/sign');
     snackbar.enqueueSnackbar('Signed the user agreement', { variant: 'success' });
@@ -41,7 +40,7 @@ const AboutUsageTerms = () => {
         GraphKB Terms of Use
       </Typography>
       <TableOfContext baseRoute="about/terms" sections={data?.content ?? []} />
-      {data?.content.map(sectionDatum => (
+      {data?.content.map((sectionDatum) => (
         <div key={sectionDatum.id}>
           <Typography id={sectionDatum.id} variant="h3">
             {sectionDatum.label}
@@ -59,7 +58,7 @@ const AboutUsageTerms = () => {
               disabled={!requiresSigning}
               onChange={(_, value) => setHasAcknowledgedTerms(value)}
             />
-                    )}
+          )}
           label="I have read and understood the terms of use"
         />
         <ActionButton

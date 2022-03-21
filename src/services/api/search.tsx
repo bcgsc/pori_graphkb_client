@@ -2,7 +2,6 @@ import * as qs from 'qs';
 
 import config from '@/static/config';
 
-
 const DEFAULT_LIMIT = 100;
 const {
   TABLE_DEFAULT_NEIGHBORS,
@@ -20,7 +19,6 @@ const buildLooseSearch = (cls, name) => ({
     },
   },
 });
-
 
 const buildSearchFromParseVariant = (schema, variant) => {
   const { reference1, reference2, type } = variant;
@@ -44,7 +42,7 @@ const buildSearchFromParseVariant = (schema, variant) => {
     payload.filters.AND.push({ reference2: null });
   }
 
-  schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
+  schema.getProperties('PositionalVariant').filter((p) => !p.name.includes('Repr')).forEach((prop) => {
     if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
       const value = variant[prop.name];
 
@@ -60,7 +58,6 @@ const buildSearchFromParseVariant = (schema, variant) => {
 
   return payload;
 };
-
 
 /**
  * Given the search string from the URL/URI, parse
@@ -106,7 +103,6 @@ const getQueryFromSearch = ({ schema, search }) => {
   };
 };
 
-
 /**
    * Given the API search. Return the search string to display in the top URL bar
    *
@@ -146,7 +142,9 @@ const getSearchFromQuery = ({
   return qs.stringify(queryParams, { sort: alphaSort });
 };
 
-
 export {
-  buildSearchFromParseVariant, getSearchFromQuery, getQueryFromSearch, DEFAULT_LIMIT,
+  buildSearchFromParseVariant,
+  DEFAULT_LIMIT,
+  getQueryFromSearch,
+  getSearchFromQuery,
 };

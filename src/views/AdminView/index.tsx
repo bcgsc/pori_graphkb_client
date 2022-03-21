@@ -22,21 +22,24 @@ import AdminTable from './components/AdminTable';
  */
 const AdminView = () => {
   const { data: users = [], refetch: refetchUsers } = useQuery(
-    ['/query', {
-      target: 'User',
-      neighbors: 2,
-      returnProperties: [
-        '@class',
-        '@rid',
-        'createdAt',
-        'email',
-        'groups.@class',
-        'groups.@rid',
-        'groups.name',
-        'name',
-        'signedLicenseAt',
-      ],
-    }],
+    [
+      '/query',
+      {
+        target: 'User',
+        neighbors: 2,
+        returnProperties: [
+          '@class',
+          '@rid',
+          'createdAt',
+          'email',
+          'groups.@class',
+          'groups.@rid',
+          'groups.name',
+          'name',
+          'signedLicenseAt',
+        ],
+      },
+    ],
     async ({ queryKey: [route, body] }) => api.post(route, body),
   );
 
@@ -65,7 +68,7 @@ const AdminView = () => {
       <div className="admin__email-all">
         <a
           href={`mailto:?subject=GraphKB&cc=graphkb@bcgsc.ca&bcc=${
-            users.filter(user => user.email).map(user => user.email).join(',')
+            users.filter((user) => user.email).map((user) => user.email).join(',')
           }`}
           rel="noopener noreferrer"
           target="_blank"

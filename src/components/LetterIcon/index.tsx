@@ -11,7 +11,8 @@ const LetterIcon = ({
     className={`letter-icon letter-icon--${variant} letter-icon--${color}`}
     disabled={!onClick}
     onClick={onClick}
-  >{value}
+  >
+    {value}
   </Button>
 );
 

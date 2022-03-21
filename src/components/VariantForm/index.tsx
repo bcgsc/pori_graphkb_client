@@ -22,7 +22,6 @@ import SteppedForm from './SteppedForm';
 
 const { schema: { PositionalVariant, CategoryVariant, Position } } = schema;
 
-
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,
   [
@@ -41,7 +40,8 @@ const leftoverPositionalProps = omit(
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
-  { properties: leftoverPositionalProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
+  { properties: leftoverPositionalProps },
+  { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
 const leftoverCategoryProps = omit(
@@ -55,13 +55,13 @@ const leftoverCategoryProps = omit(
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
-  { properties: leftoverCategoryProps }, { collapseExtra: false, variant: FORM_VARIANT.NEW },
+  { properties: leftoverCategoryProps },
+  { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = Position.descendantTree(true).map(m => ({
+const coordinateOptions = Position.descendantTree(true).map((m) => ({
   label: m.name, value: m.name, key: m.name, caption: m.description,
 }));
-
 
 const MAJOR_FORM_TYPES = {
   SUB: 'Substitution',
@@ -71,7 +71,6 @@ const MAJOR_FORM_TYPES = {
   OTHER_WITH_POS: 'Other Variant',
   OTHER: 'Other Variant without Position Information',
 };
-
 
 const pickInputType = (record) => {
   if (record['@class'] === 'PositionalVariant') {
@@ -167,7 +166,6 @@ const VariantForm = ({
       onError({ error: err, content });
     }
   }, [formVariant, onError, onSubmit, snackbar]);
-
 
   const handleDeleteAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
@@ -283,7 +281,7 @@ const VariantForm = ({
             hasPositions
               ? leftoverPositionalProps
               : leftoverCategoryProps,
-          ).map(p => p.name)
+          ).map((p) => p.name)
         }
         label="Optional Information"
       >
@@ -306,7 +304,6 @@ const VariantForm = ({
     </SteppedForm>
   );
 };
-
 
 VariantForm.propTypes = {
   onError: PropTypes.func.isRequired,

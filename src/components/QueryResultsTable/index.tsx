@@ -16,7 +16,6 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-
 const JumpToRecord = ({ data }) => (
   <Link className="query-results-table__jump-to-record" target="_blank" to={schema.getLink(data)}>
     <OpenInNewIcon />
@@ -74,7 +73,7 @@ const QueryResultsTable = ({
           data={data}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
-          getRowNodeId={rowData => rowData['@rid']}
+          getRowNodeId={(rowData) => rowData['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -94,6 +93,5 @@ QueryResultsTable.propTypes = {
 QueryResultsTable.defaultProps = {
   description: '',
 };
-
 
 export default QueryResultsTable;

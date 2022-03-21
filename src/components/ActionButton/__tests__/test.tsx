@@ -3,7 +3,6 @@ import React from 'react';
 
 import ActionButton from '..';
 
-
 describe('ActionButton', () => {
   const onClick = jest.fn();
 

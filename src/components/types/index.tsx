@@ -47,7 +47,6 @@ const StatementPropType = PropTypes.shape({
   }),
 });
 
-
 const LocationPropType = PropTypes.shape({
   hash: PropTypes.string,
   key: PropTypes.string,
@@ -65,7 +64,7 @@ const HistoryPropType = PropTypes.shape({
 
 export {
   GeneralRecordPropType,
-  LocationPropType,
   HistoryPropType,
+  LocationPropType,
   StatementPropType,
 };

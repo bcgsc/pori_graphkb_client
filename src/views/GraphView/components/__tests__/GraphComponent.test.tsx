@@ -71,7 +71,6 @@ describe('<GraphComponent />', () => {
   const handleDetailDrawerOpen = jest.fn();
   const handleDetailDrawerClose = jest.fn();
 
-
   beforeEach(() => {
     dom = render(
       <GraphComponent
@@ -86,14 +85,12 @@ describe('<GraphComponent />', () => {
     );
   });
 
-
   test('renders all nodes specified in displayed', async () => {
     const { container } = dom;
 
     expect(container.querySelectorAll('svg circle.node')).toHaveLength(4);
     expect(container.querySelectorAll('svg path.link')).toHaveLength(1);
   });
-
 
   test('methods don\'t crash component', async () => {
     const { container } = dom;
@@ -111,7 +108,6 @@ describe('<GraphComponent />', () => {
     fireEvent.click(graphNode);
     const graphLink = container.querySelector('path.link');
     fireEvent.click(graphLink);
-
 
     fireEvent.click(container.querySelector('#details'));
     fireEvent.click(container.querySelector('div.svg-wrapper svg'));

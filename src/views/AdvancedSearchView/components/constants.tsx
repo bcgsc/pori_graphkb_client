@@ -17,7 +17,7 @@ const generateOperatorOptions = () => {
   });
 
   const findOptIndex = (operatorName) => {
-    const index = OPERATORS.findIndex(opt => opt.label === operatorName);
+    const index = OPERATORS.findIndex((opt) => opt.label === operatorName);
     return index;
   };
 
@@ -58,7 +58,7 @@ const DATE_FIELDS = [
 ];
 
 export {
-  OPERATORS,
   BLACKLISTED_PROPERTIES,
   DATE_FIELDS,
+  OPERATORS,
 };

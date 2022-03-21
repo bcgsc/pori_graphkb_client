@@ -17,7 +17,6 @@ import useObject from '@/components/hooks/useObject';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 
-
 /**
  * @param {object} props
  * @param {Array.<FormStepWrapper>} children the children of a SteppedForm should be FormStepWrapper elements
@@ -70,12 +69,12 @@ const SteppedForm = ({
         nonLinear
         orientation="vertical"
       >
-        {React.Children.toArray(children).filter(child => child).map((child, index) => {
+        {React.Children.toArray(children).filter((child) => child).map((child, index) => {
           if (!child) {
             return child;
           }
           const { fields, label } = child.props;
-          const errors = fields.some(f => formErrors[f]);
+          const errors = fields.some((f) => formErrors[f]);
           return (
             <Step>
               <StepButton
@@ -113,18 +112,13 @@ const SteppedForm = ({
             onClick={handleSubmit}
             requireConfirm={false}
           >
-            {
-            formVariant === FORM_VARIANT.NEW
-              ? 'SUBMIT'
-              : 'SUBMIT CHANGES'
-          }
+            {formVariant === FORM_VARIANT.NEW ? 'SUBMIT' : 'SUBMIT CHANGES'}
           </ActionButton>
         </div>
       </Stepper>
     </FormContext.Provider>
   );
 };
-
 
 SteppedForm.propTypes = {
   children: PropTypes.node.isRequired,

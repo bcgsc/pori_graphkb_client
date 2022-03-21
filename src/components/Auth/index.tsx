@@ -67,8 +67,8 @@ const AuthProvider = (props) => {
           authenticationToken: keycloak.token,
           authorizationToken,
           isAuthenticated: true,
-          isAdmin: Boolean(user.groups.find(group => group.name === dbRoles.admin)),
-          hasWriteAccess: Boolean(user.groups.find(group => [dbRoles.admin, dbRoles.regular].includes(group.name))),
+          isAdmin: Boolean(user.groups.find((group) => group.name === dbRoles.admin)),
+          hasWriteAccess: Boolean(user.groups.find((group) => [dbRoles.admin, dbRoles.regular].includes(group.name))),
           user,
           username,
         };
@@ -191,7 +191,6 @@ const AuthenticatedRoute = (props) => {
   );
 };
 
-
 AuthenticatedRoute.propTypes = {
   component: PropTypes.object.isRequired,
   path: PropTypes.string.isRequired,
@@ -203,5 +202,8 @@ AuthenticatedRoute.defaultProps = {
 };
 
 export {
-  AuthProvider, useAuth, AuthenticatedRoute, AuthContext,
+  AuthContext,
+  AuthenticatedRoute,
+  AuthProvider,
+  useAuth,
 };

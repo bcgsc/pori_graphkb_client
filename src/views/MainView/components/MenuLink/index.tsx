@@ -35,7 +35,6 @@ const MenuLink = ({
     setIsSelected(selected);
   }, [activeLink, group, route]);
 
-
   const handleClick = useCallback(() => {
     onClick(route, group ? route : null);
     setActiveLink(route);

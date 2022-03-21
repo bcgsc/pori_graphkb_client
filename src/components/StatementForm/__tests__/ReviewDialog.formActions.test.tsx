@@ -10,21 +10,20 @@ import { AuthContext } from '@/components/Auth';
 
 import ReviewDialog from '../ReviewDialog';
 
-
 /* eslint-disable react/prop-types */
 jest.mock('../../DropDownSelect', () => ({
   options = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {
     const option = options.find(
-      opt => opt === event.currentTarget.value,
+      (opt) => opt === event.currentTarget.value,
     );
 
     onChange({ target: { value: option, name } });
   };
   return (
     <select data-testid="select" onChange={handleChange} value={value}>
-      {options.map(opt => (
+      {options.map((opt) => (
         <option key={opt} value={opt}>
           {opt.label || opt}
         </option>
@@ -33,7 +32,6 @@ jest.mock('../../DropDownSelect', () => ({
   );
 });
 /* eslint-enable react/prop-types */
-
 
 describe('ReviewDialog formActions', () => {
   const onSubmitSpy = jest.fn();

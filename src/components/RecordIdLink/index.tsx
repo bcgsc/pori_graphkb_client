@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-
 const RecordIdLink = ({ recordId, recordClass }) => {
   if (!recordId || !recordClass) {
     return null;

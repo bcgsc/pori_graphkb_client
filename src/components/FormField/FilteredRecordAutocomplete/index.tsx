@@ -45,7 +45,6 @@ const FilteredRecordAutocomplete = ({
     setSelectedClassName(value);
   }, [setSelectedClassName]);
 
-
   const model = schema.get(linkedClassName);
 
   const getQueryBody = useMemo(() => api.getDefaultSuggestionQueryBody(
@@ -62,7 +61,7 @@ const FilteredRecordAutocomplete = ({
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
-            options={filterOptions || [...model.descendantTree(false).map(m => m.name)]}
+            options={filterOptions || [...model.descendantTree(false).map((m) => m.name)]}
             value={selectedClassName}
           />
         )}
@@ -74,8 +73,7 @@ const FilteredRecordAutocomplete = ({
           name={name}
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
-            : `Search for an Existing ${selectedClassName} Record`
-          }
+            : `Search for an Existing ${selectedClassName} Record`}
         />
       </div>
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
@@ -102,6 +100,5 @@ FilteredRecordAutocomplete.defaultProps = {
   helperText: '',
   error: false,
 };
-
 
 export default FilteredRecordAutocomplete;

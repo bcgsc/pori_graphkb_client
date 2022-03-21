@@ -4,7 +4,6 @@ import React from 'react';
 
 import SentencePreview from '.';
 
-
 const EdgeSentence = ({ srcRecord, tgtRecord, type }) => {
   let edgeType = titleCase(type);
 
@@ -20,7 +19,6 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }) => {
       ? tgtRecord.displayName
       : '[target record]',
   ];
-
 
   const highlights = [];
 
@@ -45,7 +43,6 @@ EdgeSentence.propTypes = {
   srcRecord: PropTypes.object,
   tgtRecord: PropTypes.object,
 };
-
 
 EdgeSentence.defaultProps = {
   srcRecord: null,

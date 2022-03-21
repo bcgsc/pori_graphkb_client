@@ -5,7 +5,6 @@ import React from 'react';
 
 import RadioSelect from '..';
 
-
 describe('RadioSelect', () => {
   test('displays option labels', () => {
     const { getByText } = render(

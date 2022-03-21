@@ -18,7 +18,6 @@ import AboutGraphView from './components/AboutGraphView';
 import AboutQuerying from './components/AboutQuerying';
 import AboutStatements from './components/AboutStatements';
 
-
 const GettingStarted = () => {
   const sections = [
     'Welcome',
@@ -27,7 +26,7 @@ const GettingStarted = () => {
     'Querying',
     'Adding Data',
     'Graph View',
-  ].map(label => ({ id: slugify(label).toLowerCase(), label }));
+  ].map((label) => ({ id: slugify(label).toLowerCase(), label }));
 
   return (
     <div className="about-page__content getting-started">

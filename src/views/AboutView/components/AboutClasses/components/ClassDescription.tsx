@@ -9,6 +9,7 @@ import { useQuery } from 'react-query';
 
 import DetailChip from '@/components/DetailChip';
 import LetterIcon from '@/components/LetterIcon';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -19,7 +20,7 @@ import schema from '@/services/schema';
  */
 const ClassDescription = ({ name, description }) => {
   const { isFetching: exampleIsFetching, data: example } = useQuery(
-    ['/query', { target: name, neighbors: 1, limit: 1 }],
+    tuple('/query', { target: name, neighbors: 1, limit: 1 }),
     async ({ queryKey: [_, body] }) => {
       const [result] = await api.query(body);
       return result;

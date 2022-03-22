@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -40,13 +41,13 @@ const EdgeTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: edges, isFetching } = useQuery(
-    [
+    tuple(
       '/query',
       {
         target: [recordId],
         neighbors: 3,
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
     {
       select: (response) => {

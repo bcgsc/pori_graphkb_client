@@ -13,6 +13,7 @@ import {
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-query';
 
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 import AdminTable from './components/AdminTable';
@@ -22,7 +23,7 @@ import AdminTable from './components/AdminTable';
  */
 const AdminView = () => {
   const { data: users = [], refetch: refetchUsers } = useQuery(
-    [
+    tuple(
       '/query',
       {
         target: 'User',
@@ -39,12 +40,12 @@ const AdminView = () => {
           'signedLicenseAt',
         ],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const { data: groups = [], refetch: refetchGroups } = useQuery(
-    ['/query', { target: 'UserGroup', neighbors: 2 }],
+    tuple('/query', { target: 'UserGroup', neighbors: 2 }),
     async ({ queryKey: [_, body] }) => api.query(body),
   );
 

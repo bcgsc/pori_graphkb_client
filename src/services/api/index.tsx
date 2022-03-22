@@ -7,7 +7,7 @@ import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
 
-import { GeneralRecordType } from '@/components/types';
+import { GeneralRecordType, QueryBody } from '@/components/types';
 
 import { request, RequestCallOptions } from './call';
 import {
@@ -72,7 +72,9 @@ function post<Resp = unknown>(endpoint: string, payload?: Record<string, unknown
  * Sends POST request to api to the query endpoint
  * @param {Object} payload - POST payload.
  */
-function query<Record = GeneralRecordType>(payload: unknown): Promise<Record[]> {
+function query<ReqFields extends string = string, Record = GeneralRecordType<ReqFields>>(
+  payload: QueryBody<ReqFields>,
+): Promise<Record[]> {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),

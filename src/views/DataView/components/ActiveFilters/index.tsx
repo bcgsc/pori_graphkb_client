@@ -22,6 +22,7 @@ import React, {
 } from 'react';
 import { useQuery } from 'react-query';
 
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -52,13 +53,13 @@ const ActiveFilters = ({ search }) => {
   const recordIds = useMemo(() => extractRids(payload), [payload]);
 
   const { data: recordHash } = useQuery(
-    [
+    tuple(
       '/query',
       {
         target: recordIds,
         returnProperties: ['@class', '@rid', 'name', 'displayName'],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),

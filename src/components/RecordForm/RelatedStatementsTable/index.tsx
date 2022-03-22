@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 /**
@@ -28,7 +29,7 @@ const RelatedStatementsTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: statements, isFetching } = useQuery(
-    [
+    tuple(
       '/query',
       {
         target: 'Statement',
@@ -63,7 +64,7 @@ const RelatedStatementsTable = ({ recordId }) => {
           'subject.displayName',
         ],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );

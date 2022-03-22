@@ -16,6 +16,8 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
+import { tuple } from '../util';
+
 const JumpToRecord = ({ data }) => (
   <Link className="query-results-table__jump-to-record" target="_blank" to={schema.getLink(data)}>
     <OpenInNewIcon />
@@ -42,7 +44,7 @@ const QueryResultsTable = ({
 }) => {
   const grid = useGrid();
 
-  const { data, isFetching } = useQuery(['/query', queryBody], async ({ queryKey: [_, body] }) => api.query(body));
+  const { data, isFetching } = useQuery(tuple('/query', queryBody), async ({ queryKey: [_, body] }) => api.query(body));
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {

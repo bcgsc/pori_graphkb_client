@@ -18,6 +18,7 @@ import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 /**
@@ -40,7 +41,7 @@ const StatementReview = ({
   } = value;
 
   const { data: author = createdBy } = useQuery(
-    ['/query', { target: [createdBy] }],
+    tuple('/query', { target: [createdBy] }),
     ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: !createdBy['@rid'],

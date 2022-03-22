@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import { HistoryPropType } from '@/components/types';
-import { getNodeRIDsFromURL, navigateToGraph } from '@/components/util';
+import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
@@ -37,7 +37,7 @@ const GraphView = ({ history }) => {
   }, [history, search]);
 
   const { data: graphData } = useQuery(
-    ['/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }],
+    tuple('/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }),
     async ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),
@@ -65,7 +65,7 @@ const GraphView = ({ history }) => {
     } else {
       try {
         const [fullRecord] = await queryClient.fetchQuery(
-          ['/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }],
+          tuple('/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }),
           async ({ queryKey: [_, body] }) => api.query(body),
         );
 
@@ -91,7 +91,7 @@ const GraphView = ({ history }) => {
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
   const handleExpandRecord = async (recordId) => {
-    const key = ['/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS }];
+    const key = tuple('/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS });
     let fullRecord = queryClient.getQueryData(key);
 
     if (!fullRecord) {

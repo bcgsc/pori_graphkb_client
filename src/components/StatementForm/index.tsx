@@ -21,7 +21,7 @@ import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordPropType, GeneralRecordType } from '@/components/types';
-import { cleanPayload, FORM_VARIANT } from '@/components/util';
+import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -51,7 +51,7 @@ const StatementForm = ({
   ...rest
 }) => {
   const { data: diagnosticData } = useQuery(
-    [
+    tuple(
       '/query',
       {
         queryType: 'similarTo',
@@ -62,12 +62,12 @@ const StatementForm = ({
         },
         returnProperties: ['name'],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const { data: therapeuticData } = useQuery(
-    [
+    tuple(
       '/query',
       {
         queryType: 'similarTo',
@@ -78,12 +78,12 @@ const StatementForm = ({
         },
         returnProperties: ['name'],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
   );
 
   const { data: prognosticData } = useQuery(
-    [
+    tuple(
       '/query',
       {
         queryType: 'similarTo',
@@ -94,7 +94,7 @@ const StatementForm = ({
         },
         returnProperties: ['name'],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
   );
 

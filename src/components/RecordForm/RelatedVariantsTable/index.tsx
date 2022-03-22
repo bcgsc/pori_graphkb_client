@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 /**
@@ -28,7 +29,7 @@ const RelatedVariantsTable = ({ recordId }) => {
   const grid = useGrid();
 
   const { data: variants, isFetching } = useQuery(
-    [
+    tuple(
       '/query',
       {
         target: 'Variant',
@@ -47,7 +48,7 @@ const RelatedVariantsTable = ({ recordId }) => {
         },
         returnProperties: ['@rid', '@class', 'displayName'],
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
   );
 

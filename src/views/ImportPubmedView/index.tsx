@@ -12,6 +12,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
 import { GeneralRecordType } from '@/components/types';
+import { tuple } from '@/components/util';
 import handleErrorSaveLocation from '@/services/util';
 
 import SearchBox from '../../components/SearchBox';
@@ -27,7 +28,7 @@ const ImportPubmedView = (props) => {
 
   // fetch the pubmed source record
   const { data: source } = useQuery(
-    ['/query', { target: 'Source', filters: { name: 'pubmed' } }],
+    tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
     async ({ queryKey: [_, body] }) => api.query(body),
     {
       onError: (err) => handleErrorSaveLocation(err, history),
@@ -37,7 +38,7 @@ const ImportPubmedView = (props) => {
 
   // fetch records that already exist in GraphKB
   const { data: currentRecords, isLoading, refetch: refetchCurrentRecords } = useQuery(
-    [
+    tuple(
       '/query',
       {
         target: 'Publication',
@@ -53,7 +54,7 @@ const ImportPubmedView = (props) => {
           ],
         },
       },
-    ],
+    ),
     async ({ queryKey: [_, body] }) => api.query(body),
     {
       enabled: Boolean(text),

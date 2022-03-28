@@ -100,7 +100,7 @@ interface QueryBody<ReqFields extends string = string> {
     queryType: string;
     target: string;
     filters: Record<string, unknown>;
-  } | unknown[] | string,
+  } | string[] | string,
   filters?: Record<string, unknown> | Record<string, unknown>[];
   returnProperties?: ReqFields[];
   neighbors?: number;

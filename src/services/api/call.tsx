@@ -15,13 +15,14 @@ export interface RequestCallOptions {
 
 /**
  * Sends request to server, appending all global headers and handling responses and errors.
+ * @param endpoint URL endpoint
+ * @param requestOptions Request properties.
+ * @param callOptions options to be passed to the Request for successful requests
+ * @returns
  */
 async function request(
-  /** URL endpoint */
   endpoint: string,
-  /** Request properties. */
   requestOptions: RequestInit,
-  /** options to be passed to the Request for succesful requests */
   callOptions?: RequestCallOptions,
 ) {
   if (

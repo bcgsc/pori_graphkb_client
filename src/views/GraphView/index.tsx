@@ -38,7 +38,7 @@ const GraphView = ({ history }) => {
 
   const { data: graphData } = useQuery(
     tuple('/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),
       onSuccess: (recordHash) => {
@@ -66,7 +66,7 @@ const GraphView = ({ history }) => {
       try {
         const [fullRecord] = await queryClient.fetchQuery(
           tuple('/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }),
-          async ({ queryKey: [_, body] }) => api.query(body),
+          async ({ queryKey: [, body] }) => api.query(body),
         );
 
         if (!fullRecord) {
@@ -97,7 +97,7 @@ const GraphView = ({ history }) => {
     if (!fullRecord) {
       [fullRecord] = await queryClient.fetchQuery(
         key,
-        async ({ queryKey: [_, body] }) => api.query(body),
+        async ({ queryKey: [, body] }) => api.query(body),
       );
     }
     return fullRecord;

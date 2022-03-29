@@ -95,7 +95,7 @@ const getRowsFromBlocks = async ({
 
     blockRequests.push(api.queryClient.fetchQuery(
       tuple('/query', payload),
-      async ({ queryKey: [_, body] }) => api.query(body),
+      async ({ queryKey: [, body] }) => api.query(body),
     ));
   }
   const data = [];
@@ -130,7 +130,7 @@ const DataView = ({
 
   const { data: totalRows = null } = useQuery(
     tuple('/query', payload),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       select: (response) => response[0]?.count,
     },
@@ -201,7 +201,7 @@ const DataView = ({
 
   const { data: detailPanelRow } = useQuery(
     tuple('/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(detailsRowId),
       onError: (err) => handleError(err),

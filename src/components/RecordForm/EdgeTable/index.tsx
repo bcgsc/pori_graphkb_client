@@ -48,7 +48,7 @@ const EdgeTable = ({ recordId }) => {
         neighbors: 3,
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       select: (response) => {
         const [record] = response;

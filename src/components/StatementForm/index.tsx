@@ -63,7 +63,7 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
   );
 
   const { data: therapeuticData } = useQuery(
@@ -79,7 +79,7 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
   );
 
   const { data: prognosticData } = useQuery(
@@ -95,7 +95,7 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
   );
 
   const snackbar = useSnackbar();

@@ -21,7 +21,7 @@ import schema from '@/services/schema';
 const ClassDescription = ({ name, description }) => {
   const { isFetching: exampleIsFetching, data: example } = useQuery(
     tuple('/query', { target: name, neighbors: 1, limit: 1 }),
-    async ({ queryKey: [_, body] }) => {
+    async ({ queryKey: [, body] }) => {
       const [result] = await api.query(body);
       return result;
     },

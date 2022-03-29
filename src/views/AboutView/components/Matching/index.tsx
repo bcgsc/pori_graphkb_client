@@ -122,7 +122,7 @@ const MatchView = (props) => {
       const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
         queries.map(async (query) => queryClient.fetchQuery(
           tuple('/query', query),
-          async ({ queryKey: [_, body] }) => api.query(body),
+          async ({ queryKey: [, body] }) => api.query(body),
           { staleTime: Infinity },
           { throwOnError: true },
         )),

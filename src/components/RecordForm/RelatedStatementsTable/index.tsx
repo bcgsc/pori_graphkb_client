@@ -65,7 +65,7 @@ const RelatedStatementsTable = ({ recordId }) => {
         ],
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     { staleTime: 5000, refetchOnWindowFocus: false },
   );
 

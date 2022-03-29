@@ -28,7 +28,7 @@ const ImportPubmedView = (props) => {
   // fetch the pubmed source record
   const { data: source } = useQuery(
     tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       onError: (err) => handleErrorSaveLocation(err, history),
       select: (response) => response[0]?.['@rid'],
@@ -54,7 +54,7 @@ const ImportPubmedView = (props) => {
         },
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(text),
       onError: (err) => handleErrorSaveLocation(err, history),

@@ -60,7 +60,7 @@ const ActiveFilters = ({ search }) => {
         returnProperties: ['@class', '@rid', 'name', 'displayName'],
       },
     ),
-    async ({ queryKey: [_, body] }) => api.query(body),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),
       select: (response) => {

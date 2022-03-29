@@ -42,7 +42,7 @@ const StatementReview = ({
 
   const { data: author = createdBy } = useQuery(
     tuple('/query', { target: [createdBy] }),
-    ({ queryKey: [_, body] }) => api.query(body),
+    ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: !createdBy['@rid'],
       select: (response) => response[0],

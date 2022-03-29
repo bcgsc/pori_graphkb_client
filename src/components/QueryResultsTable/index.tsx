@@ -44,7 +44,7 @@ const QueryResultsTable = ({
 }) => {
   const grid = useGrid();
 
-  const { data, isFetching } = useQuery(tuple('/query', queryBody), async ({ queryKey: [_, body] }) => api.query(body));
+  const { data, isFetching } = useQuery(tuple('/query', queryBody), async ({ queryKey: [, body] }) => api.query(body));
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {

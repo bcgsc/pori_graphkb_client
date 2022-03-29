@@ -7,7 +7,9 @@ import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
 
-import { request } from './call';
+import { GeneralRecordType, QueryBody } from '@/components/types';
+
+import { request, RequestCallOptions } from './call';
 import {
   buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
 } from './search';
@@ -29,24 +31,24 @@ const MAX_SUGGESTIONS = 50;
 
 /**
  * Sends PATCH request to api.
- * @param {string} endpoint - URL endpoint.
+ * @param endpoint - URL endpoint.
  * @param {Object} payload - PATCH payload.
  */
-const patch = (endpoint, payload, callOptions) => {
+const patch = (endpoint: string, payload: Record<string, unknown>): Promise<GeneralRecordType> => {
   // strip out the display name to have it force-regenerate
   const { displayName, ...changes } = payload;
   const init = {
     method: 'PATCH',
     body: jc.stringify(changes),
   };
-  return request(endpoint, init, callOptions);
+  return request(endpoint, init);
 };
 
 /**
  * Sends GET request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const get = (endpoint, callOptions) => {
+const get = (endpoint: string, callOptions?: RequestCallOptions) => {
   const init = {
     method: 'GET',
   };
@@ -54,28 +56,54 @@ const get = (endpoint, callOptions) => {
 };
 
 /**
- * Sends POST request to api.
+ * Sends POST request to api to create a new record.
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-const post = (endpoint, payload, callOptions) => {
+function post<Resp = GeneralRecordType>(endpoint: string, payload?: Record<string, unknown>): Promise<Resp> {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),
   };
-  return request(endpoint, init, callOptions);
-};
+  return request(endpoint, init);
+}
+
+/**
+ * Sends POST request to api to the query endpoint
+ * @param {Object} payload - POST payload.
+ */
+function query<ReqFields extends string = string, Record = GeneralRecordType<ReqFields>>(
+  payload: QueryBody<ReqFields>,
+): Promise<Record[]> {
+  const init = {
+    method: 'POST',
+    body: jc.stringify(payload),
+  };
+  return request('/query', init);
+}
+
+/**
+ * Sends POST request to token endpoint to get gkb token
+ * @param keyCloakToken - keycloak token
+ */
+function authenticate(keyCloakToken: string | undefined): Promise<{ kbToken: string }> {
+  const init = {
+    method: 'POST',
+    body: jc.stringify({ keyCloakToken }),
+  };
+  return request('/token', init);
+}
 
 /**
  * Sends DELETE request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const del = (endpoint, callOptions) => {
+const del = (endpoint: string) => {
   const init = {
     method: 'DELETE',
   };
 
-  return request(endpoint, init, callOptions);
+  return request(endpoint, init);
 };
 
 /**
@@ -83,7 +111,7 @@ const del = (endpoint, callOptions) => {
  * @returns the function to retrieve the query request body based on some input text
  */
 const getDefaultSuggestionQueryBody = (model) => (textInput) => {
-  let body = {};
+  let body: Record<string, unknown> = {};
 
   if (kbSchema.util.looksLikeRID(textInput)) {
     body = {
@@ -114,7 +142,7 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
  * generated at the top of dataview
  */
 const encodeQueryComplexToSearch = (content, modelName = 'V') => {
-  const payload = {};
+  const payload: Record<string, unknown> = {};
   payload['@class'] = modelName;
 
   if (content) {
@@ -141,4 +169,6 @@ export default {
   post,
   getDefaultSuggestionQueryBody,
   queryClient,
+  query,
+  authenticate,
 };

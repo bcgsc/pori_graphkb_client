@@ -243,6 +243,15 @@ const getNodeRIDsFromURL = (href) => {
   return decodedNodes;
 };
 
+/**
+ * wrapper to prevent issue with arrays such as [1, 's'] inferring their type as (string | number)[] instead of [number, string]
+ * while this can be accomplished using `as const` for simple cases such as the example, if the array contains an object, then
+ * using as const also makes that object and all its properties readonly
+ */
+function tuple<A1, A2, ARest>(a1: A1, a2: A2, ...rest: ARest[]): [A1, A2, ...ARest[]] {
+  return [a1, a2, ...rest];
+}
+
 export {
   CLASS_MODEL_PROP,
   cleanLinkedRecords,
@@ -252,4 +261,5 @@ export {
   getNodeRIDsFromURL,
   navigateToGraph,
   sortAndGroupFields,
+  tuple,
 };

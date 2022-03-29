@@ -14,6 +14,7 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import DetailChip from '../DetailChip';
+import { tuple } from '../util';
 
 const MIN_TERM_LENGTH = 3;
 
@@ -135,8 +136,8 @@ const RecordAutocomplete = (props) => {
   }
 
   const { data: options, isLoading } = useQuery(
-    ['/query', searchBody, { forceListReturn: true }],
-    ({ queryKey: [route, body, opts] }) => api.post(route, body, opts),
+    tuple('/query', searchBody, { forceListReturn: true }),
+    ({ queryKey: [, body] }) => api.query(body),
     {
       enabled,
       onError: (err) => {

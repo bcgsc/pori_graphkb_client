@@ -14,7 +14,9 @@ import { useQuery } from 'react-query';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { HistoryPropType } from '@/components/types';
-import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
+import {
+  cleanLinkedRecords, FORM_VARIANT, navigateToGraph, tuple,
+} from '@/components/util';
 import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -88,7 +90,7 @@ const RecordView = (props) => {
   const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
-    [`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }],
+    tuple(`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
     async ({ queryKey: [route, options] }) => {
       if (!model) {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });

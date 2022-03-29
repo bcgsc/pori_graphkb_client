@@ -8,15 +8,23 @@ import {
   RecordExistsError,
 } from '../errors';
 
+export interface RequestCallOptions {
+  /** always return a list for succesful requests */
+  forceListReturn?: boolean;
+}
+
 /**
  * Sends request to server, appending all global headers and handling responses and errors.
- * @param {string} endpoint - URL endpoint
- * @param {Object} init - Request properties.
- * @param {Object} requestOptions - options to be passed to the Request contstructor
- * @param {object} callOptions - other options
- * @param {object} callOptions.forceListReturn - always return a list for succesful requests
+ * @param endpoint URL endpoint
+ * @param requestOptions Request properties.
+ * @param callOptions options to be passed to the Request for successful requests
+ * @returns
  */
-async function request(endpoint, requestOptions, callOptions) {
+async function request(
+  endpoint: string,
+  requestOptions: RequestInit,
+  callOptions?: RequestCallOptions,
+) {
   if (
     requestOptions.method !== 'GET'
     && !['/query', '/parse', '/token'].includes(endpoint)
@@ -68,11 +76,6 @@ async function request(endpoint, requestOptions, callOptions) {
 
     if (callOptions?.forceListReturn && !Array.isArray(result)) {
       result = [result];
-    } else if (Array.isArray(result) && callOptions?.forceRecordReturn) {
-      if (result.length > 1) {
-        throw new BadRequestError(`expected a single record but found multiple (${result.length})`);
-      }
-      [result] = result;
     }
     return result;
   }

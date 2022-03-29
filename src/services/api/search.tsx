@@ -1,5 +1,6 @@
 import * as qs from 'qs';
 
+import { QueryBody } from '@/components/types';
 import config from '@/static/config';
 
 const DEFAULT_LIMIT = 100;
@@ -67,7 +68,7 @@ const buildSearchFromParseVariant = (schema, variant) => {
  * @param {Schema} opt.schema
  * @param {string} opt.search the search string portion of the URL displayed by this app
  */
-const getQueryFromSearch = ({ schema, search }) => {
+const getQueryFromSearch = ({ schema, search }): { payload: QueryBody, modelName: string; routeName: string } => {
   const {
     keyword,
     complex,
@@ -89,7 +90,7 @@ const getQueryFromSearch = ({ schema, search }) => {
   }
   const routeName = '/query';
 
-  let payload = {};
+  let payload: QueryBody = {};
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search

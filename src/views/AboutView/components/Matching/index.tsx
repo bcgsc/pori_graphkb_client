@@ -21,7 +21,7 @@ import { useDebounce } from 'use-debounce';
 import DetailChip from '@/components/DetailChip';
 import DropDownSelect from '@/components/DropDownSelect';
 import SearchBox from '@/components/SearchBox';
-import { navigateToGraph } from '@/components/util';
+import { navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import handleErrorSaveLocation from '@/services/util';
 
@@ -121,8 +121,8 @@ const MatchView = (props) => {
 
       const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
         queries.map(async (query) => queryClient.fetchQuery(
-          ['/query', query],
-          async ({ queryKey: [route, body] }) => api.post(route, body),
+          tuple('/query', query),
+          async ({ queryKey: [, body] }) => api.query(body),
           { staleTime: Infinity },
           { throwOnError: true },
         )),

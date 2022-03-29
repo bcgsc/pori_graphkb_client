@@ -53,7 +53,7 @@ const ActivityView = () => {
   // fetch recent records data
   const { data: recentRecords } = useQuery('recent', async () => {
     const [records, edges] = await Promise.all([
-      api.post('/query', {
+      api.query({
         target: 'V',
         filters: [
           {
@@ -67,7 +67,7 @@ const ActivityView = () => {
       }),
 
       // get recent Edge records
-      api.post('/query', {
+      api.query({
         target: 'E',
         filters: [
           {

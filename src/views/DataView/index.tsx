@@ -20,6 +20,7 @@ import { useIsFetching, useQuery } from 'react-query';
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
 import { HistoryPropType, LocationPropType } from '@/components/types';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
@@ -93,8 +94,8 @@ const getRowsFromBlocks = async ({
     });
 
     blockRequests.push(api.queryClient.fetchQuery(
-      ['/query', payload],
-      async ({ queryKey: [route, body] }) => api.post(route, body),
+      tuple('/query', payload),
+      async ({ queryKey: [, body] }) => api.query(body),
     ));
   }
   const data = [];
@@ -128,8 +129,8 @@ const DataView = ({
   }), [search]);
 
   const { data: totalRows = null } = useQuery(
-    ['/query', payload],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    tuple('/query', payload),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       select: (response) => response[0]?.count,
     },
@@ -199,8 +200,8 @@ const DataView = ({
   }, [history, search]);
 
   const { data: detailPanelRow } = useQuery(
-    ['/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }],
-    async ({ queryKey: [route, body] }) => api.post(route, body),
+    tuple('/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }),
+    async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(detailsRowId),
       onError: (err) => handleError(err),

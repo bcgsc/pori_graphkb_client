@@ -11,7 +11,6 @@ import React, { useCallback, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
-import { GeneralRecordType } from '@/components/types';
 import { tuple } from '@/components/util';
 import handleErrorSaveLocation from '@/services/util';
 
@@ -75,7 +74,7 @@ const ImportPubmedView = (props) => {
     async () => {
       if (externalRecord) {
         try {
-          const result = await api.post<GeneralRecordType>('/publications', { ...externalRecord, source });
+          const result = await api.post('/publications', { ...externalRecord, source });
           snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
           refetchCurrentRecords();
         } catch (err) {

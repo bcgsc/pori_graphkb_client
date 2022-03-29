@@ -60,7 +60,7 @@ const get = (endpoint: string, callOptions?: RequestCallOptions) => {
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-function post<Resp = unknown>(endpoint: string, payload?: Record<string, unknown>): Promise<Resp> {
+function post<Resp = GeneralRecordType>(endpoint: string, payload?: Record<string, unknown>): Promise<Resp> {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),

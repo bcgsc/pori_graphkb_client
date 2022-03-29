@@ -16,7 +16,7 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordPropType, GeneralRecordType } from '@/components/types';
+import { GeneralRecordPropType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -73,7 +73,7 @@ const RecordForm = ({
     async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.post<GeneralRecordType>(routeName, payload);
+      return api.post(routeName, payload);
     },
     {
       onSuccess: (result) => {

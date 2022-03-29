@@ -16,7 +16,6 @@ import RadioSelect from '@/components/RadioSelect';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
 import api from '@/services/api';
 
-import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
@@ -156,7 +155,7 @@ const VariantForm = ({
 
     try {
       const result = await formVariant === FORM_VARIANT.NEW
-        ? api.post<GeneralRecordType>(routeName, payload)
+        ? api.post(routeName, payload)
         : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
 
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });

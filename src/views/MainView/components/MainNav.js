@@ -20,8 +20,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
-import { SecurityContext } from '@/components/SecurityContext';
-import { hasWriteAccess, isAdmin } from '@/services/auth';
+import { useAuth } from '@/components/Auth';
 import logo from '@/static/gsclogo.svg';
 
 import MenuLink from './MenuLink';
@@ -34,7 +33,7 @@ import MenuLink from './MenuLink';
  */
 const MainNav = ({ isOpen, onChange }) => {
   const [subMenuOpenLink, setSubMenuOpenLink] = useState('/query');
-  const context = useContext(SecurityContext);
+  const auth = useAuth();
   const { setActiveLink } = useContext(ActiveLinkContext);
 
   /**
@@ -76,15 +75,15 @@ const MainNav = ({ isOpen, onChange }) => {
       <List className="main-nav-drawer__links">
         <MenuLink icon={<HomeIcon />} label="Quick Search" onClick={handleClickLink} route="/query" />
         <MenuLink icon={<SearchIcon />} label="Advanced Search" onClick={handleClickLink} route="/query-advanced" />
-        {hasWriteAccess(context) && (
+        {auth.hasWriteAccess && (
           <MenuItem onClick={() => handleOpen('/new/ontology')}>
             <ListItemIcon><AddIcon /></ListItemIcon>
             <ListItemText primary="Add new Record" />
           </MenuItem>
         )}
-        {hasWriteAccess(context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
+        {auth.hasWriteAccess && (isOpen && subMenuOpenLink === '/new/ontology') && (
         <>
-          {isAdmin(context) && (
+          {auth.isAdmin && (
           <MenuLink inset label="Source*" onClick={handleClickLink} route="/new/source" />
           )}
           <MenuLink inset label="Ontology" onClick={handleClickLink} route="/new/ontology" />
@@ -93,13 +92,13 @@ const MainNav = ({ isOpen, onChange }) => {
           <MenuLink inset label="Relationship" onClick={handleClickLink} route="/new/e" />
         </>
         )}
-        {hasWriteAccess(context) && (
+        {auth.hasWriteAccess && (
         <MenuItem onClick={() => handleOpen('import')}>
           <ListItemIcon><InputIcon /></ListItemIcon>
           <ListItemText primary="Import" />
         </MenuItem>
         )}
-        {hasWriteAccess(context) && (isOpen && subMenuOpenLink === 'import') && (
+        {auth.hasWriteAccess && (isOpen && subMenuOpenLink === 'import') && (
         <>
           <MenuLink inset label="PubMed" onClick={handleClickLink} route="/import/pubmed" />
         </>

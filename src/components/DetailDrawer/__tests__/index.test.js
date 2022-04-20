@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import { SecurityContext } from '@/components/SecurityContext';
+import { AuthContext } from '@/components/Auth';
 
 import DetailDrawer from '..';
 
@@ -85,9 +85,9 @@ const statementNode = {
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <SecurityContext.Provider value={{}}>
+    <AuthContext.Provider value={{}}>
       {children}
-    </SecurityContext.Provider>
+    </AuthContext.Provider>
   </BrowserRouter>
 );
 

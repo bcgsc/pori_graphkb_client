@@ -10,21 +10,19 @@ import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useContext, useEffect, useRef,
-  useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
+import { useAuth } from '@/components/Auth';
 import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { SecurityContext } from '@/components/SecurityContext';
 import { GeneralRecordPropType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
-import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
 import CivicEvidenceLink from './CivicEvidenceLink';
@@ -84,7 +82,7 @@ const StatementForm = ({
   }], async (route, body) => api.post(route, body).request());
 
   const snackbar = useSnackbar();
-  const context = useContext(SecurityContext);
+  const auth = useAuth();
   const model = schemaDefn.schema.Statement;
   const fieldDefs = model.properties;
 
@@ -159,7 +157,7 @@ const StatementForm = ({
     }
 
     if (!currContent.reviews) {
-      const createdBy = getUser(context);
+      const createdBy = auth.user;
       updatedContent.reviews = [{
         status: 'initial',
         comment: '',
@@ -168,7 +166,7 @@ const StatementForm = ({
     }
 
     return updatedContent;
-  }, [context]);
+  }, [auth]);
 
   /**
    * Handler for submission of a new record

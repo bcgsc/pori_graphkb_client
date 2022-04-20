@@ -6,19 +6,17 @@ import {
 import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
-  useCallback, useContext, useEffect,
-  useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
+import { useAuth } from '@/components/Auth';
 import RecordForm from '@/components/RecordForm';
-import { SecurityContext } from '@/components/SecurityContext';
 import StatementForm from '@/components/StatementForm';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords, FORM_VARIANT, navigateToGraph } from '@/components/util';
 import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
-import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -51,7 +49,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
 
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
-  const context = useContext(SecurityContext);
+  const auth = useAuth();
 
   const [recordContent, setRecordContent] = useState({});
   const [modelName, setModelName] = useState(modelNameParam || '');
@@ -167,7 +165,7 @@ const RecordView = (props) => {
         onError={handleError}
         onSubmit={handleSubmit}
         onTopClick={
-        hasWriteAccess(context)
+        auth.hasWriteAccess
           ? onTopClick
           : null
       }
@@ -185,7 +183,7 @@ const RecordView = (props) => {
       onError={handleError}
       onSubmit={handleSubmit}
       onTopClick={
-        hasWriteAccess(context)
+        auth.hasWriteAccess
           ? onTopClick
           : null
       }

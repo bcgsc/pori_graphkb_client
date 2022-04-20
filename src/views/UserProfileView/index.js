@@ -1,18 +1,14 @@
 import './index.scss';
 
 import { formatDistanceToNow } from 'date-fns';
-import React, {
-  useContext,
-} from 'react';
+import React from 'react';
 
+import { useAuth } from '@/components/Auth';
 import QueryResultsTable from '@/components/QueryResultsTable';
-import { SecurityContext } from '@/components/SecurityContext';
-import { getUser } from '@/services/auth';
 
 
 const UserProfileView = () => {
-  const context = useContext(SecurityContext);
-  const user = getUser(context);
+  const { user } = useAuth();
 
   return (
     <div className="user-profile-view">

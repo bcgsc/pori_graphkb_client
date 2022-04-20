@@ -20,17 +20,14 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import PropTypes from 'prop-types';
-import React, {
-  useContext, useEffect, useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { SecurityContext } from '@/components/SecurityContext';
 import { GeneralRecordPropType } from '@/components/types';
-import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
+import { useAuth } from '../Auth';
 import LinkEmbeddedPropList from './LinkEmbeddedPropList';
 import RelationshipList from './RelationshipList';
 import SetPropsList from './SetPropsList';
@@ -71,7 +68,7 @@ function DetailDrawer(props) {
     isEdge,
   } = props;
 
-  const context = useContext(SecurityContext);
+  const auth = useAuth();
 
   const [opened, setOpened] = useState([]);
 
@@ -238,7 +235,7 @@ function DetailDrawer(props) {
               </Typography>
             )}
           </div>
-          {hasWriteAccess(context) && (
+          {auth.hasWriteAccess && (
           <Link target="_blank" to={`/edit/${recordClass}/${recordId}`}>
             <IconButton
               variant="outlined"

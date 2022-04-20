@@ -6,19 +6,17 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import React, {
-  useCallback,
-  useContext, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
-import { SecurityContext } from '@/components/SecurityContext';
+import { useAuth } from '@/components/Auth';
 import api from '@/services/api';
-import { getUser } from '@/services/auth';
 
 import TableOfContext from './TableOfContents';
 
 const AboutUsageTerms = () => {
-  const security = useContext(SecurityContext);
+  const auth = useAuth();
   const snackbar = useSnackbar();
 
   const [isSigned, setIsSigned] = useState(false);
@@ -39,15 +37,15 @@ const AboutUsageTerms = () => {
     };
     getData();
     return () => controller && controller.abort();
-  }, [security]);
+  }, [auth]);
 
   useEffect(() => {
     let controller;
 
     const getData = async () => {
-      const user = getUser(security);
+      const { user } = auth;
 
-      if (!user.signedLicenseAt || user.signedLicenseAt < licenseEnactedAt) {
+      if (!user || !user.signedLicenseAt || user.signedLicenseAt < licenseEnactedAt) {
         setRequiresSigning(true);
       } else {
         setIsSigned(true);
@@ -56,7 +54,7 @@ const AboutUsageTerms = () => {
     };
     getData();
     return () => controller && controller.abort();
-  }, [licenseEnactedAt, security]);
+  }, [licenseEnactedAt, auth]);
 
 
   const handleConfirmSign = useCallback(async () => {

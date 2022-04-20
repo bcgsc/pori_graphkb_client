@@ -4,14 +4,10 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
-import { SecurityContext } from '@/components/SecurityContext';
+import { AuthContext } from '@/components/Auth';
 
 import ReviewDialog from '../ReviewDialog';
 
-
-jest.mock('@/services/auth', () => ({
-  getUser: () => ({ '@rid': '#20:0' }),
-}));
 
 /* eslint-disable react/prop-types */
 jest.mock('../../DropDownSelect', () => ({
@@ -50,8 +46,9 @@ describe('ReviewDialog formActions', () => {
   });
 
   beforeEach(() => {
+    const auth = { user: { '@rid': '#20:0' } };
     ({ getByText, getByTestId } = render(
-      <SecurityContext.Provider value={{ }}>
+      <AuthContext.Provider value={auth}>
         <SnackbarProvider onEnter={snackbarSpy}>
           <ReviewDialog
             isOpen
@@ -59,7 +56,7 @@ describe('ReviewDialog formActions', () => {
             onSubmit={onSubmitSpy}
           />
         </SnackbarProvider>
-      </SecurityContext.Provider>,
+      </AuthContext.Provider>,
     ));
   });
 

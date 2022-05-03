@@ -4,28 +4,35 @@ import EditIcon from '@material-ui/icons/Create';
 import GraphIcon from '@material-ui/icons/Timeline';
 import ViewIcon from '@material-ui/icons/Visibility';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
 
+import { FORM_VARIANT } from '../util';
+
+interface RecordFormStateToggleProps {
+  /** if true, edit button is shown */
+  allowEdit?: boolean;
+  /** message displayed in confirmation dialog */
+  message?: string;
+  /** parent handler function to toggle states */
+  onClick?: (nextState: FORM_VARIANT | 'graph') => void;
+  /** flag to check whether confirmation is needed */
+  requireConfirm?: boolean;
+  /** starting variant value */
+  value?: FORM_VARIANT | 'graph';
+}
+
 /**
  * Toggle Button Navigation to switch between modes or settings.
- *
- * @property {object} props
- * @property {function} props.onClick parent handler function to toggle states
- * @property {bool} props.allowEdit if true, edit button is shown
- * @property {bool} props.requireConfirm flag to check whether confirmation is needed
- * @property {string} props.message message displayed in confirmation dialog
- * @property {string} props.value starting variant value
  */
 function RecordFormStateToggle({
   onClick,
   requireConfirm,
-  message,
+  message = 'Are you sure?',
   value: inputValue,
   allowEdit,
-}) {
+}: RecordFormStateToggleProps) {
   const [value, setValue] = useState(inputValue);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -101,20 +108,12 @@ function RecordFormStateToggle({
   );
 }
 
-RecordFormStateToggle.propTypes = {
-  allowEdit: PropTypes.bool,
-  message: PropTypes.string,
-  onClick: PropTypes.func,
-  requireConfirm: PropTypes.bool,
-  value: PropTypes.oneOf(['view', 'edit', 'graph']),
-};
-
 RecordFormStateToggle.defaultProps = {
   onClick: () => {},
   allowEdit: false,
   requireConfirm: false,
   message: 'Are you sure?',
-  value: 'view',
+  value: FORM_VARIANT.VIEW,
 };
 
 export default RecordFormStateToggle;

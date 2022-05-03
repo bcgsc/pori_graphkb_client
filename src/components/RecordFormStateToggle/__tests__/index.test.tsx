@@ -53,4 +53,43 @@ describe('RecordFormStateToggle', () => {
     fireEvent.click(screen.getByText('Edit'));
     expect(clickSpy).toHaveBeenCalledWith('edit');
   });
+
+  describe('confirm required', () => {
+    test('callback is called when confirmed', () => {
+      const clickSpy = jest.fn();
+      render((
+        <RecordFormStateToggle
+          allowEdit
+          message="Changes you will lose"
+          onClick={clickSpy}
+          requireConfirm
+          value={FORM_VARIANT.VIEW}
+        />
+      ));
+
+      fireEvent.click(screen.getByText('Edit'));
+
+      fireEvent.click(screen.getByText(/confirm/i));
+      expect(clickSpy).toHaveBeenCalledTimes(1);
+      expect(clickSpy).toHaveBeenCalledWith('edit');
+    });
+
+    test('callback is not called when user cancels', () => {
+      const clickSpy = jest.fn();
+      render((
+        <RecordFormStateToggle
+          allowEdit
+          message="Changes you will lose"
+          onClick={clickSpy}
+          requireConfirm
+          value={FORM_VARIANT.VIEW}
+        />
+      ));
+
+      fireEvent.click(screen.getByText('Edit'));
+
+      fireEvent.click(screen.getByText(/cancel/i));
+      expect(clickSpy).toHaveBeenCalledTimes(0);
+    });
+  });
 });

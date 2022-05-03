@@ -8,6 +8,7 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 
 import { AuthContext } from '@/components/Auth';
+import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 
 import RecordForm from '..';
@@ -57,12 +58,10 @@ describe('RecordForm', () => {
 
   const onSubmitSpy = jest.fn();
   const onErrorSpy = jest.fn();
-  const onTopClickSpy = jest.fn();
+  const onToggleStateSpy = jest.fn();
   const snackbarSpy = jest.fn();
 
   describe('view variant', () => {
-    const navSpy = jest.fn();
-
     beforeEach(() => {
       render(
         <QueryClientProvider client={api.queryClient}>
@@ -70,13 +69,12 @@ describe('RecordForm', () => {
             <SnackbarProvider onEnter={snackbarSpy}>
               <RecordForm
                 modelName="User"
-                navigateToGraph={navSpy}
                 onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
-                onTopClick={onTopClickSpy}
+                onToggleState={onToggleStateSpy}
                 title="blargh monkeys"
                 value={{ name: 'bob', '@rid': '#1:2', '@class': 'User' }}
-                variant="view"
+                variant={FORM_VARIANT.VIEW}
               />
             </SnackbarProvider>
           </AuthContext.Provider>
@@ -92,10 +90,11 @@ describe('RecordForm', () => {
       expect(screen.getByText('blargh monkeys')).toBeInTheDocument();
     });
 
-    test('click edit triggers onTopClick handler', () => {
+    test('click edit triggers onToggleState handler', () => {
       const editButton = screen.getByText('Edit').closest('button');
       fireEvent.click(editButton);
-      expect(onTopClickSpy).toHaveBeenCalledTimes(1);
+      expect(onToggleStateSpy).toHaveBeenCalledTimes(1);
+      expect(onToggleStateSpy).toHaveBeenCalledWith(FORM_VARIANT.EDIT);
     });
 
     test('no submit button', () => {
@@ -106,7 +105,8 @@ describe('RecordForm', () => {
     test('triggers graphview navigation on graphview icon click', () => {
       const graphviewBtn = screen.getByTestId('graph-view');
       fireEvent.click(graphviewBtn);
-      expect(navSpy).toHaveBeenCalledTimes(1);
+      expect(onToggleStateSpy).toHaveBeenCalledTimes(1);
+      expect(onToggleStateSpy).toHaveBeenCalledWith('graph');
     });
   });
 
@@ -120,10 +120,10 @@ describe('RecordForm', () => {
                 modelName="User"
                 onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
-                onTopClick={onTopClickSpy}
+                onToggleState={onToggleStateSpy}
                 title="blargh monkeys"
                 value={{ name: 'bob', '@rid': '#1:2' }}
-                variant="edit"
+                variant={FORM_VARIANT.EDIT}
               />
             </SnackbarProvider>
           </AuthContext.Provider>
@@ -168,10 +168,10 @@ describe('RecordForm', () => {
                 modelName="User"
                 onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
-                onTopClick={onTopClickSpy}
+                onToggleState={onToggleStateSpy}
                 title="blargh monkeys"
                 value={{ }}
-                variant="new"
+                variant={FORM_VARIANT.NEW}
               />
             </AuthContext.Provider>
           </SnackbarProvider>

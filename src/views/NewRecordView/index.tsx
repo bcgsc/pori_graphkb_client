@@ -2,6 +2,7 @@ import './index.scss';
 
 import propTypes from 'prop-types';
 import React, {
+  ReactNode,
   useCallback,
 } from 'react';
 
@@ -42,7 +43,7 @@ const NewRecordView = (props) => {
     util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
-  let innerComponent = null;
+  let innerComponent: ReactNode = null;
 
   if (
     VARIANT_CLASSES.includes(modelName.toLowerCase())
@@ -59,7 +60,6 @@ const NewRecordView = (props) => {
       <StatementForm
         onError={handleError}
         onSubmit={handleSubmit}
-        onTopClick={null}
         title="Create a new Statement Record"
         variant={FORM_VARIANT.NEW}
       />
@@ -70,7 +70,6 @@ const NewRecordView = (props) => {
         modelName={modelName}
         onError={handleError}
         onSubmit={handleSubmit}
-        onTopClick={null}
         title={`Create a new ${modelName} Record`}
         variant={FORM_VARIANT.NEW}
       />

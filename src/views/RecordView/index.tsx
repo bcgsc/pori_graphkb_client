@@ -112,17 +112,14 @@ const RecordView = (props) => {
   );
 
   // redirect when the user clicks the top right button
-  const onTopClick = useCallback(() => {
-    const newVariant = variant === FORM_VARIANT.EDIT
-      ? FORM_VARIANT.VIEW
-      : FORM_VARIANT.EDIT;
-    const newPath = `/${newVariant}/${model.name}/${rid}`;
-    history.push(newPath);
-  }, [history, model.name, rid, variant]);
-
-  const navigateToGraphView = useCallback(() => {
-    navigateToGraph([recordContent['@rid']], history, handleError);
-  }, [handleError, history, recordContent]);
+  const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {
+    if (newState === 'graph') {
+      navigateToGraph([recordContent['@rid']], history, handleError);
+    } else {
+      const newPath = `/${newState}/${model.name}/${rid}`;
+      history.push(newPath);
+    }
+  }, [handleError, history, model.name, recordContent, rid]);
 
   if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
     // wait for the model to be set for new Records
@@ -137,7 +134,6 @@ const RecordView = (props) => {
       <div className="edit-variant-view">
         <VariantForm
           formVariant={variant}
-          navigateToGraph={navigateToGraphView}
           onError={handleError}
           onSubmit={handleSubmit}
           value={recordContent}
@@ -148,10 +144,9 @@ const RecordView = (props) => {
   if (modelName.toLowerCase() === 'statement') {
     return (
       <StatementForm
-        navigateToGraph={navigateToGraphView}
         onError={handleError}
         onSubmit={handleSubmit}
-        onTopClick={onTopClick}
+        onToggleState={handleToggleState}
         rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
         value={recordContent}
@@ -162,10 +157,9 @@ const RecordView = (props) => {
   return (
     <RecordForm
       modelName={modelName}
-      navigateToGraph={navigateToGraphView}
       onError={handleError}
       onSubmit={handleSubmit}
-      onTopClick={onTopClick}
+      onToggleState={handleToggleState}
       rid={rid}
       title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
       value={recordContent}

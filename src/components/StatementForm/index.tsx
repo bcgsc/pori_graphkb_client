@@ -30,13 +30,11 @@ import ReviewDialog from './ReviewDialog';
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
 interface StatementFormProps {
-  /** redirects to graph view with current record as initial node */
-  navigateToGraph: () => void;
   /** the title for this form */
   title: string;
   onError?: (arg: { error: unknown; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
-  onTopClick?: () => void;
+  onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
   /** the record id of the current record for the form */
   rid?: string;
   /** values of individual properties of passed class model */
@@ -51,11 +49,10 @@ interface StatementFormProps {
 const StatementForm = ({
   value: initialValue,
   title,
-  onTopClick,
+  onToggleState,
   onSubmit,
   onError,
   variant,
-  navigateToGraph,
   ...rest
 }: StatementFormProps) => {
   const { data: diagnosticData } = useQuery(
@@ -299,16 +296,6 @@ const StatementForm = ({
     setFormIsDirty(true);
   }, [formContent.reviews, setFormIsDirty, updateField]);
 
-  const handleToggleState = useCallback((newState) => {
-    if (newState !== variant) {
-      if (newState === 'graph') {
-        navigateToGraph();
-      } else {
-        onTopClick?.();
-      }
-    }
-  }, [navigateToGraph, onTopClick, variant]);
-
   let pageTitle = title;
 
   if (variant === FORM_VARIANT.VIEW && formContent) {
@@ -339,11 +326,11 @@ const StatementForm = ({
             </Button>
           )}
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
-          {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
+          {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
               allowEdit={auth.hasWriteAccess}
               message="Are you sure? You will lose your changes."
-              onClick={handleToggleState}
+              onClick={onToggleState}
               requireConfirm={variant === 'edit' && formIsDirty}
               value={variant}
             />
@@ -416,7 +403,7 @@ const StatementForm = ({
 StatementForm.defaultProps = {
   onError: () => {},
   onSubmit: () => {},
-  onTopClick: null,
+  onToggleState: undefined,
   rid: null,
   variant: FORM_VARIANT.VIEW,
   value: {},

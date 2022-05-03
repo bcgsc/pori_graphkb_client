@@ -28,15 +28,13 @@ import RelatedVariantsTable from './RelatedVariantsTable';
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
 interface RecordFormProps {
-  /** redirects to graph view with current record as initial node */
-  navigateToGraph: () => void;
   /** the title for this form */
   title: string;
   /** name of class model to be displayed */
   modelName?: string;
   onError?: (arg: { error: unknown; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
-  onTopClick?: () => void;
+  onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
   /** the record id of the current record for the form */
   rid?: string;
   /** values of individual properties of passed class model */
@@ -52,11 +50,10 @@ const RecordForm = ({
   value: initialValue,
   modelName,
   title,
-  onTopClick,
+  onToggleState,
   onSubmit,
   onError,
   variant,
-  navigateToGraph,
   ...rest
 }: RecordFormProps) => {
   const snackbar = useSnackbar();
@@ -191,16 +188,6 @@ const RecordForm = ({
 
   const actionInProgress = isAdding || isDeleting || isUpdating;
 
-  const handleToggleState = useCallback((newState) => {
-    if (newState !== variant) {
-      if (newState === 'graph') {
-        navigateToGraph();
-      } else {
-        onTopClick?.();
-      }
-    }
-  }, [navigateToGraph, onTopClick, variant]);
-
   let pageTitle = title;
 
   if (variant === FORM_VARIANT.VIEW && formContent) {
@@ -219,11 +206,11 @@ const RecordForm = ({
           {title !== pageTitle && (<Typography variant="subtitle">{title}</Typography>)}
         </span>
         <div className={`header__actions header__actions--${variant}`}>
-          {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
+          {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
               allowEdit={auth.hasWriteAccess}
               message="Are you sure? You will lose your changes."
-              onClick={handleToggleState}
+              onClick={onToggleState}
               requireConfirm={variant === 'edit' && formIsDirty}
               value={variant}
             />
@@ -295,7 +282,7 @@ RecordForm.defaultProps = {
   modelName: null,
   onError: () => {},
   onSubmit: () => {},
-  onTopClick: null,
+  onToggleState: undefined,
   rid: null,
   variant: FORM_VARIANT.VIEW,
   value: {},

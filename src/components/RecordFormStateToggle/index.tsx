@@ -4,7 +4,7 @@ import EditIcon from '@material-ui/icons/Create';
 import GraphIcon from '@material-ui/icons/Timeline';
 import ViewIcon from '@material-ui/icons/Visibility';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
 
@@ -30,15 +30,11 @@ function RecordFormStateToggle({
   onClick,
   requireConfirm,
   message = 'Are you sure?',
-  value: inputValue,
+  value = FORM_VARIANT.VIEW,
   allowEdit,
 }: RecordFormStateToggleProps) {
-  const [value, setValue] = useState(inputValue);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  useEffect(() => {
-    setValue(inputValue);
-  }, [inputValue]);
+  const nextValue = useRef(value);
 
   const handleDialogCancel = () => {
     setDialogOpen(false);
@@ -46,20 +42,21 @@ function RecordFormStateToggle({
 
   const handleDialogConfirm = useCallback(() => {
     setDialogOpen(false);
-    onClick(value);
-  }, [onClick, value]);
+    onClick?.(nextValue.current);
+  }, [onClick]);
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
-  const handleChange = useCallback((event, newValue) => {
+  const handleChange = useCallback((event, newValue: FORM_VARIANT | 'graph') => {
+    nextValue.current = newValue;
+
     if (value !== newValue) {
       if (requireConfirm) {
         handleOpenDialog();
       } else {
-        setValue(newValue);
-        onClick(newValue);
+        onClick?.(newValue);
       }
     }
   }, [onClick, requireConfirm, value]);
@@ -81,15 +78,15 @@ function RecordFormStateToggle({
           <GraphIcon /><span className="toggle-option__text">Graph</span>
         </ToggleButton>
         <ToggleButton
-          aria-label="view"
-          value="view"
+          aria-label={FORM_VARIANT.VIEW}
+          value={FORM_VARIANT.VIEW}
         >
           <ViewIcon /><span className="toggle-option__text">View</span>
         </ToggleButton>
         {allowEdit && (
           <ToggleButton
-            aria-label="edit"
-            value="edit"
+            aria-label={FORM_VARIANT.EDIT}
+            value={FORM_VARIANT.EDIT}
           >
             <EditIcon /><span className="toggle-option__text">Edit</span>
           </ToggleButton>
@@ -109,7 +106,7 @@ function RecordFormStateToggle({
 }
 
 RecordFormStateToggle.defaultProps = {
-  onClick: () => {},
+  onClick: undefined,
   allowEdit: false,
   requireConfirm: false,
   message: 'Are you sure?',

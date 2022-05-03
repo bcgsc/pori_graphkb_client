@@ -196,12 +196,12 @@ const StatementForm = ({
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
+        onSubmit?.(result);
       },
       onError: (err, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -231,11 +231,11 @@ const StatementForm = ({
     {
       onSuccess: (_, content) => {
         snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
-        onSubmit();
+        onSubmit?.();
       },
       onError: (err, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -257,11 +257,11 @@ const StatementForm = ({
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
+        onSubmit?.(result);
       },
       onError: (err, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -304,7 +304,7 @@ const StatementForm = ({
       if (newState === 'graph') {
         navigateToGraph();
       } else {
-        onTopClick(formContent);
+        onTopClick?.(formContent);
       }
     }
   }, [formContent, navigateToGraph, onTopClick, variant]);

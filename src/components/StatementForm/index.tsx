@@ -8,7 +8,6 @@ import {
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
@@ -20,7 +19,7 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -30,15 +29,24 @@ import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
+interface StatementFormProps {
+  /** redirects to graph view with current record as initial node */
+  navigateToGraph: () => void;
+  /** the title for this form */
+  title: string;
+  onError?: (arg: { error: unknown; content: unknown }) => void;
+  onSubmit?: (record?: GeneralRecordType) => void;
+  onTopClick?: (arg: unknown) => void;
+  /** the record id of the current record for the form */
+  rid?: string;
+  /** values of individual properties of passed class model */
+  value?: GeneralRecordType;
+  /** the type of NodeForm to create */
+  variant?: FORM_VARIANT;
+}
+
 /**
  * Form/View that displays the contents of a single node
- *
- * @property {string} props.variant the type of NodeForm to create
- * @property {string} props.rid the record id of the current record for the form
- * @property {string} props.title the title for this form
- * @property {string} props.modelName name of class model to be displayed
- * @property {value} props.value values of individual properties of passed class model
- * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
 const StatementForm = ({
   value: initialValue,
@@ -49,7 +57,7 @@ const StatementForm = ({
   variant,
   navigateToGraph,
   ...rest
-}) => {
+}: StatementFormProps) => {
   const { data: diagnosticData } = useQuery(
     tuple(
       '/query',
@@ -403,17 +411,6 @@ const StatementForm = ({
       </div>
     </Paper>
   );
-};
-
-StatementForm.propTypes = {
-  navigateToGraph: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  onError: PropTypes.func,
-  onSubmit: PropTypes.func,
-  onTopClick: PropTypes.func,
-  rid: PropTypes.string,
-  value: GeneralRecordPropType,
-  variant: PropTypes.string,
 };
 
 StatementForm.defaultProps = {

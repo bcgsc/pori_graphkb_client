@@ -4,7 +4,6 @@ import { schema } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@material-ui/core';
 import omit from 'lodash.omit';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -16,6 +15,7 @@ import RadioSelect from '@/components/RadioSelect';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
 import api from '@/services/api';
 
+import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
@@ -88,16 +88,21 @@ const pickInputType = (record) => {
   return MAJOR_FORM_TYPES.OTHER;
 };
 
+interface VariantFormProps {
+  /** the handler to be called when the submission throws an error */
+  onError: (arg: { error: unknown; content: unknown }) => void;
+  /** the handler to be called when the form is submitted */
+  onSubmit: (record?: GeneralRecordType | null) => void;
+  formVariant?: FORM_VARIANT;
+  value?: GeneralRecordType;
+}
+
 /**
  * Input form for new Variants
- *
- * @param {object} props
- * @param {function} props.onSubmit the handler to be called when the form is submitted
- * @param {function} props.onError the handler to be called when the submission throws an error
  */
 const VariantForm = ({
   onSubmit, onError, value, formVariant,
-}) => {
+}: VariantFormProps) => {
   let defaultCoordinateType;
 
   if (value.break1Start) {
@@ -303,13 +308,6 @@ const VariantForm = ({
       </FormStepWrapper>
     </SteppedForm>
   );
-};
-
-VariantForm.propTypes = {
-  onError: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  formVariant: PropTypes.string,
-  value: PropTypes.object,
 };
 
 VariantForm.defaultProps = {

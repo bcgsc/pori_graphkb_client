@@ -88,12 +88,12 @@ const RecordForm = ({
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
+        onSubmit?.(result);
       },
       onError: (err, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -127,11 +127,11 @@ const RecordForm = ({
     {
       onSuccess: (_, content) => {
         snackbar.enqueueSnackbar(`Successfully deleted the record ${content['@rid']}`, { variant: 'success' });
-        onSubmit();
+        onSubmit?.();
       },
       onError: (err, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -157,11 +157,11 @@ const RecordForm = ({
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Successfully edited the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
+        onSubmit?.(result);
       },
       onError: (err, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -183,7 +183,7 @@ const RecordForm = ({
       setFormIsDirty(true);
     } else if (!formIsDirty) {
       snackbar.enqueueSnackbar('no changes to submit');
-      onSubmit(formContent);
+      onSubmit?.(formContent);
     } else {
       updateAction(content);
     }
@@ -196,7 +196,7 @@ const RecordForm = ({
       if (newState === 'graph') {
         navigateToGraph();
       } else {
-        onTopClick(formContent);
+        onTopClick?.(formContent);
       }
     }
   }, [formContent, navigateToGraph, onTopClick, variant]);

@@ -36,7 +36,7 @@ interface StatementFormProps {
   title: string;
   onError?: (arg: { error: unknown; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
-  onTopClick?: (arg: unknown) => void;
+  onTopClick?: () => void;
   /** the record id of the current record for the form */
   rid?: string;
   /** values of individual properties of passed class model */
@@ -304,10 +304,10 @@ const StatementForm = ({
       if (newState === 'graph') {
         navigateToGraph();
       } else {
-        onTopClick?.(formContent);
+        onTopClick?.();
       }
     }
-  }, [formContent, navigateToGraph, onTopClick, variant]);
+  }, [navigateToGraph, onTopClick, variant]);
 
   let pageTitle = title;
 

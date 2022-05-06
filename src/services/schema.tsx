@@ -45,28 +45,26 @@ const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
  * Returns route and properties of a certain knowledgebase class
  * (most useful data).
  * @param {Object|string} obj - Knowledgebase Record.
- * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
  * class properties list.
  */
-const getProperties = (obj, extraProps = []) => {
+const getProperties = (obj) => {
   const VPropKeys = schemaDefn.schema.V.properties;
   const classModel = schemaDefn.get(obj);
   return Object.values(classModel?.properties ?? {})
-    .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+    .filter((prop) => !VPropKeys[prop.name]);
 };
 
 /**
  * Returns route and query properties of a certain knowledgebase class
  * (most useful data).
  * @param {string} className - requested class name.
- * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
  * class properties list.
  */
-const getQueryProperties = (className, extraProps = []) => {
+const getQueryProperties = (className) => {
   const VPropKeys = schemaDefn.schema.V.properties;
   const classModel = schemaDefn.get(className);
   return Object.values(classModel?.queryProperties ?? {})
-    .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+    .filter((prop) => !VPropKeys[prop.name]);
 };
 
 /**

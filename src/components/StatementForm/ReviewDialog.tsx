@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Dialog, DialogContent, FormControlLabel, IconButton, Typography,
@@ -16,7 +17,6 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import {
   FORM_VARIANT,
 } from '@/components/util';
-import schema from '@/services/schema';
 
 const MODEL_NAME = 'StatementReview';
 
@@ -35,7 +35,7 @@ const AddReviewDialog = ({
 }: AddReviewDialogProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const { comment, status } = schema.get(MODEL_NAME).properties;
+  const { comment, status } = schemaDefn.get(MODEL_NAME).properties;
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 

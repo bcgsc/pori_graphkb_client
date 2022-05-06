@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@material-ui/core';
@@ -217,7 +218,7 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = originalPropertyModel.linkedClass || schema.get('V');
+      const linkedModel = originalPropertyModel.linkedClass || schemaDefn.get('V');
       setKeywordTargetOptions(linkedModel.descendantTree(false).map((m) => m.name).sort());
       setKeywordTarget(linkedModel.name);
     }

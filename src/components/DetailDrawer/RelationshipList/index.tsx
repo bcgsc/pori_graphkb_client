@@ -1,3 +1,4 @@
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   Divider,
@@ -79,7 +80,7 @@ function RelationshipList(props: RelationshipListProps) {
               <ListItemText
                 className="detail-li-text"
                 primary={<Typography variant="subtitle1">{preview}</Typography>}
-                secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
+                secondary={schemaDefn.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
               />
               {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>

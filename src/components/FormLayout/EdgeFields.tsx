@@ -1,7 +1,7 @@
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import React from 'react';
 
 import FormField from '@/components/FormField';
-import schema from '@/services/schema';
 
 interface EdgeFieldsProps {
   /**
@@ -26,7 +26,7 @@ const EdgeFields = ({
       label="Source Record (out)"
       model={{
         description: 'The source record for the relationship',
-        linkedClass: schema.get(model.sourceModel || 'V'),
+        linkedClass: schemaDefn.get(model.sourceModel || 'V'),
         name: 'out',
         type: 'link',
         mandatory: true,
@@ -37,7 +37,7 @@ const EdgeFields = ({
       disabled={disabled}
       label="Target Record (in)"
       model={{
-        linkedClass: schema.get(model.targetModel || 'V'),
+        linkedClass: schemaDefn.get(model.targetModel || 'V'),
         description: 'The target record for the relationship',
         name: 'in',
         type: 'link',

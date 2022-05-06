@@ -1,6 +1,6 @@
 import './index.scss';
 
-import kbSchema from '@bcgsc-pori/graphkb-schema';
+import kbSchema, { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Table,
@@ -10,8 +10,6 @@ import {
   TableRow,
 } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
-
-import schema from '@/services/schema';
 
 const { constants: { PERMISSIONS } } = kbSchema;
 
@@ -24,8 +22,8 @@ const { constants: { PERMISSIONS } } = kbSchema;
 const splitPermissionsByOperation = (permissions) => {
   const permByModelName = {};
 
-  Object.keys(schema.schema).forEach((modelName) => {
-    const model = schema.get(modelName);
+  Object.keys(schemaDefn.schema).forEach((modelName) => {
+    const model = schemaDefn.get(modelName);
 
     if (!model.embedded) {
       const value = permissions[model.name] === undefined
@@ -85,7 +83,7 @@ const PermissionsTable = ({
     }
 
     for (const modelName of Object.keys(content)) { // eslint-disable-line no-restricted-syntax
-      if (!schema.has(modelName) || content[modelName] === null) {
+      if (!schemaDefn.has(modelName) || content[modelName] === null) {
         continue; // eslint-disable-line no-continue
       }
 

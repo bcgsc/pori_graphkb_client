@@ -1,3 +1,4 @@
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   Divider,
@@ -68,7 +69,7 @@ function TextRow(props: TextRowProps) {
           <ListItem dense>
             {isNested && <div className="nested-spacer" />}
             <ListItemText className="detail-li-text">
-              {util.formatStr(schema.getPreview(value))}
+              {util.formatStr(schemaDefn.getPreview(value))}
             </ListItemText>
           </ListItem>
         </Collapse>

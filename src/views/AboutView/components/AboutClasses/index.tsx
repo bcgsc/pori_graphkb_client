@@ -1,20 +1,19 @@
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   List,
   Typography,
 } from '@material-ui/core';
 import React from 'react';
 
-import schema from '@/services/schema';
-
 import ClassDescription from './components/ClassDescription';
 
 const AboutClasses = () => {
-  const models = Object.values(schema.schema)
+  const models = Object.values(schemaDefn.schema)
     .filter((m) => !m.embedded && !m.isAbstract && !m.isEdge)
     .sort((m1, m2) => m1.name.localeCompare(m2.name))
     .map((m) => ({ name: m.name, description: m.description }));
 
-  const links = Object.values(schema.schema)
+  const links = Object.values(schemaDefn.schema)
     .filter((m) => !m.embedded && !m.isAbstract && m.isEdge)
     .sort((m1, m2) => m1.name.localeCompare(m2.name))
     .map((m) => ({ name: m.name, description: m.description }));

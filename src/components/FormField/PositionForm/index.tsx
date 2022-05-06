@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   FormControl,
   FormHelperText,
@@ -56,7 +56,7 @@ const PositionForm = ({
   variant: initialVariant,
   ...props
 }: PositionFormProps) => {
-  const positionVariants = schema.schema[baseVariant || DEFAULT_BASE_VARIANT]
+  const positionVariants = schemaDefn.schema[baseVariant || DEFAULT_BASE_VARIANT]
     .descendantTree(true).map((m) => m.name);
   const [variant, setVariant] = useState(initialVariant);
 

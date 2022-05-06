@@ -10,19 +10,12 @@ const MAX_LABEL_LENGTH = 50;
  * Knowledgebase schema.
  */
 class Schema {
-  constructor() {
-    this.schema = schemaDefn.schema;
-    this.has = schemaDefn.has.bind(schemaDefn);
-    this.get = schemaDefn.get.bind(schemaDefn);
-    this.getFromRoute = schemaDefn.getFromRoute.bind(schemaDefn);
-  }
-
   @boundMethod
   getModel(name) {
     try {
-      return this.get(name);
+      return schemaDefn.get(name);
     } catch (err) {
-      const model = this.getFromRoute(name);
+      const model = schemaDefn.getFromRoute(name);
 
       if (model) {
         return model;
@@ -36,7 +29,7 @@ class Schema {
    */
   @boundMethod
   getLabel(obj, truncate = true) {
-    let label = this.getPreview(obj);
+    let label = schemaDefn.getPreview(obj);
 
     if (label && obj['@rid'] && !label.includes(obj['@rid'])) {
       label = `${label} (${obj['@rid']})`;
@@ -54,25 +47,17 @@ class Schema {
   @boundMethod
   getLink(obj) {
     if (obj && obj['@rid']) {
-      const { name } = this.get(obj) || this.get('V');
+      const { name } = schemaDefn.get(obj) || schemaDefn.get('V');
       return `/view/${name}/${obj['@rid'].replace(/^#/, '')}`;
     }
     return '';
   }
 
   /**
-   * Returns preview of given object based on its '@class' value
-   * @param {Object} obj - Record to be parsed.
-   */
-  getPreview(obj) {
-    return schemaDefn.getPreview(obj);
-  }
-
-  /**
    * Returns record metadata fields
    */
   getMetadata() {
-    return Object.values(this.schema.V.properties);
+    return Object.values(schemaDefn.schema.V.properties);
   }
 
   /**
@@ -83,8 +68,8 @@ class Schema {
    * class properties list.
    */
   getProperties(obj, extraProps = []) {
-    const VPropKeys = this.schema.V.properties;
-    const classModel = this.get(obj);
+    const VPropKeys = schemaDefn.schema.V.properties;
+    const classModel = schemaDefn.get(obj);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
       .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
@@ -98,9 +83,8 @@ class Schema {
    * class properties list.
    */
   getQueryProperties(className, extraProps = []) {
-    const { schema } = this;
-    const VPropKeys = schema.V.properties;
-    const classModel = this.get(className);
+    const VPropKeys = schemaDefn.schema.V.properties;
+    const classModel = schemaDefn.get(className);
     if (!classModel) return null;
     return Object.values(classModel.queryProperties || [])
       .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
@@ -111,8 +95,7 @@ class Schema {
    * @param {Object} [node=null] - Object to retrieve edges from if input.
    */
   getEdges(node = null) {
-    const { schema } = this;
-    const list = schema.E.subclasses.slice().map((classModel) => classModel.name);
+    const list = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
 
     if (node) {
       const edges = [];
@@ -135,8 +118,8 @@ class Schema {
       parentCls = [parentCls];
     }
 
-    return !!(this.get(cls)
-      && this.get(cls).inherits.some((inherited) => parentCls.includes(inherited)));
+    return !!(schemaDefn.get(cls)
+      && schemaDefn.get(cls).inherits.some((inherited) => parentCls.includes(inherited)));
   }
 
   isEdge(cls) {
@@ -180,7 +163,7 @@ class Schema {
         if (Array.isArray(value) && value.length) {
           // values could have different class models
           value.forEach((val) => {
-            embeddedModel = this.get(val);
+            embeddedModel = schemaDefn.get(val);
 
             if (embeddedModel) {
               Object.values(embeddedModel.properties).forEach((subPropModel) => {
@@ -190,7 +173,7 @@ class Schema {
           });
         } else {
           try {
-            embeddedModel = this.get(value);
+            embeddedModel = schemaDefn.get(value);
           } catch (err) { } // eslint-disable-line no-empty
 
           if (!embeddedModel) {
@@ -239,7 +222,7 @@ class Schema {
 
     const linkChipWidth = 300;
 
-    const allProps = this.get(modelName).queryProperties;
+    const allProps = schemaDefn.get(modelName).queryProperties;
 
     if (modelName.toLowerCase().includes('variant')) {
       showByDefault.push('reference1', 'reference2', 'type');
@@ -255,7 +238,7 @@ class Schema {
 
     const defineLinkSetColumn = (name) => {
       const colId = name;
-      const getLinkData = ({ data }) => data && (data[name] || []).map((l) => this.getPreview(l));
+      const getLinkData = ({ data }) => data && (data[name] || []).map((l) => schemaDefn.getPreview(l));
 
       return {
         colId,
@@ -280,7 +263,7 @@ class Schema {
         ));
       }
       if (values) {
-        return values.map((v) => this.getPreview(v));
+        return values.map((v) => schemaDefn.getPreview(v));
       }
       return values;
     };
@@ -318,10 +301,10 @@ class Schema {
       let colId = name.slice(type.length + 1);
 
       if (type === 'in') {
-        colId = this.get(colId).reverseName;
+        colId = schemaDefn.get(colId).reverseName;
       }
 
-      const getEdgeData = ({ data }) => data && (data[name] || []).map((edge) => this.getPreview(edge[target]));
+      const getEdgeData = ({ data }) => data && (data[name] || []).map((edge) => schemaDefn.getPreview(edge[target]));
 
       return {
         colId,
@@ -366,9 +349,9 @@ class Schema {
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
-          return this.getPreview(data[propName]);
+          return schemaDefn.getPreview(data[propName]);
         } if (data[propName]) {
-          return this.getPreview(data[propName][subPropName]);
+          return schemaDefn.getPreview(data[propName][subPropName]);
         }
       }
       return '';
@@ -380,7 +363,7 @@ class Schema {
       colId: 'preview',
       field: 'preview',
       sortable: false,
-      valueGetter: ({ data }) => this.getPreview(data, false),
+      valueGetter: ({ data }) => schemaDefn.getPreview(data, false),
       hide: modelName === 'Statement',
     });
 
@@ -416,7 +399,7 @@ class Schema {
             hide,
           }],
         };
-        Object.values((prop.linkedClass || this.schema.V).queryProperties).forEach((subProp) => {
+        Object.values((prop.linkedClass || schemaDefn.schema.V).queryProperties).forEach((subProp) => {
           if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
             const colDef = ({
               field: subProp.name,

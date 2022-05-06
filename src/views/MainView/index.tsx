@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@material-ui/core';
@@ -11,7 +12,6 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
 import { AuthenticatedRoute } from '@/components/Auth';
-import schema from '@/services/schema';
 
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
@@ -31,7 +31,7 @@ const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-const ABSTRACT_CLASSES = Object.values(schema.schema)
+const ABSTRACT_CLASSES = Object.values(schemaDefn.schema)
   .filter((m) => m.isAbstract && m.name !== 'Variant')
   .map((m) => m.name);
 

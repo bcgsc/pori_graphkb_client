@@ -1,4 +1,4 @@
-import { schema } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import * as qs from 'qs';
 
 import { QueryBody } from '@/components/types';
@@ -32,7 +32,7 @@ const getQueryFromSearch = (search: string): { payload: QueryBody, modelName: st
     delete params.class;
   }
 
-  if (!schema.get(modelName)) {
+  if (!schemaDefn.get(modelName)) {
     throw new Error(`Failed to find the expected model (${modelName})`);
   }
   const routeName = '/query';

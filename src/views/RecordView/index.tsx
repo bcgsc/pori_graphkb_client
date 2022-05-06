@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@material-ui/core';
@@ -86,7 +87,7 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
     util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
-  const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
+  const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
     tuple(`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),

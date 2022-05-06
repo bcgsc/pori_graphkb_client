@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import FilterIcon from '@material-ui/icons/FilterList';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -7,7 +8,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 interface FilteredRecordAutocompleteProps {
   /** the base class for creating the class filter for the paired autocomplete component */
@@ -49,10 +49,10 @@ const FilteredRecordAutocomplete = ({
     setSelectedClassName(value);
   }, [setSelectedClassName]);
 
-  const model = schema.get(linkedClassName);
+  const model = schemaDefn.get(linkedClassName);
 
   const getQueryBody = useMemo(() => api.getDefaultSuggestionQueryBody(
-    schema.get(selectedClassName),
+    schemaDefn.get(selectedClassName),
   ), [selectedClassName]);
 
   return (

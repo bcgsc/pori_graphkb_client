@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';
@@ -23,7 +24,7 @@ import Timestamp from './Timestamp';
 
 const POSITION_CLASSES = [
   'Position',
-  ...schema.schema.Position.descendantTree(false).map((m) => m.name),
+  ...schemaDefn.schema.Position.descendantTree(false).map((m) => m.name),
 ];
 
 interface FormFieldProps {
@@ -218,7 +219,7 @@ const FormField = ({
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
         autoProps.filterOptions = [
-          ...schema.schema.Variant.descendantTree(false).map((m) => m.name),
+          ...schemaDefn.schema.Variant.descendantTree(false).map((m) => m.name),
           'Disease',
           'CatalogueVariant',
         ];
@@ -246,7 +247,7 @@ const FormField = ({
         });
         autoProps.singleLoad = true;
       } else {
-        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schema.get('V'));
+        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'));
       }
 
       propComponent = (

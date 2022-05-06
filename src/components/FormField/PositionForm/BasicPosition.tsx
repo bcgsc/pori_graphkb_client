@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';
@@ -13,7 +13,7 @@ const {
     GenomicPosition: { properties: { pos: posProperty } },
     CdsPosition: { properties: { offset: offsetProperty } },
   },
-} = schema;
+} = schemaDefn;
 
 interface BasicPositionFormProps {
   /** change handler */
@@ -92,7 +92,7 @@ const BasicPositionForm = ({
     onChange({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
   }, [onChange, name, variant, position]);
 
-  const isOffsetVariant = Boolean(schema.get(variant).properties.offset);
+  const isOffsetVariant = Boolean(schemaDefn.get(variant).properties.offset);
 
   return (
     <>

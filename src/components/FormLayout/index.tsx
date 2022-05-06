@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   List,
@@ -18,7 +19,6 @@ import {
   FORM_VARIANT,
   sortAndGroupFields,
 } from '@/components/util';
-import schema from '@/services/schema';
 
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
@@ -53,7 +53,7 @@ const FormLayout = ({
   const [model, setModel] = useState(null);
 
   useEffect(() => {
-    setModel(schema.get(modelName));
+    setModel(schemaDefn.get(modelName));
   }, [modelName]);
 
   if (!model) {

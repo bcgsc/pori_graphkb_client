@@ -2,6 +2,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import React, { useEffect } from 'react';
@@ -11,7 +12,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 const isReversed = (nodeId, { out: src, in: tgt }) => {
   if (src && tgt) {
@@ -51,7 +51,7 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
         Object.entries(record).forEach(([propName, value]) => {
           if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
             value.forEach((edge) => {
-              const model = schema.get(edge);
+              const model = schemaDefn.get(edge);
               const reversed = isReversed(recordId, edge);
 
               newEdges.push({

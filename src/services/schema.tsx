@@ -110,38 +110,6 @@ class Schema {
   }
 
   /**
-   * Returns the URL route of a given class.
-   * @param {string} className - schema class to return the route of.
-   */
-  getRoute(className) {
-    return this.schema[className].routeName;
-  }
-
-  /**
-   * Returns all queryable classModels.
-   */
-  getQueryable(isAdmin) {
-    const { schema } = this;
-    return Object.values(schema).filter((model) => model.expose
-      && model.expose.QUERY
-      && (isAdmin || !['User', 'UserGroup'].includes(model.name)));
-  }
-
-  /**
-   * Returns subclasses of the given classmodel name.
-   * @param {string} cls - class model name.
-   * @param {boolean} subOnly - if true, does not return superclass model.
-   */
-  getSubclassesOf(cls, subOnly = false) {
-    const { schema } = this;
-    if (!schema[cls]) return null;
-    const list = Object.values(schema)
-      .filter((model) => model.inherits && model.inherits.includes(cls));
-    if (!subOnly) list.push(schema[cls]);
-    return list;
-  }
-
-  /**
    * Returns a list of strings containing all valid edge class names.
    * @param {Object} [node=null] - Object to retrieve edges from if input.
    */

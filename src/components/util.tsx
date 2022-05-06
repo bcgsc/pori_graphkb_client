@@ -159,21 +159,6 @@ const cleanLinkedRecords = (content) => {
   return newContent;
 };
 
-const cleanUndefined = (content) => {
-  const newContent = {};
-
-  if (typeof content !== 'object' || content === null) {
-    return content;
-  }
-
-  Object.keys(content).forEach((key) => {
-    if (content[key] !== undefined) {
-      newContent[key] = cleanUndefined(content[key]);
-    }
-  });
-  return newContent;
-};
-
 const cleanPayload = (payload) => {
   if (typeof payload !== 'object' || payload === null) {
     return payload;
@@ -257,7 +242,6 @@ export {
   CLASS_MODEL_PROP,
   cleanLinkedRecords,
   cleanPayload,
-  cleanUndefined,
   FORM_VARIANT,
   getNodeRIDsFromURL,
   navigateToGraph,

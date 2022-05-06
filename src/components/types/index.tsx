@@ -28,25 +28,6 @@ const GeneralRecordPropType = PropTypes.shape({
   ...BASE_PROPERTIES,
 });
 
-/**
- * Represents general format of a statement class record
- */
-const StatementPropType = PropTypes.shape({
-  ...BASE_PROPERTIES,
-  conditions: PropTypes.arrayOf(PropTypes.shape({
-    ...BASE_PROPERTIES,
-  })),
-  evidence: PropTypes.arrayOf(PropTypes.shape({
-    ...BASE_PROPERTIES,
-  })),
-  relevance: PropTypes.shape({
-    ...BASE_PROPERTIES,
-  }),
-  subject: PropTypes.shape({
-    ...BASE_PROPERTIES,
-  }),
-});
-
 const LocationPropType = PropTypes.shape({
   hash: PropTypes.string,
   key: PropTypes.string,
@@ -112,8 +93,6 @@ interface QueryBody<ReqFields extends string = string> {
 export {
   GeneralRecordPropType,
   HistoryPropType,
-  LocationPropType,
-  StatementPropType,
 };
 
 export type {

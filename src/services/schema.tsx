@@ -98,21 +98,8 @@ const getEdges = (node = null) => {
   return list;
 };
 
-/**
- * Checks if a ClassModel is a subclass of another ClassModel.
- * @param {string|Object} cls - ClassModel name of child
- * @param {string|Array.<string>} parentCls - ClassModel name of parent
- */
-const isSubclass = (cls, parentCls = []) => {
-  if (typeof parentCls === 'string') {
-    parentCls = [parentCls];
-  }
-
-  return !!(schemaDefn.get(cls)
-      && schemaDefn.get(cls).inherits.some((inherited) => parentCls.includes(inherited)));
-};
-
-const isEdge = (cls) => isSubclass(cls, 'E');
+const isEdge = (cls) => !!(schemaDefn.get(cls)
+      && schemaDefn.get(cls).inherits.some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object
@@ -423,7 +410,6 @@ const schema = {
   defineGridColumns,
   validateValue,
   isEdge,
-  isSubclass,
   getEdges,
   getProperties,
   getQueryProperties,

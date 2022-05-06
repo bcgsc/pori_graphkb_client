@@ -2,8 +2,6 @@ import api from '..';
 
 describe('api methods test', () => {
   describe('getSearchFromQuery', () => {
-    const schema = { getFromRoute: () => ({ name: 'disease' }) };
-
     test('complex keyword search', () => {
       const payload = {
         target: 'Disease',
@@ -11,7 +9,7 @@ describe('api methods test', () => {
         keyword: 'kras',
       };
       const result = api.getSearchFromQuery({
-        schema, routeName: '/query', payload,
+        modelName: 'disease', routeName: '/query', payload,
       });
       const search = 'class=disease&complex=eyJ0YXJnZXQiOiJEaXNlYXNlIiwicXVlcnlUeXBlIjoia2V5d29yZCIsImtleXdvcmQiOiJrcmFzIn0%3D';
       expect(result).toEqual(search);
@@ -26,7 +24,7 @@ describe('api methods test', () => {
         neighbors: 4,
       };
       const result = api.getSearchFromQuery({
-        schema, routeName: '/query', payload,
+        modelName: 'disease', routeName: '/query', payload,
       });
       expect(result).toEqual(
         'class=disease&complex=eyJrZXl3b3JkIjoia3JhcyIsInRhcmdldCI6IkRpc2Vhc2UiLCJxdWVyeVR5cGUiOiJrZXl3b3JkIiwibGltaXQiOjUwLCJuZWlnaGJvcnMiOjR9',
@@ -56,7 +54,7 @@ describe('api methods test', () => {
         },
       };
       const result = api.getSearchFromQuery({
-        schema, routeName: '/query', payload,
+        modelName: 'disease', routeName: '/query', payload,
       });
       expect(result).toEqual(
         'class=disease&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7Ik9SIjpbeyJjb25kaXRpb25zIjp7InF1ZXJ5VHlwZSI6ImtleXdvcmQiLCJrZXl3b3JkIjoiY2FuY2VyIiwidGFyZ2V0IjoiRGlzZWFzZSJ9fSx7ImNvbmRpdGlvbnMiOnsicXVlcnlUeXBlIjoia2V5d29yZCIsImtleXdvcmQiOiJjb2xvbiIsInRhcmdldCI6IkRpc2Vhc2UifX1dfX0%3D',

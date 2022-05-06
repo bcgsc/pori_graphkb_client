@@ -192,9 +192,7 @@ const DataView = ({
 
   useEffect(() => {
     // normalize the input query
-    const newSearch = api.getSearchFromQuery({
-      ...api.getQueryFromSearch({ search: initialSearch, schema }), schema,
-    });
+    const newSearch = api.getSearchFromQuery(api.getQueryFromSearch({ search: initialSearch, schema }));
     setSearch(newSearch);
   }, [initialSearch]);
 

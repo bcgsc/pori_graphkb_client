@@ -53,42 +53,17 @@ const getQueryFromSearch = ({ schema, search }): { payload: QueryBody, modelName
 };
 
 /**
-   * Given the API search. Return the search string to display in the top URL bar
-   *
-   * @param {object} opt
-   * @param {Schema} opt.schema
-   * @param {string} opt.routeName the API route name being queried
-   * @param {object} opt.queryParams the query parameters
-   * @param {object} opt.payload the body/payload
-   */
+ * Given the API search. Return the search string to display in the top URL bar
+ *
+ * @param {object} opt
+ * @param {object} opt.payload the body/payload
+ */
 const getSearchFromQuery = ({
-  schema, routeName, queryParams: queryParamsIn = {}, payload = null, ...opt
-}) => {
-  const queryParams = { ...queryParamsIn };
-  let { modelName } = opt;
-
-  if (queryParams && !modelName) {
-    // to make URL more readable class is sometimes used in place of @class
-    // these are used to determine the route name and should not also appear as query params
-    modelName = queryParams.class || queryParams['@class'];
-    delete queryParams.class;
-    delete queryParams['@class'];
-  }
-  if (routeName && !modelName) {
-    const match = /(\/[^/]+)(\/search)?$/.exec(routeName);
-    const { name } = schema.getFromRoute(match[1]);
-    modelName = name;
-  }
+  payload, modelName,
+}: ReturnType<typeof getQueryFromSearch>) => {
   const alphaSort = (a, b) => a.localeCompare(b);
-
-  if (payload) {
-    // complex query
-    const complex = btoa(JSON.stringify(payload));
-    return qs.stringify({ class: modelName, complex }, { sort: alphaSort });
-  } if (!queryParams.keyword) {
-    return qs.stringify({ class: modelName, ...queryParams }, { sort: alphaSort });
-  }
-  return qs.stringify(queryParams, { sort: alphaSort });
+  const complex = btoa(JSON.stringify(payload));
+  return qs.stringify({ class: modelName, complex }, { sort: alphaSort });
 };
 
 export {

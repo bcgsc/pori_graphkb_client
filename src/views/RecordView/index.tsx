@@ -31,7 +31,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   let defaultModelName = modelName;
 
   if (modelName) {
-    const model = schema.getModel(modelName);
+    const model = schemaDefn.get(modelName) ?? schemaDefn.getFromRoute(modelName);
     defaultModelName = model.name;
 
     if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
@@ -44,7 +44,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   } else if (path.includes('/e/')) {
     defaultModelName = 'E';
   }
-  return schema.getModel(defaultModelName || 'V').name;
+  return schemaDefn.get(defaultModelName || 'V').name;
 };
 
 const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string; variant: FORM_VARIANT }>) => {

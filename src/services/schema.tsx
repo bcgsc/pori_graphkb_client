@@ -5,19 +5,6 @@ import { getQueryFromSearch } from './api/search';
 
 const MAX_LABEL_LENGTH = 50;
 
-const getModel = (name) => {
-  try {
-    return schemaDefn.get(name);
-  } catch (err) {
-    const model = schemaDefn.getFromRoute(name);
-
-    if (model) {
-      return model;
-    }
-    throw err;
-  }
-};
-
 /**
  * Get a string representation of a record
  */
@@ -416,7 +403,6 @@ const schema = {
   getMetadata,
   getLabel,
   getLink,
-  getModel,
 };
 
 export default schema;

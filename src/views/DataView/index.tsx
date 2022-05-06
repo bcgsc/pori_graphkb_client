@@ -250,7 +250,7 @@ const DataView = ({
 
     const formatValue = (value) => {
       if (typeof value === 'object' && value !== null) {
-        return schema.getLabel(value, false);
+        return schema.getLabel(value, { truncate: false });
       }
       return value === undefined
         ? null

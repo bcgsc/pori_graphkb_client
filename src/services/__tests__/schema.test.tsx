@@ -88,7 +88,7 @@ describe('schema service', () => {
         displayName: 'super long display name that is going to go over the limit but does not get cut off because its not truncated',
         '@class': 'Mock',
       };
-      const cutOffLabel = testSchema.getLabel(longNameModel, false);
+      const cutOffLabel = testSchema.getLabel(longNameModel, { truncate: false });
       expect(cutOffLabel).toEqual('super long display name that is going to go over the limit but does not get cut off because its not truncated');
     });
 

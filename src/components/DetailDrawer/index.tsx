@@ -143,7 +143,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       }
       if (name === 'displayNameTemplate') {
         name = 'Statement';
-        value = schema.getLabel(node, false);
+        value = schema.getLabel(node, { truncate: false });
       }
       return (
         <TextRow

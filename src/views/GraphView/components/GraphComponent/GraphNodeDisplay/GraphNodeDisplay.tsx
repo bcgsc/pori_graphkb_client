@@ -75,7 +75,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
 
     if (typeof label === 'object') {
-      label = schema.getLabel(label, true);
+      label = schema.getLabel(label);
     }
   }
 

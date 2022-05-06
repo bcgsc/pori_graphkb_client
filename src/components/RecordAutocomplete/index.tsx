@@ -29,7 +29,7 @@ const getAsArray = (value) => {
 
 const valueToString = (record) => {
   if (record && record['@rid']) {
-    return schema.getLabel(record, false);
+    return schema.getLabel(record, { truncate: false });
   }
   if (Array.isArray(record)) {
     return `Array(${record.length})`;

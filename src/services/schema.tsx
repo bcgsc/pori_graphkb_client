@@ -7,9 +7,13 @@ const MAX_LABEL_LENGTH = 50;
 
 /**
  * Get a string representation of a record
+ *
+ * @param obj record to get label of
+ * @param options.truncate if true, label if cut off after 50 characters. defaults to true
  */
-const getLabel = (obj, truncate = true) => {
+const getLabel = (obj, options?: { truncate: boolean; }) => {
   let label = schemaDefn.getPreview(obj);
+  const truncate = options?.truncate ?? true;
 
   if (label && obj['@rid'] && !label.includes(obj['@rid'])) {
     label = `${label} (${obj['@rid']})`;

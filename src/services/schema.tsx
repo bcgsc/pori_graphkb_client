@@ -1,10 +1,8 @@
-import kbSchema, { Property } from '@bcgsc-pori/graphkb-schema';
+import { Property, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { boundMethod } from 'autobind-decorator';
 import { titleCase } from 'change-case';
 
 import { getQueryFromSearch } from './api/search';
-
-const { schema: SCHEMA_DEFN } = kbSchema;
 
 const MAX_LABEL_LENGTH = 50;
 
@@ -12,12 +10,11 @@ const MAX_LABEL_LENGTH = 50;
  * Knowledgebase schema.
  */
 class Schema {
-  constructor(schema = SCHEMA_DEFN) {
-    this.schemaDefn = SCHEMA_DEFN;
-    this.schema = schema.schema;
-    this.has = schema.has.bind(schema);
-    this.get = schema.get.bind(schema);
-    this.getFromRoute = schema.getFromRoute.bind(schema);
+  constructor() {
+    this.schema = schemaDefn.schema;
+    this.has = schemaDefn.has.bind(schemaDefn);
+    this.get = schemaDefn.get.bind(schemaDefn);
+    this.getFromRoute = schemaDefn.getFromRoute.bind(schemaDefn);
   }
 
   @boundMethod
@@ -68,7 +65,7 @@ class Schema {
    * @param {Object} obj - Record to be parsed.
    */
   getPreview(obj) {
-    return this.schemaDefn.getPreview(obj);
+    return schemaDefn.getPreview(obj);
   }
 
   /**
@@ -453,6 +450,6 @@ class Schema {
   }
 }
 
-const schema = new Schema(SCHEMA_DEFN);
+const schema = new Schema();
 
 export default schema;

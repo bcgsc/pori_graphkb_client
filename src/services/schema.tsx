@@ -10,7 +10,6 @@ const MAX_LABEL_LENGTH = 50;
  * Knowledgebase schema.
  */
 class Schema {
-  @boundMethod
   getModel(name) {
     try {
       return schemaDefn.get(name);
@@ -27,7 +26,6 @@ class Schema {
   /**
    * Get a string representation of a record
    */
-  @boundMethod
   getLabel(obj, truncate = true) {
     let label = schemaDefn.getPreview(obj);
 
@@ -44,7 +42,6 @@ class Schema {
     return obj;
   }
 
-  @boundMethod
   getLink(obj) {
     if (obj && obj['@rid']) {
       const { name } = schemaDefn.get(obj) || schemaDefn.get('V');

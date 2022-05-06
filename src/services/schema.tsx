@@ -51,8 +51,7 @@ const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
 const getProperties = (obj, extraProps = []) => {
   const VPropKeys = schemaDefn.schema.V.properties;
   const classModel = schemaDefn.get(obj);
-  if (!classModel) return null;
-  return Object.values(classModel.properties || [])
+  return Object.values(classModel?.properties ?? {})
     .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
 };
 
@@ -66,8 +65,7 @@ const getProperties = (obj, extraProps = []) => {
 const getQueryProperties = (className, extraProps = []) => {
   const VPropKeys = schemaDefn.schema.V.properties;
   const classModel = schemaDefn.get(className);
-  if (!classModel) return null;
-  return Object.values(classModel.queryProperties || [])
+  return Object.values(classModel?.queryProperties ?? {})
     .filter((prop) => !VPropKeys[prop.name] || extraProps.includes(prop.name));
 };
 

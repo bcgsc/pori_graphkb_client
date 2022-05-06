@@ -63,11 +63,6 @@ describe('api methods test', () => {
   });
 
   describe('getQueryFromSearch', () => {
-    const schema = {
-      get: () => ({ routeName: '/diseases' }),
-      getFromRoute: () => ({ name: 'disease' }),
-    };
-
     test('search', () => {
       const payload = {
         target: 'Disease',
@@ -84,7 +79,7 @@ describe('api methods test', () => {
       };
 
       const search = 'class=disease&complex=eyJ0YXJnZXQiOiJEaXNlYXNlIiwiZmlsdGVycyI6eyJPUiI6W3sibmFtZSI6ImtyYXMiLCJvcGVyYXRvciI6IkNPTlRBSU5TVEVYVCJ9XX0sImxpbWl0Ijo1MCwibmVpZ2hib3JzIjoyfQ%3D%3D';
-      const actualSearch = api.getQueryFromSearch({ schema, search });
+      const actualSearch = api.getQueryFromSearch(search);
       expect(actualSearch).toEqual({
         payload,
         routeName: '/query',
@@ -94,10 +89,7 @@ describe('api methods test', () => {
 
     test('general search', () => {
       const search = 'class=disease&complex=eyJxdWVyeVR5cGUiOiJzaW1pbGlhclRvIiwidGFyZ2V0IjoiRmVhdHVyZSIsImZpbHRlcnMiOnsiQU5EIjpbeyJiaW90eXBlIjoiZ2VuZSJ9LHsiT1IiOlt7Im5hbWUiOiJrcmFzIn0seyJzb3VyY2VJZCI6ImtyYXMifV19XX19';
-      const result = api.getQueryFromSearch({
-        search,
-        schema,
-      });
+      const result = api.getQueryFromSearch(search);
 
       const payload = {
         queryType: 'similiarTo',

@@ -1,3 +1,4 @@
+import { schema } from '@bcgsc-pori/graphkb-schema';
 import * as qs from 'qs';
 
 import { QueryBody } from '@/components/types';
@@ -12,11 +13,9 @@ const {
  * Given the search string from the URL/URI, parse
  * out the content for creating the API request
  *
- * @param {object} opt
- * @param {Schema} opt.schema
- * @param {string} opt.search the search string portion of the URL displayed by this app
+ * @param {string} search the search string portion of the URL displayed by this app
  */
-const getQueryFromSearch = ({ schema, search }): { payload: QueryBody, modelName: string; routeName: string } => {
+const getQueryFromSearch = (search: string): { payload: QueryBody, modelName: string; routeName: string } => {
   const {
     keyword,
     complex,

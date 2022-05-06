@@ -234,7 +234,7 @@ class Schema {
    * @returns {Array.<object>} the column definitions to be applied to a grid
    */
   defineGridColumns(search) {
-    const { modelName } = getQueryFromSearch({ schema: this, search });
+    const { modelName } = getQueryFromSearch(search);
 
     const showEdges = [];
     const showByDefault = [];

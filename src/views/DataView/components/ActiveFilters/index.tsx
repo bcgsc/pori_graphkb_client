@@ -48,7 +48,7 @@ const extractRids = (obj) => {
 
 const ActiveFilters = ({ search }: { search: string; }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { payload, routeName } = useMemo(() => api.getQueryFromSearch({ search, schema }), [search]);
+  const { payload, routeName } = useMemo(() => api.getQueryFromSearch(search), [search]);
   const recordIds = useMemo(() => extractRids(payload), [payload]);
 
   const { data: recordHash } = useQuery(

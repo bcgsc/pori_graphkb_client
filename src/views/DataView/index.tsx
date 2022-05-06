@@ -55,11 +55,7 @@ interface GetQueryPayloadArgs {
 const getQueryPayload = ({
   search, sortModel, skip, limit, count = false,
 }: GetQueryPayloadArgs) => {
-  const { payload } = api.getQueryFromSearch({
-    schema,
-    search,
-    count,
-  });
+  const { payload } = api.getQueryFromSearch(search);
   const content = payload || { neighbors: DEFAULT_NEIGHBORS };
 
   if (count) {
@@ -192,7 +188,7 @@ const DataView = ({
 
   useEffect(() => {
     // normalize the input query
-    const newSearch = api.getSearchFromQuery(api.getQueryFromSearch({ search: initialSearch, schema }));
+    const newSearch = api.getSearchFromQuery(api.getQueryFromSearch(initialSearch));
     setSearch(newSearch);
   }, [initialSearch]);
 

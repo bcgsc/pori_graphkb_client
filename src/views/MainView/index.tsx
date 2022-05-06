@@ -1,6 +1,3 @@
-/**
- * @module /Main
- */
 import './index.scss';
 
 import {

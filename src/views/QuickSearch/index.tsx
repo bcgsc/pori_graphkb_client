@@ -1,6 +1,3 @@
-/**
- * @module /views/QuickSearch
- */
 import './index.scss';
 
 import kbp from '@bcgsc-pori/graphkb-parser';
@@ -14,8 +11,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import api from '@/services/api';
 
@@ -28,7 +25,7 @@ const MIN_WORD_LENGTH = 3;
  *
  * @property {Object} props.history - Application routing history object.
  */
-const QuickSearch = ({ history }) => {
+const QuickSearch = ({ history }: RouteComponentProps) => {
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -180,10 +177,6 @@ const QuickSearch = ({ history }) => {
       </div>
     </div>
   );
-};
-
-QuickSearch.propTypes = {
-  history: PropTypes.object.isRequired,
 };
 
 export default QuickSearch;

@@ -1,6 +1,3 @@
-/**
- * @module /components/PermissionsTable
- */
 import './index.scss';
 
 import kbSchema from '@bcgsc-pori/graphkb-schema';
@@ -12,7 +9,6 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import schema from '@/services/schema';
@@ -56,17 +52,23 @@ const splitPermissionsByOperation = (permissions) => {
   return permByModelName;
 };
 
+interface PermissionsTableProps {
+  /** field name to use in simulating events */
+  name: string;
+  /** handler to propogate changes to the parent form */
+  onChange: (arg: { target: { name: string; value: unnknown } }) => void;
+  /** flag to indicate this field cannot be edited */
+  disabled?: boolean;
+  /** the current permissions set */
+  value?:Record<string, unknown>;
+}
+
 /**
  * Table to display permissions state for a certain user group.
- * @property {Object} props - Component props.
- * @property {bool} props.disabled flag to indicate this field cannot be edited
- * @property {func} props.onChange handler to propogate changes to the parent form
- * @property {string} props.name field name to use in simulating events
- * @property {object} props.value the current permissions set
  */
 const PermissionsTable = ({
   value, disabled, onChange, name,
-}) => {
+}: PermissionsTableProps) => {
   const [content, setContent] = useState(value || {});
   const [topBoxes, setTopboxes] = useState({});
 
@@ -166,13 +168,6 @@ const PermissionsTable = ({
       </Table>
     </div>
   );
-};
-
-PermissionsTable.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  value: PropTypes.object,
 };
 
 PermissionsTable.defaultProps = {

@@ -4,7 +4,6 @@ import { schema } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
@@ -16,17 +15,26 @@ const {
   },
 } = schema;
 
+interface BasicPositionFormProps {
+  /** change handler */
+  onChange: (...args: unknown[]) => unknown;
+  /** the class model to use to build the form */
+  variant: 'GenomicPosition' | 'ExonicPosition' | 'IntronicPosition' | 'RnaPosition' | 'CdsPosition';
+  /** flag to indicate this field is disabled */
+  disabled?: boolean;
+  /** the form field name to pass up to the change handler */
+  name?: string;
+  /** flag to indicate this field must be filled */
+  required?: boolean;
+  /** the initial value */
+  value?: {
+    pos?: number;
+    offset?: number;
+  },
+}
+
 /**
  * Basic Position and Position with offset form
- *
- * @param {object} props
- *
- * @param {function} props.onChange change handler
- * @param {string} props.variant the class model to use to build the form
- * @param {object} props.value the initial value
- * @param {string} props.name the form field name to pass up to the change handler
- * @param {bool} props.required flag to indicate this field must be filled
- * @param {bool} props.disabled flag to indicate this field is disabled
  */
 const BasicPositionForm = ({
   onChange,
@@ -35,7 +43,7 @@ const BasicPositionForm = ({
   name,
   required,
   disabled,
-}) => {
+}: BasicPositionFormProps) => {
   const { pos: initialPos, offset: initialOffset } = value || {};
   const [position, setPosition] = useState(initialPos);
   const [positionError, setPositionError] = useState('');
@@ -122,24 +130,6 @@ const BasicPositionForm = ({
       )}
     </>
   );
-};
-
-BasicPositionForm.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  variant: PropTypes.oneOf([
-    'GenomicPosition',
-    'ExonicPosition',
-    'IntronicPosition',
-    'RnaPosition',
-    'CdsPosition',
-  ]).isRequired,
-  disabled: PropTypes.bool,
-  name: PropTypes.string,
-  required: PropTypes.bool,
-  value: PropTypes.shape({
-    pos: PropTypes.number,
-    offset: PropTypes.number,
-  }),
 };
 
 BasicPositionForm.defaultProps = {

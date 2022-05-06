@@ -1,18 +1,25 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import FormField from '@/components/FormField';
 import schema from '@/services/schema';
 
+interface EdgeFieldsProps {
+  /**
+   * the current edge model
+   *
+   * @todo get type from schema package
+   */
+  model: any;
+  /** flag to indicate these fields should be disabled */
+  disabled?: boolean;
+}
+
 /**
  * Renders the two edge specific input fields (out/in)
- *
- * @param {ClassModel} props.model the current edge model
- * @param {boolean} props.disabled flag to indicate these fields should be disabled
  */
 const EdgeFields = ({
   model, disabled,
-}) => (
+}: EdgeFieldsProps) => (
   <React.Fragment key="relationship-content">
     <FormField
       disabled={disabled}
@@ -40,11 +47,6 @@ const EdgeFields = ({
     />
   </React.Fragment>
 );
-
-EdgeFields.propTypes = {
-  model: PropTypes.object.isRequired,
-  disabled: PropTypes.bool,
-};
 
 EdgeFields.defaultProps = {
   disabled: false,

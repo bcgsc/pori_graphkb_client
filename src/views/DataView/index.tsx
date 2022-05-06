@@ -8,7 +8,6 @@ import {
 import Tooltip from '@material-ui/core/Tooltip';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -16,10 +15,10 @@ import React, {
   useState,
 } from 'react';
 import { useIsFetching, useQuery } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
-import { HistoryPropType, LocationPropType } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -33,22 +32,29 @@ import TableOptions from './components/TableOptions';
 const CACHE_BLOCK_SIZE = 50;
 const { DEFAULT_NEIGHBORS, MAX_EXPORT_SIZE } = config;
 
+interface GetQueryPayloadArgs {
+  /** the query string */
+  search: string;
+  /**
+   * the sort model
+   */
+  sortModel?: { colId: string; sort: string; }[];
+  /** the number of records to skip on return */
+  skip?: number;
+  /** the maximum number of records to return */
+  limit?: number;
+  /** count the records instead of returning them */
+  count?: boolean;
+}
+
 /**
  * Create an API call for retrieving a block/page of rows/records
- *
- * @param {object} opt
- * @param {string} opt.search the query string
- * @param {Schema} opt.schema
- * @param {Array.<SortModel>} opt.sortModel the sort model
- * @param {number} opt.skip the number of records to skip on return
- * @param {number} opt.limit the maximum number of records to return
- * @param {boolean} opt.count count the records instead of returning them
  *
  * @returns {ApiCall} the api call for retriving the requested data
  */
 const getQueryPayload = ({
   search, sortModel, skip, limit, count = false,
-}) => {
+}: GetQueryPayloadArgs) => {
   const { payload } = api.getQueryFromSearch({
     schema,
     search,
@@ -73,6 +79,14 @@ const getQueryPayload = ({
   return content;
 };
 
+interface GetRowsFromBlocksArgs {
+  startRow: number;
+  endRow: number;
+  sortModel?: { colId: string; sort: string; }[];
+  search: string;
+  blockSize: number;
+}
+
 /**
  * Get rows from cached blocks
  */
@@ -82,7 +96,7 @@ const getRowsFromBlocks = async ({
   sortModel,
   search,
   blockSize,
-}) => {
+}: GetRowsFromBlocksArgs) => {
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
 
@@ -110,12 +124,16 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
+interface DataViewProps extends RouteComponentProps {
+  blockSize?: number;
+}
+
 /**
  * Shows the search result filters and an edit button
  */
 const DataView = ({
   location: { search: initialSearch }, blockSize, history,
-}) => {
+}: DataViewProps) => {
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
@@ -379,12 +397,6 @@ const DataView = ({
       />
     </div>
   );
-};
-
-DataView.propTypes = {
-  history: HistoryPropType.isRequired,
-  location: LocationPropType.isRequired,
-  blockSize: PropTypes.number,
 };
 
 DataView.defaultProps = {

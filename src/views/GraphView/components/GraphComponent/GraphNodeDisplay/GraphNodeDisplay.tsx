@@ -1,12 +1,7 @@
-/**
- * @module /components/GraphNodeDisplay
- */
-
 import './GraphNodeDisplay.scss';
 
 import * as d3Drag from 'd3-drag';
 import * as d3Select from 'd3-selection';
-import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 
 import schema from '@/services/schema';
@@ -18,21 +13,30 @@ const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
 const FADED_OPACITY = 0.6;
 
+interface GraphNodeDisplayProps {
+  /** Node decorator object. */
+  actionsNode?: Record<string, unknown>;
+  /** Function to apply drag functionality to node. */
+  applyDrag?:(...args: unknown[]) => unknown;
+  /** Color of node. */
+  color?: string;
+  /** Node currently opened in detail drawer. */
+  detail?: Record<string, unknown>;
+  /** current filter string value. */
+  filter?: string;
+  /** Parent method on node click event. */
+  handleClick?: (...args: unknown[]) => unknown;
+  /** Property to label node by. */
+  labelKey?: string;
+  /** Node to be rendered. */
+  node?: Record<string, unknown>;
+}
+
 /**
  * Component used to display graph nodes and apply draggable behavior to them
  * through d3.
- *
- * @property {object} props
- * @property {Object} props.node - Node to be rendered.
- * @property {function} props.handleClick - Parent method on node click event.
- * @property {string} props.color - Color of node.
- * @property {function} props.applyDrag - Function to apply drag functionality to node.
- * @property {string} props.labelKey - Property to label node by.
- * @property {Object} props.actionsNode - Node decorator object.
- * @property {Object} props.detail - Node currently opened in detail drawer.
- * @property {string} props.filter - current filter string value.
  */
-function GraphNodeDisplay(props) {
+function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   const {
     applyDrag,
     handleClick,
@@ -119,17 +123,6 @@ function GraphNodeDisplay(props) {
     </g>
   );
 }
-
-GraphNodeDisplay.propTypes = {
-  actionsNode: PropTypes.object,
-  applyDrag: PropTypes.func,
-  color: PropTypes.string,
-  detail: PropTypes.object,
-  filter: PropTypes.string,
-  handleClick: PropTypes.func,
-  labelKey: PropTypes.string,
-  node: PropTypes.object,
-};
 
 GraphNodeDisplay.defaultProps = {
   node: null,

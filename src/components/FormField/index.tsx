@@ -3,7 +3,6 @@ import './index.scss';
 import {
   TextField,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -27,14 +26,29 @@ const POSITION_CLASSES = [
   ...schema.schema.Position.descendantTree(false).map((m) => m.name),
 ];
 
+interface FormFieldProps {
+  /**
+   * the property model which defines the property type and other requirements
+   * @todo replace with type from schema
+   */
+  model: any;
+  baseModel?: string;
+  className?: string;
+  disabled?: boolean;
+  helperText?: string;
+  /** props to pass to the inner form field element */
+  innerProps?: {
+    inputProps?: {
+      'data-test-id'?: string;
+    },
+  },
+  /** the label to use for the form field (defaults to the property model name) */
+  label?: string;
+}
+
 /**
  * Generate the field component for a form. Uses the property model to decide
  * the component type to render. Factory wrapper which standardized form fields.
- *
- * @param {object} props
- * @param {PropertyModel} props.model the property model which defines the property type and other requirements
- * @param {string} props.label the label to use for the form field (defaults to the property model name)
- * @param {object} props.innerProps props to pass to the inner form field element
  */
 const FormField = ({
   className = '',
@@ -44,7 +58,7 @@ const FormField = ({
   innerProps,
   helperText: defaultHelperText,
   baseModel,
-}) => {
+}: FormFieldProps) => {
   const {
     formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
   } = useContext(FormContext);
@@ -286,48 +300,6 @@ const FormField = ({
       {propComponent}
     </FieldWrapper>
   );
-};
-
-FormField.propTypes = {
-  model: PropTypes.shape({
-    format: PropTypes.string,
-    choices: PropTypes.arrayOf(PropTypes.oneOfType([
-      PropTypes.shape({
-        key: PropTypes.string,
-        label: PropTypes.string,
-        value: PropTypes.string,
-        caption: PropTypes.string,
-      }),
-      PropTypes.string,
-    ])),
-    default: PropTypes.string,
-    description: PropTypes.string,
-    example: PropTypes.any,
-    generateDefault: PropTypes.func,
-    linkedClass: PropTypes.shape({
-      name: PropTypes.string,
-      '@rid': PropTypes.string,
-      displayName: PropTypes.string,
-      isAbstract: PropTypes.bool,
-    }),
-    linkedType: PropTypes.string,
-    name: PropTypes.string,
-    type: PropTypes.string,
-    nullable: PropTypes.bool,
-    iterable: PropTypes.bool,
-    generated: PropTypes.bool,
-    mandatory: PropTypes.bool,
-  }).isRequired,
-  baseModel: PropTypes.string,
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  helperText: PropTypes.string,
-  innerProps: PropTypes.shape({
-    inputProps: PropTypes.shape({
-      'data-test-id': PropTypes.string,
-    }),
-  }),
-  label: PropTypes.string,
 };
 
 FormField.defaultProps = {

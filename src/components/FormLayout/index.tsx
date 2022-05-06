@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 
 import FormContext from '@/components/FormContext';
@@ -24,20 +23,28 @@ import schema from '@/services/schema';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
-/**
- * @param {object} props the input properties
- * @param {string} props.modelName the name of the schema model to use
- * @param {Array.<string>} props.aboveFold the property names which should be put above the collapse
- * @param {Array.<string>} props.belowFold the property names which should be put in the collapsed section
- * @param {Array.<Array.<string>>} props.groups properties that should be grouped together
- * @param {bool} props.collapseExtra flag to indicate a collapsible section should be created
- * @param {Array.<string>} props.exclusions an array of fields not to display
- * @param {bool} props.disabled flag to indicated form fields are disabled
- * @param {string} props.className css class to add to main element
- */
+interface FormLayoutProps {
+  /** the property names which should be put above the collapse */
+  aboveFold?: string[];
+  /** the property names which should be put in the collapsed section */
+  belowFold?: string[];
+  /** css class to add to main element */
+  className?: string;
+  /** flag to indicate a collapsible section should be created */
+  collapseExtra?: boolean;
+  /** flag to indicated form fields are disabled */
+  disabled?: boolean;
+  /** an array of fields not to display */
+  exclusions?: string[];
+  /** properties that should be grouped together */
+  groups?: string[][];
+  /** the name of the schema model to use */
+  modelName?: string;
+}
+
 const FormLayout = ({
   exclusions, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
-}) => {
+}: FormLayoutProps) => {
   const {
     formContent = {}, formVariant,
   } = useContext(FormContext);
@@ -116,17 +123,6 @@ const FormLayout = ({
       )}
     </div>
   );
-};
-
-FormLayout.propTypes = {
-  aboveFold: PropTypes.arrayOf(PropTypes.string),
-  belowFold: PropTypes.arrayOf(PropTypes.string),
-  className: PropTypes.string,
-  collapseExtra: PropTypes.bool,
-  disabled: PropTypes.bool,
-  exclusions: PropTypes.arrayOf(PropTypes.string),
-  groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-  modelName: PropTypes.string,
 };
 
 FormLayout.defaultProps = {

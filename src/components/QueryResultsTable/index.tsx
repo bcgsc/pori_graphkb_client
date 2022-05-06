@@ -5,7 +5,6 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import { Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, {
   useEffect,
 } from 'react';
@@ -16,32 +15,38 @@ import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
+import { QueryBody } from '../types';
 import { tuple } from '../util';
 
-const JumpToRecord = ({ data }) => (
+interface JumpToRecordProps {
+  data: {
+    '@rid': string;
+  }
+}
+
+const JumpToRecord = ({ data }: JumpToRecordProps) => (
   <Link className="query-results-table__jump-to-record" target="_blank" to={schema.getLink(data)}>
     <OpenInNewIcon />
     {data['@rid']}
   </Link>
 );
 
-JumpToRecord.propTypes = {
-  data: PropTypes.shape({
-    '@rid': PropTypes.string.isRequired,
-  }).isRequired,
-};
+interface QueryResultsTableProps {
+  columnDefs: NonNullable<React.ComponentProps<typeof AgGridReact>['columnDefs']>;
+  /** the body of the query request */
+  queryBody: QueryBody;
+  /** the title to put above the table */
+  title: string;
+  description?: string;
+}
 
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
- *
- * @param {object} props
- * @param {object} props.queryBody the body of the query request
- * @param {string} props.title the title to put above the table
  */
 const QueryResultsTable = ({
   columnDefs, queryBody, title, description,
-}) => {
+}: QueryResultsTableProps) => {
   const grid = useGrid();
 
   const { data, isFetching } = useQuery(tuple('/query', queryBody), async ({ queryKey: [, body] }) => api.query(body));
@@ -83,13 +88,6 @@ const QueryResultsTable = ({
       </div>
     </div>
   );
-};
-
-QueryResultsTable.propTypes = {
-  columnDefs: PropTypes.arrayOf(PropTypes.object).isRequired,
-  queryBody: PropTypes.object.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
 };
 
 QueryResultsTable.defaultProps = {

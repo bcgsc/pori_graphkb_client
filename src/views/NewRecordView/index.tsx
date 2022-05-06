@@ -1,10 +1,10 @@
 import './index.scss';
 
-import propTypes from 'prop-types';
 import React, {
   ReactNode,
   useCallback,
 } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -15,7 +15,7 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = (props) => {
+const NewRecordView = (props: RouteComponentProps<{ modelName: string }>) => {
   const {
     history,
     match: {
@@ -78,11 +78,6 @@ const NewRecordView = (props) => {
   return (
     <div className="new-record-view">{innerComponent}</div>
   );
-};
-
-NewRecordView.propTypes = {
-  history: propTypes.object.isRequired,
-  match: propTypes.object.isRequired,
 };
 
 export default NewRecordView;

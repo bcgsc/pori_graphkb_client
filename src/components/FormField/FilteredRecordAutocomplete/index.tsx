@@ -2,7 +2,6 @@ import './index.scss';
 
 import { FormControl, FormHelperText } from '@material-ui/core';
 import FilterIcon from '@material-ui/icons/FilterList';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -10,20 +9,25 @@ import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
+interface FilteredRecordAutocompleteProps {
+  /** the base class for creating the class filter for the paired autocomplete component */
+  linkedClassName: string;
+  /** the field name used in passing to parent handlers */
+  name: string;
+  /** the initial class selection for the class filter */
+  defaultFilterClassName?: string;
+  /** allows multiple selections for the autocomplete */
+  isMulti?: boolean;
+  // all remaining properties are passed to the RecordAutocomplete component
+  disabled?: boolean;
+  error?: boolean;
+  filterOptions?: string[];
+  helperText?: string;
+}
+
 /**
  * Allows an autocomplete record link to be filtered based on some class
  * model name to search by
- *
- * @param {object} props
- * @param {string} props.linkedClassName the base class for creating the class filter for the paired autocomplete component
- * @param {string} props.defaultFilterClassName the initial class selection for the class filter
- * @param {bool} props.disabled
- * @param {bool} props.isMulti allows multiple selections for the autocomplete
- * @param {string} props.helperText
- * @param {bool} props.error
- * @param {string} props.name the field name used in passing to parent handlers
- *
- * @note all remaining properties are passed to the RecordAutocomplete component
  */
 const FilteredRecordAutocomplete = ({
   linkedClassName,
@@ -35,7 +39,7 @@ const FilteredRecordAutocomplete = ({
   error,
   name,
   ...rest
-}) => {
+}: FilteredRecordAutocompleteProps) => {
   const [selectedClassName, setSelectedClassName] = useState(
     defaultFilterClassName || linkedClassName,
   );
@@ -79,17 +83,6 @@ const FilteredRecordAutocomplete = ({
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
     </FormControl>
   );
-};
-
-FilteredRecordAutocomplete.propTypes = {
-  linkedClassName: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  defaultFilterClassName: PropTypes.string,
-  disabled: PropTypes.bool,
-  error: PropTypes.bool,
-  filterOptions: PropTypes.arrayOf(PropTypes.string),
-  helperText: PropTypes.string,
-  isMulti: PropTypes.bool,
 };
 
 FilteredRecordAutocomplete.defaultProps = {

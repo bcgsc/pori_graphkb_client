@@ -1,6 +1,3 @@
-/**
- * @module /components/GraphComponent
- */
 import './GraphComponent.scss';
 
 import {
@@ -15,7 +12,6 @@ import * as d3Select from 'd3-selection';
 import * as d3Zoom from 'd3-zoom';
 import isObject from 'lodash.isobject';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -79,24 +75,28 @@ const initialGraphData = {
   graphObjects: {},
 };
 
+interface GraphComponentProps {
+  /** graph data in the format of { '@rid': {data}, ... } */
+  data: Record<string, unknown>;
+  getRecord: (...args: unknown[]) => unknown;
+  /** Method to handle closing of detail drawer. */
+  handleDetailDrawerClose: (...args: unknown[]) => unknown;
+  /** Method to handle opening of detail drawer. */
+  handleDetailDrawerOpen: (...args: unknown[]) => unknown;
+  handleError: (...args: unknown[]) => unknown;
+  /** record ID of node currently selected for detail viewing. in the initial query. */
+  detail?: Record<string, unknown>;
+  /** list of valid edge classes. */
+  edgeTypes?: string[];
+  /** parent handler to save state in URL */
+  handleGraphStateSave?: (...args: unknown[]) => unknown;
+}
+
 /**
  * Component for displaying query results in force directed graph form.
  * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
- *
- * @property {object} props
- * graph object is clicked.
- * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
- * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
- * @property {Object} props.detail - record ID of node currently selected for detail viewing.
- * in the initial query.
- * @property {Object} props.data - graph data in the format of { '@rid': {data}, ... }
- * @property {Array.<string>} props.nodesRIDs - an array of node RIDs to fetch ex. ['#25:0', '#56:9']
- * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
- * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
- * graph.
- * @property {function} props.handleGraphStateSave - parent handler to save state in URL
  */
-function GraphComponent(props) {
+function GraphComponent(props: GraphComponentProps) {
   const snackbar = useSnackbar();
   const { data: initialData } = props;
 
@@ -1205,17 +1205,6 @@ function GraphComponent(props) {
     </div>
   );
 }
-
-GraphComponent.propTypes = {
-  data: PropTypes.object.isRequired,
-  getRecord: PropTypes.func.isRequired,
-  handleDetailDrawerClose: PropTypes.func.isRequired,
-  handleDetailDrawerOpen: PropTypes.func.isRequired,
-  handleError: PropTypes.func.isRequired,
-  detail: PropTypes.object,
-  edgeTypes: PropTypes.arrayOf(PropTypes.string),
-  handleGraphStateSave: PropTypes.func,
-};
 
 GraphComponent.defaultProps = {
   detail: null,

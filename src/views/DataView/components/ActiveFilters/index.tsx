@@ -16,7 +16,6 @@ import {
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import copy from 'copy-to-clipboard';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useMemo, useState,
 } from 'react';
@@ -47,7 +46,7 @@ const extractRids = (obj) => {
   return Array.from(new Set(recordIds));
 };
 
-const ActiveFilters = ({ search }) => {
+const ActiveFilters = ({ search }: { search: string; }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { payload, routeName } = useMemo(() => api.getQueryFromSearch({ search, schema }), [search]);
   const recordIds = useMemo(() => extractRids(payload), [payload]);
@@ -138,10 +137,6 @@ const ActiveFilters = ({ search }) => {
       </div>
     </>
   );
-};
-
-ActiveFilters.propTypes = {
-  search: PropTypes.string.isRequired,
 };
 
 export default ActiveFilters;

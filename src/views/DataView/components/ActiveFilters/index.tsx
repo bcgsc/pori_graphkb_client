@@ -86,7 +86,7 @@ const ActiveFilters = ({ search }) => {
   }, [anchorEl]);
 
   const ValueComponent = useCallback(({ value }) => {
-    if (recordHash[value]) {
+    if (recordHash?.[value]) {
       return (<Chip label={`${recordHash[value]} (${value})`} />);
     }
     return JSON.stringify(value);

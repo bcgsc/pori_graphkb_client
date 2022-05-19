@@ -2,9 +2,10 @@ import * as qs from 'qs';
 
 const CLASS_MODEL_PROP = '@class';
 
-const FORM_VARIANT = {
-  EDIT: 'edit', VIEW: 'view', DELETE: 'delete', NEW: 'new', SEARCH: 'search',
-};
+// eslint-disable-next-line @typescript-eslint/naming-convention
+enum FORM_VARIANT {
+  EDIT = 'edit', VIEW = 'view', DELETE = 'delete', NEW = 'new', SEARCH = 'search',
+}
 
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'

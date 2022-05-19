@@ -9,6 +9,7 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 
 import { AuthContext } from '@/components/Auth';
+import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 
 import StatementForm from '..';
@@ -79,7 +80,6 @@ describe('StatementForm', () => {
 
   const onSubmitSpy = jest.fn();
   const onErrorSpy = jest.fn();
-  const onTopClickSpy = jest.fn();
   const snackbarSpy = jest.fn();
 
   test('edit statement shows add review for statements', () => {
@@ -88,13 +88,11 @@ describe('StatementForm', () => {
         <AuthContext.Provider value={auth}>
           <SnackbarProvider onEnter={snackbarSpy}>
             <StatementForm
-              modelName="Statement"
               onError={onErrorSpy}
               onSubmit={onSubmitSpy}
-              onTopClick={onTopClickSpy}
               title="blargh monkeys"
               value={{ }}
-              variant="edit"
+              variant={FORM_VARIANT.EDIT}
             />
           </SnackbarProvider>
         </AuthContext.Provider>
@@ -110,13 +108,11 @@ describe('StatementForm', () => {
           <SnackbarProvider onEnter={snackbarSpy}>
             <AuthContext.Provider value={auth}>
               <StatementForm
-                modelName="Statement"
                 onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
-                onTopClick={onTopClickSpy}
                 title="blargh monkeys"
                 value={{ }}
-                variant="new"
+                variant={FORM_VARIANT.NEW}
               />
             </AuthContext.Provider>
           </SnackbarProvider>

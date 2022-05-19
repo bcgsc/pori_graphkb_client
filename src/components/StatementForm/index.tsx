@@ -8,7 +8,6 @@ import {
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
@@ -20,7 +19,7 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -30,26 +29,32 @@ import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
+interface StatementFormProps {
+  /** the title for this form */
+  title: string;
+  onError?: (arg: { error: unknown; content: unknown }) => void;
+  onSubmit?: (record?: GeneralRecordType) => void;
+  onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
+  /** the record id of the current record for the form */
+  rid?: string;
+  /** values of individual properties of passed class model */
+  value?: GeneralRecordType;
+  /** the type of NodeForm to create */
+  variant?: FORM_VARIANT;
+}
+
 /**
  * Form/View that displays the contents of a single node
- *
- * @property {string} props.variant the type of NodeForm to create
- * @property {string} props.rid the record id of the current record for the form
- * @property {string} props.title the title for this form
- * @property {string} props.modelName name of class model to be displayed
- * @property {value} props.value values of individual properties of passed class model
- * @property {function} props.navigateToGraph redirects to graph view with current record as initial node
  */
 const StatementForm = ({
   value: initialValue,
   title,
-  onTopClick,
+  onToggleState,
   onSubmit,
   onError,
   variant,
-  navigateToGraph,
   ...rest
-}) => {
+}: StatementFormProps) => {
   const { data: diagnosticData } = useQuery(
     tuple(
       '/query',
@@ -188,12 +193,12 @@ const StatementForm = ({
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
+        onSubmit?.(result);
       },
       onError: (err, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -223,11 +228,11 @@ const StatementForm = ({
     {
       onSuccess: (_, content) => {
         snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
-        onSubmit();
+        onSubmit?.();
       },
       onError: (err, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -249,11 +254,11 @@ const StatementForm = ({
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
+        onSubmit?.(result);
       },
       onError: (err, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-        onError({ error: err, content });
+        onError?.({ error: err, content });
       },
     },
   );
@@ -291,16 +296,6 @@ const StatementForm = ({
     setFormIsDirty(true);
   }, [formContent.reviews, setFormIsDirty, updateField]);
 
-  const handleToggleState = useCallback((newState) => {
-    if (newState !== variant) {
-      if (newState === 'graph') {
-        navigateToGraph();
-      } else {
-        onTopClick(formContent);
-      }
-    }
-  }, [formContent, navigateToGraph, onTopClick, variant]);
-
   let pageTitle = title;
 
   if (variant === FORM_VARIANT.VIEW && formContent) {
@@ -331,11 +326,11 @@ const StatementForm = ({
             </Button>
           )}
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
-          {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
+          {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
               allowEdit={auth.hasWriteAccess}
               message="Are you sure? You will lose your changes."
-              onClick={handleToggleState}
+              onClick={onToggleState}
               requireConfirm={variant === 'edit' && formIsDirty}
               value={variant}
             />
@@ -405,21 +400,10 @@ const StatementForm = ({
   );
 };
 
-StatementForm.propTypes = {
-  navigateToGraph: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  onError: PropTypes.func,
-  onSubmit: PropTypes.func,
-  onTopClick: PropTypes.func,
-  rid: PropTypes.string,
-  value: GeneralRecordPropType,
-  variant: PropTypes.string,
-};
-
 StatementForm.defaultProps = {
   onError: () => {},
   onSubmit: () => {},
-  onTopClick: null,
+  onToggleState: undefined,
   rid: null,
   variant: FORM_VARIANT.VIEW,
   value: {},

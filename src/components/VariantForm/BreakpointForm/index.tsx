@@ -1,30 +1,39 @@
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
-import schema from '@/services/schema';
+
+interface BreakpointFormProps{
+  /** the Position class */
+  coordinateType: string;
+  /**
+   * @todo get type from schema package
+   */
+  model: any;
+  /** the field name of the reference element (ex. reference1) */
+  reference: string;
+  /** the field name of the end position (ex. break1End) */
+  end?: string;
+  /** flag to indicate this field is required */
+  required?: boolean;
+  /** the field name of the start position (ex. break1Start) */
+  start?: string;
+}
 
 /**
  * Handles the form for a single breakpoint (start and end) with the reference element it is
  * associated with
  *
  * Used for inputting positional variants
- *
- * @param {object} props
- * @param {string} props.coordinateType the Position class
- * @param {string} props.reference the field name of the reference element (ex. reference1)
- * @param {string} props.start the field name of the start position (ex. break1Start)
- * @param {string} props.end the field name of the end position (ex. break1End)
- * @param {bool} props.required flag to indicate this field is required
  */
 const BreakpointForm = ({
   coordinateType, reference, start, end, required, model,
-}) => {
+}: BreakpointFormProps) => {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
 
@@ -66,7 +75,7 @@ const BreakpointForm = ({
               ...model.properties.break1Start,
               name: start,
               mandatory: required,
-              linkedClass: schema.get(coordinateType),
+              linkedClass: schemaDefn.get(coordinateType),
               description: '',
             }}
           />
@@ -79,7 +88,7 @@ const BreakpointForm = ({
                 ...model.properties.break1Start,
                 name: end,
                 mandatory: required,
-                linkedClass: schema.get(coordinateType),
+                linkedClass: schemaDefn.get(coordinateType),
                 description: 'end of the breakpoint range',
               }}
             />
@@ -88,17 +97,6 @@ const BreakpointForm = ({
       )}
     </div>
   );
-};
-
-BreakpointForm.propTypes = {
-  coordinateType: PropTypes.string.isRequired,
-  model: PropTypes.shape({
-    properties: PropTypes.object.isRequired,
-  }).isRequired,
-  reference: PropTypes.string.isRequired,
-  end: PropTypes.string,
-  required: PropTypes.bool,
-  start: PropTypes.string,
 };
 
 BreakpointForm.defaultProps = {

@@ -1,9 +1,9 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -67,15 +67,19 @@ const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, sub
   return options;
 };
 
+interface PropertyFilterProps {
+  /** name of target model of query */
+  modelName: string;
+  onSubmit: (result: unknown) => void;
+  className?: string;
+}
+
 /**
  * Form to choose a filter to add (property, value, operator)
- *
- * @property {string} props.modelName name of target model of query
- * @property {object} props.history history router object to navigate to different views
  */
 const PropertyFilter = ({
   modelName, onSubmit, className,
-}) => {
+}: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState([]);
   const [propertyModel, setPropertyModel] = useState({
@@ -214,7 +218,7 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = originalPropertyModel.linkedClass || schema.get('V');
+      const linkedModel = originalPropertyModel.linkedClass || schemaDefn.get('V');
       setKeywordTargetOptions(linkedModel.descendantTree(false).map((m) => m.name).sort());
       setKeywordTarget(linkedModel.name);
     }
@@ -355,12 +359,6 @@ const PropertyFilter = ({
       </div>
     </>
   );
-};
-
-PropertyFilter.propTypes = {
-  modelName: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  className: PropTypes.string,
 };
 
 PropertyFilter.defaultProps = {

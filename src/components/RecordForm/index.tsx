@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
   Paper, Typography,
@@ -65,7 +66,7 @@ const RecordForm = ({
 
   useEffect(() => {
     if (modelName) {
-      const { properties } = schema.get(modelName);
+      const { properties } = schemaDefn.get(modelName);
       setFieldDefs(properties);
       setIsEdge(schema.isEdge(modelName));
     }
@@ -79,7 +80,7 @@ const RecordForm = ({
   const { mutate: addNewAction, isLoading: isAdding } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
+      const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
     },
     {
@@ -118,7 +119,7 @@ const RecordForm = ({
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
-      const { routeName } = schema.get(content);
+      const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
     {
@@ -148,7 +149,7 @@ const RecordForm = ({
   const { mutate: updateAction, isLoading: isUpdating } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
+      const { routeName } = schemaDefn.get(payload);
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
     },
     {
@@ -227,11 +228,11 @@ const RecordForm = ({
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && schema.get(modelName).inherits.includes('V') && (
+      {variant === FORM_VARIANT.VIEW && schemaDefn.get(modelName).inherits.includes('V') && (
         <>
           <EdgeTable recordId={form.formContent['@rid']} />
           <RelatedStatementsTable recordId={form.formContent['@rid']} />
-          {schema.get(modelName).inherits.includes('Ontology') && (
+          {schemaDefn.get(modelName).inherits.includes('Ontology') && (
             <RelatedVariantsTable recordId={form.formContent['@rid']} />
           )}
         </>

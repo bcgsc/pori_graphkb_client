@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@material-ui/core';
 import omit from 'lodash.omit';
 import { useSnackbar } from 'notistack';
@@ -20,7 +20,7 @@ import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
 
-const { schema: { PositionalVariant, CategoryVariant, Position } } = schema;
+const { schema: { PositionalVariant, CategoryVariant, Position } } = schemaDefn;
 
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,
@@ -152,7 +152,7 @@ const VariantForm = ({
    */
   const handleSubmitAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
-    const { routeName } = schema.get(payload);
+    const { routeName } = schemaDefn.get(payload);
 
     const actionType = formVariant === FORM_VARIANT.NEW
       ? 'created'
@@ -174,7 +174,7 @@ const VariantForm = ({
 
   const handleDeleteAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
-    const { routeName } = schema.get(payload);
+    const { routeName } = schemaDefn.get(payload);
 
     try {
       const result = await api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);

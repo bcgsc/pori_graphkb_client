@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core';
 import InputIcon from '@material-ui/icons/Input';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -14,17 +13,22 @@ import schema from '@/services/schema';
 
 const PUBMED_BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov';
 
-/**
- * @param {Object} props
- * @param {string} props.title the publication title
- * @param {string} props.sourceId the pubmed id
- * @param {string} props.recordId the record id in graphkb (if exsits)
- * @param {function} props.onClick the onClick handler function
- * @param {string} props.journalName the name of the journal the article was published in
- */
+interface PubmedCardProps {
+  /** the pubmed id */
+  sourceId: string;
+  /** the name of the journal the article was published in */
+  journalName?: string;
+  /** the onClick handler function */
+  onClick?: React.ComponentProps<typeof Button>['onClick'];
+  /** the record id in graphkb (if exsits) */
+  recordId?: string;
+  /** the publication title */
+  title?: string;
+}
+
 const PubmedCard = ({
   title, sourceId, recordId, onClick, journalName,
-}) => (
+}: PubmedCardProps) => (
   <Card className="pubmed-card" elevation={3}>
     <CardContent>
       <Typography color="textSecondary">
@@ -57,14 +61,6 @@ const PubmedCard = ({
     </CardActions>
   </Card>
 );
-
-PubmedCard.propTypes = {
-  sourceId: PropTypes.string.isRequired,
-  journalName: PropTypes.string,
-  onClick: PropTypes.func,
-  recordId: PropTypes.string,
-  title: PropTypes.string,
-};
 
 PubmedCard.defaultProps = {
   onClick: () => {},

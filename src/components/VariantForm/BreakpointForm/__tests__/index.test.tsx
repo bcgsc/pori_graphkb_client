@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom/extend-expect';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 
 import FormContext from '@/components/FormContext';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 import BreakpointForm from '..';
 
@@ -17,7 +17,7 @@ describe('BreakpointForm', () => {
         <BreakpointForm
           coordinateType="GenomicPosition"
           end="break1End"
-          model={schema.schema.PositionalVariant}
+          model={schemaDefn.schema.PositionalVariant}
           reference="reference1"
           start="break1Start"
         />
@@ -35,7 +35,7 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schema.schema.PositionalVariant}
+            model={schemaDefn.schema.PositionalVariant}
             reference="reference1"
             start="break1Start"
           />
@@ -55,7 +55,7 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schema.schema.PositionalVariant}
+            model={schemaDefn.schema.PositionalVariant}
             reference="reference1"
             start="break1Start"
           />
@@ -75,7 +75,7 @@ describe('BreakpointForm', () => {
       <QueryClientProvider client={api.queryClient}>
         <BreakpointForm
           coordinateType="GenomicPosition"
-          model={schema.schema.PositionalVariant}
+          model={schemaDefn.schema.PositionalVariant}
           reference="reference1"
         />
       </QueryClientProvider>,

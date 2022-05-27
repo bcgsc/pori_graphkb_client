@@ -1,6 +1,3 @@
-/**
- * @module /components/OntologyDetailComponent
- */
 import './index.scss';
 
 import {
@@ -19,11 +16,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { GeneralRecordPropType } from '@/components/types';
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -51,16 +47,19 @@ const movePropToTop = (properties, propToBeMovedToTop) => {
   return updatedProperties;
 };
 
+interface DetailDrawerProps {
+  /** Function triggered on @material-ui/Drawer onClose event. */
+  isEdge?: boolean;
+  /** Ontology to be displayed in drawer. */
+  node?: GeneralRecordType;
+  onClose?: React.ComponentProps<typeof IconButton>['onClick'];
+}
+
 /**
  * Component used to display record details in a side drawer. Dynamically
  * generates display based on record, and its corresponding schema entry.
- *
- * @property {object} props
- * @property {Object} props.node - Ontology to be displayed in drawer.
- * @property {function} props.onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
-function DetailDrawer(props) {
+function DetailDrawer(props: DetailDrawerProps) {
   const {
     node,
     onClose,
@@ -144,7 +143,7 @@ function DetailDrawer(props) {
       }
       if (name === 'displayNameTemplate') {
         name = 'Statement';
-        value = schema.getLabel(node, false);
+        value = schema.getLabel(node, { truncate: false });
       }
       return (
         <TextRow
@@ -200,7 +199,7 @@ function DetailDrawer(props) {
   };
 
   const drawerIsOpen = Boolean(node);
-  let content = null;
+  let content: ReactNode = null;
 
   if (drawerIsOpen) {
     const recordId = node['@rid'].replace(/^#/, '');
@@ -320,12 +319,6 @@ function DetailDrawer(props) {
     </Drawer>
   );
 }
-
-DetailDrawer.propTypes = {
-  isEdge: PropTypes.bool,
-  node: GeneralRecordPropType,
-  onClose: PropTypes.func,
-};
 
 DetailDrawer.defaultProps = {
   node: null,

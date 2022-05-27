@@ -1,30 +1,38 @@
-import PropTypes from 'prop-types';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import React, { useEffect, useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import RadioSelect from '@/components/RadioSelect';
-import schema from '@/services/schema';
+
+interface ModelSelectProps {
+  /** the parent onChange handler */
+  onChange: (arg: { target: { name?: string; value: unknown } }) => void;
+  /** the top level model to be used as the base of the tree of models to collect as options */
+  baseModel?: string;
+  /** the default value to be selected when value is not given */
+  defaultValue?: string;
+  disabled?: boolean;
+  /** flag to indicate the options should include abstract classes */
+  includeAbstract?: boolean;
+  /** the field name to use in passing events to the onChange handler */
+  name?: string;
+  /** the currently selected value */
+  value?: string;
+  /** the display type (radio or select) */
+  variant?: string;
+}
 
 /**
  * Select a database model class
- *
- * @param {object} props
- * @param {string} props.baseModel the top level model to be used as the base of the tree of models to collect as options
- * @param {string} props.defaultValue the default value to be selected when value is not given
- * @param {string} props.value the currently selected value
- * @param {function} props.onChange the parent onChange handler
- * @param {bool} props.includeAbstract flag to indicate the options should include abstract classes
- * @param {string} props.name the field name to use in passing events to the onChange handler
- * @param {string} props.variant the display type (radio or select)
  */
 const ModelSelect = ({
   baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
-}) => {
+}: ModelSelectProps) => {
   const [choices, setChoices] = useState([]);
   const model = value || defaultValue;
 
   useEffect(() => {
-    const models = schema.get(baseModel).descendantTree(!includeAbstract).map((m) => ({
+    const models = schemaDefn.get(baseModel).descendantTree(!includeAbstract).map((m) => ({
       label: m.name, value: m.name, caption: m.description, key: m.name,
     })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);
@@ -52,17 +60,6 @@ const ModelSelect = ({
       {...props}
     />
   );
-};
-
-ModelSelect.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  baseModel: PropTypes.string,
-  defaultValue: PropTypes.string,
-  disabled: PropTypes.bool,
-  includeAbstract: PropTypes.bool,
-  name: PropTypes.string,
-  value: PropTypes.string,
-  variant: PropTypes.string,
 };
 
 ModelSelect.defaultProps = {

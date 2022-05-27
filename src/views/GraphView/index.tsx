@@ -7,10 +7,9 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 import { useIsFetching, useQuery, useQueryClient } from 'react-query';
-import { useLocation } from 'react-router-dom';
+import { RouteComponentProps, useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
-import { HistoryPropType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -24,7 +23,7 @@ const { DEFAULT_NEIGHBORS } = config;
 /**
  * Shows the search result filters and an edit button
  */
-const GraphView = ({ history }) => {
+const GraphView = ({ history }: RouteComponentProps) => {
   const { search } = useLocation();
   const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
@@ -139,10 +138,6 @@ const GraphView = ({ history }) => {
       </div>
     </div>
   );
-};
-
-GraphView.propTypes = {
-  history: HistoryPropType.isRequired,
 };
 
 export default GraphView;

@@ -1,13 +1,10 @@
-/**
- * @module /components/RelationshipsForm
- */
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 
@@ -15,7 +12,6 @@ import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 const isReversed = (nodeId, { out: src, in: tgt }) => {
   if (src && tgt) {
@@ -28,16 +24,15 @@ const isReversed = (nodeId, { out: src, in: tgt }) => {
   return false;
 };
 
+interface EdgeTableProps {
+  recordId: string;
+}
+
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
- *
- * @param {object} props
- * @param {function} props.itemToKey the function to create a uique key for each edge record
- * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
- * @param {Array.<object>} props.values the edge records
  */
-const EdgeTable = ({ recordId }) => {
+const EdgeTable = ({ recordId }: EdgeTableProps) => {
   const grid = useGrid();
 
   const { data: edges, isFetching } = useQuery(
@@ -56,7 +51,7 @@ const EdgeTable = ({ recordId }) => {
         Object.entries(record).forEach(([propName, value]) => {
           if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
             value.forEach((edge) => {
-              const model = schema.get(edge);
+              const model = schemaDefn.get(edge);
               const reversed = isReversed(recordId, edge);
 
               newEdges.push({
@@ -137,10 +132,6 @@ const EdgeTable = ({ recordId }) => {
       </div>
     </div>
   );
-};
-
-EdgeTable.propTypes = {
-  recordId: PropTypes.string.isRequired,
 };
 
 export default EdgeTable;

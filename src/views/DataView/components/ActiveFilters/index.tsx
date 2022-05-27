@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { util } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
 import {
   Button,
   Card,
@@ -16,7 +16,6 @@ import {
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import copy from 'copy-to-clipboard';
-import PropTypes from 'prop-types';
 import React, {
   useCallback, useMemo, useState,
 } from 'react';
@@ -24,7 +23,6 @@ import { useQuery } from 'react-query';
 
 import { tuple } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 import JSONView from './JSONView';
 
@@ -47,9 +45,9 @@ const extractRids = (obj) => {
   return Array.from(new Set(recordIds));
 };
 
-const ActiveFilters = ({ search }) => {
+const ActiveFilters = ({ search }: { search: string; }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { payload, routeName } = useMemo(() => api.getQueryFromSearch({ search, schema }), [search]);
+  const { payload, routeName } = useMemo(() => api.getQueryFromSearch(search), [search]);
   const recordIds = useMemo(() => extractRids(payload), [payload]);
 
   const { data: recordHash } = useQuery(
@@ -69,7 +67,7 @@ const ActiveFilters = ({ search }) => {
           if (rec['@class'] === 'Statement') {
             hash[rec['@rid']] = 'Statement';
           } else {
-            hash[rec['@rid']] = schema.getPreview(rec);
+            hash[rec['@rid']] = schemaDefn.getPreview(rec);
           }
         });
         return hash;
@@ -138,10 +136,6 @@ const ActiveFilters = ({ search }) => {
       </div>
     </>
   );
-};
-
-ActiveFilters.propTypes = {
-  search: PropTypes.string.isRequired,
 };
 
 export default ActiveFilters;

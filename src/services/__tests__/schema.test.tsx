@@ -6,13 +6,13 @@ describe('schema service', () => {
   describe('Retrieving classmodels and properties', () => {
     test('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {
-        expect(testSchema.get(key)).toBeDefined();
+        expect(SCHEMA_DEFN.get(key)).toBeDefined();
       });
     });
 
     test('returns proper metadata fields', () => {
       const metadata = testSchema.getMetadata();
-      const V = testSchema.get('V');
+      const V = SCHEMA_DEFN.get('V');
 
       metadata.forEach((prop) => {
         expect(V.properties[prop.name]).toBeDefined();
@@ -20,7 +20,7 @@ describe('schema service', () => {
     });
 
     test('returns the right properties list', () => {
-      const ontology = testSchema.get('Ontology');
+      const ontology = SCHEMA_DEFN.get('Ontology');
       const testProps = testSchema.getProperties('Ontology');
 
       testProps.forEach((prop) => {
@@ -29,7 +29,7 @@ describe('schema service', () => {
     });
 
     test('Returns edges', () => {
-      const edges = Object.values(testSchema.schema)
+      const edges = Object.values(SCHEMA_DEFN.schema)
         .filter((model) => model.inherits && model.inherits.includes('E'))
         .map((model) => model.name);
       expect(testSchema.getEdges()).toEqual(edges);
@@ -55,7 +55,7 @@ describe('schema service', () => {
       const label = testSchema.getLabel(mockRID);
       expect(label).toEqual(mockRID);
 
-      const preview = testSchema.getPreview(mockRID);
+      const preview = SCHEMA_DEFN.getPreview(mockRID);
       expect(preview).toEqual(mockRID);
     });
 
@@ -71,7 +71,7 @@ describe('schema service', () => {
         evidence: [{ displayName: 'A reputable source' }],
       };
 
-      const statementLabel = testSchema.getPreview(mockStatementRecord);
+      const statementLabel = SCHEMA_DEFN.getPreview(mockStatementRecord);
       expect(statementLabel).toEqual('Given Low blood sugar Mood Swings applies to hungertitis (A reputable source)');
     });
 
@@ -88,7 +88,7 @@ describe('schema service', () => {
         displayName: 'super long display name that is going to go over the limit but does not get cut off because its not truncated',
         '@class': 'Mock',
       };
-      const cutOffLabel = testSchema.getLabel(longNameModel, false);
+      const cutOffLabel = testSchema.getLabel(longNameModel, { truncate: false });
       expect(cutOffLabel).toEqual('super long display name that is going to go over the limit but does not get cut off because its not truncated');
     });
 
@@ -106,7 +106,7 @@ describe('schema service', () => {
         '@class': 'disease',
       };
 
-      const modelLabel = testSchema.getPreview(classModel);
+      const modelLabel = SCHEMA_DEFN.getPreview(classModel);
       expect(modelLabel).toEqual('Disease');
     });
 
@@ -141,7 +141,7 @@ describe('schema service', () => {
         createdBy: 'Mom',
         deletedBy: 'Mom',
       };
-      const label = testSchema.getPreview(userMock);
+      const label = SCHEMA_DEFN.getPreview(userMock);
       expect(label).toEqual(userMock['@class']);
     });
 
@@ -159,7 +159,7 @@ describe('schema service', () => {
       const mockModel = {
         '@rid': '22:0',
       };
-      const ridLabel = testSchema.getPreview(mockModel);
+      const ridLabel = SCHEMA_DEFN.getPreview(mockModel);
       expect(ridLabel).toEqual('22:0');
     });
   });

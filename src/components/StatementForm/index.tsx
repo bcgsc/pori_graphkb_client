@@ -22,7 +22,6 @@ import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
@@ -187,7 +186,7 @@ const StatementForm = ({
   const { mutate: addNewAction, isLoading: isAdding } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
+      const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
     },
     {
@@ -222,7 +221,7 @@ const StatementForm = ({
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
     async (content) => {
-      const { routeName } = schema.get(content);
+      const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
     {
@@ -248,7 +247,7 @@ const StatementForm = ({
   const { mutate: updateAction, isLoading: isUpdating } = useMutation(
     async (content) => {
       const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
+      const { routeName } = schemaDefn.get(payload);
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
     },
     {

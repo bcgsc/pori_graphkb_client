@@ -1,7 +1,4 @@
-/**
- * @module /components/DetailDrawer/RelationshipDisplay
- */
-
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   Divider,
@@ -15,20 +12,28 @@ import {
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LinkIcon from '@material-ui/icons/Link';
-import PropTypes from 'prop-types';
 import React from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
+
+interface RelationshipListProps {
+  /** formats metadata properties */
+  formatMetadata: (arg: unknown, arg2: boolean) => void;
+  /** formats non-metadata properties */
+  formatOtherProps: (arg: unknown, arg2: boolean) => void;
+  /** adds link to opened list */
+  handleLinkExpand: (rid: string) => void;
+  /** edge record opened */
+  linkOpen?: Record<string, unknown>;
+  /** Record being displayed. */
+  record?: GeneralRecordType
+}
 
 /**
  * Formats record relationships.
- * @property {Object} record - Record being displayed.
- * @property {Object} linkOpen - edge record opened
- * @property {function} handleLinkExpand - adds link to opened list
- * @property {function} formatMetadata - formats metadata properties
- * @property {function} formatOtherProps - formats non-metadata properties
  */
-function RelationshipList(props) {
+function RelationshipList(props: RelationshipListProps) {
   const {
     linkOpen, record, handleLinkExpand, formatMetadata, formatOtherProps,
   } = props;
@@ -75,7 +80,7 @@ function RelationshipList(props) {
               <ListItemText
                 className="detail-li-text"
                 primary={<Typography variant="subtitle1">{preview}</Typography>}
-                secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
+                secondary={schemaDefn.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
               />
               {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
@@ -100,14 +105,6 @@ function RelationshipList(props) {
     </List>
   );
 }
-
-RelationshipList.propTypes = {
-  formatMetadata: PropTypes.func.isRequired,
-  formatOtherProps: PropTypes.func.isRequired,
-  handleLinkExpand: PropTypes.func.isRequired,
-  linkOpen: PropTypes.object,
-  record: PropTypes.object,
-};
 
 RelationshipList.defaultProps = {
   linkOpen: {},

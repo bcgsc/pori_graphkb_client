@@ -11,7 +11,7 @@ import { GeneralRecordType, QueryBody } from '@/components/types';
 
 import { request, RequestCallOptions } from './call';
 import {
-  buildSearchFromParseVariant, getQueryFromSearch, getSearchFromQuery,
+  getQueryFromSearch, getSearchFromQuery,
 } from './search';
 
 const queryClient = new QueryClient({
@@ -162,7 +162,6 @@ export default {
   getSearchFromQuery,
   CLASS_PROP,
   delete: del,
-  buildSearchFromParseVariant,
   get,
   ID_PROP,
   patch,

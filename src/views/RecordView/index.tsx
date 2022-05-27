@@ -1,19 +1,19 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@material-ui/core';
-import propTypes from 'prop-types';
 import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
+import { RouteComponentProps } from 'react-router-dom';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
-import { HistoryPropType } from '@/components/types';
 import {
   cleanLinkedRecords, FORM_VARIANT, navigateToGraph, tuple,
 } from '@/components/util';
@@ -31,7 +31,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   let defaultModelName = modelName;
 
   if (modelName) {
-    const model = schema.getModel(modelName);
+    const model = schemaDefn.get(modelName) ?? schemaDefn.getFromRoute(modelName);
     defaultModelName = model.name;
 
     if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
@@ -44,10 +44,10 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   } else if (path.includes('/e/')) {
     defaultModelName = 'E';
   }
-  return schema.getModel(defaultModelName || 'V').name;
+  return schemaDefn.get(defaultModelName || 'V').name;
 };
 
-const RecordView = (props) => {
+const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string; variant: FORM_VARIANT }>) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
 
   const [modelName, setModelName] = useState(modelNameParam || '');
@@ -87,7 +87,7 @@ const RecordView = (props) => {
     util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
   }, [history]);
 
-  const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
+  const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
     tuple(`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
@@ -166,18 +166,6 @@ const RecordView = (props) => {
       variant={variant}
     />
   );
-};
-
-RecordView.propTypes = {
-  history: HistoryPropType.isRequired,
-  match: propTypes.shape({
-    path: propTypes.string,
-    params: propTypes.shape({
-      rid: propTypes.string,
-      modelName: propTypes.string,
-      variant: propTypes.string,
-    }),
-  }).isRequired,
 };
 
 export default RecordView;

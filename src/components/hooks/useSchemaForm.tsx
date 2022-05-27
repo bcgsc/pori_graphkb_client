@@ -12,22 +12,29 @@ import schema from '@/services/schema';
 
 import useObject from './useObject';
 
+interface UseSchemaFormOptions {
+  /** do not throw errors when required fields are missing */
+  ignoreMandatoryErrors?: boolean;
+  /** the form type/variant (ex. view) */
+  variant?: string;
+  /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
+  additionalValidationFn?: ((content: unknown) => string) | null;
+}
+
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
  * @param {Object.<string,PropertyModel>} initialFieldDefs field definitions to use in validating the form
  * @param {Object} initialValue the start value of the form content
  * @param {Object} props extra options
- * @param {boolean} props.ignoreMandatoryErrors do not throw errors when required fields are missing
- * @param {string} props.variant the form type/variant (ex. view)
- * @param {function} props.additionalValidationFn a function which should return an error message if failed and empty string if passed. Accepts the formContent as input
  *
  * @returns {FormContext} the form context values
  */
 const useSchemaForm = (
-  initialFieldDefs,
-  initialValue = {},
-  { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null } = {},
+  /** @todo get type from schema package */
+  initialFieldDefs: Record<string, any>,
+  initialValue: Record<string, unknown> = {},
+  { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);

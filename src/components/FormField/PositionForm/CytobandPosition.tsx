@@ -4,7 +4,6 @@ import { schema } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -21,15 +20,21 @@ const {
   },
 } = schema;
 
+interface CytobandPositionProps {
+  /** change handler */
+  onChange: (arg: { target: { name?: string; value: unknown } }) => void;
+  /** flag to indicate this field is disabled */
+  disabled?: boolean;
+  /** the form field name to pass up to the change handler */
+  name?: string;
+  /** flag to indicate this field must be filled */
+  required?: boolean;
+  /** the initial value */
+  value?: Record<string, unknown>;
+}
+
 /**
  * Cytoband position form
- *
- * @param {object} props
- * @param {function} props.onChange change handler
- * @param {object} props.value the initial value
- * @param {string} props.name the form field name to pass up to the change handler
- * @param {bool} props.required flag to indicate this field must be filled
- * @param {bool} props.disabled flag to indicate this field is disabled
  */
 const CytobandPosition = ({
   onChange,
@@ -37,7 +42,7 @@ const CytobandPosition = ({
   name,
   required,
   disabled,
-}) => {
+}: CytobandPositionProps) => {
   const { formContent, formErrors, updateField } = useSchemaForm(
     properties,
     { ...(value || {}), '@class': VARIANT },
@@ -71,14 +76,6 @@ const CytobandPosition = ({
       ))}
     </>
   );
-};
-
-CytobandPosition.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  name: PropTypes.string,
-  required: PropTypes.bool,
-  value: PropTypes.object,
 };
 
 CytobandPosition.defaultProps = {

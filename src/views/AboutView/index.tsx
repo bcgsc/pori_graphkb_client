@@ -8,11 +8,10 @@ import React, { useEffect, useState } from 'react';
 import {
   NavLink,
   Route,
+  RouteComponentProps,
   Switch,
 } from 'react-router-dom';
 import slugify from 'slugify';
-
-import { LocationPropType } from '@/components/types';
 
 import AboutClasses from './components/AboutClasses';
 import AboutMain from './components/AboutMain';
@@ -21,7 +20,7 @@ import GettingStarted from './components/GettingStarted';
 import Matching from './components/Matching';
 import AboutNotation from './components/Notation';
 
-const AboutView = (props) => {
+const AboutView = (props: RouteComponentProps) => {
   const { location: { pathname: currentUri } } = props;
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -81,10 +80,6 @@ const AboutView = (props) => {
       </div>
     </div>
   );
-};
-
-AboutView.propTypes = {
-  location: LocationPropType.isRequired,
 };
 
 export default AboutView;

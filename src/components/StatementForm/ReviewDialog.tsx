@@ -1,12 +1,12 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Dialog, DialogContent, FormControlLabel, IconButton, Typography,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { useSnackbar } from 'notistack';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
@@ -17,21 +17,25 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import {
   FORM_VARIANT,
 } from '@/components/util';
-import schema from '@/services/schema';
 
 const MODEL_NAME = 'StatementReview';
 
+interface AddReviewDialogProps {
+  /** parent handler */
+  onClose: (...args: unknown[]) => void;
+  onSubmit: (content: unknown, updateAmalgamated: boolean) => void;
+  isOpen?: boolean;
+}
+
 /**
  * Form/View that displays the contents of a single node
- *
- * @property {function} props.onClose parent handler
  */
 const AddReviewDialog = ({
-  onSubmit, isOpen, onClose,
-}) => {
+  onSubmit, isOpen = false, onClose,
+}: AddReviewDialogProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const { comment, status } = schema.get(MODEL_NAME).properties;
+  const { comment, status } = schemaDefn.get(MODEL_NAME).properties;
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
@@ -109,12 +113,6 @@ const AddReviewDialog = ({
       </div>
     </Dialog>
   );
-};
-
-AddReviewDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool,
 };
 
 AddReviewDialog.defaultProps = {

@@ -1,6 +1,3 @@
-/**
- * @module /components/RelationshipsForm
- */
 import './index.scss';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
@@ -9,7 +6,6 @@ import { Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { AgGridReact } from 'ag-grid-react';
 import { formatDistanceToNow } from 'date-fns';
-import PropTypes from 'prop-types';
 import React, {
   useEffect, useRef,
 } from 'react';
@@ -17,32 +13,26 @@ import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import useGrid from '@/components/hooks/useGrid';
+import { GeneralRecordType } from '@/components/types';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
 const TWO_WEEK_MILLISECONDS = 2 * 7 * 24 * 60 * 60 * 1000;
 
-const JumpToRecord = ({ data }) => (
+interface JumpToRecordProps {
+  data: GeneralRecordType;
+}
+
+const JumpToRecord = ({ data }: JumpToRecordProps) => (
   <Link className="activity-view__jump-to-record" target="_blank" to={schema.getLink(data)}>
     <OpenInNewIcon />
     {data['@rid']}
   </Link>
 );
 
-JumpToRecord.propTypes = {
-  data: PropTypes.shape({
-    '@rid': PropTypes.string.isRequired,
-  }).isRequired,
-};
-
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
- *
- * @param {object} props
- * @param {function} props.itemToKey the function to create a uique key for each edge record
- * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
- * @param {Array.<object>} props.values the edge records
  */
 const ActivityView = () => {
   const grid = useGrid();

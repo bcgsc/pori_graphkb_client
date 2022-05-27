@@ -1,24 +1,22 @@
 import { ListItem } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { ReactNode } from 'react';
+
+interface FieldWrapperProps {
+  children: ReactNode;
+  /** optional/additional css class names */
+  className?: string;
+  /** the input field type */
+  type?: string;
+}
 
 /**
  * Wraps a input field inside a list item with standard styling
- *
- * @param {string} props.className optional/additional css class names
- * @param {string} props.type the input field type
  */
-const FieldWrapper = ({ children, className, type }) => (
+const FieldWrapper = ({ children, className, type }: FieldWrapperProps) => (
   <ListItem className={`form-field ${type && `form-field--${type}`} ${className}`} component="li">
     {children}
   </ListItem>
 );
-
-FieldWrapper.propTypes = {
-  children: PropTypes.element.isRequired,
-  className: PropTypes.string,
-  type: PropTypes.string,
-};
 
 FieldWrapper.defaultProps = {
   className: '',

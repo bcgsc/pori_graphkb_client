@@ -1,14 +1,13 @@
 import './index.scss';
 
 import { Typography } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
 
-const chunkSentence = (sentence, words) => {
+const chunkSentence = (sentence: string, words: string[]) => {
   const chunksMap = new Map();
 
   words.forEach((word) => {
-    const currentIdxs = [];
+    const currentIdxs: number[] = [];
     let startIndex = 0;
 
     // eslint-disable-next-line no-cond-assign
@@ -52,7 +51,7 @@ const chunkSentence = (sentence, words) => {
   // Flatten 2d array
   chunkPositions = [].concat(...chunkPositions);
 
-  const chunks = [];
+  const chunks: string[] = [];
 
   for (let index = 1; index < chunkPositions.length; index++) {
     const prev = chunkPositions[index - 1];
@@ -65,12 +64,14 @@ const chunkSentence = (sentence, words) => {
   return chunks;
 };
 
-/**
- * @param {Object} props
- * @param {string} props.content the sentence
- * @param {Array.<string>} props.highlighted list of words to emphasize from the sentence
- */
-const SentencePreview = ({ content, highlighted }) => {
+interface SentencePreviewProps {
+  /** the sentence */
+  content: string;
+  /** list of words to emphasize from the sentence */
+  highlighted?: string[];
+}
+
+const SentencePreview = ({ content, highlighted = [] }:SentencePreviewProps) => {
   if (!content || !content.length) {
     return null;
   }
@@ -90,11 +91,6 @@ const SentencePreview = ({ content, highlighted }) => {
       {sentence}
     </Typography>
   );
-};
-
-SentencePreview.propTypes = {
-  content: PropTypes.string.isRequired,
-  highlighted: PropTypes.array,
 };
 
 SentencePreview.defaultProps = {

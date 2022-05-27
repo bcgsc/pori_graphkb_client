@@ -1,11 +1,14 @@
 import './index.scss';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import civicLogo from '@/static/images/civic_logo.png';
 
-const CivicEvidenceLink = ({ evidenceId }) => (
+interface CivicEvidenceLinkProps {
+  evidenceId: string;
+}
+
+const CivicEvidenceLink = ({ evidenceId }: CivicEvidenceLinkProps) => (
   <a
     className="civic-evidence-link"
     href={`https://civicdb.org/links/evidence/${evidenceId}`}
@@ -18,9 +21,5 @@ const CivicEvidenceLink = ({ evidenceId }) => (
     />
   </a>
 );
-
-CivicEvidenceLink.propTypes = {
-  evidenceId: PropTypes.string.isRequired,
-};
 
 export default CivicEvidenceLink;

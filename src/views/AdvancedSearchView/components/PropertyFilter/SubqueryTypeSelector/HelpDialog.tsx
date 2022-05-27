@@ -6,18 +6,21 @@ import {
 } from '@material-ui/core';
 import TreeIcon from '@material-ui/icons/AccountTree';
 import ShareIcon from '@material-ui/icons/Share';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import treeDiagram from '@/static/images/tree.png';
 
+interface HelpDialogProps {
+  /** Dialog open flag */
+  isOpen: boolean;
+  /** Handler for closing of dialog. */
+  onClose: React.ComponentProps<typeof Dialog>['onClose'];
+}
+
 /**
  * Component for displaying the help information on subqueries
- * @param {object} props
- * @param {boolean} props.isOpen - Dialog open flag
- * @param {function} props.onClose - Handler for closing of dialog.
  */
-const HelpDialog = (props) => {
+const HelpDialog = (props: HelpDialogProps) => {
   const {
     isOpen,
     onClose,
@@ -65,14 +68,6 @@ const HelpDialog = (props) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-HelpDialog.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
-
-HelpDialog.defaultProps = {
 };
 
 export default HelpDialog;

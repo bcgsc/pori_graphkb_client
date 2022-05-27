@@ -28,21 +28,6 @@ const GeneralRecordPropType = PropTypes.shape({
   ...BASE_PROPERTIES,
 });
 
-const LocationPropType = PropTypes.shape({
-  hash: PropTypes.string,
-  key: PropTypes.string,
-  pathname: PropTypes.string,
-  search: PropTypes.string,
-});
-
-const HistoryPropType = PropTypes.shape({
-  createHref: PropTypes.func,
-  goBack: PropTypes.func,
-  location: LocationPropType,
-  push: PropTypes.func,
-  replace: PropTypes.func,
-});
-
 /**
  * Represents a general record type from schema
  */
@@ -92,7 +77,6 @@ interface QueryBody<ReqFields extends string = string> {
 
 export {
   GeneralRecordPropType,
-  HistoryPropType,
 };
 
 export type {

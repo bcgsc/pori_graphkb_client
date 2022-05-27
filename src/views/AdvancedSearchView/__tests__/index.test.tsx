@@ -25,7 +25,6 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   );
 }));
 
-/* eslint-disable react/prop-types */
 jest.mock('@/components/DropDownSelect', () => ({
   options = [], value, onChange, name, innerProps: { 'data-testid': testId = 'select' } = {},
 }) => {
@@ -46,7 +45,6 @@ jest.mock('@/components/DropDownSelect', () => ({
     </select>
   );
 });
-/* eslint-enable react/prop-types */
 
 describe('AdvancedSearchView', () => {
   afterEach(() => {

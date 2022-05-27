@@ -1,17 +1,18 @@
-/**
- * @module /views/ErrorView
- */
-
 import './index.scss';
 
 import { Button, Tooltip, Typography } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { copy } from 'copy-to-clipboard';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const EmailReportError = (props) => {
+interface EmailReportErrorProps {
+  body: string;
+  linkText: string;
+  subject: string;
+}
+
+const EmailReportError = (props: EmailReportErrorProps) => {
   const { linkText, body, subject } = props;
   return (
     <a
@@ -22,12 +23,6 @@ const EmailReportError = (props) => {
       {linkText}
     </a>
   );
-};
-
-EmailReportError.propTypes = {
-  body: PropTypes.string.isRequired,
-  linkText: PropTypes.string.isRequired,
-  subject: PropTypes.string.isRequired,
 };
 
 /**

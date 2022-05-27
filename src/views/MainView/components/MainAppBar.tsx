@@ -1,6 +1,3 @@
-/**
- * @module /Main
- */
 import '../index.scss';
 
 import {
@@ -14,7 +11,6 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
-import PropTypes from 'prop-types';
 import React, {
   useRef,
   useState,
@@ -27,13 +23,19 @@ import { useAuth } from '@/components/Auth';
 
 import MenuLink from './MenuLink';
 
+interface MainAppBarProps {
+  onDrawerChange: (isOpen: boolean) => void;
+  onLinkChange: (arg: { isOpen: boolean, activeLink: unknown }) => void;
+  drawerOpen?: boolean;
+}
+
 const MainAppBar = ({
-  onDrawerChange, drawerOpen, onLinkChange,
-}) => {
-  const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
+  onDrawerChange, drawerOpen = false, onLinkChange,
+}: MainAppBarProps) => {
+  const [dropdownAnchorEl, setDropdownAnchorEl] = useState<HTMLDivElement | null>(null);
   const auth = useAuth();
 
-  const dropdown = useRef();
+  const dropdown = useRef<HTMLDivElement>(null);
 
   const handleOpen = () => setDropdownAnchorEl(dropdown.current);
   const handleClose = () => setDropdownAnchorEl(null);
@@ -126,12 +128,6 @@ const MainAppBar = ({
       </div>
     </AppBar>
   );
-};
-
-MainAppBar.propTypes = {
-  onDrawerChange: PropTypes.func.isRequired,
-  onLinkChange: PropTypes.func.isRequired,
-  drawerOpen: PropTypes.bool,
 };
 
 MainAppBar.defaultProps = {

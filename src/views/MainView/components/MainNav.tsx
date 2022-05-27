@@ -16,7 +16,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import InputIcon from '@material-ui/icons/Input';
 import SearchIcon from '@material-ui/icons/Search';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
@@ -25,13 +24,12 @@ import logo from '@/static/gsclogo.svg';
 
 import MenuLink from './MenuLink';
 
-/**
- * @property {object} props
- * @property {boolean} props.open - drawer open state.
- * @property {Array} props.links - List of app links to display in sidebar.
- * @property {function} props.onChange - handler for siderbar state change.
- */
-const MainNav = ({ isOpen, onChange }) => {
+interface MainNavProps {
+  isOpen?: boolean;
+  onChange?: (arg: { isOpen: boolean })=> void;
+}
+
+const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
   const [subMenuOpenLink, setSubMenuOpenLink] = useState('/query');
   const auth = useAuth();
   const { setActiveLink } = useContext(ActiveLinkContext);
@@ -147,11 +145,6 @@ const MainNav = ({ isOpen, onChange }) => {
       </div>
     </Drawer>
   );
-};
-
-MainNav.propTypes = {
-  isOpen: PropTypes.bool,
-  onChange: PropTypes.func,
 };
 
 MainNav.defaultProps = {

@@ -1,13 +1,9 @@
-/**
- * @module /components/RelationshipsForm
- */
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import { Typography } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 
@@ -16,16 +12,15 @@ import RecordIdLink from '@/components/RecordIdLink';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 
+interface RelatedStatementsTableProps {
+  recordId: string;
+}
+
 /**
  * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
- *
- * @param {object} props
- * @param {function} props.itemToKey the function to create a uique key for each edge record
- * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
- * @param {Array.<object>} props.values the edge records
  */
-const RelatedStatementsTable = ({ recordId }) => {
+const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
   const grid = useGrid();
 
   const { data: statements, isFetching } = useQuery(
@@ -78,7 +73,7 @@ const RelatedStatementsTable = ({ recordId }) => {
     }
   }, [grid.ref, isFetching, statements]);
 
-  const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>); // eslint-disable-line react/prop-types
+  const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>);
 
   if (!isFetching && (!statements || statements.length === 0)) {
     return null;
@@ -126,7 +121,7 @@ const RelatedStatementsTable = ({ recordId }) => {
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
           frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={(data) => data['@rid']} // eslint-disable-line react/prop-types
+          getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
@@ -134,10 +129,6 @@ const RelatedStatementsTable = ({ recordId }) => {
       </div>
     </div>
   );
-};
-
-RelatedStatementsTable.propTypes = {
-  recordId: PropTypes.string.isRequired,
 };
 
 export default RelatedStatementsTable;

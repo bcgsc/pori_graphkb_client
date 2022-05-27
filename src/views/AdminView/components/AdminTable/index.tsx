@@ -10,7 +10,6 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { AgGridReact } from 'ag-grid-react';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useState,
@@ -19,15 +18,19 @@ import React, {
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { FORM_VARIANT } from '@/components/util';
 
+interface AdminTableProps {
+  /** handler to be triggered when data changes */
+  onChange: (...args: unknown[]) => unknown;
+  /** List of records. */
+  records?: Record<string, unknown>[];
+  /** the table variant (user or usergroup) */
+  variant?: 'User' | 'UserGroup';
+}
+
 /**
  * Component for managing AdminView User form state.
- *
- * @property {object} props
- * @property {string} props.variant the table variant (user or usergroup)
- * @property {Array} props.records List of records.
- * @property {function} props.onChange handler to be triggered when data changes
  */
-const AdminTable = ({ onChange, records, variant }) => {
+const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProps) => {
   const [recordOpen, setRecordOpen] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -108,22 +111,15 @@ const AdminTable = ({ onChange, records, variant }) => {
     },
   ]);
 
-  const Actions = ({ data: record }) => (
+  const Actions = ({ data: record }: { data: Record<string, unknown> }) => (
     <IconButton onClick={() => handleOpenEditDialog(record)}>
       <EditIcon />
     </IconButton>
   );
-  Actions.propTypes = {
-    data: PropTypes.object.isRequired,
-  };
 
-  const EmailLink = ({ value: email }) => (
+  const EmailLink = ({ value: email }: { value: string }) => (
     <a href={`mailto:${email}?subject=GraphKB&cc=graphkb@bcgsc.ca`}>{email}</a>
   );
-
-  EmailLink.propTypes = {
-    value: PropTypes.string.isRequired,
-  };
 
   return (
     <div className="admin-table">
@@ -172,12 +168,6 @@ const AdminTable = ({ onChange, records, variant }) => {
       </div>
     </div>
   );
-};
-
-AdminTable.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  records: PropTypes.arrayOf(PropTypes.object),
-  variant: PropTypes.oneOf(['User', 'UserGroup']),
 };
 
 AdminTable.defaultProps = {

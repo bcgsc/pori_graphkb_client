@@ -4,22 +4,27 @@ import {
   TextField,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
-/**
- * @param {Object} props
- * @param {function} props.onSubmit the handler when the seach icon is pressed or enter is hit
- * @param {function} props.onChange handler triggered when the input changes (debounced)
- * @param {string} props.value the initial value in the serach box
- * @param {string} props.helperText the text to display below the search box
- * @param {string} props.className the class name to add to the parent div element
- * @param {boolean} props.error the error state of the input box
- */
+interface SearchBoxProps {
+  /** the class name to add to the parent div element */
+  className?: string;
+  /** the error state of the input box */
+  error?: boolean;
+  /** the text to display below the search box */
+  helperText?: string;
+  /** handler triggered when the input changes (debounced) */
+  onChange?: (...args: unknown[]) => unknown;
+  /** the handler when the seach icon is pressed or enter is hit */
+  onSubmit?: (...args: unknown[]) => unknown;
+  /** the initial value in the serach box */
+  value?: string;
+}
+
 const SearchBox = ({
   onSubmit, value, error, helperText, onChange, className, ...props
-}) => {
+}: SearchBoxProps) => {
   const [searchText, setSearchText] = useState(value);
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const ENTER_KEYCODE = 13;
@@ -61,15 +66,6 @@ const SearchBox = ({
       />
     </div>
   );
-};
-
-SearchBox.propTypes = {
-  className: PropTypes.string,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  onChange: PropTypes.func,
-  onSubmit: PropTypes.func,
-  value: PropTypes.string,
 };
 
 SearchBox.defaultProps = {

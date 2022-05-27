@@ -5,18 +5,24 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { ReactNode } from 'react';
+
+interface ConfirmActionDialogProps {
+  /** Drawer open flag */
+  isOpen: boolean;
+  /** Message to display in dialog title. */
+  message: string;
+  /** Handler for closing of dialog. */
+  onCancel: React.ComponentProps<typeof Button>['onClick'];
+  /** Handler for confirming action */
+  onConfirm: React.ComponentProps<typeof Button>['onClick'];
+  children?: ReactNode;
+}
 
 /**
  * Component for simple dialog that prompts the user before deleting a record.
- * @param {object} props
- * @param {boolean} props.isOpen - Drawer open flag
- * @param {function} props.onCancel - Handler for closing of dialog.
- * @param {function} props.onConfirm - Handler for confirming action
- * @param {string} props.message - Message to display in dialog title.
  */
-const ConfirmActionDialog = (props) => {
+const ConfirmActionDialog = (props: ConfirmActionDialogProps) => {
   const {
     children,
     isOpen,
@@ -56,14 +62,6 @@ const ConfirmActionDialog = (props) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-ConfirmActionDialog.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  message: PropTypes.string.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 
 ConfirmActionDialog.defaultProps = {

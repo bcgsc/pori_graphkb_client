@@ -7,17 +7,23 @@ import {
 } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import TimelineIcon from '@material-ui/icons/Timeline';
-import PropTypes from 'prop-types';
 import React, {
   useCallback,
 } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
-import { HistoryPropType } from '@/components/types';
 import { navigateToGraph } from '@/components/util';
 
+interface DataViewFooterProps extends RouteComponentProps {
+  onError?: (...args: unknown[]) => unknown;
+  selectedRecords?: Record<string, unknown>[];
+  statusMessage?: string;
+  totalRows?: number;
+}
+
 const DataViewFooter = ({
-  selectedRecords, onError, history, statusMessage, totalRows,
-}) => {
+  selectedRecords = [], onError, history, statusMessage, totalRows,
+}: DataViewFooterProps) => {
   const handleSwapToGraph = useCallback(() => {
     const nodeRIDs = selectedRecords.map((node) => node['@rid']);
     navigateToGraph(nodeRIDs, history, onError);
@@ -57,14 +63,6 @@ const DataViewFooter = ({
 
     </div>
   );
-};
-
-DataViewFooter.propTypes = {
-  history: HistoryPropType.isRequired,
-  onError: PropTypes.func,
-  selectedRecords: PropTypes.array,
-  statusMessage: PropTypes.string,
-  totalRows: PropTypes.number,
 };
 
 DataViewFooter.defaultProps = {

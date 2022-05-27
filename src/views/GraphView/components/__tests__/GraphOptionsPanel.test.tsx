@@ -6,7 +6,6 @@ import React from 'react';
 import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsPanel';
 import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
-/* eslint-disable react/prop-types */
 jest.mock('../../../../components/DropDownSelect', () => ({
   options = [], value, onChange, name,
 }) => {

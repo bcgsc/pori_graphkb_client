@@ -13,26 +13,34 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import config from '@/static/config';
 
+import { GraphOptions, PropsMap } from '../kbgraph';
+
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
+
+interface GraphOptionsPanelProps {
+  /** function for closing dialog. */
+  handleDialogClose: (...args: unknown[]) => void;
+  /** function for field changing. */
+  handleGraphOptionsChange: (...args: unknown[]) => unknown;
+  /** Graph options object. */
+  graphOptions?: GraphOptions;
+  /** dialog open flag. */
+  graphOptionsOpen?: boolean;
+  /** link legend disabled flag. */
+  linkLegendDisabled?: boolean;
+  /** Graph coloring propsmap. */
+  propsMap?: PropsMap;
+}
 
 /**
  * Displays graph options in a dialog view.
- *
- * @property {object} props
- * @property {GraphOptions} props.graphOptions - Graph options object.
- * @property {PropsMap} props.propsMap - Graph coloringpropsmap.
- * @property {boolean} props.graphOptionsOpen - dialog open flag.
- * @property {boolean} props.linkLegendDisabled - link legend disabled flag.
- * @property {function} props.handleDialogClose - function for closing dialog.
- * @property {function} props.handleGraphOptionsChange - function for field changing.
  */
-function GraphOptionsPanel(props) {
+function GraphOptionsPanel(props: GraphOptionsPanelProps) {
   const {
     graphOptionsOpen,
     graphOptions,
@@ -257,15 +265,6 @@ function GraphOptionsPanel(props) {
     </>
   );
 }
-
-GraphOptionsPanel.propTypes = {
-  handleDialogClose: PropTypes.func.isRequired,
-  handleGraphOptionsChange: PropTypes.func.isRequired,
-  graphOptions: PropTypes.object,
-  graphOptionsOpen: PropTypes.bool,
-  linkLegendDisabled: PropTypes.bool,
-  propsMap: PropTypes.object,
-};
 
 GraphOptionsPanel.defaultProps = {
   graphOptions: {},

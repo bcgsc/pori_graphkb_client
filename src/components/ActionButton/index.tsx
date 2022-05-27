@@ -1,18 +1,31 @@
 import { Button } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 
 import ConfirmActionDialog from './ConfirmActionDialog';
 
-/**
- * @property {object} props
- * @property {bool} props.requireConfirm flag indicating we should confirm the action using a dialog
- * @property {string|*} props.children the elements contained in the button (Generally the title for the button)
- * @property {string} props.message extended message to display in the dialog when asking the user to confirm
- * @property {function} props.onClick async function to be executed on the action being confirmed (if required)
- * @property {string} props.size one of ['small', 'medium', 'large'] to indicate size of button
- */
-function ActionButton(props) {
+type ButtonProps = React.ComponentProps<typeof Button>;
+
+interface ActionButtonProps {
+  /** the elements contained in the button (Generally the title for the button) */
+  children: ReactNode;
+  /** async function to be executed on the action being confirmed (if required) */
+  onClick: (arg?: unknown) => void;
+  className?: string;
+  color?: ButtonProps['color'];
+  disabled?: boolean;
+  /** extended message to display in the dialog when asking the user to confirm */
+  message?: string;
+  /**
+   * flag indicating we should confirm the action using a dialog
+   * @default true
+   */
+  requireConfirm?: boolean;
+  /** one of ['small', 'medium', 'large'] to indicate size of button */
+  size?: ButtonProps['size'];
+  variant?: ButtonProps['variant'];
+}
+
+function ActionButton(props: ActionButtonProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
@@ -41,7 +54,7 @@ function ActionButton(props) {
     className,
     color,
     disabled,
-    message,
+    message = 'Are you sure?',
     onClick,
     requireConfirm,
     size,
@@ -73,18 +86,6 @@ function ActionButton(props) {
     </div>
   );
 }
-
-ActionButton.propTypes = {
-  children: PropTypes.node.isRequired,
-  onClick: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  color: PropTypes.string,
-  disabled: PropTypes.bool,
-  message: PropTypes.string,
-  requireConfirm: PropTypes.bool,
-  size: PropTypes.string,
-  variant: PropTypes.string,
-};
 
 ActionButton.defaultProps = {
   requireConfirm: true,

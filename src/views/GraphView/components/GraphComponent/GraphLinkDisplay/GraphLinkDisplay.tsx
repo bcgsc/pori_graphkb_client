@@ -1,10 +1,5 @@
-/**
- * @module /components/GraphLinkDisplay
- */
-
 import './GraphLinkDisplay.scss';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import config from '@/static/config';
@@ -17,12 +12,31 @@ const START_OFFSET = '20%';
 
 const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
 
+interface GraphLinkDisplayProps {
+  /** Graph link object. */
+  link: Record<string, unknown>;
+  /** Node decorator object. */
+  actionsNode?: Record<string, unknown>;
+  /** color of link. CSS color syntax(es). */
+  color?: string;
+  /** Node currently opened in detail drawer. */
+  detail?: Record<string, unknown>;
+  /** current filter string value. */
+  filter?: string;
+  /** handler for clicking link. */
+  handleClick?: (...args: unknown[]) => void;
+  /** property to label link by. */
+  labelKey?: string;
+  /** SVG end marker identifier. */
+  marker?: string;
+}
+
 /**
  * Display component for graph link objects. Rendered as a straight link from a
  * source node to a target. With an arrow marker on the end, hovering just
  * outside the target node bounds.
  */
-function GraphLinkDisplay(props) {
+function GraphLinkDisplay(props: GraphLinkDisplayProps) {
   const {
     link,
     color,
@@ -127,28 +141,6 @@ function GraphLinkDisplay(props) {
     </g>
   );
 }
-
-/**
- * @namespace
- * @property {Object} link - Graph link object.
- * @property {Object} detail - Node currently opened in detail drawer.
- * @property {string} labelKey - property to label link by.
- * @property {string} color - color of link. CSS color syntax(es).
- * @property {function} handleClick - handler for clicking link.
- * @property {Object} actionsNode - Node decorator object.
- * @property {string} marker - SVG end marker identifier.
- * @property {string} filter - current filter string value.
- */
-GraphLinkDisplay.propTypes = {
-  link: PropTypes.object.isRequired,
-  actionsNode: PropTypes.object,
-  color: PropTypes.string,
-  detail: PropTypes.object,
-  filter: PropTypes.string,
-  handleClick: PropTypes.func,
-  labelKey: PropTypes.string,
-  marker: PropTypes.string,
-};
 
 GraphLinkDisplay.defaultProps = {
   detail: null,

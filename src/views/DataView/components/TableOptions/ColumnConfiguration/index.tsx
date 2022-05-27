@@ -10,8 +10,15 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TreeItem from '@material-ui/lab/TreeItem';
 import TreeView from '@material-ui/lab/TreeView';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+
+import useGrid from '@/components/hooks/useGrid';
+
+interface ColumnConfigurationProps {
+  gridRef?: ReturnType<typeof useGrid>['ref'];
+  isOpen?: boolean;
+  onClose?: (...args: unknown[]) => void;
+}
 
 /**
  * shows list of checkboxes where each checkbox is a column.
@@ -24,7 +31,7 @@ const ColumnConfiguration = ({
   onClose,
   isOpen,
   gridRef,
-}) => {
+}: ColumnConfigurationProps) => {
   const [columns, setColumns] = useState([]);
   const [openCols, setOpenCols] = useState({});
 
@@ -138,12 +145,6 @@ const ColumnConfiguration = ({
     </Dialog>
   );
   return result;
-};
-
-ColumnConfiguration.propTypes = {
-  gridRef: PropTypes.any,
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
 };
 
 ColumnConfiguration.defaultProps = {

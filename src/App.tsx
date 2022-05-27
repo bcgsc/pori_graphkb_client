@@ -1,6 +1,3 @@
-/**
- * @module /App
- */
 import { CssBaseline } from '@material-ui/core';
 import {
   createGenerateClassName, createMuiTheme,

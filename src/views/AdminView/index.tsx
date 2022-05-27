@@ -1,6 +1,3 @@
-/**
- * @module /views/AdminView
- */
 import './index.scss';
 
 import {

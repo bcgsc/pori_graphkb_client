@@ -1,6 +1,5 @@
 /**
  * Handles miscellaneous tasks.
- * @module /services/util
  */
 
 import config from '@/static/config';

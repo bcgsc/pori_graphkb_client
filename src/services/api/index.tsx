@@ -1,6 +1,5 @@
 /**
  * Wrapper for api, handles all requests and special functions.
- * @module /services/api
  */
 import kbSchema from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';

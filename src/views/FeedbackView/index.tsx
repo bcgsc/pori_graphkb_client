@@ -1,6 +1,3 @@
-/**
- * @module /views/FeedbackView
- */
 import { Typography } from '@material-ui/core';
 import React from 'react';
 

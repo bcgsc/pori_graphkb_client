@@ -1,18 +1,17 @@
 import './index.scss';
 
-import PropTypes from 'prop-types';
 import React from 'react';
 
 /* eslint-disable react/no-array-index-key */
 
-const Indent = ({ level, indent }) => (
+interface IndentProps {
+  indent?: string;
+  level?: number;
+}
+
+const Indent = ({ level, indent }: IndentProps) => (
   <pre className={`json-view__indent json-view__indent--level-${level}`}>{indent.repeat(level)}</pre>
 );
-
-Indent.propTypes = {
-  indent: PropTypes.string,
-  level: PropTypes.number,
-};
 
 Indent.defaultProps = {
   indent: '  ',
@@ -21,9 +20,15 @@ Indent.defaultProps = {
 
 const DefaultValueComponent = ({ value }) => JSON.stringify(value);
 
+interface ValueViewProps {
+  value: unknown;
+  ValueComponent?: ({ value }) => JSX.Element;
+  name?: string;
+}
+
 const ValueView = ({
   name, value, ValueComponent, ...rest
-}) => (
+}: ValueViewProps) => (
   <div>
     <Indent {...rest} />
     <span>
@@ -32,20 +37,22 @@ const ValueView = ({
   </div>
 );
 
-ValueView.propTypes = {
-  value: PropTypes.any.isRequired,
-  ValueComponent: PropTypes.func,
-  name: PropTypes.string,
-};
-
 ValueView.defaultProps = {
   name: '',
   ValueComponent: DefaultValueComponent,
 };
 
+interface ObjectViewProps {
+  data: Record<string, unknown>;
+  // eslint-disable-next-line react/require-default-props
+  closingBrace?: string;
+  // eslint-disable-next-line react/require-default-props
+  level?: number;
+}
+
 const ObjectView = ({
   data, level, closingBrace, ...rest
-}) => (
+}: ObjectViewProps) => (
   <>
     {Object.entries(data).map(([key, value]) => {
       if (Array.isArray(value)) {
@@ -86,20 +93,20 @@ const ObjectView = ({
   </>
 );
 
-ObjectView.propTypes = {
-  data: PropTypes.object.isRequired,
-  closingBrace: PropTypes.string,
-  level: PropTypes.number,
-};
-
 ObjectView.defaultProps = {
   level: 0,
   closingBrace: '}',
 };
 
+interface ArrayViewProps {
+  data: unknown[];
+  closingBrace?: string;
+  level?: number;
+}
+
 const ArrayView = ({
   data, level, closingBrace, ...rest
-}) => (
+}: ArrayViewProps) => (
   <>
     {data.map((value, key) => {
       if (Array.isArray(value)) {
@@ -123,18 +130,12 @@ const ArrayView = ({
   </>
 );
 
-ArrayView.propTypes = {
-  data: PropTypes.array.isRequired,
-  closingBrace: PropTypes.string,
-  level: PropTypes.number,
-};
-
 ArrayView.defaultProps = {
   level: 0,
   closingBrace: ']',
 };
 
-const JSONView = (props) => (
+const JSONView = (props: ObjectViewProps) => (
   <>
     <div><span>{'{'}</span></div>
     <ObjectView {...props} />

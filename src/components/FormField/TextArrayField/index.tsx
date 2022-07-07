@@ -9,39 +9,43 @@ import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { boundMethod } from 'autobind-decorator';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+
+interface TextArrayFieldProps {
+  /** Input name attribute. */
+  name: string;
+  /** Parent component change handler. */
+  onChange: (arg: { target: { name: string; value: string[] } }) => unknown;
+  /** Disabled flag. */
+  disabled?: boolean;
+  /** TextField error flag or message. */
+  error?: boolean;
+  /** TextField label. */
+  label?: string;
+  /** Embedded set property as array. */
+  value?: string[];
+}
+
+interface TextArrayFieldState {
+  /** the current list of values (including deleted) */
+  value: string[];
+  /** the set of items that must be pseudo-deleted */
+  initialValue: Set<string>;
+  /** the set of items which have been pseudo-deleted */
+  deleted: Set<string>;
+  /** the current value of the text field */
+  textInputValue: string;
+  /** the error message for input to the text field */
+  textInputError: string;
+}
 
 /**
  * Field which stores a list of non-redundant strings from user typed input.
  * Allows the user to clear options if they were entered and not passed in from
  * the parent form. Options that were passed in from the parent form are instead
  * staged for deletion
- *
- * @property {object} props
- * @property {function} props.onChange - Parent component change handler.
- * @property {Array.<string>} props.value - Embedded set property as array.
- * @property {string} props.label - TextField label.
- * @property {string} props.name - Input name attribute.
- * @property {boolean|string} props.error - TextField error flag or message.
- * @property {boolean} props.disabled - Disabled flag.
- * @property {object} state
- * @property {Array.<string>} state.value the current list of values (including deleted)
- * @property {Set} state.deleted the set of items which have been pseudo-deleted
- * @property {Set} state.initialValue the set of items that must be pseudo-deleted
- * @property {string} state.textInputError the error message for input to the text field
- * @property {string} state.textInputValue the current value of the text field
  */
-class TextArrayField extends Component {
-  static propTypes = {
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    error: PropTypes.bool,
-    label: PropTypes.string,
-    value: PropTypes.arrayOf(PropTypes.string),
-  };
-
+class TextArrayField extends Component<TextArrayFieldProps, TextArrayFieldState> {
   static defaultProps = {
     disabled: false,
     error: false,

@@ -10,15 +10,27 @@ import {
   Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import util from '@/services/util';
 
+import { GraphOptions, PropsMap } from '../kbgraph';
+
+interface GraphLegendProps {
+  /** Graph Options instance. */
+  graphOptions: GraphOptions;
+  /** handler for graph options change. */
+  onChange: (arg: { target: { name: 'nodesLegend' | 'linksLegend'; value: false } }) => void;
+  /** Graph PropsMap instance */
+  propsMap: PropsMap;
+  /** flag for link legend being disabled. */
+  linkDisabled?: boolean;
+}
+
 /**
  * Legend panels for nodes and links in graph.
  */
-function GraphLegend(props) {
+function GraphLegend(props: GraphLegendProps) {
   const {
     graphOptions,
     onChange,
@@ -144,22 +156,6 @@ function GraphLegend(props) {
     </div>
   );
 }
-
-/**
- * @namespace
- * @property {PropsMap} propsMap - Graph PropsMap instance
- * @see /src/components/GraphComponent/kbgraph.js
- * @property {GraphOptions} graphOptions - Graph Options instance.
- * @see /src/components/GraphComponent/kbgraph.js
- * @property {function} onChange - handler for graph options change.
- * @property {boolean} linkDisabled - flag for link legend being disabled.
- */
-GraphLegend.propTypes = {
-  graphOptions: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
-  propsMap: PropTypes.object.isRequired,
-  linkDisabled: PropTypes.bool,
-};
 
 GraphLegend.defaultProps = {
   linkDisabled: true,

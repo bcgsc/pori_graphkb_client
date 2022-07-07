@@ -1,12 +1,12 @@
 import './index.scss';
 
 import { Paper } from '@material-ui/core';
-import propTypes from 'prop-types';
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import ModelSelect from '@/components/ModelSelect';
 
-const NewRecordSelectView = (props) => {
+const NewRecordSelectView = (props: RouteComponentProps<{ modelName: string }>) => {
   const {
     history,
     match: {
@@ -31,11 +31,6 @@ const NewRecordSelectView = (props) => {
       </Paper>
     </div>
   );
-};
-
-NewRecordSelectView.propTypes = {
-  history: propTypes.object.isRequired,
-  match: propTypes.object.isRequired,
 };
 
 export default NewRecordSelectView;

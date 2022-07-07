@@ -8,27 +8,25 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import RecordForm from '@/components/RecordForm';
 import { FORM_VARIANT } from '@/components/util';
 
+interface RecordFormDialogProps extends Omit<React.ComponentProps<typeof RecordForm>, 'title'> {
+  /** the function to handle the dialog cancel button */
+  onClose: (...args: unknown[]) => void;
+  /** flag to indicate the current dialog is open */
+  isOpen?: boolean;
+  title?: string;
+}
+
 /**
  * Popup container for holding a RecordForm component
- *
- * @param {object} props
- * @param {bool} props.isOpen flag to indicate the current dialog is open
- * @param {Object} props.value initial value for the form
- * @param {string} props.modelName the model to use for the RecordForm
- * @param {func} props.onClose the function to handle the dialog cancel button
- * @param {func} props.onError the function handler for errors submitting the form
- * @param {func} props.onSubmit the function handler to be executing on sucessful form submission
- * @param {string} props.rid the initial record id
  */
-const RecordFormDialog = (props) => {
+const RecordFormDialog = (props: RecordFormDialogProps) => {
   const {
-    isOpen,
+    isOpen = false,
     modelName,
     onClose,
     onError,
@@ -80,20 +78,8 @@ const RecordFormDialog = (props) => {
   );
 };
 
-RecordFormDialog.propTypes = {
-  modelName: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  variant: PropTypes.oneOf(Object.values(FORM_VARIANT)).isRequired,
-  isOpen: PropTypes.bool,
-  title: PropTypes.string,
-  value: PropTypes.object,
-};
-
 RecordFormDialog.defaultProps = {
   isOpen: false,
-  value: {},
   title: '',
 };
 

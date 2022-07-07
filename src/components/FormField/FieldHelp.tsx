@@ -1,19 +1,21 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import ClickToolTip from '@/components/ClickToolTip';
+
+interface FieldHelpProps {
+  /** an example value */
+  example?: unknown;
+  /** the description of the form field */
+  description?: string;
+}
 
 /**
  * Clickable Question mark Icon that displays some description
  * which helps explain to the user what the
  * form field they are looking at should be filled
  * with
- *
- * @param {object} props
- * @param {string} props.example an example value
- * @param {string} props.description the description of the form field
  */
-const FieldHelp = ({ example, description }) => {
+const FieldHelp = ({ example, description }: FieldHelpProps) => {
   let text;
 
   if (description) {
@@ -28,11 +30,6 @@ const FieldHelp = ({ example, description }) => {
       title={text}
     />
   );
-};
-
-FieldHelp.propTypes = {
-  description: PropTypes.string,
-  example: PropTypes.any,
 };
 
 FieldHelp.defaultProps = {

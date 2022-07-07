@@ -5,17 +5,18 @@ import {
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { boundMethod } from 'autobind-decorator';
-import PropTypes from 'prop-types';
 import React from 'react';
 
-class OptionsMenu extends React.Component {
-  static propTypes = {
-    options: PropTypes.arrayOf(
-      PropTypes.shape({ label: PropTypes.string.isRequired, content: PropTypes.object, handler: PropTypes.func }),
-    ).isRequired,
-    className: PropTypes.string,
-  };
+interface OptionsMenuProps {
+  options: {
+    label: string;
+    content?: Record<string, unknown>;
+    handler?: (...args: unknown[]) => unknown;
+  }[];
+  className?: string;
+}
 
+class OptionsMenu extends React.Component<OptionsMenuProps, { expandedOption: string | null }> {
   static defaultProps = {
     className: '',
   };
@@ -28,7 +29,7 @@ class OptionsMenu extends React.Component {
   }
 
   @boundMethod
-  handleToggleOptionExpand(option) {
+  handleToggleOptionExpand(option: string) {
     const { expandedOption } = this.state;
 
     if (option === expandedOption) {

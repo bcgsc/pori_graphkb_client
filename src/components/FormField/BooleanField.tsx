@@ -6,22 +6,30 @@ import {
   Radio,
   RadioGroup,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
+
+interface BooleanFieldProps {
+  /** the name of the field used in propogating events */
+  name: string;
+  /** the function handler for changes */
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  /** flag to indicate the user cannot change this field */
+  disabled?: boolean;
+  /** flag to indicate there has been an error filling this field */
+  error?: boolean;
+  helperText?: string;
+  /** the field label */
+  label?: string;
+  /** flag to indicate this field must be filled */
+  required?: boolean;
+  /** the current value */
+  value?: string | boolean;
+}
 
 /**
  * RadioForm Field for a boolean form fieldset
- *
- * @param {object} props
- * @param {boolean} props.disabled flag to indicate the user cannot change this field
- * @param {boolean} props.error flag to indicate there has been an error filling this field
- * @param {string} props.label the field label
- * @param {string} props.name the name of the field used in propogating events
- * @param {function} props.onChange the function handler for changes
- * @param {boolean} props.required flag to indicate this field must be filled
- * @param {string|boolean} props.value the current value
  */
-const BooleanField = (props) => {
+const BooleanField = (props: BooleanFieldProps) => {
   const {
     disabled,
     error,
@@ -64,17 +72,6 @@ const BooleanField = (props) => {
       </FormControl>
     </div>
   );
-};
-
-BooleanField.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 BooleanField.defaultProps = {

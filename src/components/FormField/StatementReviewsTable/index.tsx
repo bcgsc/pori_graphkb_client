@@ -8,23 +8,29 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
+
+import { FORM_VARIANT } from '@/components/util';
 
 import StatementReviewRow from './StatementReview';
 
+interface StatementReviewsTableProps {
+  /** the name of this field (for propagating change events) */
+  name: string;
+  /** parent change handler function */
+  onChange: (...args: unknown[]) => void;
+  /** linked records to be displayed in table */
+  values?: Record<string, unknown>[];
+  /** mode that dialog is in. One of ['view','edit']. */
+  variant?: FORM_VARIANT.VIEW | FORM_VARIANT.EDIT;
+}
+
 /**
  * Table to display related linked records as detailChips in embedded link set.
- *
- * @property {Arrayof(objects)} props.values linked records to be displayed in table
- * @property {object} props.values record content to be displayed
- * @property {string} props.variant mode that dialog is in. One of ['view','edit'].
- * @property {function} props.onChange parent change handler function
- * @property {string} props.name the name of this field (for propogating change events)
  */
-const StatementReviewsTable = (props) => {
+const StatementReviewsTable = (props: StatementReviewsTableProps) => {
   const {
-    values,
+    values = [],
     variant,
     onChange,
     name,
@@ -66,16 +72,9 @@ const StatementReviewsTable = (props) => {
   );
 };
 
-StatementReviewsTable.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  values: PropTypes.arrayOf(PropTypes.object),
-  variant: PropTypes.string,
-};
-
 StatementReviewsTable.defaultProps = {
   values: [],
-  variant: 'view',
+  variant: FORM_VARIANT.VIEW,
 };
 
 export default StatementReviewsTable;

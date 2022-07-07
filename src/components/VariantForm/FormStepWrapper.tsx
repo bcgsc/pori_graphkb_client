@@ -1,18 +1,17 @@
-import PropTypes from 'prop-types';
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React, { ReactNode } from 'react'; // eslint-disable-line no-unused-vars
+
+interface FormStepWrapperProps {
+  children: ReactNode;
+  label: string;
+  fields?: string[];
+}
 
 /**
  * Component to pass the step props to (label and fields) which is not actually displayed
  */
 const FormStepWrapper = ({
   children,
-}) => children;
-
-FormStepWrapper.propTypes = {
-  children: PropTypes.element.isRequired,
-  label: PropTypes.string.isRequired,
-  fields: PropTypes.arrayOf(PropTypes.string),
-};
+}: FormStepWrapperProps) => children;
 
 FormStepWrapper.defaultProps = {
   fields: [],

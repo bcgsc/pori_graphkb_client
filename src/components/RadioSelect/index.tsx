@@ -10,26 +10,39 @@ import {
   MenuList,
   Radio,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { ReactNode } from 'react';
+
+interface Option {
+  label: string;
+  value: unknown;
+  caption?: ReactNode;
+}
+
+interface RadioSelectProps {
+  /** the options to display */
+  options: (Option | string)[];
+  /** css class name to add to the top-level component */
+  className?: string;
+  /** optional label for the field */
+  label?: string;
+  /** the name to use for the input and reporting change to the parent handler */
+  name?: string;
+  /** the change handler to report the selection back to the parent */
+  onChange?: (arg: { target: { name?: string; value: unknown } }) => unknown;
+  /** the function to generate a key from a selection value */
+  optionToKey?: (option: Option | string) => string;
+  /** the current value */
+  value?: unknown;
+}
 
 /**
  * Select from a list of radio button options
  *
  * Add captions below choices when provided
- *
- * @param {object} props
- * @param {Array.<string|object>} props.options the options to display
- * @param {function} props.onChange the change handler to report the selection back to the parent
- * @param {string} props.className css class name to add to the top-level component
- * @param {string} props.label optional label for the field
- * @param {any} props.value the current value
- * @param {function} props.optionToKey the function to generate a key from a selection value
- * @param {string} props.name the name to use for the input and reporting change to the parent handler
  */
 const RadioSelect = ({
   options, onChange, className, label, value, optionToKey, name,
-}) => (
+}: RadioSelectProps) => (
   <MenuList className={`radio-select ${className}`}>
     {label && (<FormLabel>{label}</FormLabel>)}
     {options.map((option) => {
@@ -57,18 +70,6 @@ const RadioSelect = ({
     })}
   </MenuList>
 );
-
-RadioSelect.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string, PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),
-  ])).isRequired,
-  className: PropTypes.string,
-  label: PropTypes.string,
-  name: PropTypes.string,
-  onChange: PropTypes.func,
-  optionToKey: PropTypes.func,
-  value: PropTypes.any,
-};
 
 RadioSelect.defaultProps = {
   label: '',

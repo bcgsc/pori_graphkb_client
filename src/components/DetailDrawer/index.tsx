@@ -76,11 +76,10 @@ function DetailDrawer(props: DetailDrawerProps) {
    */
   const handleExpand = (key) => {
     if (opened.includes(key)) {
-      opened.splice(opened.indexOf(key), 1);
+      setOpened((prev) => prev.filter((k) => k !== key));
     } else {
-      opened.push(key);
+      setOpened((prev) => [...prev, key]);
     }
-    setOpened([...opened]);
   };
 
   const [linkOpen, setLinkOpen] = useState(null);

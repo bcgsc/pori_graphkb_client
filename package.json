@@ -144,7 +144,8 @@
     "test:ci": "NODE_ENV=test jest --config config/jest.config.js",
     "lint": "eslint src --config .eslintrc.json --quiet",
     "serve": "NODE_ENV=development serve dist/development -s",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "check-types": "tsc --noEmit --project ./tsconfig.json"
   },
   "sasslintConfig": "config/sass-lint.yml",
   "config": {

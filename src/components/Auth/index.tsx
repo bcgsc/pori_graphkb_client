@@ -54,15 +54,23 @@ interface AuthContextState {
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
 
-const useAuth = () => {
+function useAuth(): AuthContextState;
+function useAuth(options: { required: true; }): Required<AuthContextState>;
+function useAuth(options?: { required?: boolean; }) {
   const state = useContext(AuthContext);
 
   if (!state) {
     throw new Error('context provider for AuthContext is missing');
   }
 
+  if (!state.user && options?.required) {
+    // this should never be called within an authenticated route,
+    // but makes the types easier to work with
+    throw new Error('Authentication is required');
+  }
+
   return state;
-};
+}
 
 const AuthProvider = (props: { children: ReactNode }) => {
   const { children } = props;

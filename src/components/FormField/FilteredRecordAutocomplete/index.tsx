@@ -9,7 +9,7 @@ import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 
-interface FilteredRecordAutocompleteProps {
+interface FilteredRecordAutocompleteProps extends Omit<Partial<React.ComponentProps<typeof RecordAutocomplete>>, 'getQueryBody' | 'placeholder'> {
   /** the base class for creating the class filter for the paired autocomplete component */
   linkedClassName: string;
   /** the field name used in passing to parent handlers */
@@ -18,7 +18,6 @@ interface FilteredRecordAutocompleteProps {
   defaultFilterClassName?: string;
   /** allows multiple selections for the autocomplete */
   isMulti?: boolean;
-  // all remaining properties are passed to the RecordAutocomplete component
   disabled?: boolean;
   error?: boolean;
   filterOptions?: string[];

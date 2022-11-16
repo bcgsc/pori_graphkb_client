@@ -9,6 +9,7 @@ declare global {
       CONTACT_TICKET_URL: string;
       IS_DEMO: string;
       API_BASE_URL: string;
+      PUBLIC_PATH: string;
     }
   }
 }

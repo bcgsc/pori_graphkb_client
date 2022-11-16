@@ -15,19 +15,21 @@ import { GeneralRecordType, PropertyDefinition } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
+const identifiers = ['displayName', '@rid', 'sourceId'];
+
 interface LinkEmbeddedPropListProps {
   /** property formatting function */
   formatOtherProps: (record: GeneralRecordType, isNested: boolean) => unknown;
   /** adds prop to opened object and handles expansion */
-  handleExpand?: (name: string | GeneralRecordType) => unknown;
+  handleExpand: (name: string | GeneralRecordType) => unknown;
   /** is the prop nested */
-  isNested?: boolean;
+  isNested: boolean | undefined;
   /** opened dropdowns in drawer */
-  opened?: (string | GeneralRecordType)[];
+  opened: (string | GeneralRecordType)[];
   /** link/embedded property model */
-  prop?: PropertyDefinition;
+  prop: PropertyDefinition;
   /** contains link/embedded records */
-  value?: GeneralRecordType;
+  value: GeneralRecordType;
 }
 
 /**
@@ -35,7 +37,7 @@ interface LinkEmbeddedPropListProps {
  */
 function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   const {
-    prop, isNested, value, identifiers, handleExpand, formatOtherProps, opened,
+    prop, isNested, value, handleExpand, formatOtherProps, opened,
   } = props;
   const { name, type } = prop;
   let previewStr;
@@ -99,14 +101,5 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
     </React.Fragment>
   );
 }
-
-LinkEmbeddedPropList.defaultProps = {
-  handleExpand: () => {},
-  identifiers: [],
-  isNested: false,
-  opened: [],
-  prop: {},
-  value: {},
-};
 
 export default LinkEmbeddedPropList;

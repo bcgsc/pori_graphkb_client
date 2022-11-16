@@ -15,9 +15,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useGrid from '@/components/hooks/useGrid';
 
 interface ColumnConfigurationProps {
-  gridRef?: ReturnType<typeof useGrid>['ref'];
-  isOpen?: boolean;
-  onClose?: (...args: unknown[]) => void;
+  gridRef: ReturnType<typeof useGrid>['ref'];
+  isOpen: boolean;
+  onClose: (...args: unknown[]) => void;
 }
 
 interface Col {
@@ -68,7 +68,7 @@ const ColumnConfiguration = ({
 
       if (parentTitle) {
         // add to current group
-        current.children.push({
+        (current as Required<Col>).children.push({
           title: columnApi.getDisplayNameForColumn(column),
           id: column.colId,
           parentId: parent?.groupId,
@@ -152,11 +152,6 @@ const ColumnConfiguration = ({
     </Dialog>
   );
   return result;
-};
-
-ColumnConfiguration.defaultProps = {
-  onClose: () => {},
-  isOpen: false,
 };
 
 export default ColumnConfiguration;

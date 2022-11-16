@@ -24,13 +24,13 @@ interface CytobandPositionProps {
   /** change handler */
   onChange: (arg: { target: { name?: string; value: unknown } }) => void;
   /** flag to indicate this field is disabled */
-  disabled?: boolean;
+  disabled: boolean;
   /** the form field name to pass up to the change handler */
-  name?: string;
+  name: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the initial value */
-  value?: unknown;
+  value: unknown | undefined;
 }
 
 /**
@@ -80,9 +80,6 @@ const CytobandPosition = ({
 
 CytobandPosition.defaultProps = {
   required: true,
-  value: {},
-  name: '',
-  disabled: false,
 };
 
 export default CytobandPosition;

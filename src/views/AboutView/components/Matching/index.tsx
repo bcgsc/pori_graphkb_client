@@ -125,7 +125,6 @@ const MatchView = (props: RouteComponentProps) => {
           tuple('/query', query),
           async ({ queryKey: [, body] }) => api.query(body),
           { staleTime: Infinity },
-          { throwOnError: true },
         )),
       );
 

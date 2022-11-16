@@ -16,10 +16,10 @@ import { GeneralRecordType } from '@/components/types';
 import { navigateToGraph } from '@/components/util';
 
 interface DataViewFooterProps {
-  onError?: (err: Error) => void;
-  selectedRecords?: GeneralRecordType[];
-  statusMessage?: string;
-  totalRows?: number | null;
+  onError: (err: Error) => void;
+  selectedRecords: GeneralRecordType[];
+  statusMessage: string;
+  totalRows: number | null;
   history: RouteComponentProps['history'];
 }
 
@@ -65,13 +65,6 @@ const DataViewFooter = ({
 
     </div>
   );
-};
-
-DataViewFooter.defaultProps = {
-  onError: () => {},
-  selectedRecords: [],
-  statusMessage: '',
-  totalRows: null,
 };
 
 export default DataViewFooter;

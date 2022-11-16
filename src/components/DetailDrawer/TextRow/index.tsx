@@ -25,11 +25,11 @@ interface TextRowProps {
   /** array containing opened property models */
   opened: (string | GeneralRecordType)[];
   /** adds clicked props to opened object */
-  handleExpand?: (name: string) => void;
+  handleExpand: (name: string) => void;
   /** property key. */
-  name?: string;
+  name: string;
   /** property value */
-  value?: unknown;
+  value: unknown;
 }
 
 /**
@@ -124,8 +124,6 @@ function TextRow(props: TextRowProps) {
 }
 
 TextRow.defaultProps = {
-  handleExpand: () => {},
-  name: '',
   value: {},
 };
 

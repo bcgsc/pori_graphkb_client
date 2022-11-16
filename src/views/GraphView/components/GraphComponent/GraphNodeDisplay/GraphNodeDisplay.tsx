@@ -17,21 +17,19 @@ const FADED_OPACITY = 0.6;
 
 interface GraphNodeDisplayProps {
   /** Node decorator object. */
-  actionsNode?: GraphLink | GraphNode | null;
+  actionsNode: GraphLink | GraphNode | null;
   /** Function to apply drag functionality to node. */
-  applyDrag?: (node: GraphNode) => void;
+  applyDrag: (node: GraphNode) => void;
   /** Color of node. */
-  color?: string | undefined;
+  color: string | undefined;
   /** Node currently opened in detail drawer. */
-  detail?: GeneralRecordType | null;
-  /** current filter string value. */
-  filter?: string;
+  detail: GeneralRecordType | null;
   /** Parent method on node click event. */
-  handleClick?: () => void;
+  handleClick: () => void;
   /** Property to label node by. */
-  labelKey?: string;
+  labelKey: string;
   /** Node to be rendered. */
-  node?: GraphNode;
+  node: GraphNode;
 }
 
 /**
@@ -47,7 +45,6 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     node,
     actionsNode,
     detail,
-    filter,
   } = props;
 
   const nodeSVG = useRef<SVGGElement | null>(null);
@@ -81,8 +78,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   }
 
   const faded = (detail && detail['@rid'] !== node.getId())
-      || (actionsNode && actionsNode.getId() !== node.getId())
-      || (filter && !label.includes(filter.toLowerCase()));
+      || (actionsNode && actionsNode.getId() !== node.getId());
 
   let opacity = DEFAULT_OPACITY;
 
@@ -125,16 +121,5 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     </g>
   );
 }
-
-GraphNodeDisplay.defaultProps = {
-  node: null,
-  handleClick: null,
-  color: '#26328C',
-  labelKey: 'name',
-  actionsNode: null,
-  applyDrag: null,
-  detail: null,
-  filter: '',
-};
 
 export default GraphNodeDisplay;

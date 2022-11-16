@@ -37,7 +37,7 @@ interface QueryResultsTableProps {
   queryBody: QueryBody;
   /** the title to put above the table */
   title: string;
-  description?: string;
+  description: string;
 }
 
 /**
@@ -69,7 +69,7 @@ const QueryResultsTable = ({
       <Typography className="query-results-table__title" variant="h3">
         {title} ({isFetching ? '?' : data && data.length})
       </Typography>
-      {description && (<Typography paragraph variant="caption">{description}</Typography>)}
+      <Typography paragraph variant="caption">{description}</Typography>
       <div
         className="ag-theme-material query-results-table__content"
         role="presentation"
@@ -88,10 +88,6 @@ const QueryResultsTable = ({
       </div>
     </div>
   );
-};
-
-QueryResultsTable.defaultProps = {
-  description: '',
 };
 
 export default QueryResultsTable;

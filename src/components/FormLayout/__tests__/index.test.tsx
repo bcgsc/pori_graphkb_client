@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 
@@ -42,24 +42,9 @@ describe('FormLayout', () => {
     );
 
     expect(getByText('The username')).toBeInTheDocument();
+    fireEvent.click(getByText('Expand to see all optional fields'));
     expect(getByText('@rid')).toBeInTheDocument();
     expect(getByTestId('@rid')).toBeInTheDocument();
     expect(getByTestId('@rid').value).toEqual('#3:4');
-  });
-
-  test('exclusion works', () => {
-    const { getByText, queryByText } = render(
-      <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ formContent: { '@rid': '#3:4', name: 'user' }, formVariant: 'view', updateFieldEvent: jest.fn() }}>
-          <FormLayout
-            exclusions={['@rid']}
-            modelName="User"
-          />
-        </FormContext.Provider>
-      </QueryClientProvider>,
-    );
-
-    expect(getByText('The username')).toBeInTheDocument();
-    expect(queryByText('@rid')).toBe(null);
   });
 });

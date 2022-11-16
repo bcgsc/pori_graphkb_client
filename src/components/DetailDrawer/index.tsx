@@ -19,7 +19,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { GeneralRecordType } from '@/components/types';
+import { GeneralRecordType, PropertyDefinition } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -51,7 +51,7 @@ interface DetailDrawerProps {
   /** Function triggered on @material-ui/Drawer onClose event. */
   isEdge?: boolean;
   /** Ontology to be displayed in drawer. */
-  node?: GeneralRecordType;
+  node: GeneralRecordType | undefined;
   onClose?: React.ComponentProps<typeof IconButton>['onClick'];
 }
 
@@ -105,7 +105,6 @@ function DetailDrawer(props: DetailDrawerProps) {
    * @param {boolean} isNested - Nested flag.
    */
   const formatProps = (record, properties: PropertyDefinition[], isNested?: boolean) => {
-    const identifiers = ['displayName', '@rid', 'sourceId'];
     const updatedProperties = movePropToTop(properties, 'displayName');
 
     return updatedProperties.map((prop) => {
@@ -117,7 +116,6 @@ function DetailDrawer(props: DetailDrawerProps) {
         const formattedSetProps = (
           <SetPropsList
             handleExpand={handleExpand}
-            identifiers={identifiers}
             opened={opened}
             prop={prop}
             value={value}
@@ -131,7 +129,6 @@ function DetailDrawer(props: DetailDrawerProps) {
             // eslint-disable-next-line no-use-before-define
             formatOtherProps={formatOtherProps}
             handleExpand={handleExpand}
-            identifiers={identifiers}
             isNested={isNested}
             opened={opened}
             prop={prop}
@@ -181,7 +178,6 @@ function DetailDrawer(props: DetailDrawerProps) {
    * @param {boolean} isNested - Nested flag indicating if record is embedded
    */
   const formatOtherProps = (record: GeneralRecordType, isNested?: boolean) => {
-    const identifiers = ['@class', '@rid'];
     let properties = Object.keys(record)
       .map((key) => ({ name: key, type: util.parseKBType(record[key]) }));
 
@@ -189,7 +185,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       properties = schema.getProperties(record);
     }
     const propsList = Object.values(properties)
-      .filter((prop) => !identifiers.map((id) => id.split('.')[0]).includes(prop.name)
+      .filter((prop) => !['@class', '@rid'].includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
 
@@ -233,17 +229,13 @@ function DetailDrawer(props: DetailDrawerProps) {
           </div>
           {auth.hasWriteAccess && (
           <Link target="_blank" to={`/edit/${recordClass}/${recordId}`}>
-            <IconButton
-              variant="outlined"
-            >
+            <IconButton>
               <EditIcon />
             </IconButton>
           </Link>
           )}
           <Link target="_blank" to={`/view/${recordClass}/${recordId}`}>
-            <IconButton
-              variant="outlined"
-            >
+            <IconButton>
               <OpenInNewIcon />
             </IconButton>
           </Link>
@@ -319,7 +311,6 @@ function DetailDrawer(props: DetailDrawerProps) {
 }
 
 DetailDrawer.defaultProps = {
-  node: null,
   onClose: null,
   isEdge: false,
 };

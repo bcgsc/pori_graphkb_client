@@ -8,41 +8,37 @@ interface ModelSelectProps {
   /** the parent onChange handler */
   onChange: (arg: { target: { name?: string; value: unknown } }) => void;
   /** the top level model to be used as the base of the tree of models to collect as options */
-  baseModel?: string;
-  /** the default value to be selected when value is not given */
-  defaultValue?: string;
-  disabled?: boolean;
+  baseModel: string;
   /** flag to indicate the options should include abstract classes */
   includeAbstract?: boolean;
-  /** the field name to use in passing events to the onChange handler */
-  name?: string;
   /** the currently selected value */
   value?: string;
   /** the display type (radio or select) */
   variant?: string;
+  className?: string;
 }
 
 /**
  * Select a database model class
  */
 const ModelSelect = ({
-  baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
+  baseModel, value, includeAbstract, onChange, variant, className,
 }: ModelSelectProps) => {
   const [choices, setChoices] = useState<SelectOption[]>([]);
-  const model = value || defaultValue;
+  const model = value;
 
   useEffect(() => {
     const models = schemaDefn.get(baseModel).descendantTree(!includeAbstract).map((m) => ({
       label: m.name, value: m.name, caption: m.description, key: m.name,
     })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);
-  }, [baseModel, includeAbstract, name, onChange, value]);
+  }, [baseModel, includeAbstract, onChange, value]);
 
   useEffect(() => {
     if (choices.length === 1 && model !== choices[0].value) {
-      onChange({ target: { name, value: choices[0].value } });
+      onChange({ target: { name: '', value: choices[0].value } });
     }
-  }, [choices, model, name, onChange, value]);
+  }, [choices, model, onChange, value]);
 
   const BaseComponent = variant === 'radio'
     ? RadioSelect
@@ -53,23 +49,20 @@ const ModelSelect = ({
   }
   return (
     <BaseComponent
-      disabled={choices.length < 2 || disabled}
+      className={className}
+      disabled={choices.length < 2}
       onChange={onChange}
       options={choices}
       value={model}
-      {...props}
     />
   );
 };
 
 ModelSelect.defaultProps = {
-  baseModel: 'V',
-  defaultValue: '',
   includeAbstract: false,
   value: '',
   variant: 'select',
-  disabled: false,
-  name: '',
+  className: '',
 };
 
 export default ModelSelect;

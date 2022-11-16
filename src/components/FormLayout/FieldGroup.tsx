@@ -45,7 +45,7 @@ interface FieldGroupProps {
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
   /** if field should be disabled */
-  disabled?: boolean;
+  disabled: boolean | undefined;
   /** fields to be excluded from rendering */
   exclusions?: string[];
 }
@@ -122,7 +122,6 @@ const FieldGroup = ({
 
 FieldGroup.defaultProps = {
   exclusions: [],
-  disabled: false,
 };
 
 export default FieldGroup;

@@ -79,7 +79,6 @@ const AboutView = (props: RouteComponentProps) => {
               key={label}
               component={component}
               exact
-              label={label}
               path={uri}
             />
           ))}

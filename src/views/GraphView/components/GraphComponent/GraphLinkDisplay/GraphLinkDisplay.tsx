@@ -19,19 +19,17 @@ interface GraphLinkDisplayProps {
   /** Graph link object. */
   link: GraphLink;
   /** Node decorator object. */
-  actionsNode?: GraphLink | GraphNode | null;
+  actionsNode: GraphLink | GraphNode | null;
   /** color of link. CSS color syntax(es). */
-  color?: string | undefined;
+  color: string | undefined;
   /** Node currently opened in detail drawer. */
-  detail?: GeneralRecordType | null;
-  /** current filter string value. */
-  filter?: string;
+  detail: GeneralRecordType | null;
   /** handler for clicking link. */
-  handleClick?: () => void;
+  handleClick: () => void;
   /** property to label link by. */
-  labelKey?: string;
+  labelKey: string;
   /** SVG end marker identifier. */
-  marker?: string;
+  marker: string;
 }
 
 /**
@@ -48,7 +46,6 @@ function GraphLinkDisplay(props: GraphLinkDisplayProps) {
     handleClick,
     detail,
     actionsNode,
-    filter,
   } = props;
 
   if (link.source === link.target) return null;
@@ -70,11 +67,9 @@ function GraphLinkDisplay(props: GraphLinkDisplayProps) {
   }
 
   const faded = (detail && detail['@rid'] !== link.data['@rid'])
-    || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
-    || (filter && !label.includes(filter.toLowerCase()));
+    || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid']);
   const bold = (detail && detail['@rid'] === link.data['@rid'])
-    || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
-    || (filter && label.includes(filter.toLowerCase()));
+    || (actionsNode && actionsNode.data['@rid'] === link.data['@rid']);
 
   let opacity = DEFAULT_OPACITY;
 
@@ -144,15 +139,5 @@ function GraphLinkDisplay(props: GraphLinkDisplayProps) {
     </g>
   );
 }
-
-GraphLinkDisplay.defaultProps = {
-  detail: null,
-  actionsNode: null,
-  labelKey: null,
-  color: '#999',
-  handleClick: null,
-  marker: '',
-  filter: '',
-};
 
 export default GraphLinkDisplay;

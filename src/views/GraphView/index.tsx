@@ -119,7 +119,6 @@ const GraphView = ({ history }: RouteComponentProps) => {
               handleDetailDrawerOpen={handleToggleDetailPanel}
               handleError={handleError}
               handleGraphStateSave={handleGraphStateSaveIntoURL}
-              onRecordClicked={handleToggleDetailPanel}
             />
             {detailPanelRow && (
               <DetailDrawer

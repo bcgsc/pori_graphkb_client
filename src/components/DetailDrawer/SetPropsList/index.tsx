@@ -31,15 +31,13 @@ const sortProps = (value) => {
 };
 
 interface SetPropsListProps {
-  handleExpand?: (arg: string | GeneralRecordType) => void;
-  /** props to be displayed for submenu */
-  identifiers?: unknown[];
+  handleExpand: (arg: string | GeneralRecordType) => void;
   /** opened dropdowns in drawer */
-  opened?: (string | GeneralRecordType)[];
+  opened: (string | GeneralRecordType)[];
   /** link/embedded property model */
-  prop?: PropertyDefinition;
+  prop: PropertyDefinition;
   /** contains link/embedded records */
-  value?: Record<string, unknown>;
+  value: Record<string, unknown>;
 }
 
 /**
@@ -47,7 +45,7 @@ interface SetPropsListProps {
  */
 function SetPropsList(props: SetPropsListProps) {
   const {
-    prop, value, identifiers = [], opened = [], handleExpand,
+    prop, value, opened, handleExpand,
   } = props;
   const { type, name } = prop;
   if (value.length === 0) return null;
@@ -83,7 +81,7 @@ function SetPropsList(props: SetPropsListProps) {
               {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
             <Collapse in={!!opened.includes(item)} unmountOnExit>
-              {identifiers.map((propName) => (
+              {['displayName', '@rid', 'sourceId'].map((propName) => (
                 <List dense disablePadding>
                   <ListItem>
                     <ListItemText>
@@ -119,13 +117,5 @@ function SetPropsList(props: SetPropsListProps) {
     </React.Fragment>
   );
 }
-
-SetPropsList.defaultProps = {
-  handleExpand: () => {},
-  identifiers: [],
-  opened: [],
-  prop: {},
-  value: {},
-};
 
 export default SetPropsList;

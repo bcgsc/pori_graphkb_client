@@ -198,7 +198,6 @@ const VariantForm = ({
       value={value}
     >
       <FormStepWrapper
-        caption="Changes to the initial selection here will affect downstream portions of the form"
         label="Pick the Input Type"
       >
         <RadioSelect

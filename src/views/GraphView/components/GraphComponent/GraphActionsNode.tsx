@@ -24,11 +24,11 @@ const ICON_MAP = {
 
 interface GraphActionsNodeProps {
   /** Currently selected object. */
-  actionsNode?: GraphNode | GraphLink | null;
+  actionsNode: GraphNode | GraphLink | null;
   /** yes/no flag determining whether selected object is
  * an edge or not */
-  edge?: boolean;
-  options?: {
+  edge: boolean;
+  options: {
     name: string;
     action?: (...args: unknown[]) => unknown;
     disabled?: (...args: unknown[]) => boolean;
@@ -130,11 +130,5 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
     </g>
   );
 }
-
-GraphActionsNode.defaultProps = {
-  options: [],
-  actionsNode: null,
-  edge: false,
-};
 
 export default GraphActionsNode;

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 interface TimestampProps extends Omit<TextFieldProps, 'onChange' | 'value'> {
   name: string;
   onChange: (event: { target: { name: string; value: unknown } }) => void;
-  value?: unknown;
+  value: unknown;
 }
 
 const Timestamp = ({
@@ -33,10 +33,6 @@ const Timestamp = ({
       value={displayValue}
     />
   );
-};
-
-Timestamp.defaultProps = {
-  value: '',
 };
 
 export default Timestamp;

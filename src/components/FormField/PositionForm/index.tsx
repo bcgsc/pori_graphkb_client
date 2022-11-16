@@ -23,38 +23,34 @@ interface PositionFormProps {
   name: string;
   /** change handler */
   onChange: (event: { target: { name: string; value: unknown } }) => void;
-  baseVariant?: string;
-  /** can this position be removed/deleted/set to null */
-  clearable?: boolean;
+  baseVariant: string | undefined;
   /** flag to indicate this field is disabled */
-  disabled?: boolean;
+  disabled: boolean;
   /** indicates there is an outstanding error */
-  error?: boolean;
+  error: boolean;
   /** text to be displayed below the input field */
-  helperText?: string;
+  helperText: string | undefined;
   /**  label to display above the field */
-  label?: string;
+  label: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the initial value */
-  value?: unknown;
+  value: unknown;
   /** the position class model name */
-  variant?: string;
+  variant: string | undefined;
 }
 
 const PositionForm = ({
-  baseVariant,
-  clearable,
+  baseVariant = DEFAULT_BASE_VARIANT,
   disabled,
   error,
-  helperText,
+  helperText = '',
   label,
   name,
   onChange,
   required,
   value,
-  variant: initialVariant,
-  ...props
+  variant: initialVariant = '',
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.schema[baseVariant || DEFAULT_BASE_VARIANT]
     .descendantTree(true).map((m) => m.name);
@@ -83,7 +79,7 @@ const PositionForm = ({
       {label && (
         <FormLabel disabled={disabled} error={error} required={required}>{label}</FormLabel>
       )}
-      {!disabled && clearable && variant && (
+      {!disabled && variant && (
         <IconButton
           className="position-form__cancel"
           onClick={() => {
@@ -109,7 +105,6 @@ const PositionForm = ({
           onChange={onChange}
           value={value}
           variant={variant || positionVariants[0]}
-          {...props}
         />
       )}
       <FormHelperText error={error}>{helperText}</FormHelperText>
@@ -118,15 +113,7 @@ const PositionForm = ({
 };
 
 PositionForm.defaultProps = {
-  baseVariant: DEFAULT_BASE_VARIANT,
-  clearable: true,
-  disabled: false,
-  error: false,
-  helperText: '',
-  label: '',
   required: false,
-  value: null,
-  variant: '',
 };
 
 export default PositionForm;

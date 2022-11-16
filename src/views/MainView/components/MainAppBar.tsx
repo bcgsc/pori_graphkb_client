@@ -26,7 +26,7 @@ import MenuLink from './MenuLink';
 interface MainAppBarProps {
   onDrawerChange: (isOpen: boolean) => void;
   onLinkChange: (arg: { isOpen: boolean, activeLink: unknown }) => void;
-  drawerOpen?: boolean;
+  drawerOpen: boolean;
 }
 
 const MainAppBar = ({
@@ -128,10 +128,6 @@ const MainAppBar = ({
       </div>
     </AppBar>
   );
-};
-
-MainAppBar.defaultProps = {
-  drawerOpen: false,
 };
 
 export default MainAppBar;

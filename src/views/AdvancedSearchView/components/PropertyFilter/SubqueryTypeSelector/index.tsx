@@ -9,22 +9,22 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import HelpDialog from './HelpDialog';
 
-interface RecordFormStateToggleProps {
-  disabled?: boolean;
+interface SubqueryTypeSelectorProps {
+  disabled: boolean;
   /** parent handler function to toggle states */
-  onChange?: (arg: { target: { value: '' | 'keyword' | 'tree' } }) => void;
+  onChange: (arg: { target: { value: '' | 'keyword' | 'tree' } }) => void;
   /** starting variant value */
-  value?: '' | 'keyword' | 'tree';
+  value: '' | 'keyword' | 'tree' | undefined;
 }
 
 /**
  * Toggle Button Navigation to switch between modes or settings.
  */
-function RecordFormStateToggle({
+function SubqueryTypeSelector({
   onChange,
   value: inputValue = '',
   disabled,
-}: RecordFormStateToggleProps) {
+}: SubqueryTypeSelectorProps) {
   const [value, setValue] = useState(inputValue);
   const [helpIsOpen, setHelpIsOpen] = useState(false);
 
@@ -82,10 +82,4 @@ function RecordFormStateToggle({
   );
 }
 
-RecordFormStateToggle.defaultProps = {
-  onChange: () => {},
-  value: '',
-  disabled: false,
-};
-
-export default RecordFormStateToggle;
+export default SubqueryTypeSelector;

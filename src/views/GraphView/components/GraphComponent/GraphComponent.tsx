@@ -103,11 +103,11 @@ interface GraphComponentProps {
   handleDetailDrawerOpen: (...args: unknown[]) => unknown;
   handleError: (...args: unknown[]) => unknown;
   /** record ID of node currently selected for detail viewing. in the initial query. */
-  detail?: GeneralRecordType | null;
+  detail: GeneralRecordType | null;
   /** list of valid edge classes. */
-  edgeTypes?: string[];
+  edgeTypes: string[];
   /** parent handler to save state in URL */
-  handleGraphStateSave?: (...args: unknown[]) => unknown;
+  handleGraphStateSave: (...args: unknown[]) => unknown;
 }
 
 /**
@@ -1222,11 +1222,5 @@ function GraphComponent(props: GraphComponentProps) {
     </div>
   );
 }
-
-GraphComponent.defaultProps = {
-  detail: null,
-  edgeTypes: [],
-  handleGraphStateSave: () => {},
-};
 
 export default GraphComponent;

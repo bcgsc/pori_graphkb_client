@@ -27,7 +27,7 @@ interface RelationshipListProps {
   /** edge record opened */
   linkOpen?: string | null;
   /** Record being displayed. */
-  record?: GeneralRecordType
+  record: GeneralRecordType
 }
 
 /**
@@ -108,6 +108,5 @@ function RelationshipList(props: RelationshipListProps) {
 
 RelationshipList.defaultProps = {
   linkOpen: {},
-  record: {},
 };
 export default RelationshipList;

@@ -13,7 +13,7 @@ interface EdgeFieldsProps {
    */
   model: ModelDefinition;
   /** flag to indicate these fields should be disabled */
-  disabled?: boolean;
+  disabled: boolean | undefined;
 }
 
 /**
@@ -49,9 +49,5 @@ const EdgeFields = ({
     />
   </React.Fragment>
 );
-
-EdgeFields.defaultProps = {
-  disabled: false,
-};
 
 export default EdgeFields;

@@ -19,10 +19,10 @@ import { DATE_FIELDS } from '../constants';
 interface FilterGroupProps {
   filters: { value: unknown; attr: string; operator: string; subqueryType?: string }[];
   name: string;
-  isSelected?: boolean;
-  onDelete?: ((name: string) => void) | null;
-  onDeleteFilter?: (index: number, name: string) => void;
-  onSelect?: React.ComponentProps<typeof LetterIcon>['onClick'];
+  isSelected: boolean;
+  onDelete: ((name: string) => void) | null;
+  onDeleteFilter: (index: number, name: string) => void;
+  onSelect: React.ComponentProps<typeof LetterIcon>['onClick'];
 }
 
 /**
@@ -74,14 +74,9 @@ function FilterGroup({
               data-testid={`filter-chip${index}`}
             >
               <Chip
-                default="outlined"
                 icon={icon}
                 label={`${filter.attr} ${filter.operator} ${filterValue}`}
-                onDelete={
-                    onDeleteFilter
-                      ? () => handleDeleteFilter(index)
-                      : null
-                  }
+                onDelete={() => handleDeleteFilter(index)}
               />
             </div>
           );
@@ -100,12 +95,5 @@ function FilterGroup({
     </Paper>
   );
 }
-
-FilterGroup.defaultProps = {
-  isSelected: false,
-  onDelete: null,
-  onDeleteFilter: null,
-  onSelect: () => {},
-};
 
 export default FilterGroup;

@@ -21,13 +21,13 @@ interface BasicPositionFormProps {
   /** the class model to use to build the form */
   variant: 'GenomicPosition' | 'ExonicPosition' | 'IntronicPosition' | 'RnaPosition' | 'CdsPosition';
   /** flag to indicate this field is disabled */
-  disabled?: boolean;
+  disabled: boolean;
   /** the form field name to pass up to the change handler */
-  name?: string;
+  name: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the initial value */
-  value?: {
+  value: {
     pos?: number;
     offset?: number;
   } | undefined
@@ -134,9 +134,6 @@ const BasicPositionForm = ({
 
 BasicPositionForm.defaultProps = {
   required: true,
-  name: '',
-  disabled: false,
-  value: null,
 };
 
 export default BasicPositionForm;

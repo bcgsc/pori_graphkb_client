@@ -28,13 +28,13 @@ interface GraphOptionsPanelProps {
   /** function for field changing. */
   handleGraphOptionsChange: (...args: unknown[]) => unknown;
   /** Graph options object. */
-  graphOptions?: GraphOptions;
+  graphOptions: GraphOptions;
   /** dialog open flag. */
-  graphOptionsOpen?: boolean;
+  graphOptionsOpen: boolean;
   /** link legend disabled flag. */
-  linkLegendDisabled?: boolean;
+  linkLegendDisabled: boolean;
   /** Graph coloring propsmap. */
-  propsMap?: PropsMap;
+  propsMap: PropsMap;
 }
 
 /**
@@ -265,12 +265,5 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
     </>
   );
 }
-
-GraphOptionsPanel.defaultProps = {
-  graphOptions: {},
-  propsMap: { nodeProps: [], linkProps: [] },
-  graphOptionsOpen: false,
-  linkLegendDisabled: true,
-};
 
 export default GraphOptionsPanel;

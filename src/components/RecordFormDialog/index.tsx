@@ -17,8 +17,7 @@ interface RecordFormDialogProps extends Omit<React.ComponentProps<typeof RecordF
   /** the function to handle the dialog cancel button */
   onClose: (...args: unknown[]) => void;
   /** flag to indicate the current dialog is open */
-  isOpen?: boolean;
-  title?: string;
+  isOpen: boolean;
 }
 
 /**
@@ -31,7 +30,6 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
     onClose,
     onError,
     onSubmit,
-    title,
     variant,
     value,
     ...rest
@@ -54,7 +52,7 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
     >
       <div className="record-form-dialog__header">
         <DialogTitle>
-          {title || defaultTitle}
+          {defaultTitle}
         </DialogTitle>
         <DialogActions>
           <IconButton
@@ -76,11 +74,6 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-RecordFormDialog.defaultProps = {
-  isOpen: false,
-  title: '',
 };
 
 export default RecordFormDialog;

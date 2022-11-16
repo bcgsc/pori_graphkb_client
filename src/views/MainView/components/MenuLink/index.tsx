@@ -21,7 +21,6 @@ interface MenuLinkProps {
   onClick: (route: string, arg: string | null) => void;
   /** link route name */
   route: string;
-  group?: boolean;
   icon?: ReactNode;
   /** if true, text will be indented */
   inset?: boolean;
@@ -31,20 +30,20 @@ interface MenuLinkProps {
  * Text link with optional icon to navigate through application
  */
 const MenuLink = ({
-  route, label, icon, inset, group, onClick,
+  route, label, icon, inset, onClick,
 }: MenuLinkProps) => {
   const { activeLink, setActiveLink } = useContext(ActiveLinkContext);
   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
-    const selected = (activeLink === route) && (!group);
+    const selected = (activeLink === route);
     setIsSelected(selected);
-  }, [activeLink, group, route]);
+  }, [activeLink, route]);
 
   const handleClick = useCallback(() => {
-    onClick(route, group ? route : null);
+    onClick(route, null);
     setActiveLink(route);
-  }, [group, onClick, route, setActiveLink]);
+  }, [onClick, route, setActiveLink]);
 
   return (
     <Link key={label.toLowerCase()} to={route}>
@@ -65,7 +64,6 @@ const MenuLink = ({
 MenuLink.defaultProps = {
   icon: null,
   inset: false,
-  group: false,
 };
 
 export default MenuLink;

@@ -82,7 +82,6 @@ interface GetRowsFromBlocksArgs {
   endRow: number;
   sortModel?: { colId: string; sort: string; }[];
   search: string;
-  blockSize: number;
 }
 
 /**
@@ -93,8 +92,8 @@ const getRowsFromBlocks = async ({
   endRow, // exclusive
   sortModel,
   search,
-  blockSize,
 }: GetRowsFromBlocksArgs) => {
+  const blockSize = 100;
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
 
@@ -122,16 +121,12 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
-interface DataViewProps extends RouteComponentProps {
-  blockSize?: number;
-}
-
 /**
  * Shows the search result filters and an edit button
  */
 const DataView = ({
-  location: { search: initialSearch }, blockSize, history,
-}: DataViewProps) => {
+  location: { search: initialSearch }, history,
+}: RouteComponentProps) => {
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
@@ -172,7 +167,7 @@ const DataView = ({
           sortModel,
         }) => {
           const result = await getRowsFromBlocks({
-            startRow, endRow, sortModel, search, blockSize,
+            startRow, endRow, sortModel, search,
           });
           return [result, totalRows];
         };
@@ -186,7 +181,7 @@ const DataView = ({
     };
       // update the model
     gridApi.setDatasource(dataSource);
-  }, [blockSize, grid.ref, search, totalRows]);
+  }, [grid.ref, search, totalRows]);
 
   useEffect(() => {
     // normalize the input query
@@ -207,7 +202,7 @@ const DataView = ({
 
     initializeGrid();
     gridApi.addEventListener('selectionChanged', handleSelectionChange);
-  }, [blockSize, grid.ref, initializeGrid, search, totalRows]);
+  }, [grid.ref, initializeGrid, search, totalRows]);
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
@@ -283,7 +278,6 @@ const DataView = ({
         endRow: maxExportSize,
         sortModel: gridApi.sortController.getSortModel(),
         search,
-        blockSize,
       });
       const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
       gridOptions.cacheBlockSize = maxExportSize; // in preparation to fetch entire dataset
@@ -307,7 +301,7 @@ const DataView = ({
 
       gridApi.setDatasource(tempDataSource);
     }
-  }, [blockSize, grid.ref, initializeGrid, isExportingData, search, totalRows]);
+  }, [grid.ref, initializeGrid, isExportingData, search, totalRows]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -347,7 +341,7 @@ const DataView = ({
             anchorEl={optionsMenuAnchor}
             gridRef={grid.ref}
             onClose={() => setOptionsMenuAnchor(null)}
-            onExportToTsv={(totalRows !== null) && handleClickExport}
+            onExportToTsv={totalRows !== null ? handleClickExport : undefined}
           />
           <AgGridReact
             {...grid.props}
@@ -393,10 +387,6 @@ const DataView = ({
       />
     </div>
   );
-};
-
-DataView.defaultProps = {
-  blockSize: 100,
 };
 
 export default DataView;

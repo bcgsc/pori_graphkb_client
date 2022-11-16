@@ -14,10 +14,10 @@ import ColumnConfiguration from './ColumnConfiguration';
 const { MAX_EXPORT_SIZE } = config;
 
 interface TableOptionsProps {
-  anchorEl?: Element | null;
-  gridRef?: ReturnType<typeof useGrid>['ref'];
-  onClose?: (...args: unknown[]) => void;
-  onExportToTsv?: (arg: false) => void;
+  anchorEl: Element | null;
+  gridRef: ReturnType<typeof useGrid>['ref'];
+  onClose: (...args: unknown[]) => void;
+  onExportToTsv: ((arg: false) => void) | undefined;
 }
 
 const TableOptions = ({
@@ -76,12 +76,6 @@ const TableOptions = ({
     </>
   );
   return result;
-};
-
-TableOptions.defaultProps = {
-  onExportToTsv: () => { },
-  anchorEl: null,
-  onClose: () => {},
 };
 
 export default TableOptions;

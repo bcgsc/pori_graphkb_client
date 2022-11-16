@@ -17,17 +17,17 @@ import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
+import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 
 interface StatementReviewProps {
   index: number;
-  label: string;
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
-  value: Record<string, unknown>;
+  value: GeneralRecordType;
   /** one of ['view', 'edit'] mode */
-  variant?: FORM_VARIANT.EDIT | FORM_VARIANT.VIEW;
+  variant?: FORM_VARIANT | '';
 }
 
 /**
@@ -38,7 +38,6 @@ const StatementReview = ({
   index,
   variant,
   onDelete,
-  label,
 }: StatementReviewProps) => {
   const {
     status, createdBy, comment,
@@ -122,7 +121,6 @@ const StatementReview = ({
             label={previewStr}
             PopUpComponent={ReviewComponent}
             PopUpProps={{ onDelete }}
-            title={label}
             value={details}
             valueToString={(record) => {
               if (record && record.name) {

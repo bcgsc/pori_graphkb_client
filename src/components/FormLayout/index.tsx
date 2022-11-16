@@ -24,27 +24,54 @@ import { ModelDefinition } from '../types';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
+/** the property names which should be put above the collapse */
+const aboveFold = [
+  CLASS_MODEL_PROP,
+  'displayName',
+  'name',
+  'groups',
+  'journalName',
+  'out',
+  'in',
+  'permissions',
+  'evidenceLevel',
+  'reviewStatus',
+  'reviews',
+  'refSeq',
+  'recruitmentStatus',
+  'email',
+  'source',
+  'sourceId',
+];
+
+/** the property names which should be put in the collapsed section */
+const belowFold = ['deprecated', 'history'];
+
+/** properties that should be grouped together */
+const groups = [
+  ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
+  ['relevance', 'subject'],
+  ['refSeq', 'untemplatedSeq'],
+  ['reviewStatus', 'reviews'],
+  ['reference1', 'break1Repr', 'break1Start', 'break1End'],
+  ['reference2', 'break2Repr', 'break2Start', 'break2End'],
+  ['source', 'sourceId', 'sourceIdVersion'],
+  ['startYear', 'completionYear'],
+  ['city', 'country'],
+  ['out', 'in'],
+];
+
+const exclusions = ['groupRestrictions'];
+
 interface FormLayoutProps {
-  /** the property names which should be put above the collapse */
-  aboveFold?: string[];
-  /** the property names which should be put in the collapsed section */
-  belowFold?: string[];
-  /** css class to add to main element */
-  className?: string;
-  /** flag to indicate a collapsible section should be created */
-  collapseExtra?: boolean;
   /** flag to indicated form fields are disabled */
   disabled?: boolean;
-  /** an array of fields not to display */
-  exclusions?: string[];
-  /** properties that should be grouped together */
-  groups?: string[][];
   /** the name of the schema model to use */
   modelName?: string;
 }
 
 const FormLayout = ({
-  exclusions, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
+  modelName, disabled,
 }: FormLayoutProps) => {
   const {
     formContent = {}, formVariant,
@@ -62,7 +89,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model, {
-    aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
+    aboveFold, belowFold, collapseExtra: true, variant: formVariant, groups,
   });
 
   const isEdge = model && model.isEdge;
@@ -70,7 +97,7 @@ const FormLayout = ({
   const isStatement = model && model.name === 'Statement';
 
   return (
-    <div className={`form-layout ${className}`}>
+    <div className="form-layout">
       {model && (
         <>
           <div className="form-layout__content form-layout__content--long">
@@ -127,42 +154,8 @@ const FormLayout = ({
 };
 
 FormLayout.defaultProps = {
-  aboveFold: [
-    CLASS_MODEL_PROP,
-    'displayName',
-    'name',
-    'groups',
-    'journalName',
-    'out',
-    'in',
-    'permissions',
-    'evidenceLevel',
-    'reviewStatus',
-    'reviews',
-    'refSeq',
-    'recruitmentStatus',
-    'email',
-    'source',
-    'sourceId',
-  ],
   disabled: false,
-  belowFold: ['deprecated', 'history'],
-  className: '',
-  collapseExtra: false,
-  groups: [
-    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-    ['relevance', 'subject'],
-    ['refSeq', 'untemplatedSeq'],
-    ['reviewStatus', 'reviews'],
-    ['reference1', 'break1Repr', 'break1Start', 'break1End'],
-    ['reference2', 'break2Repr', 'break2Start', 'break2End'],
-    ['source', 'sourceId', 'sourceIdVersion'],
-    ['startYear', 'completionYear'],
-    ['city', 'country'],
-    ['out', 'in'],
-  ],
   modelName: null,
-  exclusions: [],
 };
 
 export default FormLayout;

@@ -26,18 +26,14 @@ import EdgeTable from './EdgeTable';
 import RelatedStatementsTable from './RelatedStatementsTable';
 import RelatedVariantsTable from './RelatedVariantsTable';
 
-const FIELD_EXCLUSIONS = ['groupRestrictions'];
-
 interface RecordFormProps {
   /** the title for this form */
-  title: string;
+  title?: string;
   /** name of class model to be displayed */
   modelName?: string;
-  onError?: (arg: { error: unknown; content: unknown }) => void;
-  onSubmit?: (record?: Partial<GeneralRecordType>) => void;
+  onError: (arg: { error: unknown; content: unknown }) => void;
+  onSubmit: (record?: Partial<GeneralRecordType>) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** the record id of the current record for the form */
-  rid?: string;
   /** values of individual properties of passed class model */
   value?: Partial<GeneralRecordType> | null;
   /** the type of NodeForm to create */
@@ -55,7 +51,6 @@ const RecordForm = ({
   onSubmit,
   onError,
   variant,
-  ...rest
 }: RecordFormProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
@@ -220,12 +215,8 @@ const RecordForm = ({
       </div>
       <FormContext.Provider value={form}>
         <FormLayout
-          {...rest}
-          collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && isEdge)}
-          exclusions={FIELD_EXCLUSIONS}
           modelName={modelName}
-          variant={variant}
         />
       </FormContext.Provider>
       {variant === FORM_VARIANT.VIEW && schemaDefn.get(modelName).inherits.includes('V') && (
@@ -280,11 +271,9 @@ const RecordForm = ({
 };
 
 RecordForm.defaultProps = {
+  title: '',
   modelName: null,
-  onError: () => {},
-  onSubmit: () => {},
   onToggleState: undefined,
-  rid: null,
   variant: FORM_VARIANT.VIEW,
   value: {},
 };

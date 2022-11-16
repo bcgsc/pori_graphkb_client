@@ -50,7 +50,6 @@ const BreakpointForm = ({
     <div className="breakpoint-form">
       {reference && (
         <FormField
-          initialFilterClass="Feature"
           label="reference"
           model={{ ...model.properties.reference1, required, name: reference }}
         />
@@ -70,7 +69,6 @@ const BreakpointForm = ({
           />
           <FormField
             baseModel={coordinateType}
-            clearable={false}
             label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
             model={{
               ...model.properties.break1Start,
@@ -83,7 +81,6 @@ const BreakpointForm = ({
           {uncertain && (
             <FormField
               baseModel={coordinateType}
-              clearable={false}
               label={`end (${coordinateType})`}
               model={{
                 ...model.properties.break1Start,

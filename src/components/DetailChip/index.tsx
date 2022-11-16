@@ -26,7 +26,6 @@ interface DefaultPopupComponentProps {
   label: string;
   /** record object. properties will be extracted to be displayed */
   details?: Record<string, unknown>;
-  getDetails?: (...args: unknown[]) => unknown;
   /** finds routeName for displayed record */
   getLink?: (...args: unknown[]) => string;
   /** title of card. Will usually be record displayName */
@@ -41,14 +40,11 @@ interface DefaultPopupComponentProps {
 const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
   const {
     details,
-    getDetails,
     label,
     valueToString = defaultValueToString,
     getLink,
     title,
   } = props;
-
-  const retrievedDetails = getDetails(details);
 
   return (
     <Card>
@@ -57,8 +53,8 @@ const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
           <Typography gutterBottom variant="h4">
             {title || label}
           </Typography>
-          {getLink && getLink(retrievedDetails) && (
-            <Link target="_blank" to={getLink(retrievedDetails)}>
+          {getLink && getLink(details) && (
+            <Link target="_blank" to={getLink(details)}>
               <IconButton>
                 <OpenInNewIcon />
               </IconButton>
@@ -68,14 +64,14 @@ const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
         <Divider />
         <Table>
           <TableBody>
-            {retrievedDetails && Object.keys(retrievedDetails).sort().map(
+            {details && Object.keys(details).sort().map(
               (name) => (
                 <TableRow key={name} className="detail-popover__row">
                   <TableCell>
                     <Typography variant="h6">{name}</Typography>
                   </TableCell>
                   <TableCell>
-                    {valueToString(retrievedDetails[name])}
+                    {valueToString(details[name])}
                   </TableCell>
                 </TableRow>
               ),
@@ -88,7 +84,6 @@ const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
 };
 
 DefaultPopupComponent.defaultProps = {
-  getDetails: (d) => d,
   details: {},
   valueToString: defaultValueToString,
   getLink: null,
@@ -107,8 +102,6 @@ interface DetailChipProps {
   className?: string;
   /** record to be displayed in chip. */
   details?: Record<string, unknown>;
-  /** function to retrieve the details from the details object */
-  getDetails?: (...args: unknown[]) => unknown;
   getLink?: (...args: unknown[]) => string;
   /** function handler for the user clicking the X on the chip */
   onDelete?: (...args: unknown[]) => unknown;
@@ -127,7 +120,6 @@ function DetailChip(props: DetailChipProps) {
     details,
     onDelete,
     className,
-    getDetails,
     label,
     valueToString,
     ChipProps,
@@ -193,7 +185,6 @@ DetailChip.defaultProps = {
   PopUpProps: null,
   className: '',
   details: {},
-  getDetails: (d) => d,
   onDelete: null,
   valueToString: defaultValueToString,
   getLink: null,

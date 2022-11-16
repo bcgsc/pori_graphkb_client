@@ -124,7 +124,7 @@ const ActiveFilters = ({ search }: { search: string; }) => {
           <Card className="active-filters-card">
             <CardHeader title={routeName} />
             <CardContent className="active-filters-card__content">
-              <JSONView data={payload} indent="  " ValueComponent={ValueComponent} />
+              <JSONView data={payload} ValueComponent={ValueComponent} />
             </CardContent>
             <CardActions className="active-filters-card__actions">
               <Button onClick={handleCopyToClipboard}>

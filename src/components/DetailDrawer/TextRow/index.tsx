@@ -8,8 +8,9 @@ import {
 } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -18,17 +19,17 @@ const MAX_STRING_LENGTH = 64;
 
 interface TextRowProps {
   /** if true, list item is indented. */
-  isNested: boolean;
+  isNested: boolean | undefined;
   /** if true, locks list item open. */
   isStatic: boolean;
   /** array containing opened property models */
-  opened: Record<string, unknown>[];
+  opened: (string | GeneralRecordType)[];
   /** adds clicked props to opened object */
-  handleExpand?: (name?: string) => void;
+  handleExpand?: (name: string) => void;
   /** property key. */
   name?: string;
   /** property value */
-  value?: Record<string, unknown>;
+  value?: unknown;
 }
 
 /**
@@ -47,7 +48,7 @@ function TextRow(props: TextRowProps) {
     const collapseProps = isStatic
       ? { in: true }
       : { in: !!opened.includes(name) };
-    let itemIcon = null;
+    let itemIcon: ReactNode = null;
 
     if (isStatic !== true) {
       itemIcon = !opened.includes(name)
@@ -79,7 +80,7 @@ function TextRow(props: TextRowProps) {
   };
 
   const shortValue = () => {
-    let Wrapper = React.Fragment;
+    let Wrapper: typeof React.Fragment | 'a' = React.Fragment;
     const compProps = {};
 
     if (name === 'url') {

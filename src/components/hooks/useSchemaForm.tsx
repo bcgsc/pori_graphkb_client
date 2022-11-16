@@ -10,13 +10,16 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import schema from '@/services/schema';
 
+import { FormContextState } from '../FormContext';
+import { GeneralRecordType, PropertyDefinition } from '../types';
+import { FORM_VARIANT } from '../util';
 import useObject from './useObject';
 
 interface UseSchemaFormOptions {
   /** do not throw errors when required fields are missing */
   ignoreMandatoryErrors?: boolean;
   /** the form type/variant (ex. view) */
-  variant?: string;
+  variant?: FORM_VARIANT | '';
   /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
   additionalValidationFn?: ((content: unknown) => string) | null;
 }
@@ -30,12 +33,12 @@ interface UseSchemaFormOptions {
  *
  * @returns {FormContext} the form context values
  */
-const useSchemaForm = (
+function useSchemaForm<R extends Partial<GeneralRecordType>>(
   /** @todo get type from schema package */
-  initialFieldDefs: Record<string, any>,
-  initialValue: Record<string, unknown> = {},
+  initialFieldDefs: Record<string, PropertyDefinition>,
+  initialValue: R | undefined,
   { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
-) => {
+): FormContextState<R> {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
   const [formVariant, setFormVariant] = useState(variant);
@@ -76,7 +79,7 @@ const useSchemaForm = (
 
   useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some((err) => err);
-    setFormHasErrors(errorState || additionalValidationError);
+    setFormHasErrors(Boolean(errorState || additionalValidationError));
   }, [formErrors || {}, additionalValidationError]);
 
   useDeepCompareEffect(() => {
@@ -102,7 +105,7 @@ const useSchemaForm = (
   }, [initialValue || {}, fieldDefs || {}]);
 
   // provide an update callback which includes the validation step
-  const updateField = useCallback((propName, propValue) => {
+  const updateField = useCallback((propName: string, propValue) => {
     const { value, error } = formValidator(propName, propValue);
 
     setFormFieldContent(propName, value);
@@ -146,6 +149,6 @@ const useSchemaForm = (
     formVariant,
     additionalValidationError,
   };
-};
+}
 
 export default useSchemaForm;

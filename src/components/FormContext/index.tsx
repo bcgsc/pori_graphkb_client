@@ -1,5 +1,22 @@
 import React from 'react';
 
+import { GeneralRecordType } from '../types';
+import { FORM_VARIANT } from '../util';
+
+export interface FormContextState<R = Partial<GeneralRecordType>> {
+  formContent: R;
+  formErrors: Record<string, { message?: string; }>;
+  formHasErrors: boolean;
+  updateField: (propName: string, propValue: unknown) => void;
+  update: () => void;
+  formIsDirty: boolean;
+  setFormIsDirty: (isDirty: boolean) => void;
+  replaceContent?: () => void;
+  updateFieldEvent: (event: { target: { name: string; value: unknown } }) => void;
+  formVariant: FORM_VARIANT | '';
+  additionalValidationError?: string;
+}
+
 /**
  * @typedef FormContext
  * Passes user values to wrapped consumers.
@@ -15,7 +32,7 @@ import React from 'react';
  * @property {string} formVariant the variant of the form (ex. view)
  * @property {function} setFormIsDirty setter for setting the formIsDirty property
  */
-const FormContext = React.createContext({
+const FormContext = React.createContext<FormContextState>({
   formContent: {},
   formErrors: {},
   formHasErrors: false,

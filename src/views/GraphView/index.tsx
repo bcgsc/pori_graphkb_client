@@ -10,6 +10,7 @@ import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 import { RouteComponentProps, useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
+import { GeneralRecordType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -26,7 +27,7 @@ const { DEFAULT_NEIGHBORS } = config;
 const GraphView = ({ history }: RouteComponentProps) => {
   const { search } = useLocation();
   const isLoading = useIsFetching();
-  const [detailPanelRow, setDetailPanelRow] = useState(null);
+  const [detailPanelRow, setDetailPanelRow] = useState<GeneralRecordType | null>(null);
   // the existing behaviour of the graph relies on this not changing even when the url *is* updated
   const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
   const queryClient = useQueryClient();
@@ -40,7 +41,7 @@ const GraphView = ({ history }: RouteComponentProps) => {
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),
-      onSuccess: (recordHash) => {
+      onSuccess: (recordHash: ReturnType<typeof util.hashRecordsByRID>) => {
         Object.keys(recordHash).forEach((recordId) => {
           queryClient.setQueryData(
             [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],

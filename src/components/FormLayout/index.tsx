@@ -20,6 +20,7 @@ import {
   sortAndGroupFields,
 } from '@/components/util';
 
+import { ModelDefinition } from '../types';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
@@ -50,7 +51,7 @@ const FormLayout = ({
   } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [model, setModel] = useState(null);
+  const [model, setModel] = useState<ModelDefinition | null>(null);
 
   useEffect(() => {
     setModel(schemaDefn.get(modelName));

@@ -5,7 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface RecordIdLinkProps {
-  recordClass: string;
+  recordClass: string | undefined;
   recordId: string;
 }
 

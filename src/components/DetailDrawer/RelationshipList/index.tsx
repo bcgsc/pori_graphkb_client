@@ -19,13 +19,13 @@ import schema from '@/services/schema';
 
 interface RelationshipListProps {
   /** formats metadata properties */
-  formatMetadata: (arg: unknown, arg2: boolean) => void;
+  formatMetadata: (record: GeneralRecordType, isNested: boolean) => void;
   /** formats non-metadata properties */
-  formatOtherProps: (arg: unknown, arg2: boolean) => void;
+  formatOtherProps: (record: GeneralRecordType, isNested: boolean) => void;
   /** adds link to opened list */
   handleLinkExpand: (rid: string) => void;
   /** edge record opened */
-  linkOpen?: Record<string, unknown>;
+  linkOpen?: string | null;
   /** Record being displayed. */
   record?: GeneralRecordType
 }
@@ -50,7 +50,7 @@ function RelationshipList(props: RelationshipListProps) {
         let isIn = false;
 
         if (edge.in !== undefined) {
-          isIn = edge.in && rid(edge.in) === rid(record);
+          isIn = Boolean(edge.in && rid(edge.in) === rid(record));
         }
         const targetNode = isIn ? edge.out : edge.in;
 

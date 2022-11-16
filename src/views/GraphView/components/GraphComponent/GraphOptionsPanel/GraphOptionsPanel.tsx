@@ -219,10 +219,10 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
               <FormControlLabel
                 control={(
                   <Checkbox
-                    checked={(
+                    checked={Boolean(
                       graphOptions.linksLegend
                       && graphOptions.linksColor
-                      && !linkLegendDisabled
+                      && !linkLegendDisabled,
                     )}
                     color="secondary"
                     disabled={linkLegendDisabled || !graphOptions.linksColor}

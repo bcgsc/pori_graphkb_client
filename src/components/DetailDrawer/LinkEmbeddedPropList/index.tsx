@@ -11,24 +11,23 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
+import { GeneralRecordType, PropertyDefinition } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
 interface LinkEmbeddedPropListProps {
   /** property formatting function */
-  formatOtherProps: (arg: unknown, arg2: boolean) => unknown;
+  formatOtherProps: (record: GeneralRecordType, isNested: boolean) => unknown;
   /** adds prop to opened object and handles expansion */
-  handleExpand?: (name: string) => unknown;
-  /** props to be displayed for submenu */
-  identifiers?: unknown[];
+  handleExpand?: (name: string | GeneralRecordType) => unknown;
   /** is the prop nested */
   isNested?: boolean;
   /** opened dropdowns in drawer */
-  opened?: string[];
+  opened?: (string | GeneralRecordType)[];
   /** link/embedded property model */
-  prop?: Record<string, unknown>;
+  prop?: PropertyDefinition;
   /** contains link/embedded records */
-  value?: Record<string, unknown>;
+  value?: GeneralRecordType;
 }
 
 /**

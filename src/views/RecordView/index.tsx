@@ -14,6 +14,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
+import { GeneralRecordType } from '@/components/types';
 import {
   cleanLinkedRecords, FORM_VARIANT, navigateToGraph, tuple,
 } from '@/components/util';
@@ -58,7 +59,7 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
         const name = getModelFromName(path, modelNameParam, variant);
         setModelName(name);
       } catch (err) {
-        history.push('/error', { error: { name: err.name, message: err.toString() } });
+        history.push('/error', { error: { name: (err as Error).name, message: (err as Error).toString() } });
       }
     }
   }, [path, modelNameParam, variant, history]);
@@ -99,7 +100,7 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
       const result = await api.get(route, options);
 
       if (result && result.length) {
-        return { ...result[0] };
+        return { ...result[0] } as GeneralRecordType;
       }
       handleError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${model.routeName}/${rid}` } });
       return undefined;
@@ -147,7 +148,6 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
         onError={handleError}
         onSubmit={handleSubmit}
         onToggleState={handleToggleState}
-        rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
         value={recordContent}
         variant={variant}
@@ -160,7 +160,6 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
       onError={handleError}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
-      rid={rid}
       title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
       value={recordContent}
       variant={variant}

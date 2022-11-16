@@ -23,7 +23,7 @@ interface BooleanFieldProps {
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the current value */
-  value?: string | boolean;
+  value?: unknown;
 }
 
 /**

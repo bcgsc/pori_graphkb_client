@@ -184,7 +184,7 @@ const StatementForm = ({
   }, [auth]);
 
   const { mutate: addNewAction, isLoading: isAdding } = useMutation(
-    async (content) => {
+    async (content: Partial<GeneralRecordType>) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
@@ -194,7 +194,7 @@ const StatementForm = ({
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
         onError?.({ error: err, content });
@@ -220,7 +220,7 @@ const StatementForm = ({
   }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
@@ -229,7 +229,7 @@ const StatementForm = ({
         snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
         onSubmit?.();
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },
@@ -245,7 +245,7 @@ const StatementForm = ({
   }, [deleteAction, formContent, model.name]);
 
   const { mutate: updateAction, isLoading: isUpdating } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
@@ -255,7 +255,7 @@ const StatementForm = ({
         snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },

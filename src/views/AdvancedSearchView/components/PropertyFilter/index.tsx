@@ -11,18 +11,21 @@ import React, {
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
-import DropDownSelect from '@/components/DropDownSelect';
+import DropDownSelect, { SelectOption } from '@/components/DropDownSelect';
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import FieldWrapper from '@/components/FormField/FieldWrapper';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { PropertyDefinition, QueryFilter } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
 
-import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
+import {
+  BLACKLISTED_PROPERTIES, DATE_FIELDS, OperatorOption, OPERATORS,
+} from '../constants';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
 
-const propertySort = ({ label: prop1 }, { label: prop2 }) => {
+const propertySort = ({ label: prop1 }: SelectOption, { label: prop2 }: SelectOption) => {
   if (prop1.startsWith('break1') && prop2.startsWith('break1')) {
     prop1 = prop1.replace('break1', '');
     prop2 = prop2.replace('break1', '');
@@ -37,7 +40,7 @@ const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   return prop1.localeCompare(prop2);
 };
 
-const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, subqueryType = '') => {
+const constructOperatorOptions = ({ iterable, type, name }: Partial<PropertyDefinition> = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {
     return OPERATORS.filter((op) => ['CONTAINSTEXT', '='].includes(op.label));
   }
@@ -70,7 +73,7 @@ const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, sub
 interface PropertyFilterProps {
   /** name of target model of query */
   modelName: string;
-  onSubmit: (result: unknown) => void;
+  onSubmit: (result: QueryFilter) => void;
   className?: string;
 }
 
@@ -81,16 +84,16 @@ const PropertyFilter = ({
   modelName, onSubmit, className,
 }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
-  const [propertyChoices, setPropertyChoices] = useState([]);
-  const [propertyModel, setPropertyModel] = useState({
+  const [propertyChoices, setPropertyChoices] = useState<SelectOption[]>([]);
+  const [propertyModel, setPropertyModel] = useState<PropertyDefinition>({
     type: 'string', name: 'value', mandatory: true, generated: false,
   });
-  const [operatorChoices, setOperatorChoices] = useState(['=']);
-  const [operator, setOperator] = useState(operatorChoices[0]);
-  const [subqueryType, setSubqueryType] = useState('');
+  const [operatorChoices, setOperatorChoices] = useState<(OperatorOption | string)[]>(['=']);
+  const [operator, setOperator] = useState(operatorChoices[0] as string);
+  const [subqueryType, setSubqueryType] = useState<React.ComponentProps<typeof SubqueryTypeSelector>['value']>('');
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
-  const [keywordTargetOptions, setKeywordTargetOptions] = useState([]);
+  const [keywordTargetOptions, setKeywordTargetOptions] = useState<string[]>([]);
 
   // use a schema form so that validation runs on the value based on the property selected
   const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
@@ -101,7 +104,7 @@ const PropertyFilter = ({
 
   // set the property options
   useEffect(() => {
-    const choices = [];
+    const choices: SelectOption[] = [];
     schema.getQueryProperties(modelName)
       .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
@@ -141,7 +144,7 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel = { ...schema.getQueryProperties(modelName).find((p) => p.name === prop), mandatory: true };
+      let newPropertyModel: PropertyDefinition | null = { ...schema.getQueryProperties(modelName).find((p) => p.name === prop), mandatory: true } as PropertyDefinition;
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
@@ -227,7 +230,7 @@ const PropertyFilter = ({
   const handleAddFilter = useCallback(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
     const [, subProp] = property.split('.');
-    const result = {
+    const result: QueryFilter = {
       attr: property,
       value: subProp
         ? formContent[subProp]

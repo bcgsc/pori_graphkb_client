@@ -20,6 +20,13 @@ interface ColumnConfigurationProps {
   onClose?: (...args: unknown[]) => void;
 }
 
+interface Col {
+  title: string;
+  id: string;
+  parentId?: string;
+  children?: Col[];
+}
+
 /**
  * shows list of checkboxes where each checkbox is a column.
  * if column is part of a group, it is shown with a collapsable section
@@ -32,7 +39,7 @@ const ColumnConfiguration = ({
   isOpen,
   gridRef,
 }: ColumnConfigurationProps) => {
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState<Col[]>([]);
   const [openCols, setOpenCols] = useState({});
 
   useEffect(() => {
@@ -40,8 +47,8 @@ const ColumnConfiguration = ({
 
     if (!isOpen || !columnApi) { return; }
 
-    const cols = [];
-    let current;
+    const cols: Col[] = [];
+    let current: Col | null;
     const nextOpenCols = {};
     columnApi.getAllColumns().forEach((column) => {
       if (column.colId.endsWith('.preview')) { return; }

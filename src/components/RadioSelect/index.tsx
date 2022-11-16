@@ -12,15 +12,11 @@ import {
 } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 
-interface Option {
-  label: string;
-  value: unknown;
-  caption?: ReactNode;
-}
+import { SelectOption } from '../DropDownSelect';
 
 interface RadioSelectProps {
   /** the options to display */
-  options: (Option | string)[];
+  options: (SelectOption | string)[];
   /** css class name to add to the top-level component */
   className?: string;
   /** optional label for the field */
@@ -28,11 +24,11 @@ interface RadioSelectProps {
   /** the name to use for the input and reporting change to the parent handler */
   name?: string;
   /** the change handler to report the selection back to the parent */
-  onChange?: (arg: { target: { name?: string; value: unknown } }) => unknown;
+  onChange: (arg: { target: { name?: string; value: string } }) => void;
   /** the function to generate a key from a selection value */
   optionToKey?: (option: Option | string) => string;
   /** the current value */
-  value?: unknown;
+  value?: string;
 }
 
 /**

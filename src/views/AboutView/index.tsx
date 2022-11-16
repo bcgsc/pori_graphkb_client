@@ -20,21 +20,28 @@ import GettingStarted from './components/GettingStarted';
 import Matching from './components/Matching';
 import AboutNotation from './components/Notation';
 
+interface TabOption {
+  label: string;
+  component: React.ComponentProps<typeof Route>['component'];
+  slug: string;
+  uri: string;
+}
+
 const AboutView = (props: RouteComponentProps) => {
   const { location: { pathname: currentUri } } = props;
   const [tabIndex, setTabIndex] = useState(0);
 
   const baseUri = '/about';
   const tabsList = [
-    { label: 'About', component: AboutMain },
+    { label: 'About', component: AboutMain } as Partial<TabOption>,
     { label: 'Getting Started', component: GettingStarted },
     { label: 'Classes', component: AboutClasses },
     { label: 'Notation', component: AboutNotation },
     { label: 'Matching', component: Matching },
     { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
-  ];
+  ] as TabOption[];
 
-  const uriLookup = {};
+  const uriLookup: Record<string, number> = {};
 
   tabsList.forEach((tab, index) => {
     if (tab.slug === undefined) {

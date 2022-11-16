@@ -7,6 +7,7 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
+import { ModelDefinition } from '@/components/types';
 
 interface BreakpointFormProps{
   /** the Position class */
@@ -14,7 +15,7 @@ interface BreakpointFormProps{
   /**
    * @todo get type from schema package
    */
-  model: any;
+  model: Pick<ModelDefinition, 'properties'>;
   /** the field name of the reference element (ex. reference1) */
   reference: string;
   /** the field name of the end position (ex. break1End) */
@@ -32,7 +33,7 @@ interface BreakpointFormProps{
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, required, model,
+  coordinateType, reference, start = '', end = '', required, model,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));

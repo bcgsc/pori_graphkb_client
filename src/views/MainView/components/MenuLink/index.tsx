@@ -5,6 +5,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, {
+  ReactNode,
   useCallback, useContext, useEffect, useState,
 } from 'react';
 import {
@@ -21,7 +22,7 @@ interface MenuLinkProps {
   /** link route name */
   route: string;
   group?: boolean;
-  icon?: Record<string, unknown>;
+  icon?: ReactNode;
   /** if true, text will be indented */
   inset?: boolean;
 }

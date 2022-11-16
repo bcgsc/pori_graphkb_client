@@ -9,7 +9,7 @@ import TreeIcon from '@material-ui/icons/AccountTree';
 import CancelIcon from '@material-ui/icons/Cancel';
 import ShareIcon from '@material-ui/icons/Share';
 import { format } from 'date-fns';
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactElement, useCallback } from 'react';
 
 import LetterIcon from '@/components/LetterIcon';
 import schema from '@/services/schema';
@@ -20,7 +20,7 @@ interface FilterGroupProps {
   filters: { value: unknown; attr: string; operator: string; subqueryType?: string }[];
   name: string;
   isSelected?: boolean;
-  onDelete?: (name: string) => void;
+  onDelete?: ((name: string) => void) | null;
   onDeleteFilter?: (index: number, name: string) => void;
   onSelect?: React.ComponentProps<typeof LetterIcon>['onClick'];
 }
@@ -60,7 +60,7 @@ function FilterGroup({
           } else if (typeof filterValue === 'string') {
             filterValue = `'${filterValue}'`;
           }
-          let icon: ReactNode = null;
+          let icon: ReactElement = null;
 
           if (filter.subqueryType === 'keyword') {
             icon = (<ShareIcon />);

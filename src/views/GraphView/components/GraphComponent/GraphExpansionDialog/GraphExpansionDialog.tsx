@@ -3,6 +3,7 @@ import './GraphExpansionDialog.scss';
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Button,
+  ButtonProps,
   Checkbox,
   Dialog,
   DialogActions,
@@ -16,30 +17,33 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
+
+import { GraphLink } from '../kbgraph';
 
 interface GraphExpansionDialogProps {
   /** handler for user clicking away or cancelling. */
-  onClose: (...args: unknown[]) => unknown;
+  onClose: (...args: unknown[]) => void;
   /** handler for confirming expansion. */
-  onExpand: (...args: unknown[]) => unknown;
+  onExpand: ButtonProps['onClick'];
   /** toggles staged/unstaged state for a single
  * edge. */
-  onStage: (...args: unknown[]) => unknown;
+  onStage: (rid: string) => void;
   /** toggles selecting all/none of staged
  * edges. */
-  onStageAll: (...args: unknown[]) => unknown;
+  onStageAll: (e: unknown) => void;
   /** toggles staged/unstaged state for edges
  * of a single class. */
-  onStageClass: (...args: unknown[]) => unknown;
+  onStageClass: (edgeClass: string | undefined) => ButtonProps['onClick'];
   /** Dialog open state */
   open: boolean;
   /** list of edge RID's that will be excluded in node expansion. (unstaged) */
   expandExclusions?: string[];
   /** list of all currently rendered graph links. */
-  links?: unknown[];
+  links?: GraphLink[];
   /** Graph node staged for expansion. */
-  node?: Record<string, unknown>;
+  node?: GeneralRecordType | null;
 }
 
 /**
@@ -79,7 +83,7 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
           Expand by Edge Types:
         </Typography>
         <List className="expand-links-types" dense>
-          {(edges || []).reduce((array, edge) => {
+          {(edges || []).reduce((array: (string | undefined)[], edge) => {
             if (
               !array.includes(edge['@class'])
               && !links.find((l) => l.getId() === edge['@rid'])

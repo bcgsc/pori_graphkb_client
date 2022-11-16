@@ -68,13 +68,13 @@ function DetailDrawer(props: DetailDrawerProps) {
 
   const auth = useAuth();
 
-  const [opened, setOpened] = useState([]);
+  const [opened, setOpened] = useState<(string | GeneralRecordType)[]>([]);
 
   /**
    * Toggles collapsed list item.
    * @param {string} key - list item key.
    */
-  const handleExpand = (key) => {
+  const handleExpand = (key: string | GeneralRecordType) => {
     if (opened.includes(key)) {
       setOpened((prev) => prev.filter((k) => k !== key));
     } else {
@@ -82,13 +82,13 @@ function DetailDrawer(props: DetailDrawerProps) {
     }
   };
 
-  const [linkOpen, setLinkOpen] = useState(null);
+  const [linkOpen, setLinkOpen] = useState<string | null>(null);
 
   /**
    * Toggles collapsed link list item.
    * @param {string} key - list item key.
    */
-  const handleLinkExpand = (key) => {
+  const handleLinkExpand = (key: string) => {
     if (linkOpen === key) {
       setLinkOpen(null);
       setOpened(opened.filter((o) => !o.includes(key)));
@@ -104,7 +104,7 @@ function DetailDrawer(props: DetailDrawerProps) {
    * @param {Array.<Object>} properties - List of property models to display.
    * @param {boolean} isNested - Nested flag.
    */
-  const formatProps = (record, properties, isNested) => {
+  const formatProps = (record, properties: PropertyDefinition[], isNested?: boolean) => {
     const identifiers = ['displayName', '@rid', 'sourceId'];
     const updatedProperties = movePropToTop(properties, 'displayName');
 
@@ -173,16 +173,15 @@ function DetailDrawer(props: DetailDrawerProps) {
    * @param {Object} record - Record to be formatted.
    * @param {boolean} isNested - Nested flag.
    */
-  const formatMetadata = (record, isNested) => formatProps(record, schema.getMetadata(), isNested);
+  const formatMetadata = (record: GeneralRecordType, isNested: boolean) => formatProps(record, schema.getMetadata(), isNested);
 
   /**
    * Formats non-identifying, non-metadata properties of the input record.
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag indicating if record is embedded
    */
-  const formatOtherProps = (record, isNested) => {
+  const formatOtherProps = (record: GeneralRecordType, isNested?: boolean) => {
     const identifiers = ['@class', '@rid'];
-
     let properties = Object.keys(record)
       .map((key) => ({ name: key, type: util.parseKBType(record[key]) }));
 
@@ -200,7 +199,7 @@ function DetailDrawer(props: DetailDrawerProps) {
   const drawerIsOpen = Boolean(node);
   let content: ReactNode = null;
 
-  if (drawerIsOpen) {
+  if (node) {
     const recordId = node['@rid'].replace(/^#/, '');
     const recordClass = node['@class'];
 
@@ -217,7 +216,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       // Only for kbp nodes so far.
     } catch (e) {
       preview = 'Invalid variant';
-      errorMessage = e.message;
+      errorMessage = (e as Error).message;
     }
     content = (
       <div className="detail-drawer__content">

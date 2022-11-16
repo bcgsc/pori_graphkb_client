@@ -34,12 +34,12 @@ interface RecordFormProps {
   /** name of class model to be displayed */
   modelName?: string;
   onError?: (arg: { error: unknown; content: unknown }) => void;
-  onSubmit?: (record?: GeneralRecordType) => void;
+  onSubmit?: (record?: Partial<GeneralRecordType>) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
   /** the record id of the current record for the form */
   rid?: string;
   /** values of individual properties of passed class model */
-  value?: GeneralRecordType;
+  value?: Partial<GeneralRecordType> | null;
   /** the type of NodeForm to create */
   variant?: FORM_VARIANT;
 }
@@ -78,7 +78,7 @@ const RecordForm = ({
   } = form;
 
   const { mutate: addNewAction, isLoading: isAdding } = useMutation(
-    async (content) => {
+    async (content: Partial<GeneralRecordType>) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
@@ -88,7 +88,7 @@ const RecordForm = ({
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
         onError?.({ error: err, content });
@@ -118,7 +118,7 @@ const RecordForm = ({
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
@@ -127,7 +127,7 @@ const RecordForm = ({
         snackbar.enqueueSnackbar(`Successfully deleted the record ${content['@rid']}`, { variant: 'success' });
         onSubmit?.();
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },
@@ -143,11 +143,11 @@ const RecordForm = ({
     if (!formContent['@class']) {
       content['@class'] = modelName;
     }
-    deleteAction(content);
+    deleteAction(content as GeneralRecordType);
   }, [deleteAction, formContent, modelName]);
 
   const { mutate: updateAction, isLoading: isUpdating } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
@@ -157,7 +157,7 @@ const RecordForm = ({
         snackbar.enqueueSnackbar(`Successfully edited the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },

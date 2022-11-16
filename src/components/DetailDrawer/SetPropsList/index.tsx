@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
+import { GeneralRecordType, PropertyDefinition } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -30,13 +31,13 @@ const sortProps = (value) => {
 };
 
 interface SetPropsListProps {
-  handleExpand?: (arg: unknown) => void;
+  handleExpand?: (arg: string | GeneralRecordType) => void;
   /** props to be displayed for submenu */
   identifiers?: unknown[];
   /** opened dropdowns in drawer */
-  opened?: string[];
+  opened?: (string | GeneralRecordType)[];
   /** link/embedded property model */
-  prop?: Record<string, unknown>;
+  prop?: PropertyDefinition;
   /** contains link/embedded records */
   value?: Record<string, unknown>;
 }

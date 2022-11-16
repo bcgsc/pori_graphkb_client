@@ -27,7 +27,7 @@ import api from '@/services/api';
 import JSONView from './JSONView';
 
 const extractRids = (obj) => {
-  const recordIds = [];
+  const recordIds: string[] = [];
 
   const queue = [obj];
 
@@ -55,7 +55,7 @@ const ActiveFilters = ({ search }: { search: string; }) => {
       '/query',
       {
         target: recordIds,
-        returnProperties: ['@class', '@rid', 'name', 'displayName'],
+        returnProperties: ['@class', '@rid', 'name', 'displayName'] as const,
       },
     ),
     async ({ queryKey: [, body] }) => api.query(body),

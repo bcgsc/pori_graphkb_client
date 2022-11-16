@@ -2,7 +2,10 @@ import './GraphLinkDisplay.scss';
 
 import React from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import config from '@/static/config';
+
+import { GraphLink, GraphNode } from '../kbgraph';
 
 const LABEL_BASELINE_SHIFT = 4;
 const SELECTED_OPACITY = 1;
@@ -14,17 +17,17 @@ const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
 
 interface GraphLinkDisplayProps {
   /** Graph link object. */
-  link: Record<string, unknown>;
+  link: GraphLink;
   /** Node decorator object. */
-  actionsNode?: Record<string, unknown>;
+  actionsNode?: GraphLink | GraphNode | null;
   /** color of link. CSS color syntax(es). */
-  color?: string;
+  color?: string | undefined;
   /** Node currently opened in detail drawer. */
-  detail?: Record<string, unknown>;
+  detail?: GeneralRecordType | null;
   /** current filter string value. */
   filter?: string;
   /** handler for clicking link. */
-  handleClick?: (...args: unknown[]) => void;
+  handleClick?: () => void;
   /** property to label link by. */
   labelKey?: string;
   /** SVG end marker identifier. */
@@ -39,7 +42,7 @@ interface GraphLinkDisplayProps {
 function GraphLinkDisplay(props: GraphLinkDisplayProps) {
   const {
     link,
-    color,
+    color = '#999',
     labelKey,
     marker,
     handleClick,

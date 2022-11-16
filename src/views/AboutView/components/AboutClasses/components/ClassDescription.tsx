@@ -14,7 +14,7 @@ import schema from '@/services/schema';
 
 interface ClassDescriptionProps {
   /** the class description */
-  description: string;
+  description: string | undefined;
   /** the class model name */
   name: string;
 }

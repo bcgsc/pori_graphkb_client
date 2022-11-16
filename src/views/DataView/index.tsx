@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { IDatasource } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useCallback,
@@ -19,6 +20,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
+import { GeneralRecordType, QueryBody } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -56,7 +58,7 @@ const getQueryPayload = ({
   search, sortModel, skip, limit, count = false,
 }: GetQueryPayloadArgs) => {
   const { payload } = api.getQueryFromSearch(search);
-  const content = payload || { neighbors: DEFAULT_NEIGHBORS };
+  const content: QueryBody = payload || { neighbors: DEFAULT_NEIGHBORS };
 
   if (count) {
     content.count = true;
@@ -66,9 +68,9 @@ const getQueryPayload = ({
     content.limit = limit;
 
     if (sortModel.length) {
-      const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
+      const [{ colId: orderBy, sort: orderByDirection }] = sortModel as NonNullable<typeof sortModel>;
       content.orderBy = orderBy;
-      content.orderByDirection = orderByDirection.toUpperCase();
+      content.orderByDirection = orderByDirection.toUpperCase() as 'DESC' | 'ASC';
     }
   }
 
@@ -96,7 +98,7 @@ const getRowsFromBlocks = async ({
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
 
-  const blockRequests = [];
+  const blockRequests: Promise<GeneralRecordType[]>[] = [];
 
   for (let block = firstBlock; block <= lastBlock; block += blockSize) {
     const payload = getQueryPayload({
@@ -108,7 +110,7 @@ const getRowsFromBlocks = async ({
       async ({ queryKey: [, body] }) => api.query(body),
     ));
   }
-  const data = [];
+  const data: GeneralRecordType[] = [];
   (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
@@ -133,9 +135,9 @@ const DataView = ({
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
-  const [selectedRecords, setSelectedRecords] = useState([]);
-  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
-  const [detailsRowId, setDetailsRowId] = useState(null);
+  const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
+  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState<Element | null>(null);
+  const [detailsRowId, setDetailsRowId] = useState<string | null>(null);
   const grid = useGrid();
 
   const payload = useMemo(() => getQueryPayload({
@@ -159,7 +161,7 @@ const DataView = ({
       ...schema.defineGridColumns(search),
     ]);
 
-    const dataSource = {
+    const dataSource: IDatasource = {
       rowCount: null,
       getRows: ({
         successCallback, failCallback, ...params
@@ -212,7 +214,7 @@ const DataView = ({
   }, [history, search]);
 
   const { data: detailPanelRow } = useQuery(
-    tuple('/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }),
+    tuple('/query', { target: [detailsRowId as NonNullable<typeof detailsRowId>], neighbors: DEFAULT_NEIGHBORS }),
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(detailsRowId),
@@ -286,7 +288,7 @@ const DataView = ({
       const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
       gridOptions.cacheBlockSize = maxExportSize; // in preparation to fetch entire dataset
 
-      const tempDataSource = {
+      const tempDataSource: IDatasource = {
         rowCount: totalRows,
         getRows: async ({
           successCallback, failCallback,

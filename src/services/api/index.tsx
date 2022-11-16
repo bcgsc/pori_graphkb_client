@@ -33,7 +33,7 @@ const MAX_SUGGESTIONS = 50;
  * @param endpoint - URL endpoint.
  * @param {Object} payload - PATCH payload.
  */
-const patch = (endpoint: string, payload: Record<string, unknown>): Promise<GeneralRecordType> => {
+const patch = (endpoint: string, payload: Partial<GeneralRecordType>): Promise<GeneralRecordType> => {
   // strip out the display name to have it force-regenerate
   const { displayName, ...changes } = payload;
   const init = {
@@ -59,7 +59,7 @@ const get = (endpoint: string, callOptions?: RequestCallOptions) => {
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-function post<Resp = GeneralRecordType>(endpoint: string, payload?: Record<string, unknown>): Promise<Resp> {
+function post<Resp = GeneralRecordType>(endpoint: string, payload?: Partial<GeneralRecordType>): Promise<Resp> {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),
@@ -71,7 +71,7 @@ function post<Resp = GeneralRecordType>(endpoint: string, payload?: Record<strin
  * Sends POST request to api to the query endpoint
  * @param {Object} payload - POST payload.
  */
-function query<ReqFields extends string = string, Record = GeneralRecordType<ReqFields>>(
+function query<ReqFields extends string, Record = GeneralRecordType<ReqFields>>(
   payload: QueryBody<ReqFields>,
 ): Promise<Record[]> {
   const init = {

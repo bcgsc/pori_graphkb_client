@@ -3,13 +3,15 @@ import React from 'react';
 
 import FormField from '@/components/FormField';
 
+import { ModelDefinition } from '../types';
+
 interface EdgeFieldsProps {
   /**
    * the current edge model
    *
    * @todo get type from schema package
    */
-  model: any;
+  model: ModelDefinition;
   /** flag to indicate these fields should be disabled */
   disabled?: boolean;
 }

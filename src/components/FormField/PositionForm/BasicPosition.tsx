@@ -17,7 +17,7 @@ const {
 
 interface BasicPositionFormProps {
   /** change handler */
-  onChange: (...args: unknown[]) => unknown;
+  onChange: (event: { target: { name: string; value: { '@class': string; pos: number | undefined; offset: number | undefined; } } }) => unknown;
   /** the class model to use to build the form */
   variant: 'GenomicPosition' | 'ExonicPosition' | 'IntronicPosition' | 'RnaPosition' | 'CdsPosition';
   /** flag to indicate this field is disabled */
@@ -30,7 +30,7 @@ interface BasicPositionFormProps {
   value?: {
     pos?: number;
     offset?: number;
-  },
+  } | undefined
 }
 
 /**
@@ -59,7 +59,7 @@ const BasicPositionForm = ({
         posProperty.validate(position);
         setPositionError('');
       } catch (err) {
-        setPositionError(err.toString());
+        setPositionError((err as Error).toString());
       }
     }
   }, [position, required]);
@@ -77,7 +77,7 @@ const BasicPositionForm = ({
         offsetProperty.validate(offset);
         setOffsetError('');
       } catch (err) {
-        setOffsetError(err.toString());
+        setOffsetError((err as Error).toString());
       }
     }
   }, [offset, required]);

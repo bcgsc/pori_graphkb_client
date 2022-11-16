@@ -10,10 +10,11 @@ import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
+import { GeneralRecordType } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 
-const isReversed = (nodeId, { out: src, in: tgt }) => {
+const isReversed = (nodeId: string, { out: src, in: tgt }) => {
   if (src && tgt) {
     const srcId = src['@rid'] || src;
     return srcId !== nodeId;
@@ -47,10 +48,10 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
     {
       select: (response) => {
         const [record] = response;
-        const newEdges = [];
+        const newEdges: Record<string, unknown>[] = [];
         Object.entries(record).forEach(([propName, value]) => {
           if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
-            value.forEach((edge) => {
+            (value as (GeneralRecordType | string)[]).forEach((edge) => {
               const model = schemaDefn.get(edge);
               const reversed = isReversed(recordId, edge);
 

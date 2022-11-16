@@ -6,7 +6,7 @@ import { StatementType } from '@/components/types';
 import SentencePreview from '.';
 
 interface StatementSentenceProps {
-  content?: StatementType;
+  content?: Partial<StatementType>;
 }
 
 const StatementSentence = ({ content: record }: StatementSentenceProps) => {

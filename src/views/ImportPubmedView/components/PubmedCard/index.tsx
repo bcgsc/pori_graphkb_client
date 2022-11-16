@@ -15,7 +15,7 @@ const PUBMED_BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov';
 
 interface PubmedCardProps {
   /** the pubmed id */
-  sourceId: string;
+  sourceId: string | undefined;
   /** the name of the journal the article was published in */
   journalName?: string;
   /** the onClick handler function */

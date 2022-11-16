@@ -116,10 +116,10 @@ const QuickSearch = ({ history }: RouteComponentProps) => {
       // if it was partially parsed use that result
         if (err.content && err.content.parsed) {
           const { content: { parsed: { variantString, ...parsed } } } = err;
-          setErrorMessage(`${err || err.message}`);
+          setErrorMessage(`${err || (err as Error).message}`);
           setVariant(parsed);
         } else {
-          setErrorMessage(`${err || err.message}`);
+          setErrorMessage(`${err || (err as Error).message}`);
           setVariant(null);
         }
       }

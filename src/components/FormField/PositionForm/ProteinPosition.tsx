@@ -58,7 +58,7 @@ const ProteinPosition = ({
         posProperty.validate(position || null);
         setPositionError('');
       } catch (err) {
-        setPositionError(err.toString());
+        setPositionError((err as Error).toString());
       }
     }
   }, [position, required]);
@@ -72,7 +72,7 @@ const ProteinPosition = ({
         refAAProperty.validate(refAA || null);
         setRefAAError('');
       } catch (err) {
-        setRefAAError(err.toString());
+        setRefAAError((err as Error).toString());
       }
     }
   }, [refAA, required]);

@@ -1,7 +1,7 @@
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import React, { useEffect, useState } from 'react';
 
-import DropDownSelect from '@/components/DropDownSelect';
+import DropDownSelect, { SelectOption } from '@/components/DropDownSelect';
 import RadioSelect from '@/components/RadioSelect';
 
 interface ModelSelectProps {
@@ -28,7 +28,7 @@ interface ModelSelectProps {
 const ModelSelect = ({
   baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
 }: ModelSelectProps) => {
-  const [choices, setChoices] = useState([]);
+  const [choices, setChoices] = useState<SelectOption[]>([]);
   const model = value || defaultValue;
 
   useEffect(() => {

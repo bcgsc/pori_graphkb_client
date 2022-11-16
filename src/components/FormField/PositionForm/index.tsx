@@ -22,7 +22,7 @@ interface PositionFormProps {
   /** the form field name to pass up to the change handler */
   name: string;
   /** change handler */
-  onChange: (...args: unknown[]) => unknown;
+  onChange: (event: { target: { name: string; value: unknown } }) => void;
   baseVariant?: string;
   /** can this position be removed/deleted/set to null */
   clearable?: boolean;
@@ -37,7 +37,7 @@ interface PositionFormProps {
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the initial value */
-  value?: Record<string, unknown>;
+  value?: unknown;
   /** the position class model name */
   variant?: string;
 }

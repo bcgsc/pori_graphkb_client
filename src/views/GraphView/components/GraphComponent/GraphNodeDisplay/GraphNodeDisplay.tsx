@@ -5,10 +5,11 @@ import * as d3Drag from 'd3-drag';
 import * as d3Select from 'd3-selection';
 import React, { useEffect, useRef } from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import config from '@/static/config';
 
-import { GraphNode } from '../kbgraph';
+import { GraphLink, GraphNode } from '../kbgraph';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
@@ -16,21 +17,21 @@ const FADED_OPACITY = 0.6;
 
 interface GraphNodeDisplayProps {
   /** Node decorator object. */
-  actionsNode?: Record<string, unknown>;
+  actionsNode?: GraphLink | GraphNode | null;
   /** Function to apply drag functionality to node. */
-  applyDrag?:(...args: unknown[]) => unknown;
+  applyDrag?: (node: GraphNode) => void;
   /** Color of node. */
-  color?: string;
+  color?: string | undefined;
   /** Node currently opened in detail drawer. */
-  detail?: Record<string, unknown>;
+  detail?: GeneralRecordType | null;
   /** current filter string value. */
   filter?: string;
   /** Parent method on node click event. */
-  handleClick?: (...args: unknown[]) => unknown;
+  handleClick?: () => void;
   /** Property to label node by. */
   labelKey?: string;
   /** Node to be rendered. */
-  node?: Record<string, unknown>;
+  node?: GraphNode;
 }
 
 /**
@@ -41,15 +42,15 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   const {
     applyDrag,
     handleClick,
-    color,
-    labelKey,
+    color = '#26328C',
+    labelKey = 'name',
     node,
     actionsNode,
     detail,
     filter,
   } = props;
 
-  const nodeSVG = useRef(null);
+  const nodeSVG = useRef<SVGGElement | null>(null);
 
   // enables svg dragging,calls applyDrag to set dragged position as new position
   useEffect(() => {

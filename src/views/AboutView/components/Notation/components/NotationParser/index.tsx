@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 const NotationParser = () => {
   const [text, setText] = useState('');
   const [parsed, setParsed] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const NotationParser = () => {
       setError(null);
     } catch (err) {
       setParsed(null);
-      setError(err);
+      setError(err as Error);
     }
   }, [text]);
 

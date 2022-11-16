@@ -9,8 +9,8 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
  *
  * @param {Object} initialValue the start object
  */
-const useObject = (initialValue = {}) => {
-  const [content, setContent] = useReducer((state, action) => {
+function useObject<T extends { [key: string]: any }>(initialValue?: T | undefined) {
+  const [content, setContent] = useReducer((state: T, action) => {
     const { type: actionType, payload } = action;
 
     if (actionType === 'update') {
@@ -28,15 +28,15 @@ const useObject = (initialValue = {}) => {
     throw new Error(`actionType (${actionType}) not implemented`);
   }, initialValue || {});
 
-  const updateField = useCallback((name, value) => {
+  const updateField = useCallback((name: string, value) => {
     setContent({ type: 'update', payload: { name, value } });
   }, [setContent]);
 
-  const update = useCallback((newContent = {}) => {
+  const update = useCallback((newContent: Partial<T> = {}) => {
     setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
-  const replace = useCallback((newContent = {}) => {
+  const replace = useCallback((newContent: T = {} as T) => {
     setContent({ type: 'replace', payload: newContent });
   }, [setContent]);
 
@@ -46,12 +46,12 @@ const useObject = (initialValue = {}) => {
   }, [content]);
 
   useDeepCompareEffect(() => {
-    replace(initialValue || {});
+    replace(initialValue || {} as T);
   }, [initialValue || {}]);
 
   return {
-    content, updateField, replace, update, removeField,
+    content: content as T, updateField, replace, update, removeField,
   };
-};
+}
 
 export default useObject;

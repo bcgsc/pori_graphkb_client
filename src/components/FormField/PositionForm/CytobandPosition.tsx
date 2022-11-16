@@ -30,7 +30,7 @@ interface CytobandPositionProps {
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the initial value */
-  value?: Record<string, unknown>;
+  value?: unknown;
 }
 
 /**

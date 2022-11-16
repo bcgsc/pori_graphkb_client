@@ -12,13 +12,15 @@ import React, {
 } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
+import { GeneralRecordType } from '@/components/types';
 import { navigateToGraph } from '@/components/util';
 
-interface DataViewFooterProps extends RouteComponentProps {
-  onError?: (...args: unknown[]) => unknown;
-  selectedRecords?: Record<string, unknown>[];
+interface DataViewFooterProps {
+  onError?: (err: Error) => void;
+  selectedRecords?: GeneralRecordType[];
   statusMessage?: string;
-  totalRows?: number;
+  totalRows?: number | null;
+  history: RouteComponentProps['history'];
 }
 
 const DataViewFooter = ({

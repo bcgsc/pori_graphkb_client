@@ -12,13 +12,11 @@ import {
   Select,
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import React, { ReactNode } from 'react';
+import React from 'react';
 
-import { GeneralRecordType } from '@/components/types';
-
-interface SelectOption {
+export interface SelectOption<V = string> {
   key?: string;
-  value?: string;
+  value: V;
   label?: string;
   caption?: string;
 }
@@ -59,7 +57,7 @@ const DefaultOptionComponent = (option, disabled) => {
 
 type SelectProps = React.ComponentProps<typeof Select>;
 
-interface DropDownSelectProps {
+interface DropDownSelectProps<V extends string | null> {
   IconComponent?: SelectProps['IconComponent'];
   /** Function to produce list items. */
   children?: (option: SelectOption | string, disabled: boolean | undefined) => ReactNode;
@@ -78,13 +76,13 @@ interface DropDownSelectProps {
   /** DOM node name property. */
   name?: string;
   /** Parent function to trigger on item select. */
-  onChange?: (...args: unknown[]) => unknown;
+  onChange?: (event: { target: { name: string; value: V } }) => void;
   /** List of options to be selected from. */
-  options?: (SelectOption | string)[];
+  options?: (SelectOption<V> | V)[];
   /** Required flag for input component. */
   required?: boolean;
   /** Parent property to bind output data to. */
-  value?: GeneralRecordType | string;
+  value?: string | null;
   /** Material UI Select variant (outlined, filled, standard) */
   variant?: React.ComponentProps<typeof FormControl>['variant'];
 }
@@ -92,7 +90,7 @@ interface DropDownSelectProps {
 /**
  * Component to select options from a list of defined options.
  */
-function DropDownSelect(props: DropDownSelectProps) {
+function DropDownSelect<V extends string | null>(props: DropDownSelectProps<V>) {
   const {
     options,
     value,
@@ -145,7 +143,7 @@ function DropDownSelect(props: DropDownSelectProps) {
           : IconComponent}
         input={<InputComponent id={`option-select-${name}`} name={name} />}
         inputProps={innerProps}
-        onChange={onChange}
+        onChange={onChange as SelectProps['onChange']}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}

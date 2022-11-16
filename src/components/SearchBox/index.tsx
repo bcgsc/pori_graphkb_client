@@ -1,7 +1,9 @@
+/* eslint-disable react/require-default-props */
 import {
   IconButton,
   InputAdornment,
   TextField,
+  TextFieldProps,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -20,6 +22,7 @@ interface SearchBoxProps {
   onSubmit?: (...args: unknown[]) => unknown;
   /** the initial value in the serach box */
   value?: string;
+  placeholder?: TextFieldProps['placeholder']
 }
 
 const SearchBox = ({

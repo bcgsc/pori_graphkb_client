@@ -1,5 +1,8 @@
 import { Property, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
+
+import { GeneralRecordType, ModelDefinition, PropertyDefinition } from '@/components/types';
 
 import { getQueryFromSearch } from './api/search';
 
@@ -39,7 +42,7 @@ const getLink = (obj) => {
 /**
  * Returns record metadata fields
  */
-const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
+const getMetadata = (): PropertyDefinition[] => Object.values(schemaDefn.schema.V.properties);
 
 /**
  * Returns route and properties of a certain knowledgebase class
@@ -47,7 +50,7 @@ const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
  * @param {Object|string} obj - Knowledgebase Record.
  * class properties list.
  */
-const getProperties = (obj) => {
+const getProperties = (obj): PropertyDefinition[] => {
   const VPropKeys = schemaDefn.schema.V.properties;
   const classModel = schemaDefn.get(obj);
   return Object.values(classModel?.properties ?? {})
@@ -60,8 +63,8 @@ const getProperties = (obj) => {
  * @param {string} className - requested class name.
  * class properties list.
  */
-const getQueryProperties = (className) => {
-  const VPropKeys = schemaDefn.schema.V.properties;
+const getQueryProperties = (className: string) => {
+  const VPropKeys: Record<string, PropertyDefinition> = schemaDefn.schema.V.properties;
   const classModel = schemaDefn.get(className);
   return Object.values(classModel?.queryProperties ?? {})
     .filter((prop) => !VPropKeys[prop.name]);
@@ -71,11 +74,11 @@ const getQueryProperties = (className) => {
  * Returns a list of strings containing all valid edge class names.
  * @param {Object} [node=null] - Object to retrieve edges from if input.
  */
-const getEdges = (node = null) => {
-  const list = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
+function getEdges(node: GeneralRecordType | null = null): (GeneralRecordType | string)[] {
+  const list: string[] = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
 
   if (node) {
-    const edges = [];
+    const edges: unknown[] = [];
     Object.keys(node)
       .filter((key) => key.split('_')[1] && list.includes(key.split('_')[1]))
       .forEach((key) => edges.push(...node[key]));
@@ -83,15 +86,15 @@ const getEdges = (node = null) => {
   }
 
   return list;
-};
+}
 
-const isEdge = (cls) => !!(schemaDefn.get(cls)
+const isEdge = (cls: ModelDefinition | string) => !!(schemaDefn.get(cls)
       && schemaDefn.get(cls).inherits.some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object
  */
-const validateValue = (propModel, value, { ignoreMandatory = false }) => {
+const validateValue = (propModel: PropertyDefinition, value, { ignoreMandatory = false }) => {
   if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
     if (propModel.mandatory
       && !ignoreMandatory
@@ -174,12 +177,12 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
  *
  * @returns {Array.<object>} the column definitions to be applied to a grid
  */
-const defineGridColumns = (search) => {
+const defineGridColumns = (search: string) => {
   const { modelName } = getQueryFromSearch(search);
 
-  const showEdges = [];
-  const showByDefault = [];
-  const defaultOrdering = [];
+  const showEdges: string[] = [];
+  const showByDefault: string[] = [];
+  const defaultOrdering: string[] = [];
 
   const linkChipWidth = 300;
 
@@ -230,7 +233,7 @@ const defineGridColumns = (search) => {
   };
 
   const defineConditionsColumn = () => {
-    const conditionsDefn = {
+    const conditionsDefn: ColGroupDef = {
       headerName: 'Conditions',
       groupId: 'Conditions',
       openByDefault: true,
@@ -307,7 +310,7 @@ const defineGridColumns = (search) => {
     'displayName',
   ];
 
-  const valueGetter = (propName, subPropName = null) => ({ data }) => {
+  const valueGetter = (propName: string, subPropName: string | null = null) => ({ data }) => {
     if (data) {
       if (!subPropName) {
         return schemaDefn.getPreview(data[propName]);
@@ -318,7 +321,7 @@ const defineGridColumns = (search) => {
     return '';
   };
 
-  const defns = [];
+  const defns: ColDef[] = [];
 
   defns.push({
     colId: 'preview',
@@ -343,7 +346,7 @@ const defineGridColumns = (search) => {
       defns.push(defineLinkSetColumn(prop.name));
     } else if (prop.type === 'link' || prop.linkedClass) {
       // build a column group
-      const groupDefn = {
+      const groupDefn: ColGroupDef = {
         headerName: titleCase(prop.name),
         groupId: prop.name,
         openByDefault: false,

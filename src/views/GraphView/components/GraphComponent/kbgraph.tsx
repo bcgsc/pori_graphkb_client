@@ -151,7 +151,7 @@ class PropsMap {
    * @param {Array.<Object>} nodes - Graph nodes list.
    * @param {Array.<string>} validProps - List of valid ontology properties.
    */
-  removeNode(node, nodes, validProps = DEFAULT_NODE_VPROPS) {
+  removeNode(node: GeneralRecordType, nodes: GraphNode[], validProps = DEFAULT_NODE_VPROPS) {
     this._removeObj('node', node, nodes, validProps);
   }
 
@@ -161,7 +161,7 @@ class PropsMap {
    * @param {Array.<Object>} links - Graph links list.
    * @param {Array.<string>} validProps - List of valid edge properties.
    */
-  removeLink(link, links, validProps = DEFAULT_LINK_VPROPS) {
+  removeLink(link: GeneralRecordType, links: GraphLink[], validProps = DEFAULT_LINK_VPROPS) {
     this._removeObj('link', link, links, validProps);
   }
 

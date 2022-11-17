@@ -32,7 +32,7 @@ const GraphView = ({ history }: RouteComponentProps) => {
   const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
   const queryClient = useQueryClient();
 
-  const handleError = useCallback((err) => {
+  const handleError = useCallback((err: Error) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
@@ -76,12 +76,12 @@ const GraphView = ({ history }: RouteComponentProps) => {
         }
       } catch (err) {
         console.error(err);
-        handleError(err);
+        handleError(err as Error);
       }
     }
   }, [handleError, queryClient]);
 
-  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
+  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs: string[]) => {
     navigateToGraph(nodeRIDs, history, handleError);
   }, [handleError, history]);
 
@@ -90,9 +90,9 @@ const GraphView = ({ history }: RouteComponentProps) => {
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
-  const handleExpandRecord = async (recordId) => {
+  const handleExpandRecord = async (recordId: string) => {
     const key = tuple('/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS });
-    let fullRecord = queryClient.getQueryData(key);
+    let fullRecord = queryClient.getQueryData(key) as GeneralRecordType;
 
     if (!fullRecord) {
       [fullRecord] = await queryClient.fetchQuery(

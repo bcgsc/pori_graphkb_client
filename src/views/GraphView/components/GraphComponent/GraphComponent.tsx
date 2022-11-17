@@ -96,18 +96,18 @@ const initialGraphData: InitialGraphDataType = {
 interface GraphComponentProps {
   /** graph data in the format of { '@rid': {data}, ... } */
   data: Record<string, GeneralRecordType>;
-  getRecord: (...args: unknown[]) => unknown;
+  getRecord: (rid: string) => Promise<GeneralRecordType>;
   /** Method to handle closing of detail drawer. */
-  handleDetailDrawerClose: (...args: unknown[]) => unknown;
+  handleDetailDrawerClose: () => void;
   /** Method to handle opening of detail drawer. */
-  handleDetailDrawerOpen: (...args: unknown[]) => unknown;
-  handleError: (...args: unknown[]) => unknown;
+  handleDetailDrawerOpen: (node?: GraphNode | GraphLink) => void;
+  handleError: (err: Error) => void;
   /** record ID of node currently selected for detail viewing. in the initial query. */
   detail: GeneralRecordType | null;
   /** list of valid edge classes. */
   edgeTypes: string[];
   /** parent handler to save state in URL */
-  handleGraphStateSave: (...args: unknown[]) => unknown;
+  handleGraphStateSave: (rids: string[]) => void
 }
 
 /**
@@ -199,7 +199,7 @@ function GraphComponent(props: GraphComponentProps) {
     try {
       handleGraphStateSave(nodeRIDs);
     } catch (err) {
-      handleError(err);
+      handleError(err as Error);
     }
   };
 
@@ -833,7 +833,7 @@ function GraphComponent(props: GraphComponentProps) {
       }
     } catch (err) {
       console.error(err);
-      handleError(err);
+      handleError(err as Error);
     }
   };
 
@@ -910,7 +910,7 @@ function GraphComponent(props: GraphComponentProps) {
     const { handleDetailDrawerOpen } = props;
 
     // Update contents of detail drawer if open.
-    handleDetailDrawerOpen(link, false, true);
+    handleDetailDrawerOpen(link);
 
     // Sets clicked object as actions node.
     update({ actionsNode: link });
@@ -943,8 +943,8 @@ function GraphComponent(props: GraphComponentProps) {
   const handleNodeHide = () => {
     const { edgeTypes, handleDetailDrawerClose } = props;
 
-    if (nodes.length === 1) return;
-    const i = nodes.indexOf(actionsNode);
+    if (nodes.length === 1 || !actionsNode) return;
+    const i = nodes.indexOf(actionsNode as GraphNode);
 
     nodes.splice(i, 1);
     delete graphObjects[actionsNode.data['@rid']];
@@ -1076,7 +1076,7 @@ function GraphComponent(props: GraphComponentProps) {
     ? [
       {
         name: 'Details',
-        action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
+        action: () => withClose(() => handleDetailDrawerOpen(actionsNode as GraphLink)),
         disabled: (link) => link.getId() === (detail || {})['@rid'],
       },
       {
@@ -1087,7 +1087,7 @@ function GraphComponent(props: GraphComponentProps) {
     : [
       {
         name: 'Details',
-        action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true)),
+        action: () => withClose(() => handleDetailDrawerOpen(actionsNode as GraphNode)),
         disabled: (node) => node.getId() === (detail || {})['@rid'],
       },
       {

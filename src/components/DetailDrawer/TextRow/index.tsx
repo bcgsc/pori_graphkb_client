@@ -112,7 +112,7 @@ function TextRow(props: TextRowProps) {
     );
   };
 
-  let formattedString;
+  let formattedString: JSX.Element;
 
   if (value.toString().length <= MAX_STRING_LENGTH) {
     formattedString = shortValue();

@@ -74,7 +74,7 @@ const getQueryProperties = (className: string) => {
  * Returns a list of strings containing all valid edge class names.
  * @param {Object} [node=null] - Object to retrieve edges from if input.
  */
-function getEdges(node: GeneralRecordType | null = null): (GeneralRecordType | string)[] {
+function getEdges(node: Partial<GeneralRecordType> | null = null): (GeneralRecordType | string)[] {
   const list: string[] = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
 
   if (node) {
@@ -186,7 +186,7 @@ const defineGridColumns = (search: string) => {
 
   const linkChipWidth = 300;
 
-  const allProps = schemaDefn.get(modelName).queryProperties;
+  const allProps = (schemaDefn.get(modelName) as NonNullable<ReturnType<typeof schemaDefn['get']>>).queryProperties;
 
   if (modelName.toLowerCase().includes('variant')) {
     showByDefault.push('reference1', 'reference2', 'type');

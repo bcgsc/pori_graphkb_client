@@ -9,7 +9,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
  *
  * @param {Object} initialValue the start object
  */
-function useObject<T extends { [key: string]: any }>(initialValue?: T | undefined) {
+function useObject<T extends { [key: string]: any }>(initialValue?: T | null | undefined) {
   const [content, setContent] = useReducer((state: T, action) => {
     const { type: actionType, payload } = action;
 
@@ -36,7 +36,7 @@ function useObject<T extends { [key: string]: any }>(initialValue?: T | undefine
     setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
-  const replace = useCallback((newContent: T = {} as T) => {
+  const replace = useCallback((newContent: T | null = {} as T) => {
     setContent({ type: 'replace', payload: newContent });
   }, [setContent]);
 

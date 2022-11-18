@@ -78,7 +78,7 @@ const FormLayout = ({
   } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [model, setModel] = useState<ModelDefinition | null>(null);
+  const [model, setModel] = useState<ModelDefinition | null | undefined>(null);
 
   useEffect(() => {
     setModel(schemaDefn.get(modelName));

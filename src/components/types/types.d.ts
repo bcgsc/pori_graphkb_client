@@ -37,6 +37,7 @@ declare module '@bcgsc-pori/graphkb-schema' {
     let schema: Record<string, ModelDefinition>;
     function getPreview(node: unknown | null, arg2?: boolean): string;
     function getFromRoute(modelName: string): ModelDefinition | undefined;
+    function get(obj: 'V' | 'v' | 'E' | 'e' | 'Ontology' | 'Statement' | 'StatementReview'): ModelDefinition;
     function get(obj: unknown): ModelDefinition | undefined;
     function has(obj: unknown): boolean;
   }

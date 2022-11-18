@@ -36,7 +36,7 @@ interface UseSchemaFormOptions {
 function useSchemaForm<R extends Partial<GeneralRecordType>>(
   /** @todo get type from schema package */
   initialFieldDefs: Record<string, PropertyDefinition>,
-  initialValue: R | undefined,
+  initialValue: R | null | undefined,
   { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ): FormContextState<R> {
   const [formIsDirty, setFormIsDirty] = useState(false);

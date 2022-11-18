@@ -221,10 +221,10 @@ const VariantForm = ({
       >
         <BreakpointForm
           coordinateType={coordinateType}
-          end={hasPositions && 'break1End'}
+          end={hasPositions ? 'break1End' : undefined}
           model={model}
           reference="reference1"
-          start={hasPositions && 'break1Start'}
+          start={hasPositions ? 'break1Start' : undefined}
         />
       </FormStepWrapper>
       {(!isSubstitution && (hasPositions || isFusion)) && (
@@ -234,10 +234,10 @@ const VariantForm = ({
         >
           <BreakpointForm
             coordinateType={coordinateType}
-            end={hasPositions && 'break2End'}
+            end={hasPositions ? 'break2End' : undefined}
             model={model}
-            reference={isFusion && 'reference2'}
-            start={hasPositions && 'break2Start'}
+            reference={isFusion ? 'reference2' : undefined}
+            start={hasPositions ? 'break2Start' : undefined}
           />
         </FormStepWrapper>
       )}

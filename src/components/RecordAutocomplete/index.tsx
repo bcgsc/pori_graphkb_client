@@ -91,7 +91,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     label,
     minSearchLength = 1,
     name,
-    onChange,
+    onChange = () => {},
     placeholder,
     required,
     getQueryBody,

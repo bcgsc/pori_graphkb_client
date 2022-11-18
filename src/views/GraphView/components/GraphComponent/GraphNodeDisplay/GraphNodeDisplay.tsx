@@ -64,13 +64,12 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     };
   }, [applyDrag, node]);
 
-  if (!node) return null;
   let label;
 
   if (labelKey === 'preview') {
     label = schemaDefn.getPreview(node.data);
   } else {
-    label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
+    label = node.getLabel(labelKey);
 
     if (typeof label === 'object') {
       label = schema.getLabel(label);

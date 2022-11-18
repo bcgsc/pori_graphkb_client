@@ -17,7 +17,7 @@ interface BreakpointFormProps{
    */
   model: Pick<ModelDefinition, 'properties'>;
   /** the field name of the reference element (ex. reference1) */
-  reference: string;
+  reference: string | undefined;
   /** the field name of the end position (ex. break1End) */
   end?: string;
   /** flag to indicate this field is required */

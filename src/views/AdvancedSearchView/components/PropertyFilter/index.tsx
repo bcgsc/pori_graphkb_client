@@ -155,10 +155,10 @@ const PropertyFilter = ({
             newPropertyModel = newPropertyModel.linkedClass.properties[subProp];
 
             if (subProp === '@class') {
-              const choices = parentPropModel.linkedClass.subclasses.map((m) => m.name);
+              const choices = (parentPropModel.linkedClass as NonNullable<typeof parentPropModel['linkedClass']>).subclasses.map((m) => m.name);
 
-              if (!parentPropModel.linkedClass.isAbstract) {
-                choices.push(parentPropModel.linkedClass.name);
+              if (!(parentPropModel.linkedClass as NonNullable<typeof parentPropModel['linkedClass']>).isAbstract) {
+                choices.push((parentPropModel.linkedClass as NonNullable<typeof parentPropModel['linkedClass']>).name);
               }
               newPropertyModel.choices = choices;
             }

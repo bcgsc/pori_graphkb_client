@@ -77,7 +77,6 @@ const QueryResultsTable = ({
         <AgGridReact
           {...grid.props}
           columnDefs={columnDefs}
-          data={data}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(rowData) => rowData['@rid']}

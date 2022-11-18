@@ -47,7 +47,7 @@ class GraphObj {
    * @param {string} labelKey - Property key to display as node label.
    */
   getLabel(labelKey: string) {
-    let obj = this.data;
+    let obj: unknown = this.data;
     let key = labelKey;
     let parentKey;
 
@@ -212,12 +212,12 @@ class PropsMap {
       if (obj && (obj.length < 50 || prop === 'name' || typeof obj === 'object')
         && !Array.isArray(obj)
       ) {
-        if (props[prop] && !props[prop].includes(obj)) {
-          props[prop].push(obj);
+        if (props[prop] && !(props[prop] as NonNullable<typeof props[string]>).includes(obj)) {
+          (props[prop] as NonNullable<typeof props[string]>).push(obj);
         }
-      } else if (props[prop] && !props[prop].includes('null')) {
+      } else if (props[prop] && !(props[prop] as NonNullable<typeof props[string]>).includes('null')) {
         // This null represents nodes that do not contain specified property.
-        props[prop].push('null');
+        (props[prop] as NonNullable<typeof props[string]>).push('null');
       }
 
       if ((obj && obj.length >= 50 && prop !== 'name') || Array.isArray(obj)) {

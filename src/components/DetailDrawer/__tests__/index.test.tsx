@@ -9,10 +9,11 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import { AuthContext } from '@/components/Auth';
+import { GeneralRecordType } from '@/components/types';
 
 import DetailDrawer from '..';
 
-const ontologyNode = {
+const ontologyNode: GeneralRecordType = {
   '@class': 'Ontology',
   // 1st long field
   name: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
@@ -57,7 +58,7 @@ const ontologyNode = {
   }],
 };
 
-const statementNode = {
+const statementNode: GeneralRecordType = {
   '@class': 'Statement',
   displayName: 'statementNode',
   sourceId: 'test sourceId',
@@ -83,7 +84,7 @@ const statementNode = {
   '@rid': '#12:0',
 };
 
-const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
+const ProvideSchema = ({ children }) => (  // eslint-disable-line
   <BrowserRouter>
     <AuthContext.Provider value={{}}>
       {children}
@@ -98,7 +99,7 @@ describe('DetailDrawer', () => {
 
   test('empty record value does not cause crash (Drawer closes)', () => {
     try {
-      render(<ProvideSchema><DetailDrawer /></ProvideSchema>);
+      render(<ProvideSchema><DetailDrawer node={undefined} /></ProvideSchema>);
     } catch (err) {
       console.error(err);
     }
@@ -112,7 +113,7 @@ describe('DetailDrawer', () => {
       dom = render(
         <ProvideSchema>
           <DetailDrawer
-            edge={false}
+            isEdge={false}
             node={ontologyNode}
             onClose={onCloseSpy}
           />
@@ -185,7 +186,7 @@ describe('DetailDrawer', () => {
       dom = render(
         <ProvideSchema>
           <DetailDrawer
-            edge={false}
+            isEdge={false}
             node={statementNode}
             onClose={onCloseSpy}
           />

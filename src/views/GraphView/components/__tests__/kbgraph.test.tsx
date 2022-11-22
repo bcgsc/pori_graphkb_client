@@ -63,16 +63,6 @@ describe('kbgraph method i/o validations', () => {
     });
   });
 
-  test('remove node', () => {
-    const testPropsMap = new PropsMap();
-
-    // Load
-    testData.forEach((node) => testPropsMap.loadNode(node, testColumns));
-
-    const deleted = testData.splice(0, 1);
-    testPropsMap.removeNode(deleted[0], testData.map((d) => ({ data: d })), testColumns);
-  });
-
   test('GraphOptions', () => {
     const props = {
       defaultColor: 'black',
@@ -84,17 +74,6 @@ describe('kbgraph method i/o validations', () => {
     graphOptions.load();
     const retrievedGraphOptions = GraphOptions.retrieve();
     expect(retrievedGraphOptions).toMatchObject(graphOptions);
-  });
-
-  test('getColor', () => {
-    const props = {
-      defaultColor: 'black',
-      autoCollisionRadius: false,
-      collisionRadius: 16,
-      linksColor: 'source.name',
-    };
-    const graphOptions = new GraphOptions(props);
-    graphOptions.getColor({ data: { source: { name: 'hello' } } }, 'links');
   });
 
   test('GraphNode', () => {

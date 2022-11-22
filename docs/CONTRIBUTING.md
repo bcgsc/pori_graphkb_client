@@ -60,7 +60,7 @@ docker run \
 
 ### Running the Tests
 
-Unit tests are made using [Jest](https://jestjs.io/docs/en/getting-started.html) and [Enzyme](https://airbnb.io/enzyme/docs/api/).
+Unit tests are made using [Jest](https://jestjs.io/docs/en/getting-started.html) and [Testing Library](https://testing-library.com/docs/).
 In terminal before running any test commands:
 
 The main test suite can be run using the test command

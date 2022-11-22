@@ -26,3 +26,14 @@ Object.defineProperty(window, 'localStorage', {
 Object.defineProperty(window, 'URL', {
   value: URLMock,
 });
+
+if (global.document) {
+  document.createRange = () => ({
+    setStart: () => { },
+    setEnd: () => { },
+    commonAncestorContainer: {
+      nodeName: 'BODY',
+      ownerDocument: document,
+    },
+  });
+}

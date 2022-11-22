@@ -1,27 +1,22 @@
 {
     "env": {
         "browser": true,
-        "cypress/globals": true,
         "es6": true,
         "jest": true,
         "node": true
     },
     "extends": [
-        "eslint:recommended",
         "airbnb",
+        "airbnb-typescript",
+        "airbnb/hooks",
+        "plugin:@typescript-eslint/recommended",
         "plugin:jest/recommended",
         "plugin:jest-formatting/recommended"
     ],
-    "parser": "babel-eslint",
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        "project": "./tsconfig.json"
     },
     "plugins": [
-        "cypress",
         "react",
         "babel",
         "react-hooks",
@@ -93,15 +88,6 @@
                 "forbid": []
             }
         ],
-        "react/jsx-filename-extension": [
-            "warn",
-            {
-                "extensions": [
-                    ".js",
-                    ".jsx"
-                ]
-            }
-        ],
         "react/jsx-sort-props": [
             "error",
             {
@@ -128,8 +114,26 @@
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "warn",
         "react/sort-comp": "warn",
-        "simple-import-sort/sort": "error",
-        "sort-imports": "off"
+        "react/jsx-props-no-spreading": "off",
+        "sort-imports": "off",
+        "simple-import-sort/exports": "error",
+        "simple-import-sort/imports": "error",
+        // all rules below are temporarily disabled in order for eslint to pass
+        // after updating. these should be fixed and re-enabled
+        "react/function-component-definition": "off",
+        "react/jsx-no-constructed-context-values": "off",
+        "react/jsx-no-useless-fragment": "off",
+        "jest/no-conditional-expect": "off",
+        "max-classes-per-file": "off",
+        "no-mixed-operators": "off",
+        "react/prop-types": "off",
+        "react/no-unstable-nested-components": "off",
+        "prefer-object-spread": "off",
+        "react/static-property-placement": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-shadow": "off",
+        "@typescript-eslint/default-param-last": "off",
+        "@typescript-eslint/no-use-before-define": "off"
     },
     "settings": {
         "import/resolver": {

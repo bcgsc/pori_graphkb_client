@@ -9,8 +9,9 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 16
       - run: npm ci
+      - run: npm run lint
       - run: npm test
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.6

@@ -56,36 +56,3 @@ $typography__font-size--h3: 1.4rem;
 $typography__font-size--h4: 1.25rem;
 $typography__font-size--h5: 1.1rem;
 $typography__font-size--h6: 0.875rem;
-
-// export the css colors to use in creating the MUI theme
-:export {
-  errorContrastText: $palette__error--contrast-text;
-  errorDark: $palette__error--dark;
-  errorLight: $palette__error--light;
-  errorMain: $palette__error--main;
-
-  primaryContrastText: $palette__primary--contrast-text;
-  primaryDark: $palette__primary--dark;
-  primaryLight: $palette__primary--light;
-  primaryMain: $palette__primary--main;
-
-  secondaryContrastText: $palette__secondary--contrast-text;
-  secondaryDark: $palette__secondary--dark;
-  secondaryLight: $palette__secondary--light;
-  secondaryMain: $palette__secondary--main;
-
-  textDisabled: $palette__text--disabled;
-  textHint: $palette__text--hint;
-  textPrimary: $palette__text--primary;
-  textSecondary: $palette__text--secondary;
-
-  fontSizeBody1: $typography__font-size--body1;
-  fontSizeBody2: $typography__font-size--h6;
-  fontSizeH1: $typography__font-size--h1;
-  fontSizeH2: $typography__font-size--h2;
-  fontSizeH3: $typography__font-size--h3;
-  fontSizeH4: $typography__font-size--h4;
-  fontSizeH5: $typography__font-size--h5;
-  fontSizeH6: $typography__font-size--h6;
-  fontSizeSubtitle1: $typography__font-size--h6;
-}

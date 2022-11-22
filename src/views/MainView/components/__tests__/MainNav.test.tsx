@@ -10,8 +10,15 @@ describe('<MainNav />', () => {
   test('correctly renders', () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={{}}>
-          <MainNav />
+        <AuthContext.Provider
+          value={{
+            login: jest.fn(),
+            logout: jest.fn(),
+            error: null,
+            isAuthenticating: false,
+          }}
+        >
+          <MainNav isOpen={false} onChange={jest.fn()} />
         </AuthContext.Provider>
       </BrowserRouter>,
     );

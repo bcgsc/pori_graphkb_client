@@ -1,3 +1,5 @@
+import { GeneralRecordType } from '@/components/types';
+
 import {
   GraphLink,
   GraphNode,
@@ -7,12 +9,22 @@ import {
 
 describe('kbgraph method i/o validations', () => {
   const testColumns = ['name', 'sourceId', 'source'];
-  const testData = [
-    { name: 'one', sourceId: 'sourceOne', source: 'test' },
-    { name: 'three', sourceId: 'sourceThree', source: 'test' },
-    { name: 'two', sourceId: 'sourceTwo', source: 'test' },
-    { name: 'notname', sourceId: 'notSourceId', source: 'nottest' },
-    { name: 'knowledgebase', sourceId: 'kb', source: 'bcgsc' },
+  const testData: GeneralRecordType[] = [
+    {
+      name: 'one', sourceId: 'sourceOne', source: 'test', '@rid': '1:1',
+    },
+    {
+      name: 'three', sourceId: 'sourceThree', source: 'test', '@rid': '3:1',
+    },
+    {
+      name: 'two', sourceId: 'sourceTwo', source: 'test', '@rid': '2:1',
+    },
+    {
+      name: 'notname', sourceId: 'notSourceId', source: 'nottest', '@rid': '4:1',
+    },
+    {
+      name: 'knowledgebase', sourceId: 'kb', source: 'bcgsc', '@rid': '5:1',
+    },
   ];
 
   test('loadColorProps', () => {

@@ -9,14 +9,16 @@ import { FORM_VARIANT } from '@/components/util';
 
 import { ModelDefinition } from '../types';
 
+type Ordering = (string | string[])[];
+
 /**
  * returns an array of strings without any of the indicated exclusion values
  *
- * @param {Array.<string>} orderingList specifies property display ordering
+ * @param {Ordering} orderingList specifies property display ordering
  * @param {Array.<string>} exclusions fields that should not be rendered
  */
-const exclusionFilter = (orderingList: (string | string[])[], exclusionList: string[]) => {
-  const newOrdering: (string | string[])[] = [];
+const exclusionFilter = (orderingList:Ordering, exclusionList: string[]) => {
+  const newOrdering: Ordering = [];
   orderingList.forEach((filter) => {
     if (Array.isArray(filter)) {
       newOrdering.push(exclusionFilter(filter, exclusionList) as string[]);
@@ -27,8 +29,8 @@ const exclusionFilter = (orderingList: (string | string[])[], exclusionList: str
   return newOrdering;
 };
 
-const filterNullFields = (orderingList: (string | string[])[], formContent) => {
-  const newOrdering: (string | string[])[] = [];
+const filterNullFields = (orderingList: Ordering, formContent) => {
+  const newOrdering: Ordering = [];
   orderingList.forEach((field) => {
     if (Array.isArray(field)) {
       newOrdering.push(filterNullFields(field, formContent) as string[]);
@@ -43,7 +45,7 @@ interface FieldGroupProps {
   /** ClassModel */
   model: Partial<ModelDefinition> & Pick<ModelDefinition, 'properties'>;
   /** the property names in order to be rendered (array of array of strings for groups) */
-  ordering: (string | string[])[];
+  ordering: Ordering;
   /** if field should be disabled */
   disabled: boolean | undefined;
   /** fields to be excluded from rendering */
@@ -62,8 +64,8 @@ const FieldGroup = ({
   // get the form content
   const fields: ReactNode[] = [];
 
-  const filterGeneratedFields = (order:(string | string[])[]) => {
-    const newOrder: (string | string[])[] = [];
+  const filterGeneratedFields = (order: Ordering) => {
+    const newOrder: Ordering = [];
 
     order.forEach((item) => {
       if (Array.isArray(item)) {

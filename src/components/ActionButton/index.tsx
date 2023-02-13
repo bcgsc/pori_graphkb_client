@@ -76,7 +76,6 @@ function ActionButton(props: ActionButtonProps) {
       </Button>
       {requireConfirm && (
         <ConfirmActionDialog
-          className="action-button__dialog"
           isOpen={dialogOpen}
           message={message}
           onCancel={handleDialogCancel}

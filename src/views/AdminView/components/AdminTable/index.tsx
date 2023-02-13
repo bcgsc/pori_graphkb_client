@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useCallback,
@@ -16,22 +17,23 @@ import React, {
 } from 'react';
 
 import RecordFormDialog from '@/components/RecordFormDialog';
+import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
 interface AdminTableProps {
   /** handler to be triggered when data changes */
   onChange: (...args: unknown[]) => unknown;
   /** List of records. */
-  records?: Record<string, unknown>[];
+  records: GeneralRecordType[];
   /** the table variant (user or usergroup) */
-  variant?: 'User' | 'UserGroup';
+  variant: 'User' | 'UserGroup';
 }
 
 /**
  * Component for managing AdminView User form state.
  */
 const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProps) => {
-  const [recordOpen, setRecordOpen] = useState(null);
+  const [recordOpen, setRecordOpen] = useState<GeneralRecordType | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenEditDialog = (record) => {
@@ -60,7 +62,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
     onChange();
   }, [onChange]);
 
-  const colDefs = [
+  const colDefs: ColDef[] = [
     {
       headerName: 'record ID',
       field: '@rid',
@@ -168,11 +170,6 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
       </div>
     </div>
   );
-};
-
-AdminTable.defaultProps = {
-  records: null,
-  variant: 'User',
 };
 
 export default AdminTable;

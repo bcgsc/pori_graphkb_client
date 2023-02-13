@@ -7,7 +7,7 @@ import CytobandPosition from '../CytobandPosition';
 
 describe('CytobandPosition', () => {
   test('shows all fields', () => {
-    const { getByText } = render(<CytobandPosition onChange={jest.fn()} value={{}} />);
+    const { getByText } = render(<CytobandPosition disabled={false} name="" onChange={jest.fn()} value={{}} />);
     expect(getByText(/\barm\b.*/)).toBeInTheDocument();
     expect(getByText('majorBand')).toBeInTheDocument();
     expect(getByText('minorBand')).toBeInTheDocument();
@@ -15,7 +15,7 @@ describe('CytobandPosition', () => {
 
   test('uses input values', () => {
     const changeSpy = jest.fn();
-    render(<CytobandPosition onChange={changeSpy} value={{ arm: 'p' }} />);
+    render(<CytobandPosition disabled={false} name="" onChange={changeSpy} value={{ arm: 'p' }} />);
     expect(changeSpy).toHaveBeenCalledWith({ target: { name: '', value: { '@class': 'CytobandPosition', arm: 'p' } } });
   });
 });

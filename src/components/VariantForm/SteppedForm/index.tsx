@@ -14,6 +14,7 @@ import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
 import useObject from '@/components/hooks/useObject';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { PropertyDefinition } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
 interface SteppedFormProps {
@@ -25,7 +26,7 @@ interface SteppedFormProps {
   /** handler to call on form submission */
   onSubmit: (formContent: unknown) => void;
   /** property definitions for the form fields */
-  properties: Record<string, unknown>;
+  properties: Record<string, PropertyDefinition>;
   className?: string;
   formVariant?: FORM_VARIANT;
   value?: Record<string, unknown>;

@@ -14,7 +14,7 @@ import schema from '@/services/schema';
 
 interface ClassDescriptionProps {
   /** the class description */
-  description: string;
+  description: string | undefined;
   /** the class model name */
   name: string;
 }
@@ -26,7 +26,7 @@ const ClassDescription = ({ name, description }: ClassDescriptionProps) => {
       const [result] = await api.query(body);
       return result;
     },
-    { staleTime: Infinity, throwOnError: false },
+    { staleTime: Infinity },
   );
 
   const { isFetching: countIsFetching, data: count } = useQuery(

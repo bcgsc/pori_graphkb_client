@@ -1,5 +1,6 @@
 import isObject from 'lodash.isobject';
 
+import { GeneralRecordType } from '@/components/types';
 import config from '@/static/config';
 
 const DEFAULT_NODE_VPROPS = [
@@ -28,10 +29,16 @@ const {
  * Represents an object in the d3 force directed graph.
  */
 class GraphObj {
+  data: GeneralRecordType;
+
+  constructor(data: GeneralRecordType) {
+    this.data = data || {};
+  }
+
   /**
    * Returns the underlying record ID.
    */
-  getId() {
+  getId(): string {
     return this.data['@rid'];
   }
 
@@ -39,8 +46,8 @@ class GraphObj {
    * Finds suggested property value and displays it as this nodes label.
    * @param {string} labelKey - Property key to display as node label.
    */
-  getLabel(labelKey) {
-    let obj = this.data;
+  getLabel(labelKey: string) {
+    let obj: unknown = this.data;
     let key = labelKey;
     let parentKey;
 
@@ -61,9 +68,16 @@ class GraphObj {
  * Represents a d3 force directed graph node.
  */
 class GraphNode extends GraphObj {
-  constructor(data, x, y) {
-    super();
-    this.data = data || {};
+  x: number;
+
+  y: number;
+
+  fx?: number | null;
+
+  fy?: number | null;
+
+  constructor(data: GeneralRecordType, x?: number, y?: number) {
+    super(data);
     this.x = x || 0;
     this.y = y || 0;
   }
@@ -73,9 +87,12 @@ class GraphNode extends GraphObj {
  * Represents a d3 force directed graph link object.
  */
 class GraphLink extends GraphObj {
+  source: GraphNode | string;
+
+  target: GraphNode | string;
+
   constructor(data, source, target) {
-    super();
-    this.data = data || {};
+    super(data);
     this.source = source;
     this.target = target;
   }
@@ -101,6 +118,10 @@ class GraphLink extends GraphObj {
  * in of each.
  */
 class PropsMap {
+  nodeProps: Record<string, unknown[] | null>;
+
+  linkProps: Record<string, unknown[] | null>;
+
   constructor() {
     this.nodeProps = {};
     this.linkProps = {};
@@ -111,7 +132,7 @@ class PropsMap {
    * @param {Object} node - Ontology object (GraphNode.data).
    * @param {Array.<string>} validProps - List of valid ontology properties.
    */
-  loadNode(node, validProps = DEFAULT_NODE_VPROPS) {
+  loadNode(node: GeneralRecordType, validProps = DEFAULT_NODE_VPROPS) {
     this._loadObj('node', node, validProps);
   }
 
@@ -120,7 +141,7 @@ class PropsMap {
    * @param {Object} link - KB edge object.
    * @param {Array.<string>} validProps - List of valid edge properties.
    */
-  loadLink(link, validProps = DEFAULT_LINK_VPROPS) {
+  loadLink(link: GeneralRecordType, validProps = DEFAULT_LINK_VPROPS) {
     this._loadObj('link', link, validProps);
   }
 
@@ -130,7 +151,7 @@ class PropsMap {
    * @param {Array.<Object>} nodes - Graph nodes list.
    * @param {Array.<string>} validProps - List of valid ontology properties.
    */
-  removeNode(node, nodes, validProps = DEFAULT_NODE_VPROPS) {
+  removeNode(node: GeneralRecordType, nodes: GraphNode[], validProps = DEFAULT_NODE_VPROPS) {
     this._removeObj('node', node, nodes, validProps);
   }
 
@@ -140,7 +161,7 @@ class PropsMap {
    * @param {Array.<Object>} links - Graph links list.
    * @param {Array.<string>} validProps - List of valid edge properties.
    */
-  removeLink(link, links, validProps = DEFAULT_LINK_VPROPS) {
+  removeLink(link: GeneralRecordType, links: GraphLink[], validProps = DEFAULT_LINK_VPROPS) {
     this._removeObj('link', link, links, validProps);
   }
 
@@ -152,7 +173,7 @@ class PropsMap {
    * @param {Array.<string>} validProps - List of valid properties for object
    * type.
    */
-  _removeObj(type, graphObj, graphObjs, validProps) {
+  _removeObj(type: 'node' | 'link', graphObj: GeneralRecordType, graphObjs: GraphObj[], validProps: string[]) {
     this[`${type}Props`] = {};
     graphObjs.forEach((g) => {
       if (g.data !== graphObj) {
@@ -168,7 +189,7 @@ class PropsMap {
    * @param {Array.<string>} validProps - List of valid properties for object
    * type.
    */
-  _loadObj(type, graphObj, validProps) {
+  _loadObj(type: 'node' | 'link', graphObj: GeneralRecordType, validProps: string[]) {
     const props = this[`${type}Props`];
     validProps.forEach((prop) => {
       if (props[prop] === undefined) {
@@ -191,12 +212,12 @@ class PropsMap {
       if (obj && (obj.length < 50 || prop === 'name' || typeof obj === 'object')
         && !Array.isArray(obj)
       ) {
-        if (props[prop] && !props[prop].includes(obj)) {
-          props[prop].push(obj);
+        if (props[prop] && !(props[prop] as NonNullable<typeof props[string]>).includes(obj)) {
+          (props[prop] as NonNullable<typeof props[string]>).push(obj);
         }
-      } else if (props[prop] && !props[prop].includes('null')) {
+      } else if (props[prop] && !(props[prop] as NonNullable<typeof props[string]>).includes('null')) {
         // This null represents nodes that do not contain specified property.
-        props[prop].push('null');
+        (props[prop] as NonNullable<typeof props[string]>).push('null');
       }
 
       if ((obj && obj.length >= 50 && prop !== 'name') || Array.isArray(obj)) {
@@ -206,10 +227,81 @@ class PropsMap {
   }
 }
 
+interface GraphOptionsProps {
+
+  defaultColor: string;
+
+  linkStrength: number;
+
+  chargeStrength: number;
+
+  collisionRadius: number;
+
+  autoCollisionRadius: boolean;
+
+  linkHighlighting: boolean;
+
+  nodeLabelProp: string;
+
+  linkLabelProp: string;
+
+  nodesColor: string;
+
+  linksColor: string;
+
+  nodesColors: Record<string, string>;
+
+  linksColors: Record<string, string>;
+
+  nodesLegend: boolean;
+
+  linksLegend: boolean;
+
+  chargeMax: number;
+
+  nodePreview: boolean;
+
+  isTreeLayout: boolean;
+}
+
 /**
  * Represents possible graph options for the graph view.
  */
 class GraphOptions {
+  defaultColor: string;
+
+  linkStrength: number;
+
+  chargeStrength: number;
+
+  collisionRadius: number;
+
+  autoCollisionRadius: boolean;
+
+  linkHighlighting: boolean;
+
+  nodeLabelProp: string;
+
+  linkLabelProp: string;
+
+  nodesColor: string;
+
+  linksColor: string;
+
+  nodesColors: Record<string, string>;
+
+  linksColors: Record<string, string>;
+
+  nodesLegend: boolean;
+
+  linksLegend: boolean;
+
+  chargeMax: number;
+
+  nodePreview: boolean;
+
+  isTreeLayout: boolean;
+
   /**
    * Retrieves stored graph options data from localstorage.
    */
@@ -223,7 +315,7 @@ class GraphOptions {
     return null;
   }
 
-  constructor(props) {
+  constructor(props?: Partial<GraphOptionsProps>) {
     const initial = props === undefined || props === null ? {} : props;
     this.defaultColor = initial.defaultColor || DEFAULT_NODE_COLOR;
     this.linkStrength = initial.linkStrength || LINK_STRENGTH;
@@ -250,8 +342,8 @@ class GraphOptions {
   /**
    * Returns the color of the given object, given the current color property.
    */
-  getColor(obj, type) {
-    const { [`${type}Color`]: targetColor, [`${type}Colors`]: ColorMap } = this;
+  getColor(obj: GraphNode | GraphLink, type: 'links' | 'nodes'): string | undefined {
+    const { [`${type}Color` as 'linksColor' | 'nodesColor']: targetColor, [`${type}Colors` as 'linksColors' | 'nodesColors']: ColorMap } = this;
     let colorKey = '';
 
     if (targetColor && targetColor.includes('.')) {

@@ -1,10 +1,21 @@
 import * as qs from 'qs';
+import { useHistory } from 'react-router-dom';
+
+import { ModelDefinition } from './types';
 
 const CLASS_MODEL_PROP = '@class';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 enum FORM_VARIANT {
   EDIT = 'edit', VIEW = 'view', DELETE = 'delete', NEW = 'new', SEARCH = 'search',
+}
+
+interface SortAndGroupFieldsOptions {
+  belowFold?: string[];
+  aboveFold?: string[];
+  collapseExtra?: boolean;
+  groups?: string[][];
+  variant?: FORM_VARIANT | '';
 }
 
 /**
@@ -29,7 +40,7 @@ enum FORM_VARIANT {
  * })
  * {fields: ['@class', '@rid', ['createdBy', 'createdAt']], extraFields: []}
  */
-const sortAndGroupFields = (model, opt = {}) => {
+const sortAndGroupFields = (model: Pick<ModelDefinition, 'properties'> | null | undefined, opt: SortAndGroupFieldsOptions = {}) => {
   const {
     belowFold = [],
     aboveFold = [],
@@ -38,7 +49,14 @@ const sortAndGroupFields = (model, opt = {}) => {
     variant = FORM_VARIANT.VIEW,
   } = opt;
 
-  const groupMap = {};
+  interface Group {
+    fields: string[];
+    mandatory: boolean;
+    generated: boolean;
+    name: string;
+  }
+
+  const groupMap: Record<string, Group> = {};
 
   if (!model) {
     return { extraFields: [], fields: [] };
@@ -48,7 +66,7 @@ const sortAndGroupFields = (model, opt = {}) => {
   groups.forEach((groupItems) => {
     // assume each field only can belong to a single group, overwrite others
     const key = groupItems.slice().sort((p1, p2) => p1.localeCompare(p2)).join('-');
-    const groupDefn = {
+    const groupDefn: Group = {
       fields: groupItems.filter((fname) => properties[fname]),
       mandatory: false,
       generated: true,
@@ -58,17 +76,17 @@ const sortAndGroupFields = (model, opt = {}) => {
     if (groupDefn.fields.length > 1) {
       groupDefn.fields.forEach((name) => {
         const { mandatory, generated } = properties[name];
-        groupDefn.mandatory = groupDefn.mandatory || mandatory;
-        groupDefn.generated = groupDefn.generated && generated;
+        groupDefn.mandatory = Boolean(groupDefn.mandatory || mandatory);
+        groupDefn.generated = Boolean(groupDefn.generated && generated);
         groupMap[name] = groupDefn;
       });
     }
   });
 
-  const mainFields = [];
-  const extraFields = [];
+  const mainFields: (string | string[])[] = [];
+  const extraFields: (string | string[])[] = [];
 
-  const visited = new Set();
+  const visited = new Set<string>();
 
   const sortedPropModels = Object.values(model.properties)
     .sort((p1, p2) => {
@@ -126,8 +144,8 @@ const sortAndGroupFields = (model, opt = {}) => {
   return { fields: mainFields, extraFields };
 };
 
-const cleanLinkedRecords = (content) => {
-  const newContent = {};
+function cleanLinkedRecords<T extends { [key: string]: any }>(content: T) {
+  const newContent = {} as T;
 
   Object.keys(content).forEach((key) => {
     if (content[key] !== undefined) {
@@ -157,13 +175,13 @@ const cleanLinkedRecords = (content) => {
     }
   });
   return newContent;
-};
+}
 
-const cleanPayload = (payload) => {
+function cleanPayload<T>(payload: T): T {
   if (typeof payload !== 'object' || payload === null) {
     return payload;
   }
-  const newPayload = {};
+  const newPayload = {} as T;
   Object.entries(payload).forEach(([key, value]) => {
     if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
       if (typeof value === 'object' && value !== null) {
@@ -185,7 +203,7 @@ const cleanPayload = (payload) => {
     }
   });
   return newPayload;
-};
+}
 
 /**
  * Save graph state (nodeRIDS) to URL and jump to graphview with nodeRIDs as initial seed
@@ -194,8 +212,8 @@ const cleanPayload = (payload) => {
  * @param {object} history history object
  * @param {function} onErrorCallback callback function to call if error occurs
  */
-const navigateToGraph = (nodeRIDs, history, onErrorCallback) => {
-  const savedState = {};
+const navigateToGraph = (nodeRIDs: string[], history: ReturnType<typeof useHistory>, onErrorCallback: (err: Error) => void) => {
+  const savedState: { nodes?: string } = {};
   let encodedState;
 
   try {
@@ -206,7 +224,7 @@ const navigateToGraph = (nodeRIDs, history, onErrorCallback) => {
     savedState.nodes = encodedContent;
     encodedState = qs.stringify(savedState);
   } catch (err) {
-    onErrorCallback(err);
+    onErrorCallback(err as Error);
   }
 
   history.push({

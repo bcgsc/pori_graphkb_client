@@ -7,7 +7,7 @@ import { useAuth } from '@/components/Auth';
 import QueryResultsTable from '@/components/QueryResultsTable';
 
 const UserProfileView = () => {
-  const { user } = useAuth();
+  const { user } = useAuth({ required: true });
 
   return (
     <div className="user-profile-view">

@@ -1,6 +1,11 @@
 import React from 'react';
 
-const ActiveLinkContext = React.createContext({
+interface ActiveLinkContextState {
+  activeLink: string;
+  setActiveLink: (route: string) => void;
+}
+
+const ActiveLinkContext = React.createContext<ActiveLinkContextState>({
   activeLink: '',
   setActiveLink: () => {},
 });

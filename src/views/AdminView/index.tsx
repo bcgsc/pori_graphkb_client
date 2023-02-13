@@ -35,7 +35,7 @@ const AdminView = () => {
           'groups.name',
           'name',
           'signedLicenseAt',
-        ],
+        ] as const,
       },
     ),
     async ({ queryKey: [, body] }) => api.query(body),

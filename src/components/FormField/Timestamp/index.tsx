@@ -1,11 +1,11 @@
-import { TextField } from '@material-ui/core';
+import { TextField, TextFieldProps } from '@material-ui/core';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 
-interface TimestampProps {
+interface TimestampProps extends Omit<TextFieldProps, 'onChange' | 'value'> {
   name: string;
-  onChange: (...args: unknown[]) => void;
-  value?: unknown;
+  onChange: (event: { target: { name: string; value: unknown } }) => void;
+  value: unknown;
 }
 
 const Timestamp = ({
@@ -33,10 +33,6 @@ const Timestamp = ({
       value={displayValue}
     />
   );
-};
-
-Timestamp.defaultProps = {
-  value: '',
 };
 
 export default Timestamp;

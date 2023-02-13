@@ -2,17 +2,18 @@ import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
-  TextField,
+  SelectProps,
+  TextField, TextFieldProps,
 } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import FormContext from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
+import { PropertyDefinition } from '../types';
 import BooleanField from './BooleanField';
 import FieldWrapper from './FieldWrapper';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
@@ -32,19 +33,15 @@ interface FormFieldProps {
    * the property model which defines the property type and other requirements
    * @todo replace with type from schema
    */
-  model: any;
+  model: PropertyDefinition;
   baseModel?: string;
   className?: string;
   disabled?: boolean;
   helperText?: string;
   /** props to pass to the inner form field element */
-  innerProps?: {
-    inputProps?: {
-      'data-test-id'?: string;
-    },
-  },
+  innerProps?: Partial<TextFieldProps>,
   /** the label to use for the form field (defaults to the property model name) */
-  label?: string;
+  label?: string | null;
 }
 
 /**
@@ -56,7 +53,7 @@ const FormField = ({
   model,
   disabled = false,
   label = null,
-  innerProps,
+  innerProps = {},
   helperText: defaultHelperText,
   baseModel,
 }: FormFieldProps) => {
@@ -117,7 +114,7 @@ const FormField = ({
     updateFieldEvent({ target: { name, value } });
   }
 
-  let propComponent;
+  let propComponent: ReactNode;
 
   if (type === 'boolean') {
     propComponent = (
@@ -190,7 +187,7 @@ const FormField = ({
         disabled={generated || disabled}
         error={errorFlag}
         helperText={helperText}
-        innerProps={innerProps}
+        innerProps={innerProps as SelectProps['inputProps']}
         label={label || name}
         name={name}
         onChange={updateFieldEvent}
@@ -214,45 +211,52 @@ const FormField = ({
     };
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
-      autoProps.linkedClassName = linkedClass.name;
+      const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
+        ...autoProps,
+        linkedClassName: linkedClass.name,
+      };
 
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
-        autoProps.filterOptions = [
+        filteredAutoProps.filterOptions = [
           ...schemaDefn.schema.Variant.descendantTree(false).map((m) => m.name),
           'Disease',
           'CatalogueVariant',
         ];
-        autoProps.defaultFilterClassName = 'Variant';
+        filteredAutoProps.defaultFilterClassName = 'Variant';
       } if (name === 'reference1') {
-        autoProps.filterOptions = [
+        filteredAutoProps.filterOptions = [
           'Signature',
           'Feature',
         ];
-        autoProps.defaultFilterClassName = 'Feature';
+        filteredAutoProps.defaultFilterClassName = 'Feature';
       }
       propComponent = (
         <FilteredRecordAutocomplete
-          {...autoProps}
+          {...filteredAutoProps}
         />
       );
     } else {
+      const recordAutoProps: React.ComponentProps<typeof RecordAutocomplete> = {
+        ...autoProps,
+      };
+
       if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
-        autoProps.getQueryBody = () => ({
+        recordAutoProps.getQueryBody = () => ({
           target: `${linkedClass.name}`,
           orderBy: linkedClass.name === 'EvidenceLevel'
             ? ['source.sort', 'sourceId']
             : ['name'],
           neighbors: 1,
         });
-        autoProps.singleLoad = true;
+        recordAutoProps.singleLoad = true;
       } else {
-        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'));
+        recordAutoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'));
       }
 
       propComponent = (
         <RecordAutocomplete
-          {...autoProps}
+          {...recordAutoProps}
         />
       );
     }

@@ -15,7 +15,7 @@ import api from '@/services/api';
 import TableOfContext from './TableOfContents';
 
 const AboutUsageTerms = () => {
-  const { user } = useAuth();
+  const { user } = useAuth({ required: true });
   const snackbar = useSnackbar();
   const [hasAcknowledgedTerms, setHasAcknowledgedTerms] = useState(false);
   const [hasSigned, setHasSigned] = useState(false);

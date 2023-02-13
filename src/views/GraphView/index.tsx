@@ -10,6 +10,7 @@ import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 import { RouteComponentProps, useLocation } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
+import { GeneralRecordType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -26,12 +27,12 @@ const { DEFAULT_NEIGHBORS } = config;
 const GraphView = ({ history }: RouteComponentProps) => {
   const { search } = useLocation();
   const isLoading = useIsFetching();
-  const [detailPanelRow, setDetailPanelRow] = useState(null);
+  const [detailPanelRow, setDetailPanelRow] = useState<GeneralRecordType | null>(null);
   // the existing behaviour of the graph relies on this not changing even when the url *is* updated
   const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
   const queryClient = useQueryClient();
 
-  const handleError = useCallback((err) => {
+  const handleError = useCallback((err: Error) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
@@ -40,7 +41,7 @@ const GraphView = ({ history }: RouteComponentProps) => {
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(recordIds.length),
-      onSuccess: (recordHash) => {
+      onSuccess: (recordHash: ReturnType<typeof util.hashRecordsByRID>) => {
         Object.keys(recordHash).forEach((recordId) => {
           queryClient.setQueryData(
             [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
@@ -75,12 +76,12 @@ const GraphView = ({ history }: RouteComponentProps) => {
         }
       } catch (err) {
         console.error(err);
-        handleError(err);
+        handleError(err as Error);
       }
     }
   }, [handleError, queryClient]);
 
-  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
+  const handleGraphStateSaveIntoURL = useCallback((nodeRIDs: string[]) => {
     navigateToGraph(nodeRIDs, history, handleError);
   }, [handleError, history]);
 
@@ -89,9 +90,9 @@ const GraphView = ({ history }: RouteComponentProps) => {
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
-  const handleExpandRecord = async (recordId) => {
+  const handleExpandRecord = async (recordId: string) => {
     const key = tuple('/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS });
-    let fullRecord = queryClient.getQueryData(key);
+    let fullRecord = queryClient.getQueryData(key) as GeneralRecordType;
 
     if (!fullRecord) {
       [fullRecord] = await queryClient.fetchQuery(
@@ -118,7 +119,6 @@ const GraphView = ({ history }: RouteComponentProps) => {
               handleDetailDrawerOpen={handleToggleDetailPanel}
               handleError={handleError}
               handleGraphStateSave={handleGraphStateSaveIntoURL}
-              onRecordClicked={handleToggleDetailPanel}
             />
             {detailPanelRow && (
               <DetailDrawer

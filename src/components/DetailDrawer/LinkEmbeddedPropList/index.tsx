@@ -11,24 +11,25 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
+import { GeneralRecordType, PropertyDefinition } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
+const identifiers = ['displayName', '@rid', 'sourceId'];
+
 interface LinkEmbeddedPropListProps {
   /** property formatting function */
-  formatOtherProps: (arg: unknown, arg2: boolean) => unknown;
+  formatOtherProps: (record: GeneralRecordType, isNested: boolean) => unknown;
   /** adds prop to opened object and handles expansion */
-  handleExpand?: (name: string) => unknown;
-  /** props to be displayed for submenu */
-  identifiers?: unknown[];
+  handleExpand: (name: string | GeneralRecordType) => unknown;
   /** is the prop nested */
-  isNested?: boolean;
+  isNested: boolean | undefined;
   /** opened dropdowns in drawer */
-  opened?: string[];
+  opened: (string | GeneralRecordType)[];
   /** link/embedded property model */
-  prop?: Record<string, unknown>;
+  prop: PropertyDefinition;
   /** contains link/embedded records */
-  value?: Record<string, unknown>;
+  value: GeneralRecordType;
 }
 
 /**
@@ -36,7 +37,7 @@ interface LinkEmbeddedPropListProps {
  */
 function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   const {
-    prop, isNested, value, identifiers, handleExpand, formatOtherProps, opened,
+    prop, isNested, value, handleExpand, formatOtherProps, opened,
   } = props;
   const { name, type } = prop;
   let previewStr;
@@ -100,14 +101,5 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
     </React.Fragment>
   );
 }
-
-LinkEmbeddedPropList.defaultProps = {
-  handleExpand: () => {},
-  identifiers: [],
-  isNested: false,
-  opened: [],
-  prop: {},
-  value: {},
-};
 
 export default LinkEmbeddedPropList;

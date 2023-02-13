@@ -15,14 +15,14 @@ import RadioSelect from '@/components/RadioSelect';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
 import api from '@/services/api';
 
-import { GeneralRecordType } from '../types';
+import { GeneralRecordType, ModelDefinition } from '../types';
 import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
 
 const { schema: { PositionalVariant, CategoryVariant, Position } } = schemaDefn;
 
-const leftoverPositionalProps = omit(
+const leftoverPositionalProps: ModelDefinition['properties'] = omit(
   PositionalVariant.properties,
   [
     'break1Start',
@@ -44,7 +44,7 @@ const { fields: positionalFields } = sortAndGroupFields(
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const leftoverCategoryProps = omit(
+const leftoverCategoryProps: ModelDefinition['properties'] = omit(
   CategoryVariant.properties,
   [
     'reference1',
@@ -116,7 +116,7 @@ const VariantForm = ({
       : pickInputType(value),
   );
   const snackbar = useSnackbar();
-  const [model, setModel] = useState(null);
+  const [model, setModel] = useState<Pick<ModelDefinition, 'name' | 'properties'> | ModelDefinition | null>(null);
 
   const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
@@ -159,15 +159,15 @@ const VariantForm = ({
       : 'edited';
 
     try {
-      const result = await formVariant === FORM_VARIANT.NEW
+      const result = await (formVariant === FORM_VARIANT.NEW
         ? api.post(routeName, payload)
-        : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+        : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload));
 
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);
     } catch (err) {
       console.error(err);
-      snackbar.enqueueSnackbar(`Error (${err.name}) in ${actionType.replace(/ed$/, 'ing')} the record`, { variant: 'error' });
+      snackbar.enqueueSnackbar(`Error (${(err as Error).name}) in ${actionType.replace(/ed$/, 'ing')} the record`, { variant: 'error' });
       onError({ error: err, content });
     }
   }, [formVariant, onError, onSubmit, snackbar]);
@@ -182,7 +182,7 @@ const VariantForm = ({
       onSubmit(null);
     } catch (err) {
       console.error(err);
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record`, { variant: 'error' });
+      snackbar.enqueueSnackbar(`Error (${(err as Error).name}) in deleting the record`, { variant: 'error' });
       onError({ error: err, content });
     }
   }, [onError, onSubmit, snackbar]);
@@ -198,7 +198,6 @@ const VariantForm = ({
       value={value}
     >
       <FormStepWrapper
-        caption="Changes to the initial selection here will affect downstream portions of the form"
         label="Pick the Input Type"
       >
         <RadioSelect
@@ -222,10 +221,10 @@ const VariantForm = ({
       >
         <BreakpointForm
           coordinateType={coordinateType}
-          end={hasPositions && 'break1End'}
+          end={hasPositions ? 'break1End' : undefined}
           model={model}
           reference="reference1"
-          start={hasPositions && 'break1Start'}
+          start={hasPositions ? 'break1Start' : undefined}
         />
       </FormStepWrapper>
       {(!isSubstitution && (hasPositions || isFusion)) && (
@@ -235,10 +234,10 @@ const VariantForm = ({
         >
           <BreakpointForm
             coordinateType={coordinateType}
-            end={hasPositions && 'break2End'}
+            end={hasPositions ? 'break2End' : undefined}
             model={model}
-            reference={isFusion && 'reference2'}
-            start={hasPositions && 'break2Start'}
+            reference={isFusion ? 'reference2' : undefined}
+            start={hasPositions ? 'break2Start' : undefined}
           />
         </FormStepWrapper>
       )}

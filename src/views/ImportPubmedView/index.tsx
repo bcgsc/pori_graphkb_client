@@ -112,7 +112,6 @@ const ImportPubmedView = (props: RouteComponentProps) => {
       {currentRecords?.map((rec) => (
         <PubmedCard
           key={rec['@rid']}
-          abstract={rec.description}
           journalName={rec.journalName}
           recordId={rec['@rid']}
           sourceId={rec.sourceId}
@@ -123,7 +122,6 @@ const ImportPubmedView = (props: RouteComponentProps) => {
       {(!currentRecords || !currentRecords.length) && externalRecord && (
         <PubmedCard
           key={text}
-          abstract={externalRecord.description}
           journalName={externalRecord.journalName}
           onClick={handleImport}
           sourceId={text}

@@ -2,6 +2,9 @@
  * Handles miscellaneous tasks.
  */
 
+import { useHistory, useLocation } from 'react-router-dom';
+
+import { GeneralRecordType } from '@/components/types';
 import config from '@/static/config';
 
 const {
@@ -31,7 +34,7 @@ const ACRONYMS = [
  * 'null' if the value is null or undefined.
  * @param {any} obj - Object to be formatted.
  */
-const castToExist = (obj) => {
+const castToExist = (obj): string => {
   if (Array.isArray(obj)) {
     if (obj.length > 0) {
       return obj.join(', ');
@@ -215,7 +218,7 @@ const positionInit = (x, y, i, n) => {
  * @param {object} history history object for navigation
  * @param {object} referrerLocation location of application before handling error
  */
-const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
+const handleErrorSaveLocation = (error: Error, history: ReturnType<typeof useHistory>, referrerLocation: Partial<ReturnType<typeof useLocation>> | null = null) => {
   const { name, message } = error;
   const { location: { pathname, search } } = history;
 
@@ -254,8 +257,8 @@ const massageRecordExistsError = (error) => {
   return message;
 };
 
-const hashRecordsByRID = (data) => {
-  const newData = {};
+const hashRecordsByRID = (data: GeneralRecordType[]) => {
+  const newData: Record<string, GeneralRecordType> = {};
   data.forEach((obj) => {
     if (obj) {
       newData[obj['@rid']] = obj;

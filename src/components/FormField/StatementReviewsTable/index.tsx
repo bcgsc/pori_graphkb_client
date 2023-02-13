@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
 import StatementReviewRow from './StatementReview';
@@ -18,11 +19,11 @@ interface StatementReviewsTableProps {
   /** the name of this field (for propagating change events) */
   name: string;
   /** parent change handler function */
-  onChange: (...args: unknown[]) => void;
+  onChange: (event: { target: { value: unknown; name: string; } }) => void;
   /** linked records to be displayed in table */
-  values?: Record<string, unknown>[];
+  values?: GeneralRecordType[];
   /** mode that dialog is in. One of ['view','edit']. */
-  variant?: FORM_VARIANT.VIEW | FORM_VARIANT.EDIT;
+  variant?: FORM_VARIANT | '';
 }
 
 /**

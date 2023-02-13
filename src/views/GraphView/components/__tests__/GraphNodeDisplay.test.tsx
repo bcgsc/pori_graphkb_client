@@ -21,6 +21,12 @@ describe('<GraphNodeDisplay />', () => {
     const { container } = render(
       <svg>
         <GraphNodeDisplay
+          actionsNode={null}
+          applyDrag={jest.fn()}
+          color={undefined}
+          detail={null}
+          handleClick={jest.fn()}
+          labelKey="name"
           node={mockData}
         />
       </svg>,
@@ -35,6 +41,11 @@ describe('<GraphNodeDisplay />', () => {
     render(
       <svg>
         <GraphNodeDisplay
+          actionsNode={null}
+          applyDrag={jest.fn()}
+          color={undefined}
+          detail={null}
+          handleClick={jest.fn()}
           labelKey="name"
           node={mockData}
         />
@@ -48,8 +59,11 @@ describe('<GraphNodeDisplay />', () => {
     render(
       <svg>
         <GraphNodeDisplay
-          actionsNode={{ data: detail }}
+          actionsNode={new GraphNode(detail)}
+          applyDrag={jest.fn()}
+          color={undefined}
           detail={detail}
+          handleClick={jest.fn()}
           labelKey="source.name"
           node={mockData}
         />
@@ -60,26 +74,16 @@ describe('<GraphNodeDisplay />', () => {
     expect(text.getAttribute('style').includes('opacity: 0.6')).toBeTruthy();
   });
 
-  test('does not render invalid node', () => {
-    const { container } = render(
-      <svg>
-        <GraphNodeDisplay
-          detail={mockData}
-          labelKey="source.name"
-          node={null}
-        />
-      </svg>,
-    );
-
-    expect(container.querySelectorAll('circle')).toHaveLength(0);
-  });
-
   test('successfully applies drag function to node (doesn\'t test triggering)', () => {
     const applyDrag = jest.fn();
     const { container } = render(
       <svg>
         <GraphNodeDisplay
+          actionsNode={null}
           applyDrag={applyDrag}
+          color={undefined}
+          detail={null}
+          handleClick={jest.fn()}
           labelKey="source.name"
           node={mockData}
         />

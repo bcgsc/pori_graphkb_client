@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { IDatasource } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useCallback,
@@ -19,6 +20,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
+import { GeneralRecordType, QueryBody } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -56,7 +58,7 @@ const getQueryPayload = ({
   search, sortModel, skip, limit, count = false,
 }: GetQueryPayloadArgs) => {
   const { payload } = api.getQueryFromSearch(search);
-  const content = payload || { neighbors: DEFAULT_NEIGHBORS };
+  const content: QueryBody = payload || { neighbors: DEFAULT_NEIGHBORS };
 
   if (count) {
     content.count = true;
@@ -66,9 +68,9 @@ const getQueryPayload = ({
     content.limit = limit;
 
     if (sortModel.length) {
-      const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
+      const [{ colId: orderBy, sort: orderByDirection }] = sortModel as NonNullable<typeof sortModel>;
       content.orderBy = orderBy;
-      content.orderByDirection = orderByDirection.toUpperCase();
+      content.orderByDirection = orderByDirection.toUpperCase() as 'DESC' | 'ASC';
     }
   }
 
@@ -80,7 +82,6 @@ interface GetRowsFromBlocksArgs {
   endRow: number;
   sortModel?: { colId: string; sort: string; }[];
   search: string;
-  blockSize: number;
 }
 
 /**
@@ -91,12 +92,12 @@ const getRowsFromBlocks = async ({
   endRow, // exclusive
   sortModel,
   search,
-  blockSize,
 }: GetRowsFromBlocksArgs) => {
+  const blockSize = 100;
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
 
-  const blockRequests = [];
+  const blockRequests: Promise<GeneralRecordType[]>[] = [];
 
   for (let block = firstBlock; block <= lastBlock; block += blockSize) {
     const payload = getQueryPayload({
@@ -108,7 +109,7 @@ const getRowsFromBlocks = async ({
       async ({ queryKey: [, body] }) => api.query(body),
     ));
   }
-  const data = [];
+  const data: GeneralRecordType[] = [];
   (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
@@ -120,22 +121,18 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
-interface DataViewProps extends RouteComponentProps {
-  blockSize?: number;
-}
-
 /**
  * Shows the search result filters and an edit button
  */
 const DataView = ({
-  location: { search: initialSearch }, blockSize, history,
-}: DataViewProps) => {
+  location: { search: initialSearch }, history,
+}: RouteComponentProps) => {
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
-  const [selectedRecords, setSelectedRecords] = useState([]);
-  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
-  const [detailsRowId, setDetailsRowId] = useState(null);
+  const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
+  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState<Element | null>(null);
+  const [detailsRowId, setDetailsRowId] = useState<string | null>(null);
   const grid = useGrid();
 
   const payload = useMemo(() => getQueryPayload({
@@ -159,7 +156,7 @@ const DataView = ({
       ...schema.defineGridColumns(search),
     ]);
 
-    const dataSource = {
+    const dataSource: IDatasource = {
       rowCount: null,
       getRows: ({
         successCallback, failCallback, ...params
@@ -170,7 +167,7 @@ const DataView = ({
           sortModel,
         }) => {
           const result = await getRowsFromBlocks({
-            startRow, endRow, sortModel, search, blockSize,
+            startRow, endRow, sortModel, search,
           });
           return [result, totalRows];
         };
@@ -184,7 +181,7 @@ const DataView = ({
     };
       // update the model
     gridApi.setDatasource(dataSource);
-  }, [blockSize, grid.ref, search, totalRows]);
+  }, [grid.ref, search, totalRows]);
 
   useEffect(() => {
     // normalize the input query
@@ -205,14 +202,14 @@ const DataView = ({
 
     initializeGrid();
     gridApi.addEventListener('selectionChanged', handleSelectionChange);
-  }, [blockSize, grid.ref, initializeGrid, search, totalRows]);
+  }, [grid.ref, initializeGrid, search, totalRows]);
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }, [history, search]);
 
   const { data: detailPanelRow } = useQuery(
-    tuple('/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }),
+    tuple('/query', { target: [detailsRowId as NonNullable<typeof detailsRowId>], neighbors: DEFAULT_NEIGHBORS }),
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(detailsRowId),
@@ -281,12 +278,11 @@ const DataView = ({
         endRow: maxExportSize,
         sortModel: gridApi.sortController.getSortModel(),
         search,
-        blockSize,
       });
       const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
       gridOptions.cacheBlockSize = maxExportSize; // in preparation to fetch entire dataset
 
-      const tempDataSource = {
+      const tempDataSource: IDatasource = {
         rowCount: totalRows,
         getRows: async ({
           successCallback, failCallback,
@@ -305,7 +301,7 @@ const DataView = ({
 
       gridApi.setDatasource(tempDataSource);
     }
-  }, [blockSize, grid.ref, initializeGrid, isExportingData, search, totalRows]);
+  }, [grid.ref, initializeGrid, isExportingData, search, totalRows]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -345,7 +341,7 @@ const DataView = ({
             anchorEl={optionsMenuAnchor}
             gridRef={grid.ref}
             onClose={() => setOptionsMenuAnchor(null)}
-            onExportToTsv={(totalRows !== null) && handleClickExport}
+            onExportToTsv={totalRows !== null ? handleClickExport : undefined}
           />
           <AgGridReact
             {...grid.props}
@@ -391,10 +387,6 @@ const DataView = ({
       />
     </div>
   );
-};
-
-DataView.defaultProps = {
-  blockSize: 100,
 };
 
 export default DataView;

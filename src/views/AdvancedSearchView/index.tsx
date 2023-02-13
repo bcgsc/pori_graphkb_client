@@ -69,7 +69,6 @@ function AdvancedSearchView({ history }: RouteComponentProps) {
       </div>
       <PropertyFilter
         className="advanced-search__property-filter"
-        group={selectedGroup}
         modelName={modelName}
         onSubmit={addFilterToGroup}
       />

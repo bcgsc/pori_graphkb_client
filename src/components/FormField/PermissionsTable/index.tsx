@@ -23,7 +23,7 @@ const splitPermissionsByOperation = (permissions) => {
   const permByModelName = {};
 
   Object.keys(schemaDefn.schema).forEach((modelName) => {
-    const model = schemaDefn.get(modelName);
+    const model = schemaDefn.get(modelName) as NonNullable<ReturnType<typeof schemaDefn['get']>>;
 
     if (!model.embedded) {
       const value = permissions[model.name] === undefined
@@ -54,11 +54,11 @@ interface PermissionsTableProps {
   /** field name to use in simulating events */
   name: string;
   /** handler to propogate changes to the parent form */
-  onChange: (arg: { target: { name: string; value: unnknown } }) => void;
+  onChange: (arg: { target: { name: string; value: unknown } }) => void;
   /** flag to indicate this field cannot be edited */
   disabled?: boolean;
   /** the current permissions set */
-  value?:Record<string, unknown>;
+  value?: Record<string, unknown>;
 }
 
 /**

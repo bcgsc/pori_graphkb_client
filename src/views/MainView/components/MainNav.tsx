@@ -25,8 +25,8 @@ import logo from '@/static/gsclogo.svg';
 import MenuLink from './MenuLink';
 
 interface MainNavProps {
-  isOpen?: boolean;
-  onChange?: (arg: { isOpen: boolean })=> void;
+  isOpen: boolean;
+  onChange: (arg: { isOpen: boolean })=> void;
 }
 
 const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
@@ -145,11 +145,6 @@ const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
       </div>
     </Drawer>
   );
-};
-
-MainNav.defaultProps = {
-  isOpen: false,
-  onChange: () => { },
 };
 
 export default MainNav;

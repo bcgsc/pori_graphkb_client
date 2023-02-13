@@ -66,8 +66,8 @@ const Main = () => {
               <Route component={ErrorView} exact path="/error" />
               <AuthenticatedRoute component={AboutView} path="/about" />
               <AuthenticatedRoute component={ActivityView} path="/activity" />
-              <AuthenticatedRoute component={QuickSearch} exact path="/query" />
-              <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
+              <AuthenticatedRoute component={QuickSearch} path="/query" />
+              <AuthenticatedRoute component={AdvancedSearchView} path="/query-advanced" />
               <AuthenticatedRoute
                 admin
                 component={RecordView}

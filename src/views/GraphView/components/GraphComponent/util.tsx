@@ -1,3 +1,7 @@
+import { useSnackbar } from 'notistack';
+
+import { GraphLink } from './kbgraph';
+
 const TREE_LINK = 'SubClassOf';
 
 const getId = (node) => (node.data
@@ -8,8 +12,8 @@ const getId = (node) => (node.data
  * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
  * are given 0 and child nodes are given 1 more than the rank of their highest ranked parent node
  */
-const computeNodeLevels = (graphLinks) => {
-  const nodes = {};
+const computeNodeLevels = (graphLinks: GraphLink[]) => {
+  const nodes: Record<string, { id: string; parents: string[]; children: string[]; }> = {};
   graphLinks.forEach((edge) => {
     const { data: { out: src, in: tgt, '@class': edgeType } } = edge;
 
@@ -24,14 +28,14 @@ const computeNodeLevels = (graphLinks) => {
   });
 
   const queue = Object.values(nodes).filter((node) => node.parents.length === 0);
-  const ranks = {};
+  const ranks: Record<string, number> = {};
 
   queue.forEach((root) => {
     ranks[root.id] = 0;
   });
 
   while (queue.length) {
-    const curr = queue.shift();
+    const curr = queue.shift() as typeof queue[number];
 
     curr.children.forEach((childId) => {
       if (childId) {
@@ -43,7 +47,7 @@ const computeNodeLevels = (graphLinks) => {
   return ranks;
 };
 
-const copyURLToClipBoard = (snackbar) => {
+const copyURLToClipBoard = (snackbar: ReturnType<typeof useSnackbar>) => {
   const URL = window.location.href;
   // create temp dummy element to select and copy text to clipboard
   const dummy = document.createElement('input');

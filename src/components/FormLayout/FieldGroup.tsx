@@ -1,23 +1,27 @@
 import './index.scss';
 
 import { List } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
 
+import { ModelDefinition } from '../types';
+
+type Ordering = (string | string[])[];
+
 /**
  * returns an array of strings without any of the indicated exclusion values
  *
- * @param {Array.<string>} orderingList specifies property display ordering
+ * @param {Ordering} orderingList specifies property display ordering
  * @param {Array.<string>} exclusions fields that should not be rendered
  */
-const exclusionFilter = (orderingList, exclusionList) => {
-  const newOrdering = [];
+const exclusionFilter = (orderingList:Ordering, exclusionList: string[]) => {
+  const newOrdering: Ordering = [];
   orderingList.forEach((filter) => {
     if (Array.isArray(filter)) {
-      newOrdering.push(exclusionFilter(filter, exclusionList));
+      newOrdering.push(exclusionFilter(filter, exclusionList) as string[]);
     } else if (!exclusionList.includes(filter)) {
       newOrdering.push(filter);
     }
@@ -25,11 +29,11 @@ const exclusionFilter = (orderingList, exclusionList) => {
   return newOrdering;
 };
 
-const filterNullFields = (orderingList, formContent) => {
-  const newOrdering = [];
+const filterNullFields = (orderingList: Ordering, formContent) => {
+  const newOrdering: Ordering = [];
   orderingList.forEach((field) => {
     if (Array.isArray(field)) {
-      newOrdering.push(filterNullFields(field, formContent));
+      newOrdering.push(filterNullFields(field, formContent) as string[]);
     } else if (formContent[field] === 0 || formContent[field]) {
       newOrdering.push(field);
     }
@@ -39,11 +43,11 @@ const filterNullFields = (orderingList, formContent) => {
 
 interface FieldGroupProps {
   /** ClassModel */
-  model: Record<string, unknown>;
+  model: Partial<ModelDefinition> & Pick<ModelDefinition, 'properties'>;
   /** the property names in order to be rendered (array of array of strings for groups) */
-  ordering: (string | string[])[];
+  ordering: Ordering;
   /** if field should be disabled */
-  disabled?: boolean;
+  disabled: boolean | undefined;
   /** fields to be excluded from rendering */
   exclusions?: string[];
 }
@@ -52,20 +56,20 @@ interface FieldGroupProps {
  * Given some ordering of fields (possibly grouped) return the set of fields
  */
 const FieldGroup = ({
-  model, ordering, exclusions, disabled,
+  model, ordering, exclusions = [], disabled,
 }: FieldGroupProps) => {
   const { formVariant, formContent } = useContext(FormContext);
   const { properties: { out, in: tgt, ...properties } } = model;
 
   // get the form content
-  const fields = [];
+  const fields: ReactNode[] = [];
 
-  const filterGeneratedFields = (order) => {
-    const newOrder = [];
+  const filterGeneratedFields = (order: Ordering) => {
+    const newOrder: Ordering = [];
 
     order.forEach((item) => {
       if (Array.isArray(item)) {
-        const subgroup = filterGeneratedFields(item);
+        const subgroup = filterGeneratedFields(item) as string[];
 
         if (subgroup.length) {
           newOrder.push(subgroup);
@@ -120,7 +124,6 @@ const FieldGroup = ({
 
 FieldGroup.defaultProps = {
   exclusions: [],
-  disabled: false,
 };
 
 export default FieldGroup;

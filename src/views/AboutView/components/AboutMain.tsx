@@ -20,7 +20,7 @@ const AboutMain = () => {
       staleTime: Infinity,
       select: (response) => {
         const { Statement: result } = response;
-        const data = [['source', 'count']];
+        const data: unknown[] = [['source', 'count']];
         Object.entries(result).forEach(([label, value]) => {
           data.push([
             label === 'null'

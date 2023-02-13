@@ -26,9 +26,9 @@ interface ProteinPositionProps {
   /** the initial value */
   value: Value;
   /** flag to indicate this field is disabled */
-  disabled?: boolean;
+  disabled: boolean;
   /** the form field name to pass up to the change handler */
-  name?: string;
+  name: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
 }
@@ -58,7 +58,7 @@ const ProteinPosition = ({
         posProperty.validate(position || null);
         setPositionError('');
       } catch (err) {
-        setPositionError(err.toString());
+        setPositionError((err as Error).toString());
       }
     }
   }, [position, required]);
@@ -72,7 +72,7 @@ const ProteinPosition = ({
         refAAProperty.validate(refAA || null);
         setRefAAError('');
       } catch (err) {
-        setRefAAError(err.toString());
+        setRefAAError((err as Error).toString());
       }
     }
   }, [refAA, required]);
@@ -125,8 +125,6 @@ const ProteinPosition = ({
 
 ProteinPosition.defaultProps = {
   required: true,
-  name: '',
-  disabled: false,
 };
 
 export default ProteinPosition;

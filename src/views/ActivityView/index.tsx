@@ -133,7 +133,6 @@ const ActivityView = () => {
               sortable: true,
             },
           ]}
-          data={recentRecords}
           deltaRowDataMode
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(data) => data['@rid']}

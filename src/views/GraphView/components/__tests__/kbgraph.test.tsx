@@ -1,3 +1,5 @@
+import { GeneralRecordType } from '@/components/types';
+
 import {
   GraphLink,
   GraphNode,
@@ -7,12 +9,22 @@ import {
 
 describe('kbgraph method i/o validations', () => {
   const testColumns = ['name', 'sourceId', 'source'];
-  const testData = [
-    { name: 'one', sourceId: 'sourceOne', source: 'test' },
-    { name: 'three', sourceId: 'sourceThree', source: 'test' },
-    { name: 'two', sourceId: 'sourceTwo', source: 'test' },
-    { name: 'notname', sourceId: 'notSourceId', source: 'nottest' },
-    { name: 'knowledgebase', sourceId: 'kb', source: 'bcgsc' },
+  const testData: GeneralRecordType[] = [
+    {
+      name: 'one', sourceId: 'sourceOne', source: 'test', '@rid': '1:1',
+    },
+    {
+      name: 'three', sourceId: 'sourceThree', source: 'test', '@rid': '3:1',
+    },
+    {
+      name: 'two', sourceId: 'sourceTwo', source: 'test', '@rid': '2:1',
+    },
+    {
+      name: 'notname', sourceId: 'notSourceId', source: 'nottest', '@rid': '4:1',
+    },
+    {
+      name: 'knowledgebase', sourceId: 'kb', source: 'bcgsc', '@rid': '5:1',
+    },
   ];
 
   test('loadColorProps', () => {
@@ -63,16 +75,6 @@ describe('kbgraph method i/o validations', () => {
     });
   });
 
-  test('remove node', () => {
-    const testPropsMap = new PropsMap();
-
-    // Load
-    testData.forEach((node) => testPropsMap.loadNode(node, testColumns));
-
-    const deleted = testData.splice(0, 1);
-    testPropsMap.removeNode(deleted[0], testData.map((d) => ({ data: d })), testColumns);
-  });
-
   test('GraphOptions', () => {
     const props = {
       defaultColor: 'black',
@@ -84,17 +86,6 @@ describe('kbgraph method i/o validations', () => {
     graphOptions.load();
     const retrievedGraphOptions = GraphOptions.retrieve();
     expect(retrievedGraphOptions).toMatchObject(graphOptions);
-  });
-
-  test('getColor', () => {
-    const props = {
-      defaultColor: 'black',
-      autoCollisionRadius: false,
-      collisionRadius: 16,
-      linksColor: 'source.name',
-    };
-    const graphOptions = new GraphOptions(props);
-    graphOptions.getColor({ data: { source: { name: 'hello' } } }, 'links');
   });
 
   test('GraphNode', () => {

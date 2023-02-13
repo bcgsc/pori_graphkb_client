@@ -7,6 +7,7 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
+import { ModelDefinition } from '@/components/types';
 
 interface BreakpointFormProps{
   /** the Position class */
@@ -14,9 +15,9 @@ interface BreakpointFormProps{
   /**
    * @todo get type from schema package
    */
-  model: any;
+  model: Pick<ModelDefinition, 'properties'>;
   /** the field name of the reference element (ex. reference1) */
-  reference: string;
+  reference: string | undefined;
   /** the field name of the end position (ex. break1End) */
   end?: string;
   /** flag to indicate this field is required */
@@ -32,7 +33,7 @@ interface BreakpointFormProps{
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, required, model,
+  coordinateType, reference, start = '', end = '', required, model,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -49,7 +50,6 @@ const BreakpointForm = ({
     <div className="breakpoint-form">
       {reference && (
         <FormField
-          initialFilterClass="Feature"
           label="reference"
           model={{ ...model.properties.reference1, required, name: reference }}
         />
@@ -69,7 +69,6 @@ const BreakpointForm = ({
           />
           <FormField
             baseModel={coordinateType}
-            clearable={false}
             label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
             model={{
               ...model.properties.break1Start,
@@ -82,7 +81,6 @@ const BreakpointForm = ({
           {uncertain && (
             <FormField
               baseModel={coordinateType}
-              clearable={false}
               label={`end (${coordinateType})`}
               model={{
                 ...model.properties.break1Start,

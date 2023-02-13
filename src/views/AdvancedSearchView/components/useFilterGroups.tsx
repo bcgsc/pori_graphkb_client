@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import useObject from '@/components/hooks/useObject';
+import { QueryBody, QueryFilter } from '@/components/types';
 
 const START_GROUP = '1';
 
@@ -8,7 +9,7 @@ const START_GROUP = '1';
  * Unlike cleaning record links, cannot assume there are no intermediary
  * objects that are not also records
  */
-const cleanFilterLinks = (content) => {
+function cleanFilterLinks<T>(content: T) : T {
   if (Array.isArray(content)) {
     return content.map(cleanFilterLinks);
   }
@@ -26,7 +27,7 @@ const cleanFilterLinks = (content) => {
     return newContent;
   }
   return content;
-};
+}
 
 const useFilterGroups = () => {
   const {
@@ -34,7 +35,7 @@ const useFilterGroups = () => {
     updateField: updateGroup,
     removeField,
     replace: replaceGroups,
-  } = useObject({ [START_GROUP]: [] });
+  } = useObject({ [START_GROUP]: [] as QueryFilter[] });
   const [selectedGroup, setSelectedGroup] = useState(START_GROUP);
 
   const reset = useCallback(() => {
@@ -57,7 +58,7 @@ const useFilterGroups = () => {
     return newGroup;
   }, [groups, updateGroup]);
 
-  const addFilterToGroup = useCallback((filter, newGroup = false) => {
+  const addFilterToGroup = useCallback((filter: QueryFilter, newGroup = false) => {
     const group = newGroup
       ? addGroup()
       : selectedGroup;
@@ -83,9 +84,9 @@ const useFilterGroups = () => {
   }, [removeField, selectedGroup]);
 
   const getQuery = useCallback((target) => {
-    const cleanedContent = [];
+    const cleanedContent: (QueryFilter | undefined)[] = [];
     Object.values(groups).forEach((group) => {
-      const filters = [];
+      const filters: (QueryFilter | undefined)[] = [];
       group.forEach((filter) => {
         filters.push(cleanFilterLinks(filter.query));
       });
@@ -97,7 +98,7 @@ const useFilterGroups = () => {
       }
     });
 
-    const content = {
+    const content: QueryBody = {
       target,
     };
 

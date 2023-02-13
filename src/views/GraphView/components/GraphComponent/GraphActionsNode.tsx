@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import config from '@/static/config';
+
+import { GraphLink, GraphNode } from './kbgraph';
 
 const {
   DETAILS_RING_RADIUS,
@@ -22,11 +24,11 @@ const ICON_MAP = {
 
 interface GraphActionsNodeProps {
   /** Currently selected object. */
-  actionsNode?: Record<string, unknown>;
+  actionsNode: GraphNode | GraphLink | null;
   /** yes/no flag determining whether selected object is
  * an edge or not */
-  edge?: boolean;
-  options?: {
+  edge: boolean;
+  options: {
     name: string;
     action?: (...args: unknown[]) => unknown;
     disabled?: (...args: unknown[]) => boolean;
@@ -47,13 +49,13 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
   if (!actionsNode) return null;
 
   const translateX = edge
-    ? (actionsNode.target.x + actionsNode.source.x) / 2
-    : (actionsNode.x || 0);
+    ? ((actionsNode as GraphLink).target.x + (actionsNode as GraphLink).source.x) / 2
+    : ((actionsNode as GraphNode).x || 0);
   const translateY = edge
-    ? (actionsNode.target.y + actionsNode.source.y) / 2
-    : (actionsNode.y);
+    ? ((actionsNode as GraphLink).target.y + (actionsNode as GraphLink).source.y) / 2
+    : ((actionsNode as GraphNode).y);
 
-  const actionsRing = [];
+  const actionsRing: ReactNode[] = [];
   options.forEach((option, i) => {
     const l = options.length;
     const offset = 1 / l * Math.PI;
@@ -128,11 +130,5 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
     </g>
   );
 }
-
-GraphActionsNode.defaultProps = {
-  options: [],
-  actionsNode: null,
-  edge: false,
-};
 
 export default GraphActionsNode;

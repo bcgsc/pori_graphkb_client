@@ -26,20 +26,16 @@ import api from '@/services/api';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
-const FIELD_EXCLUSIONS = ['groupRestrictions'];
-
 interface StatementFormProps {
   /** the title for this form */
   title: string;
-  onError?: (arg: { error: unknown; content: unknown }) => void;
-  onSubmit?: (record?: GeneralRecordType) => void;
+  onError: (arg: { error: unknown; content: unknown }) => void;
+  onSubmit: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** the record id of the current record for the form */
-  rid?: string;
   /** values of individual properties of passed class model */
   value?: GeneralRecordType;
   /** the type of NodeForm to create */
-  variant?: FORM_VARIANT;
+  variant: FORM_VARIANT;
 }
 
 /**
@@ -52,7 +48,6 @@ const StatementForm = ({
   onSubmit,
   onError,
   variant,
-  ...rest
 }: StatementFormProps) => {
   const { data: diagnosticData } = useQuery(
     tuple(
@@ -121,15 +116,15 @@ const StatementForm = ({
         if (subjectClass !== 'ClinicalTrial') {
           return 'eligibility statements should have a ClinicalTrial subject';
         }
-      } else if (diagnosticData.some((r) => r.name === relevanceName)) {
+      } else if (diagnosticData?.some((r) => r.name === relevanceName)) {
         if (subjectClass !== 'Disease') {
           return 'diagnostic statements should have a Disease subject';
         }
-      } else if (therapeuticData.some((r) => r.name === relevanceName)) {
+      } else if (therapeuticData?.some((r) => r.name === relevanceName)) {
         if (subjectClass !== 'Therapy') {
           return 'therapeutic statements should have a Therapy subject';
         }
-      } else if (prognosticData.some((r) => r.name === relevanceName)) {
+      } else if (prognosticData?.some((r) => r.name === relevanceName)) {
         if (subjectName !== 'patient') {
           return 'prognostic statements should have the Vocabulary record "patient" for the subject';
         }
@@ -184,7 +179,7 @@ const StatementForm = ({
   }, [auth]);
 
   const { mutate: addNewAction, isLoading: isAdding } = useMutation(
-    async (content) => {
+    async (content: Partial<GeneralRecordType>) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
@@ -194,7 +189,7 @@ const StatementForm = ({
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
         onError?.({ error: err, content });
@@ -220,7 +215,7 @@ const StatementForm = ({
   }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
@@ -229,7 +224,7 @@ const StatementForm = ({
         snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
         onSubmit?.();
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },
@@ -245,7 +240,7 @@ const StatementForm = ({
   }, [deleteAction, formContent, model.name]);
 
   const { mutate: updateAction, isLoading: isUpdating } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
@@ -255,7 +250,7 @@ const StatementForm = ({
         snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },
@@ -275,7 +270,7 @@ const StatementForm = ({
       setFormIsDirty(true);
     } else if (!formIsDirty) {
       snackbar.enqueueSnackbar('no changes to submit');
-      onSubmit(formContent);
+      onSubmit?.(formContent);
     } else {
       updateAction(content);
     }
@@ -346,12 +341,8 @@ const StatementForm = ({
 
       <FormContext.Provider value={form}>
         <FormLayout
-          {...rest}
-          collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
-          exclusions={FIELD_EXCLUSIONS}
           modelName={model.name}
-          variant={variant}
         />
       </FormContext.Provider>
       <div className="statement-form__action-buttons">
@@ -400,11 +391,7 @@ const StatementForm = ({
 };
 
 StatementForm.defaultProps = {
-  onError: () => {},
-  onSubmit: () => {},
   onToggleState: undefined,
-  rid: null,
-  variant: FORM_VARIANT.VIEW,
   value: {},
 };
 

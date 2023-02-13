@@ -5,25 +5,18 @@ import React from 'react';
 /* eslint-disable react/no-array-index-key */
 
 interface IndentProps {
-  indent?: string;
-  level?: number;
+  level: number;
 }
 
-const Indent = ({ level, indent }: IndentProps) => (
-  <pre className={`json-view__indent json-view__indent--level-${level}`}>{indent.repeat(level)}</pre>
+const Indent = ({ level }: IndentProps) => (
+  <pre className={`json-view__indent json-view__indent--level-${level}`}>{'  '.repeat(level)}</pre>
 );
-
-Indent.defaultProps = {
-  indent: '  ',
-  level: 0,
-};
-
-const DefaultValueComponent = ({ value }) => JSON.stringify(value);
 
 interface ValueViewProps {
   value: unknown;
-  ValueComponent?: ({ value }) => JSX.Element;
+  ValueComponent: ({ value }) => JSX.Element;
   name?: string;
+  level: number;
 }
 
 const ValueView = ({
@@ -39,15 +32,13 @@ const ValueView = ({
 
 ValueView.defaultProps = {
   name: '',
-  ValueComponent: DefaultValueComponent,
 };
 
 interface ObjectViewProps {
-  data: Record<string, unknown>;
-  // eslint-disable-next-line react/require-default-props
+  data: Parameters<typeof Object.entries>[0]
   closingBrace?: string;
-  // eslint-disable-next-line react/require-default-props
-  level?: number;
+  level: number;
+  ValueComponent: ({ value }) => JSX.Element;
 }
 
 const ObjectView = ({
@@ -83,7 +74,7 @@ const ObjectView = ({
         return (
           <>
             <div><Indent {...rest} level={level + 1} /><span>{key}:{' {'}</span></div>
-            <ObjectView {...rest} key={key} data={value} level={level + 1} />
+            <ObjectView {...rest} key={key} data={value as Record<string, unknown>} level={level + 1} />
           </>
         );
       }
@@ -94,14 +85,14 @@ const ObjectView = ({
 );
 
 ObjectView.defaultProps = {
-  level: 0,
   closingBrace: '}',
 };
 
 interface ArrayViewProps {
   data: unknown[];
   closingBrace?: string;
-  level?: number;
+  level: number;
+  ValueComponent: ({ value }) => JSX.Element;
 }
 
 const ArrayView = ({
@@ -120,7 +111,7 @@ const ArrayView = ({
         return (
           <>
             <div><Indent {...rest} level={level + 1} /><span>{'{'}</span></div>
-            <ObjectView {...rest} key={key} data={value} level={level + 1} />
+            <ObjectView {...rest} key={key} data={value as Record<string, unknown>} level={level + 1} />
           </>
         );
       }
@@ -131,14 +122,18 @@ const ArrayView = ({
 );
 
 ArrayView.defaultProps = {
-  level: 0,
   closingBrace: ']',
 };
 
-const JSONView = (props: ObjectViewProps) => (
+interface JSONViewProps {
+  data: Parameters<typeof Object.entries>[0];
+  ValueComponent: ({ value }) => JSX.Element;
+}
+
+const JSONView = (props: JSONViewProps) => (
   <>
     <div><span>{'{'}</span></div>
-    <ObjectView {...props} />
+    <ObjectView {...props} level={0} />
   </>
 );
 

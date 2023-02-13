@@ -17,20 +17,20 @@ const {
 
 interface BasicPositionFormProps {
   /** change handler */
-  onChange: (...args: unknown[]) => unknown;
+  onChange: (event: { target: { name: string; value: { '@class': string; pos: number | undefined; offset: number | undefined; } } }) => unknown;
   /** the class model to use to build the form */
   variant: 'GenomicPosition' | 'ExonicPosition' | 'IntronicPosition' | 'RnaPosition' | 'CdsPosition';
   /** flag to indicate this field is disabled */
-  disabled?: boolean;
+  disabled: boolean;
   /** the form field name to pass up to the change handler */
-  name?: string;
+  name: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
   /** the initial value */
-  value?: {
+  value: {
     pos?: number;
     offset?: number;
-  },
+  } | undefined
 }
 
 /**
@@ -59,7 +59,7 @@ const BasicPositionForm = ({
         posProperty.validate(position);
         setPositionError('');
       } catch (err) {
-        setPositionError(err.toString());
+        setPositionError((err as Error).toString());
       }
     }
   }, [position, required]);
@@ -77,7 +77,7 @@ const BasicPositionForm = ({
         offsetProperty.validate(offset);
         setOffsetError('');
       } catch (err) {
-        setOffsetError(err.toString());
+        setOffsetError((err as Error).toString());
       }
     }
   }, [offset, required]);
@@ -134,9 +134,6 @@ const BasicPositionForm = ({
 
 BasicPositionForm.defaultProps = {
   required: true,
-  name: '',
-  disabled: false,
-  value: null,
 };
 
 export default BasicPositionForm;

@@ -15,9 +15,16 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useGrid from '@/components/hooks/useGrid';
 
 interface ColumnConfigurationProps {
-  gridRef?: ReturnType<typeof useGrid>['ref'];
-  isOpen?: boolean;
-  onClose?: (...args: unknown[]) => void;
+  gridRef: ReturnType<typeof useGrid>['ref'];
+  isOpen: boolean;
+  onClose: (...args: unknown[]) => void;
+}
+
+interface Col {
+  title: string;
+  id: string;
+  parentId?: string;
+  children?: Col[];
 }
 
 /**
@@ -32,7 +39,7 @@ const ColumnConfiguration = ({
   isOpen,
   gridRef,
 }: ColumnConfigurationProps) => {
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState<Col[]>([]);
   const [openCols, setOpenCols] = useState({});
 
   useEffect(() => {
@@ -40,8 +47,8 @@ const ColumnConfiguration = ({
 
     if (!isOpen || !columnApi) { return; }
 
-    const cols = [];
-    let current;
+    const cols: Col[] = [];
+    let current: Col | null;
     const nextOpenCols = {};
     columnApi.getAllColumns().forEach((column) => {
       if (column.colId.endsWith('.preview')) { return; }
@@ -61,7 +68,7 @@ const ColumnConfiguration = ({
 
       if (parentTitle) {
         // add to current group
-        current.children.push({
+        (current as Required<Col>).children.push({
           title: columnApi.getDisplayNameForColumn(column),
           id: column.colId,
           parentId: parent?.groupId,
@@ -145,11 +152,6 @@ const ColumnConfiguration = ({
     </Dialog>
   );
   return result;
-};
-
-ColumnConfiguration.defaultProps = {
-  onClose: () => {},
-  isOpen: false,
 };
 
 export default ColumnConfiguration;

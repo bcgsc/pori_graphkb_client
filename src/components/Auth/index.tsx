@@ -20,11 +20,10 @@ const dbRoles = {
   readonly: 'readonly',
 };
 
-const keycloak = Keycloak({
+const keycloak = new Keycloak({
   realm: window._env_.KEYCLOAK_REALM,
   clientId: window._env_.KEYCLOAK_CLIENT_ID,
   url: window._env_.KEYCLOAK_URL,
-  realm_access: { roles: [window._env_.KEYCLOAK_ROLE] },
 });
 
 interface DecodedKBToken {
@@ -41,7 +40,6 @@ interface AuthContextState {
   logout: () => void;
   error: unknown | undefined;
   isAuthenticating: boolean;
-
   authenticationToken?: string;
   authorizationToken?: string;
   isAuthenticated?: boolean;
@@ -49,7 +47,6 @@ interface AuthContextState {
   hasWriteAccess?: boolean;
   user?: DecodedKBToken['user'];
   username?: string;
-
 }
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
@@ -213,7 +210,7 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   }
 
   return (
-    <Route component={component} path={path} />
+    <Route Component={component} path={path} />
   );
 };
 

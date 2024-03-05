@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { useCallback, useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import api from '@/services/api';
 
@@ -22,10 +22,9 @@ const MIN_WORD_LENGTH = 3;
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
- *
- * @property {Object} props.history - Application routing history object.
  */
-const QuickSearch = ({ history }: RouteComponentProps) => {
+const QuickSearch = () => {
+  const navigate = useNavigate();
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,12 +39,12 @@ const QuickSearch = ({ history }: RouteComponentProps) => {
       };
 
       const search = api.encodeQueryComplexToSearch(payload, 'Statement');
-      history.push({
+      navigate({
         pathname: '/data/table',
         search,
       });
     }
-  }, [errorMessage, history, value]);
+  }, [errorMessage, navigate, value]);
 
   /**
    * Stringifies all queryable properties of parsed variant.
@@ -65,12 +64,12 @@ const QuickSearch = ({ history }: RouteComponentProps) => {
         'Statement',
       );
 
-      history.push({
+      navigate({
         pathname: '/data/table',
         search,
       });
     }
-  }, [history, value, variant]);
+  }, [navigate, value, variant]);
 
   /**
    * Calls submit function for currently active tab.
@@ -82,14 +81,14 @@ const QuickSearch = ({ history }: RouteComponentProps) => {
           searchByHGVS();
         }
       } else if (kbSchema.util.looksLikeRID(value)) {
-        history.push({
+        navigate({
           pathname: `/view/${value.replace(/^#/, '')}`,
         });
       } else {
         searchKeyword();
       }
     }
-  }, [hgvs, history, searchByHGVS, searchKeyword, value, variant]);
+  }, [hgvs, navigate, searchByHGVS, searchKeyword, value, variant]);
 
   // validate
   useEffect(() => {

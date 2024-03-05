@@ -67,8 +67,8 @@ const Main = () => {
               <Route element={<AuthenticatedRoute component={AboutView} />} path="/about/*" />
               <Route element={<AuthenticatedRoute component={ActivityView} />} path="/activity" />
               <Route element={<AuthenticatedRoute component={QuickSearch} />} path="/query" />
-              {/* <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
-              <AuthenticatedRoute
+              <Route element={<AuthenticatedRoute component={AdvancedSearchView} />} path="/query-advanced" />
+              {/* <AuthenticatedRoute
                 admin
                 component={RecordView}
                 path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"

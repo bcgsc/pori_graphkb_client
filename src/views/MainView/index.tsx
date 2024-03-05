@@ -8,7 +8,7 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
 import { AuthenticatedRoute } from '@/components/Auth';
@@ -61,11 +61,11 @@ const Main = () => {
 
         <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <Switch>
-              <AuthenticatedRoute component={FeedbackView} path="/feedback" />
-              <Route component={ErrorView} exact path="/error" />
-              <AuthenticatedRoute component={AboutView} path="/about" />
-              <AuthenticatedRoute component={ActivityView} path="/activity" />
+            <Routes>
+              <Route element={<AuthenticatedRoute component={FeedbackView} />} path="/feedback" />
+              <Route element={<ErrorView />} path="/error" />
+              <Route element={<AuthenticatedRoute component={AboutView} />} path="/about/*" />
+              {/* <AuthenticatedRoute component={ActivityView} path="/activity" />
               <AuthenticatedRoute component={QuickSearch} exact path="/query" />
               <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
               <AuthenticatedRoute
@@ -91,9 +91,9 @@ const Main = () => {
               <AuthenticatedRoute component={GraphView} path="/data/graph" />
               <AuthenticatedRoute admin component={AdminView} path="/admin" />
               <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
-              <AuthenticatedRoute component={UserProfileView} path="/user-profile" />
-              <Redirect from="/" to="/query" />
-            </Switch>
+              <AuthenticatedRoute component={UserProfileView} path="/user-profile" /> */}
+              <Route element={<Navigate to="/query" />} path="/" />
+            </Routes>
           </Suspense>
         </section>
       </ActiveLinkContext.Provider>

@@ -4,7 +4,7 @@ import React, {
   useCallback,
   useEffect, useState,
 } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import ActionButton from '@/components/ActionButton';
 import ModelSelect from '@/components/ModelSelect';
@@ -19,10 +19,9 @@ import useFilterGroups from './components/useFilterGroups';
  * Advanced Search Form. Gives users most control on how they can query
  * the knowledgebase. Query consists of different filter groups with their own
  * set of filters.
- *
- * @property {object} props.history history router object to navigate to different views
  */
-function AdvancedSearchView({ history }: RouteComponentProps) {
+function AdvancedSearchView() {
+  const navigate = useNavigate();
   // set up current model for search
   const [modelName, setModelName] = useState('Statement');
   const {
@@ -46,11 +45,11 @@ function AdvancedSearchView({ history }: RouteComponentProps) {
     try {
       const query = getQuery(modelName);
       const search = api.encodeQueryComplexToSearch(query, modelName);
-      history.push(`/data/table?${search}`, { search, query });
+      navigate(`/data/table?${search}`, { search, query });
     } catch (err) {
       console.error(err);
     }
-  }, [getQuery, history, modelName]);
+  }, [getQuery, navigate, modelName]);
 
   const handleModelChange = useCallback(({ target: { value: newValue } }) => {
     setModelName(newValue);

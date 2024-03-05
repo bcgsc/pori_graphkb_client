@@ -65,9 +65,9 @@ const Main = () => {
               <Route element={<AuthenticatedRoute component={FeedbackView} />} path="/feedback" />
               <Route element={<ErrorView />} path="/error" />
               <Route element={<AuthenticatedRoute component={AboutView} />} path="/about/*" />
-              {/* <AuthenticatedRoute component={ActivityView} path="/activity" />
-              <AuthenticatedRoute component={QuickSearch} exact path="/query" />
-              <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
+              <Route element={<AuthenticatedRoute component={ActivityView} />} path="/activity" />
+              <Route element={<AuthenticatedRoute component={QuickSearch} />} path="/query" />
+              {/* <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
               <AuthenticatedRoute
                 admin
                 component={RecordView}

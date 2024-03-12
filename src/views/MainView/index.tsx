@@ -35,6 +35,31 @@ const ABSTRACT_CLASSES = Object.values(schemaDefn.schema)
   .filter((m) => m.isAbstract && m.name !== 'Variant')
   .map((m) => m.name);
 
+type AuthenticatedRouteOptions = {
+  admin: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component: React.ComponentType<any>;
+};
+
+const generateAuthenticatedRoutes = (variants: string[], modelNames: string[], authenticatedRouteOptions: AuthenticatedRouteOptions) => (
+  <>
+    {
+        variants.map((variant) => modelNames.map((modelName) => (
+          <Route
+            element={(
+              <AuthenticatedRoute
+                admin={authenticatedRouteOptions.admin}
+                component={authenticatedRouteOptions.component}
+                componentProps={{ variant, modelName }}
+              />
+              )}
+            path={`/${variant}/${modelName}${variant.toLowerCase() === 'new' ? '' : '/:rid'}`}
+          />
+        )))
+      }
+  </>
+);
+
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
@@ -68,31 +93,29 @@ const Main = () => {
               <Route element={<AuthenticatedRoute component={ActivityView} />} path="/activity" />
               <Route element={<AuthenticatedRoute component={QuickSearch} />} path="/query" />
               <Route element={<AuthenticatedRoute component={AdvancedSearchView} />} path="/query-advanced" />
-              {/* <AuthenticatedRoute
-                admin
-                component={RecordView}
-                path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
-              />
-              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:modelName/:rid" />
-              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:rid" />
-              <AuthenticatedRoute
-                admin
-                component={NewRecordView}
-                path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
-              />
-              <AuthenticatedRoute
-                component={NewRecordSelectView}
-                path={`/:variant(new)/:modelName(${
-                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map((m) => m.toLowerCase())].join('|')
-                })`}
-              />
-              <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
-              <AuthenticatedRoute component={DataView} path="/data/table" />
-              <AuthenticatedRoute component={GraphView} path="/data/graph" />
-              <AuthenticatedRoute admin component={AdminView} path="/admin" />
-              <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
-              <AuthenticatedRoute component={UserProfileView} path="/user-profile" /> */}
-              <Route element={<Navigate to="/query" />} path="/" />
+              {generateAuthenticatedRoutes(['edit'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
+                component: RecordView,
+                admin: true,
+              })}
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'edit' }} />} path="/edit/:modelName/:rid" />
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'view' }} />} path="/view/:modelName/:rid" />
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'edit' }} />} path="/edit/:rid" />
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'view' }} />} path="/view/:rid" />
+              {generateAuthenticatedRoutes(['new'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
+                component: NewRecordView,
+                admin: true,
+              })}
+              {generateAuthenticatedRoutes(['new'], [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map((m) => m.toLowerCase())], {
+                component: NewRecordSelectView,
+                admin: true,
+              })}
+              <Route element={<AuthenticatedRoute component={NewRecordView} />} path="/new/:modelName" />
+              <Route element={<AuthenticatedRoute component={DataView} />} path="/data/table" />
+              <Route element={<AuthenticatedRoute component={GraphView} />} path="/data/graph" />
+              <Route element={<AuthenticatedRoute admin component={AdminView} />} path="/admin" />
+              <Route element={<AuthenticatedRoute component={ImportPubmedView} />} path="/import/pubmed" />
+              <Route element={<AuthenticatedRoute component={UserProfileView} />} path="/user-profile" />
+              <Route element={<Navigate to="/query" />} path="/*" />
             </Routes>
           </Suspense>
         </section>

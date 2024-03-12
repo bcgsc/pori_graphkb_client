@@ -2,6 +2,8 @@
  * Handles miscellaneous tasks.
  */
 
+import { NavigateFunction } from 'react-router-dom';
+
 import config from '@/static/config';
 
 const {
@@ -207,17 +209,28 @@ const positionInit = (x, y, i, n) => {
   return { x: newX, y: newY };
 };
 
+type NavigateParams = {
+  navigate: NavigateFunction;
+  pathname: string;
+  search: string;
+};
+
+type ReferrerLocation = {
+  pathname: string;
+  search: string;
+} | null;
+
 /**
  * navigates to error view and saves previous locaton to history object so that
  * after login, the user is redirected back to the previous page they were on
  *
  * @param {object} error error object containing message and error name
- * @param {object} history history object for navigation
+ * @param {object} nav NavigateParams
  * @param {object} referrerLocation location of application before handling error
  */
-const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
+const handleErrorSaveLocation = (error, nav: NavigateParams, referrerLocation: ReferrerLocation = null) => {
   const { name, message } = error;
-  const { location: { pathname, search } } = history;
+  const { pathname, search, navigate } = nav;
 
   const savedState = {
     from: {
@@ -227,10 +240,7 @@ const handleErrorSaveLocation = (error, history, referrerLocation = null) => {
     error: { name, message },
   };
 
-  history.push({
-    pathname: '/error',
-    state: savedState,
-  });
+  navigate('/error', { state: savedState });
 };
 
 /**

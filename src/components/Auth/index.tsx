@@ -154,12 +154,17 @@ const Centered = ({ children }: { children: ReactNode }) => (
 );
 
 interface AuthenticatedRouteProps {
-  component: NonNullable<RouteProps['Component']>;
+  component: React.ComponentType<any>;
+  componentProps?: any;
   admin?: boolean;
 }
 
-const AuthenticatedRoute = (props: AuthenticatedRouteProps): JSX.Element => {
-  const { admin, component: Component } = props;
+const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
+  const {
+    admin,
+    component: Comp,
+    componentProps = {},
+  } = props;
   const auth = useAuth();
 
   useLayoutEffect(() => {
@@ -195,12 +200,14 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps): JSX.Element => {
       </Centered>
     );
   }
+  const cp = componentProps || {};
 
-  return <Component />;
+  return <Comp {...cp} />;
 };
 
 AuthenticatedRoute.defaultProps = {
   admin: false,
+  componentProps: {},
 };
 
 export {

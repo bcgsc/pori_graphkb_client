@@ -45,7 +45,10 @@ function AdvancedSearchView() {
     try {
       const query = getQuery(modelName);
       const search = api.encodeQueryComplexToSearch(query, modelName);
-      navigate(`/data/table?${search}`, { search, query });
+      navigate({
+        pathname: '/data/table',
+        search,
+      }, { state: { query } });
     } catch (err) {
       console.error(err);
     }

@@ -8,7 +8,7 @@ import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 import { tuple } from '@/components/util';
@@ -18,8 +18,10 @@ import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
-const ImportPubmedView = (props: RouteComponentProps) => {
-  const { history } = props;
+const ImportPubmedView = () => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
   const [text, setText] = useState('');
@@ -30,7 +32,11 @@ const ImportPubmedView = (props: RouteComponentProps) => {
     tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
     async ({ queryKey: [, body] }) => api.query(body),
     {
-      onError: (err) => handleErrorSaveLocation(err, history),
+      onError: (err) => handleErrorSaveLocation(err, {
+        navigate,
+        pathname,
+        search: searchParams.toString(),
+      }),
       select: (response) => response[0]?.['@rid'],
     },
   );

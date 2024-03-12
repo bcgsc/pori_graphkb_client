@@ -1,4 +1,5 @@
 import * as qs from 'qs';
+import { NavigateFunction } from 'react-router-dom';
 
 const CLASS_MODEL_PROP = '@class';
 
@@ -191,10 +192,10 @@ const cleanPayload = (payload) => {
  * Save graph state (nodeRIDS) to URL and jump to graphview with nodeRIDs as initial seed
  *
  * @param {Arrayof.<strings>} nodeRIDs an array of node RIDs
- * @param {object} history history object
+ * @param {object} navigate navigate of react-router-dom
  * @param {function} onErrorCallback callback function to call if error occurs
  */
-const navigateToGraph = (nodeRIDs, history, onErrorCallback) => {
+const navigateToGraph = (nodeRIDs, navigate: NavigateFunction, onErrorCallback) => {
   const savedState = {};
   let encodedState;
 
@@ -209,7 +210,7 @@ const navigateToGraph = (nodeRIDs, history, onErrorCallback) => {
     onErrorCallback(err);
   }
 
-  history.push({
+  navigate({
     pathname: '/data/graph',
     search: `${encodedState}`,
   });

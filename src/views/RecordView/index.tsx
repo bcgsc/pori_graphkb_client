@@ -10,7 +10,10 @@ import React, {
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import {
+  NavigateOptions,
+  useLocation, useNavigate, useParams, useSearchParams,
+} from 'react-router-dom';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -47,9 +50,32 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   return schemaDefn.get(defaultModelName || 'V').name;
 };
 
-const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string; variant: FORM_VARIANT }>) => {
-  const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
+type ModelNamesType = 'Source' | 'source' | 'User' | 'user' | 'UserGroup' | 'usergroup';
 
+type RouteParams = {
+  variant: FORM_VARIANT;
+  modelName: ModelNamesType;
+  rid: string;
+};
+
+const RecordView = ({
+  modelName: modelNameParamProp,
+  variant,
+}: {
+  modelName: ModelNamesType;
+  variant: FORM_VARIANT;
+}) => {
+  const navigate = useNavigate();
+  const {
+    rid,
+    modelName: modelNameParams,
+  } = useParams<RouteParams>();
+
+  // Use props over params
+  const modelNameParam = modelNameParamProp ?? modelNameParams;
+
+  const { pathname: path } = useLocation();
+  const [searchParams] = useSearchParams();
   const [modelName, setModelName] = useState(modelNameParam || '');
 
   useEffect(() => {
@@ -58,25 +84,33 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
         const name = getModelFromName(path, modelNameParam, variant);
         setModelName(name);
       } catch (err) {
-        history.push('/error', { error: { name: err.name, message: err.toString() } });
+        if (err instanceof Error) {
+          const error: NavigateOptions = { state: { error: { name: err.name, message: err.toString() } } };
+          navigate('/error', error);
+        } else {
+          console.error(err);
+        }
       }
     }
-  }, [path, modelNameParam, variant, history]);
+  }, [path, modelNameParam, variant, navigate]);
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
   const handleSubmit = useCallback((result = null) => {
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
-      history.push(schema.getLink(result));
+      navigate(schema.getLink(result));
     } else if (result && variant === FORM_VARIANT.SEARCH) {
       // redirect to the data view page
       const search = qs.stringify(cleanLinkedRecords(result));
-      history.push(`/data/table?${search}`, { search, content: result });
+      navigate({
+        pathname: '/data/table',
+        search,
+      }, { state: { content: result } });
     } else {
-      history.push('/');
+      navigate('/');
     }
-  }, [history, variant]);
+  }, [navigate, variant]);
 
   /**
    * Handles the redirect if an error occurs in the child component
@@ -84,8 +118,11 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
   const handleError = useCallback(({ error = {} }) => {
     const { name } = error;
     const massagedMsg = util.massageRecordExistsError(error);
-    util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
-  }, [history]);
+    util.handleErrorSaveLocation(
+      { name, message: massagedMsg },
+      { navigate, pathname: path, search: searchParams.toString() },
+    );
+  }, [navigate, path, searchParams]);
 
   const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
@@ -113,13 +150,15 @@ const RecordView = (props: RouteComponentProps<{ rid: string; modelName: string;
 
   // redirect when the user clicks the top right button
   const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {
+    // Will give newState as null if user clicks same state (view/edit/graph)
+    if (!newState) { return; }
     if (newState === 'graph') {
-      navigateToGraph([recordContent['@rid']], history, handleError);
+      navigateToGraph([recordContent['@rid']], navigate, handleError);
     } else {
       const newPath = `/${newState}/${model.name}/${rid}`;
-      history.push(newPath);
+      navigate(newPath);
     }
-  }, [handleError, history, model.name, recordContent, rid]);
+  }, [handleError, navigate, model.name, recordContent, rid]);
 
   if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
     // wait for the model to be set for new Records

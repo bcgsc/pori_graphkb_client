@@ -173,6 +173,12 @@ const createBaseConfig = ({
       // Don't precache sourcemaps (they're large) and build asset manifest:
       exclude: [/\.map$/, /asset-manifest\.json$/],
     }),
+    new webpack.ProvidePlugin({
+      // Make a global `process` variable that points to the `process` package,
+      // because the `util` package expects there to be a global variable named `process`.
+      // Thanks to https://stackoverflow.com/a/65018686/14239942
+      process: 'process/browser'
+    })
   ];
 
 
@@ -216,6 +222,9 @@ const createBaseConfig = ({
       alias: {
         '@': SRC_PATH,
       },
+      fallback: { 
+        "util": require.resolve("util/")
+      }
     },
     module: moduleSettings,
 

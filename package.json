@@ -110,14 +110,15 @@
     "jest-junit": "^13.0.0",
     "mini-css-extract-plugin": "~2.5.3",
     "node-sass": "~7.0.1",
+    "process": "^0.11.10",
     "raf": "^3.4.0",
     "react-dev-utils": "^12.1.0-next.14",
     "react-test-renderer": "^17.0.2",
-    "sass-lint": "^1.13.1",
     "sass-loader": "~12.4.0",
     "serve": "~13.0.2",
     "sleep-promise": "^8.0.1",
     "style-loader": "~3.3.1",
+    "util": "^0.12.5",
     "webpack": "^5.90.3",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4",
@@ -146,7 +147,6 @@
     "serve": "NODE_ENV=development serve dist/development -s",
     "commit": "git-cz"
   },
-  "sasslintConfig": "config/sass-lint.yml",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

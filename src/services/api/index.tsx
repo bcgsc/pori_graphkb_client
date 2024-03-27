@@ -34,11 +34,9 @@ const MAX_SUGGESTIONS = 50;
  * @param {Object} payload - PATCH payload.
  */
 const patch = (endpoint: string, payload: Record<string, unknown>): Promise<GeneralRecordType> => {
-  // strip out the display name to have it force-regenerate
-  const { displayName, ...changes } = payload;
   const init = {
     method: 'PATCH',
-    body: jc.stringify(changes),
+    body: jc.stringify(payload),
   };
   return request(endpoint, init);
 };

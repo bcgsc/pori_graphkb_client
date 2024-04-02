@@ -16,7 +16,12 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
+
+import { GraphLink } from '../kbgraph';
+
+type NodeForExpansion = GeneralRecordType;
 
 interface GraphExpansionDialogProps {
   /** handler for user clicking away or cancelling. */
@@ -31,15 +36,15 @@ interface GraphExpansionDialogProps {
   onStageAll: (...args: unknown[]) => unknown;
   /** toggles staged/unstaged state for edges
  * of a single class. */
-  onStageClass: (...args: unknown[]) => unknown;
+  onStageClass: (edge: string) => (event: React.MouseEvent<HTMLButtonElement>) => void;
   /** Dialog open state */
   open: boolean;
   /** list of edge RID's that will be excluded in node expansion. (unstaged) */
   expandExclusions?: string[];
   /** list of all currently rendered graph links. */
-  links?: unknown[];
+  links?: GraphLink[];
   /** Graph node staged for expansion. */
-  node?: Record<string, unknown>;
+  node?: NodeForExpansion | null;
 }
 
 /**
@@ -61,7 +66,9 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
   if (!node) {
     return null;
   }
+
   const edges = schema.getEdges(node);
+
   return (
     <Dialog
       classes={{
@@ -79,15 +86,17 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
           Expand by Edge Types:
         </Typography>
         <List className="expand-links-types" dense>
-          {(edges || []).reduce((array, edge) => {
+          {(edges || [] as NodeForExpansion[]).reduce((array, edge) => {
+            const edgeClass = edge['@class'] as string;
+
             if (
-              !array.includes(edge['@class'])
+              !array.includes(edgeClass)
               && !links.find((l) => l.getId() === edge['@rid'])
             ) {
-              array.push(edge['@class']);
+              array.push(edgeClass);
             }
             return array;
-          }, []).map((edge) => (
+          }, [] as string[]).map((edge) => (
             <ListItem
               key={edge}
               className="expand-links-type"

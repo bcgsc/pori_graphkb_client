@@ -2,6 +2,8 @@ import React from 'react';
 
 import config from '@/static/config';
 
+import { GraphLink, GraphNode, GraphObj } from './kbgraph';
+
 const {
   DETAILS_RING_RADIUS,
   NODE_RADIUS,
@@ -22,7 +24,7 @@ const ICON_MAP = {
 
 interface GraphActionsNodeProps {
   /** Currently selected object. */
-  actionsNode?: Record<string, unknown>;
+  actionsNode?: GraphObj | null;
   /** yes/no flag determining whether selected object is
  * an edge or not */
   edge?: boolean;
@@ -46,15 +48,21 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
 
   if (!actionsNode) return null;
 
-  const translateX = edge
-    ? (actionsNode.target.x + actionsNode.source.x) / 2
-    : (actionsNode.x || 0);
-  const translateY = edge
-    ? (actionsNode.target.y + actionsNode.source.y) / 2
-    : (actionsNode.y);
+  let translateX: number;
+  let translateY: number;
 
-  const actionsRing = [];
-  options.forEach((option, i) => {
+  if (edge) {
+    const node: GraphLink = actionsNode as GraphLink;
+    translateX = (node.target.x + node.source.x) / 2;
+    translateY = (node.target.y + node.source.y) / 2;
+  } else {
+    const node: GraphNode = actionsNode as GraphNode;
+    translateX = (node.x || 0);
+    translateY = (node.y);
+  }
+
+  const actionsRing: JSX.Element[] = [];
+  options?.forEach((option, i) => {
     const l = options.length;
     const offset = 1 / l * Math.PI;
     const startAngle = (i + 1) / l * 2 * Math.PI + offset;

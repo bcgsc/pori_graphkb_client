@@ -4,6 +4,8 @@ import React from 'react';
 
 import config from '@/static/config';
 
+import { GraphLink, GraphObj } from '../kbgraph';
+
 const LABEL_BASELINE_SHIFT = 4;
 const SELECTED_OPACITY = 1;
 const DEFAULT_OPACITY = 0.7;
@@ -14,9 +16,9 @@ const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
 
 interface GraphLinkDisplayProps {
   /** Graph link object. */
-  link: Record<string, unknown>;
+  link: GraphLink;
   /** Node decorator object. */
-  actionsNode?: Record<string, unknown>;
+  actionsNode?: GraphObj | null;
   /** color of link. CSS color syntax(es). */
   color?: string;
   /** Node currently opened in detail drawer. */

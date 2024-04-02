@@ -4,6 +4,7 @@
 
 import { NavigateFunction } from 'react-router-dom';
 
+import { GeneralRecordType } from '@/components/types';
 import config from '@/static/config';
 
 const {
@@ -41,12 +42,16 @@ const castToExist = (obj) => {
     return 'null';
   }
   if (obj && typeof obj === 'object') {
-    return Object.entries(obj).find((e) => {
+    const found = Object.entries(obj).find((e) => {
       const [k, v] = e;
       return (
         (typeof v !== 'object' || typeof v !== 'function')
         && !k.startsWith('@'));
-    })[1].toString();
+    });
+
+    if (found && found[1]) {
+      return found[1].toString();
+    }
   }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };
@@ -252,8 +257,15 @@ const massageRecordExistsError = (error) => {
   const { message } = error;
 
   try {
-    const [, incomingRecord] = /previously assigned to the record\s*(#[\d]*:[\d]*)/gi.exec(message);
-    const [, existingRecord] = /Cannot index record\s*(#[\d]*:[\d]*)/gi.exec(message);
+    const matchIncoming = /previously assigned to the record\s*(#[\d]*:[\d]*)/gi.exec(message);
+    let incomingRecord: string | undefined;
+
+    if (matchIncoming) { [, incomingRecord] = matchIncoming; }
+
+    let existingRecord: string | undefined;
+    const matchExisting = /Cannot index record\s*(#[\d]*:[\d]*)/gi.exec(message);
+
+    if (matchExisting) { [, existingRecord] = matchExisting; }
 
     if (incomingRecord && existingRecord) {
       return `Cannot modify record ${incomingRecord} because record ${existingRecord} exists with the same parameters.`;
@@ -271,7 +283,7 @@ const hashRecordsByRID = (data) => {
       newData[obj['@rid']] = obj;
     }
   });
-  return newData;
+  return newData as GeneralRecordType<string>[];
 };
 
 export default {

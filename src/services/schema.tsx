@@ -1,5 +1,8 @@
-import { Property, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ClassModel, Property, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
+
+import { EdgeType, GeneralRecordType } from '@/components/types';
 
 import { getQueryFromSearch } from './api/search';
 
@@ -49,9 +52,9 @@ const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
  */
 const getProperties = (obj) => {
   const VPropKeys = schemaDefn.schema.V.properties;
-  const classModel = schemaDefn.get(obj);
+  const classModel: ClassModel = schemaDefn.get(obj);
   return Object.values(classModel?.properties ?? {})
-    .filter((prop) => !VPropKeys[prop.name]);
+    .filter((prop: Property) => !VPropKeys[prop.name]);
 };
 
 /**
@@ -69,13 +72,22 @@ const getQueryProperties = (className) => {
 
 /**
  * Returns a list of strings containing all valid edge class names.
- * @param {Object} [node=null] - Object to retrieve edges from if input.
  */
-const getEdges = (node = null) => {
-  const list = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
+function getEdges(): string[];
+
+/**
+ * Returns a list of edges extracted from the node based on the valid edge class names.
+ * @param {Object} node - Object to retrieve edges from if input.
+ */
+function getEdges(node: null): string[];
+function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): EdgeType[];
+function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): string[];
+
+function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null = null) {
+  const list: string[] = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
 
   if (node) {
-    const edges = [];
+    const edges: EdgeType[] = [];
     Object.keys(node)
       .filter((key) => key.split('_')[1] && list.includes(key.split('_')[1]))
       .forEach((key) => edges.push(...node[key]));
@@ -83,7 +95,7 @@ const getEdges = (node = null) => {
   }
 
   return list;
-};
+}
 
 const isEdge = (cls) => !!(schemaDefn.get(cls)
       && schemaDefn.get(cls).inherits.some((inherited) => inherited === 'E'));
@@ -177,13 +189,13 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
 const defineGridColumns = (search) => {
   const { modelName } = getQueryFromSearch(search);
 
-  const showEdges = [];
-  const showByDefault = [];
-  const defaultOrdering = [];
+  const showEdges: string[] = [];
+  const showByDefault: string[] = [];
+  const defaultOrdering: string[] = [];
 
   const linkChipWidth = 300;
 
-  const allProps = schemaDefn.get(modelName).queryProperties;
+  const allProps: Record<string, Property> = schemaDefn.get(modelName).queryProperties;
 
   if (modelName.toLowerCase().includes('variant')) {
     showByDefault.push('reference1', 'reference2', 'type');
@@ -230,7 +242,12 @@ const defineGridColumns = (search) => {
   };
 
   const defineConditionsColumn = () => {
-    const conditionsDefn = {
+    const conditionsDefn: {
+      headerName: string;
+      groupId: string,
+      openByDefault: boolean,
+      children: ColDef[],
+    } = {
       headerName: 'Conditions',
       groupId: 'Conditions',
       openByDefault: true,
@@ -238,7 +255,7 @@ const defineGridColumns = (search) => {
     };
 
     ['variant', 'disease', 'other'].forEach((cls) => {
-      const colDef = {
+      const colDef: ColDef = {
         field: cls,
         colId: cls,
         headerName: titleCase(cls),
@@ -307,7 +324,7 @@ const defineGridColumns = (search) => {
     'displayName',
   ];
 
-  const valueGetter = (propName, subPropName = null) => ({ data }) => {
+  const valueGetter = (propName, subPropName: string | null = null) => ({ data }) => {
     if (data) {
       if (!subPropName) {
         return schemaDefn.getPreview(data[propName]);
@@ -318,7 +335,7 @@ const defineGridColumns = (search) => {
     return '';
   };
 
-  const defns = [];
+  const defns: ColDef[] = [];
 
   defns.push({
     colId: 'preview',
@@ -343,7 +360,7 @@ const defineGridColumns = (search) => {
       defns.push(defineLinkSetColumn(prop.name));
     } else if (prop.type === 'link' || prop.linkedClass) {
       // build a column group
-      const groupDefn = {
+      const groupDefn: ColGroupDef = {
         headerName: titleCase(prop.name),
         groupId: prop.name,
         openByDefault: false,
@@ -360,9 +377,9 @@ const defineGridColumns = (search) => {
           hide,
         }],
       };
-      Object.values((prop.linkedClass || schemaDefn.schema.V).queryProperties).forEach((subProp) => {
+      Object.values((prop.linkedClass || schemaDefn.schema.V).queryProperties).forEach((subProp: Property) => {
         if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
-          const colDef = ({
+          const colDef: ColDef = ({
             field: subProp.name,
             colId: `${prop.name}.${subProp.name}`,
             headerName: titleCase(subProp.name),

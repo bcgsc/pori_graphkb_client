@@ -1,5 +1,6 @@
 import isObject from 'lodash.isobject';
 
+import { GeneralRecordType } from '@/components/types';
 import config from '@/static/config';
 
 const DEFAULT_NODE_VPROPS = [
@@ -28,6 +29,12 @@ const {
  * Represents an object in the d3 force directed graph.
  */
 class GraphObj {
+  data: GeneralRecordType<'@rid'>;
+
+  constructor(data) {
+    this.data = data;
+  }
+
   /**
    * Returns the underlying record ID.
    */
@@ -39,16 +46,16 @@ class GraphObj {
    * Finds suggested property value and displays it as this nodes label.
    * @param {string} labelKey - Property key to display as node label.
    */
-  getLabel(labelKey) {
+  getLabel(labelKey: string) {
     let obj = this.data;
-    let key = labelKey;
-    let parentKey;
+    let key: string = labelKey;
+    let parentKey: string;
 
     if (labelKey.includes('.')) {
       [parentKey, key] = labelKey.split('.');
-      obj = this.data[parentKey];
+      obj = (this.data as Record<string, GeneralRecordType<'@rid'>>)[parentKey];
     }
-    const label = obj && obj[key];
+    const label = obj && obj[key] as string;
 
     if (label && label.length > MAX_LABEL_LENGTH) {
       return `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
@@ -61,8 +68,12 @@ class GraphObj {
  * Represents a d3 force directed graph node.
  */
 class GraphNode extends GraphObj {
-  constructor(data, x, y) {
-    super();
+  x: number;
+
+  y: number;
+
+  constructor(data?, x?, y?) {
+    super(data);
     this.data = data || {};
     this.x = x || 0;
     this.y = y || 0;
@@ -73,8 +84,12 @@ class GraphNode extends GraphObj {
  * Represents a d3 force directed graph link object.
  */
 class GraphLink extends GraphObj {
+  source: GraphNode;
+
+  target: GraphNode;
+
   constructor(data, source, target) {
-    super();
+    super(data);
     this.data = data || {};
     this.source = source;
     this.target = target;
@@ -101,6 +116,10 @@ class GraphLink extends GraphObj {
  * in of each.
  */
 class PropsMap {
+  nodeProps: unknown;
+
+  linkProps: unknown;
+
   constructor() {
     this.nodeProps = {};
     this.linkProps = {};
@@ -210,6 +229,40 @@ class PropsMap {
  * Represents possible graph options for the graph view.
  */
 class GraphOptions {
+  defaultColor: string;
+
+  linkStrength: number;
+
+  chargeStrength: number;
+
+  collisionRadius: number;
+
+  autoCollisionRadius: boolean;
+
+  linkHighlighting: boolean;
+
+  nodeLabelProp: string;
+
+  linkLabelProp: string;
+
+  nodesColor: string;
+
+  linksColor: string;
+
+  nodesColors: object;
+
+  linksColors: object;
+
+  nodesLegend: boolean;
+
+  linksLegend: boolean;
+
+  chargeMax: number;
+
+  nodePreview: boolean;
+
+  isTreeLayout: boolean;
+
   /**
    * Retrieves stored graph options data from localstorage.
    */
@@ -223,7 +276,7 @@ class GraphOptions {
     return null;
   }
 
-  constructor(props) {
+  constructor(props?) {
     const initial = props === undefined || props === null ? {} : props;
     this.defaultColor = initial.defaultColor || DEFAULT_NODE_COLOR;
     this.linkStrength = initial.linkStrength || LINK_STRENGTH;
@@ -250,7 +303,8 @@ class GraphOptions {
   /**
    * Returns the color of the given object, given the current color property.
    */
-  getColor(obj, type) {
+  getColor(obj, type: 'links' | 'nodes') {
+    // @ts-expect-error - limited to links/nodes Color/Colors
     const { [`${type}Color`]: targetColor, [`${type}Colors`]: ColorMap } = this;
     let colorKey = '';
 
@@ -297,6 +351,7 @@ class GraphOptions {
 export {
   GraphLink,
   GraphNode,
+  GraphObj,
   GraphOptions,
   PropsMap,
 };

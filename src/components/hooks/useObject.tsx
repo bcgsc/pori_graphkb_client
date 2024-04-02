@@ -1,57 +1,70 @@
-import {
-  useCallback,
-  useReducer,
-} from 'react';
+import { useCallback, useReducer } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-/**
- * Hook for a component that depends on an object parameter
- *
- * @param {Object} initialValue the start object
- */
-const useObject = (initialValue = {}) => {
-  const [content, setContent] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
+type Action<T> = | { type: 'update', payload: { name: keyof T, value: unknown } }
+| { type: 'bulk-update', payload: Partial<T> }
+| { type: 'replace', payload: T };
 
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    }
+function useObject<T extends object>(initialValue: T): {
+  content: T;
+  updateField: (name: keyof T, value: unknown) => void,
+  replace: (newContent: T) => void,
+  update: (newContent: Partial<T>) => void,
+  removeField: (name: keyof T) => void
+} {
+  const [content, setContent] = useReducer(
+    (state: T, action: Action<T>): T => {
+      const { type: actionType, payload } = action;
 
-    if (actionType === 'bulk-update') {
-      return { ...state, ...payload };
-    }
+      if (actionType === 'update') {
+        const { name, value } = payload;
+        return {
+          ...state,
+          [name]: value,
+        };
+      }
 
-    if (actionType === 'replace') {
-      return { ...payload };
-    }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, initialValue || {});
+      if (actionType === 'bulk-update') {
+        return { ...state, ...payload };
+      }
 
-  const updateField = useCallback((name, value) => {
+      if (actionType === 'replace') {
+        return { ...payload };
+      }
+
+      throw new Error(`actionType (${actionType}) is not implemented`);
+    },
+    initialValue,
+  );
+
+  const updateField = useCallback((name: keyof T, value: any) => {
     setContent({ type: 'update', payload: { name, value } });
   }, [setContent]);
 
-  const update = useCallback((newContent = {}) => {
+  const update = useCallback((newContent: Partial<T>) => {
     setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
-  const replace = useCallback((newContent = {}) => {
+  const replace = useCallback((newContent: T) => {
     setContent({ type: 'replace', payload: newContent });
   }, [setContent]);
 
-  const removeField = useCallback((name) => {
+  const removeField = useCallback((name: keyof T) => {
     const { [name]: removed, ...rest } = content;
-    setContent({ type: 'replace', payload: rest });
-  }, [content]);
+    setContent({ type: 'replace', payload: rest as T });
+  }, [content, setContent]);
 
   useDeepCompareEffect(() => {
-    replace(initialValue || {});
-  }, [initialValue || {}]);
+    replace(initialValue);
+  }, [initialValue]);
 
   return {
-    content, updateField, replace, update, removeField,
+    content,
+    updateField,
+    replace,
+    update,
+    removeField,
   };
-};
+}
 
 export default useObject;

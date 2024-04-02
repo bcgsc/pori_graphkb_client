@@ -16,9 +16,9 @@ const FADED_OPACITY = 0.6;
 
 interface GraphNodeDisplayProps {
   /** Node decorator object. */
-  actionsNode?: Record<string, unknown>;
+  actionsNode?: GraphNode;
   /** Function to apply drag functionality to node. */
-  applyDrag?:(...args: unknown[]) => unknown;
+  applyDrag?: (node: GraphNode, evt: d3Drag.D3DragEvent<Element, unknown, unknown>) => void
   /** Color of node. */
   color?: string;
   /** Node currently opened in detail drawer. */
@@ -30,7 +30,11 @@ interface GraphNodeDisplayProps {
   /** Property to label node by. */
   labelKey?: string;
   /** Node to be rendered. */
-  node?: Record<string, unknown>;
+  node: GraphNode | Record<string, unknown> & {
+    data: {
+      [labelKey: string]: unknown;
+    }
+  };
 }
 
 /**
@@ -43,24 +47,26 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     handleClick,
     color,
     labelKey,
-    node,
+    node = null,
     actionsNode,
     detail,
     filter,
   } = props;
 
-  const nodeSVG = useRef(null);
+  const nodeSVG = useRef<SVGGElement>(null);
 
   // enables svg dragging,calls applyDrag to set dragged position as new position
   useEffect(() => {
-    if (applyDrag) {
-      const nodeElement = d3Select.select(nodeSVG.current);
+    const currentSvg = nodeSVG.current;
+
+    if (applyDrag && node instanceof GraphNode) {
+      const nodeElement = d3Select.select(currentSvg as Element);
       nodeElement.call(d3Drag.drag()
-        .on('start', () => applyDrag(node)));
+        .on('start', (evt) => applyDrag(node, evt)));
     }
 
     return () => {
-      const nodeElement = d3Select.select(nodeSVG.current);
+      const nodeElement = d3Select.select(currentSvg as Element);
       nodeElement.call(d3Drag.drag()
         .on('start', null));
     };
@@ -71,7 +77,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
 
   if (labelKey === 'preview') {
     label = schemaDefn.getPreview(node.data);
-  } else {
+  } else if (labelKey) {
     label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
 
     if (typeof label === 'object') {
@@ -79,9 +85,13 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     }
   }
 
-  const faded = (detail && detail['@rid'] !== node.getId())
+  let faded;
+
+  if (node instanceof GraphNode) {
+    faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));
+  }
 
   let opacity = DEFAULT_OPACITY;
 
@@ -91,7 +101,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
 
   return (
     <g
-      ref={(n) => { nodeSVG.current = n; }}
+      ref={nodeSVG}
       transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
     >
       <text
@@ -126,7 +136,6 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
 }
 
 GraphNodeDisplay.defaultProps = {
-  node: null,
   handleClick: null,
   color: '#26328C',
   labelKey: 'name',

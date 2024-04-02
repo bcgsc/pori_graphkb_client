@@ -7,6 +7,7 @@ import {
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SaveStateIcon from '@material-ui/icons/SettingsRemote';
+import { D3DragEvent } from 'd3-drag';
 import * as d3Force from 'd3-force';
 import * as d3Select from 'd3-selection';
 import * as d3Zoom from 'd3-zoom';
@@ -19,6 +20,7 @@ import React, {
 } from 'react';
 
 import useObject from '@/components/hooks/useObject';
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 import config from '@/static/config';
@@ -33,6 +35,7 @@ import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import {
   GraphLink,
   GraphNode,
+  GraphObj,
   GraphOptions,
   PropsMap,
 } from './kbgraph';
@@ -58,7 +61,26 @@ const {
   },
 } = config;
 
-const initialGraphData = {
+type GraphData = {
+  actionsNode: GraphObj | null,
+  simulation: d3Force.Simulation<GraphNode, undefined>
+  svg: undefined | d3Select.Selection<SVGSVGElement, unknown, null, undefined>,
+  graphOptions: GraphOptions,
+  graphOptionsOpen: boolean,
+  expansionDialogOpen: boolean,
+  /** Node to be expanded with Edges */
+  expandNode: GeneralRecordType<'@rid' | string> | null,
+  /** Array of rids to be excluded from expandNode results */
+  expandExclusions: Array<string>,
+  allProps: Array<string>,
+  nodes: GraphNode[],
+  links: GraphLink[],
+  expandable: { [key: string]: boolean },
+  data: Record<string, GeneralRecordType<'@rid' | string>>,
+  graphObjects: Record<string, GeneralRecordType<'@rid' | string>>,
+};
+
+const initialGraphData: GraphData = {
   actionsNode: null,
   simulation: d3Force.forceSimulation(),
   svg: undefined,
@@ -77,8 +99,8 @@ const initialGraphData = {
 
 interface GraphComponentProps {
   /** graph data in the format of { '@rid': {data}, ... } */
-  data: Record<string, unknown>;
-  getRecord: (...args: unknown[]) => unknown;
+  data: Record<string, GeneralRecordType<string>>;
+  getRecord: (...args: unknown[]) => Promise<GeneralRecordType<'@rid'>>;
   /** Method to handle closing of detail drawer. */
   handleDetailDrawerClose: (...args: unknown[]) => unknown;
   /** Method to handle opening of detail drawer. */
@@ -87,7 +109,7 @@ interface GraphComponentProps {
   /** record ID of node currently selected for detail viewing. in the initial query. */
   detail?: Record<string, unknown>;
   /** list of valid edge classes. */
-  edgeTypes?: string[];
+  edgeTypes?: [key: `out_${string}` | `in_${string}`];
   /** parent handler to save state in URL */
   handleGraphStateSave?: (...args: unknown[]) => unknown;
 }
@@ -99,6 +121,7 @@ interface GraphComponentProps {
 function GraphComponent(props: GraphComponentProps) {
   const snackbar = useSnackbar();
   const { data: initialData } = props;
+  // console.log('🚀 ~ GraphComponent ~ initialData:', initialData);
 
   const {
     content: graphValues,
@@ -126,19 +149,19 @@ function GraphComponent(props: GraphComponentProps) {
   } = graphValues;
 
   const propsMap = useRef(new PropsMap());
-  const graph = useRef(null);
-  const zoom = useRef(null);
-  const wrapper = useRef(null);
+  const graph = useRef<SVGSVGElement>(null);
+  const zoom = useRef<SVGGElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
 
   const getGraphOptions = () => {
     const newGraphOptions = new GraphOptions();
     const storedOptions = GraphOptions.retrieve();
-    let initialGraphOptions;
+    let initialGraphOptions: GraphOptions;
 
     if (storedOptions) {
       initialGraphOptions = storedOptions;
     } else {
-      const nodePropVal = Object.values(propsMap.current.nodeProps);
+      const nodePropVal = Object.values(propsMap.current?.nodeProps as Record<string, unknown>);
       const nodeHasDefaultProps = nodePropVal.length !== 0;
 
       if (nodeHasDefaultProps) {
@@ -157,7 +180,7 @@ function GraphComponent(props: GraphComponentProps) {
    */
   const saveGraphStatetoURL = (graphNodes) => {
     const { handleGraphStateSave, handleError } = props;
-    const withoutStatementData = [];
+    const withoutStatementData:{ '@rid': string }[] = [];
 
     /* Because properties types like linkset are uni-directional, we need to
     have nodes that are connected via a linkset property rendered first.
@@ -179,7 +202,9 @@ function GraphComponent(props: GraphComponentProps) {
     });
 
     try {
-      handleGraphStateSave(nodeRIDs);
+      if (handleGraphStateSave) {
+        handleGraphStateSave(nodeRIDs);
+      }
     } catch (err) {
       handleError(err);
     }
@@ -188,10 +213,10 @@ function GraphComponent(props: GraphComponentProps) {
   /**
    * Initializes simulation rules and properties. Updates simulation component state.
    */
-  const initSimulation = (sim, graphOpt) => {
+  const initSimulation = (sim: GraphData['simulation'], graphOpt: GraphOptions) => {
     sim.force(
       'link',
-      d3Force.forceLink().id((d) => d.getId()),
+      d3Force.forceLink<GraphNode, GraphLink>().id((d) => (d.getId())),
     ).force(
       'collide',
       d3Force.forceCollide(graphOpt.collisionRadius),
@@ -202,24 +227,28 @@ function GraphComponent(props: GraphComponentProps) {
         .distanceMax(graphOpt.chargeMax),
     );
 
-    const container = d3Select.select(zoom.current);
-    const SVG = d3Select.select(graph.current);
+    if (zoom.current && graph.current) {
+      const container = d3Select.select(zoom.current);
+      const SVG = d3Select.select(graph.current);
 
-    SVG
-      .attr('width', wrapper.current.clientWidth)
-      .attr('height', wrapper.current.clientHeight)
-      .call(d3Zoom.zoom()
-        .scaleExtent(ZOOM_BOUNDS)
-        .on('zoom', () => {
-          const { transform } = d3Select.event;
-          container.attr(
-            'transform',
-            `translate(${transform.x},${transform.y})scale(${transform.k})`,
-          );
-        }))
-      .on('dblclick.zoom', null);
+      if (SVG && wrapper.current) {
+        (SVG)
+          .attr('width', wrapper.current.clientWidth)
+          .attr('height', wrapper.current.clientHeight)
+          .call((d3Zoom.zoom() as d3Zoom.ZoomBehavior<SVGSVGElement, unknown>)
+            .scaleExtent(ZOOM_BOUNDS as [number, number])
+            .on('zoom', (evt) => {
+              const { transform } = evt;
+              container.attr(
+                'transform',
+                `translate(${transform.x},${transform.y})scale(${transform.k})`,
+              );
+            }))
+          .on('dblclick.zoom', null);
+      }
 
-    update({ simulation: sim, svg: SVG });
+      update({ simulation: sim, svg: SVG });
+    }
   };
 
   const updateColumnProps = useCallback((node) => {
@@ -252,6 +281,7 @@ function GraphComponent(props: GraphComponentProps) {
     }
 
     objs.push(newGraphObject);
+    // eslint-disable-next-line no-param-reassign
     graphObjs[graphData['@rid']] = graphData;
 
     if (type === 'node') {
@@ -296,7 +326,7 @@ function GraphComponent(props: GraphComponentProps) {
      * Cycles through all potential edges as defined by the schema, and expands
      * those edges if present on the node.
      */
-    edgeTypes.forEach((edgeType) => {
+    edgeTypes?.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
@@ -445,20 +475,23 @@ function GraphComponent(props: GraphComponentProps) {
   /**
    * Renders nodes and links to the graph.
    */
-  const drawGraph = useCallback((gNodes, gLinks, sim, graphOpts) => {
+  const drawGraph = useCallback((gNodes: GraphNode[], gLinks: GraphLink[], sim: GraphData['simulation'], graphOpts: GraphOptions) => {
     // set up the hierarchy
     sim.nodes(gNodes);
 
-    if (graphOptions.isTreeLayout) {
+    if (graphOptions.isTreeLayout && wrapper.current) {
       const ranks = computeNodeLevels(links);
-      const partitions = Math.max(...[0, ...Object.values(ranks)]) + 2;
+      const partitions = Math.max(...[0, ...Object.values(ranks) as number[]]) + 2;
       const partitionSize = wrapper.current.clientHeight / partitions;
       // partial force https://stackoverflow.com/questions/39575319/partial-forces-on-nodes-in-d3-js
       const subclassYForce = d3Force.forceY((node) => (partitions - ranks[getId(node)] - 1) * partitionSize);
       const init = subclassYForce.initialize;
 
       subclassYForce.initialize = (allNodes) => {
-        init(allNodes.filter((node) => ranks[getId(node)] !== undefined));
+        init(
+          allNodes.filter((node) => ranks[getId(node)] !== undefined),
+          sim.randomSource(),
+        );
       };
 
       sim.force('y', subclassYForce);
@@ -467,7 +500,7 @@ function GraphComponent(props: GraphComponentProps) {
     sim.force(
       'links',
       d3Force
-        .forceLink(gLinks)
+        .forceLink<GraphNode, GraphLink>(gLinks)
         .strength((link) => {
           if ((link.data['@class'] !== TREE_LINK) && graphOpts.isTreeLayout) {
             return 5 * graphOpts.linkStrength;
@@ -521,7 +554,7 @@ function GraphComponent(props: GraphComponentProps) {
    * @param {function} action - callback function to be called before node is
    * deselected.
    */
-  const withClose = (action = null) => {
+  const withClose = (action: (() => void) | null = null) => {
     if (action) {
       action();
     }
@@ -647,31 +680,34 @@ function GraphComponent(props: GraphComponentProps) {
     window.addEventListener('resize', handleResize);
 
     const nodeRIDs = Object.keys(initialData);
+
     nodeRIDs.forEach((rid, index) => {
-      ({
-        nodes,
-        links,
-        graphObjects,
-        expandable,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      } = processData(
-        seedData[rid],
-        util.positionInit(wrapper.current.clientWidth / 2, wrapper.current.clientHeight / 2, index, nodeRIDs.length),
-        false,
-        {
+      if (wrapper.current) {
+        ({
           nodes,
           links,
           graphObjects,
           expandable,
-        },
-      ));
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        } = processData(
+          seedData[rid],
+          util.positionInit(wrapper.current.clientWidth / 2, wrapper.current.clientHeight / 2, index, nodeRIDs.length),
+          false,
+          {
+            nodes,
+            links,
+            graphObjects,
+            expandable,
+          },
+        ));
+      }
     });
 
-    const intialGraphOptions = getGraphOptions(propsMap.current);
-    initSimulation(simulation, intialGraphOptions);
+    const initialGraphOptions = getGraphOptions();
+    initSimulation(simulation, initialGraphOptions);
 
     const initialSeed = {
-      simulation, graphOptions: intialGraphOptions, nodes, links,
+      simulation, graphOptions: initialGraphOptions, nodes, links,
     };
 
     refresh(initialSeed);
@@ -682,7 +718,7 @@ function GraphComponent(props: GraphComponentProps) {
 
     return () => {
       if (svg) {
-        svg.call(d3Zoom.zoom()
+        svg.call((d3Zoom.zoom() as d3Zoom.ZoomBehavior<SVGSVGElement, unknown>)
           .on('zoom', null))
           .on('dblclick.zoom', null);
       }
@@ -695,22 +731,25 @@ function GraphComponent(props: GraphComponentProps) {
   /**
    * Applies drag behavior to node.
    * @param {GraphNode} node - node to be dragged.
-   */
-  const applyDrag = (node) => {
-    d3Select.event.sourceEvent.stopPropagation();
+   * @param {D3DragEvent} evt - event that was propagated.
+  */
+  const applyDrag = (node, evt: D3DragEvent<Element, unknown, unknown>) => {
+    evt.sourceEvent.stopPropagation();
 
-    if (!d3Select.event.active) simulation.alphaTarget(0.3).restart();
+    if (!evt.active) {
+      simulation.alphaTarget(0.3).restart();
+    }
 
-    const dragged = () => {
+    const dragged = (draggedEvt) => {
       // move nodes via fixed position temporary
-      node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
-      node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
-      node.x = d3Select.event.x; // eslint-disable-line no-param-reassign
-      node.y = d3Select.event.y; // eslint-disable-line no-param-reassign
+      node.dx = draggedEvt.x; // eslint-disable-line no-param-reassign
+      node.dy = draggedEvt.y; // eslint-disable-line no-param-reassign
+      node.x = draggedEvt.x; // eslint-disable-line no-param-reassign
+      node.y = draggedEvt.y; // eslint-disable-line no-param-reassign
     };
 
-    const ended = () => {
-      if (!d3Select.event.active) {
+    const ended = (endedEvt) => {
+      if (!endedEvt.active) {
         simulation.alphaTarget(0);
       }
 
@@ -719,7 +758,7 @@ function GraphComponent(props: GraphComponentProps) {
       node.fy = null; // eslint-disable-line no-param-reassign
     };
 
-    d3Select.event
+    evt
       .on('drag', dragged)
       .on('end', ended);
   };
@@ -823,7 +862,7 @@ function GraphComponent(props: GraphComponentProps) {
    * Handles node clicks from user. If node is unspecified, graph is refreshed.
    * @param {Object} node - Clicked simulation node.
    */
-  const handleClick = async (node) => {
+  const handleClick = async (node: GraphNode | null = null) => {
     if (node) {
       const { handleDetailDrawerOpen } = props;
       // Prematurely loads neighbor data.
@@ -904,19 +943,21 @@ function GraphComponent(props: GraphComponentProps) {
   const handleLinkHide = () => {
     const { handleDetailDrawerClose } = props;
 
-    const i = links.indexOf(actionsNode);
-    links.splice(i, 1);
-    delete graphObjects[actionsNode.data['@rid']];
+    if (actionsNode && actionsNode instanceof GraphLink) {
+      const i = links.indexOf(actionsNode);
+      links.splice(i, 1);
+      delete graphObjects[actionsNode.data['@rid']];
 
-    expandable[actionsNode.source.data['@rid']] = true;
-    expandable[actionsNode.target.data['@rid']] = true;
+      expandable[actionsNode.source.data['@rid']] = true;
+      expandable[actionsNode.target.data['@rid']] = true;
 
-    updateColors(nodes, links, graphOptions);
-    handleDetailDrawerClose();
+      updateColors(nodes, links, graphOptions);
+      handleDetailDrawerClose();
 
-    update({
-      links, graphObjects, expandable, actionsNode: null,
-    });
+      update({
+        links, graphObjects, expandable, actionsNode: null,
+      });
+    }
   };
 
   /**
@@ -925,19 +966,21 @@ function GraphComponent(props: GraphComponentProps) {
   const handleNodeHide = () => {
     const { edgeTypes, handleDetailDrawerClose } = props;
 
-    if (nodes.length === 1) return;
+    if (nodes.length === 1 || !(actionsNode instanceof GraphNode)) return;
+
     const i = nodes.indexOf(actionsNode);
 
     nodes.splice(i, 1);
     delete graphObjects[actionsNode.data['@rid']];
 
     // deletes edges
-    edgeTypes.forEach((edgeType) => {
+    edgeTypes?.forEach((edgeType) => {
       const { data: record } = actionsNode;
+      const edgeTypeArr = record[edgeType] as (GeneralRecordType<'@rid'> | string)[];
 
-      if (record[edgeType] && record[edgeType].length !== 0) {
-        record[edgeType].forEach((edge) => {
-          const edgeRid = edge['@rid'] || edge;
+      if (edgeTypeArr && edgeTypeArr.length !== 0) {
+        edgeTypeArr.forEach((edge) => {
+          const edgeRid: string = edge['@rid'] || edge;
           const j = links.findIndex((l) => l.data['@rid'] === edgeRid);
 
           if (j !== -1) {
@@ -967,9 +1010,9 @@ function GraphComponent(props: GraphComponentProps) {
         delete graphObjects[edgeRID];
 
         if (sourceRID === nodeRID) {
-          expandable[targetRID] = true;
+          expandable[targetRID as string] = true;
         } else {
-          expandable[sourceRID] = true;
+          expandable[sourceRID as string] = true;
         }
       }
     });
@@ -1004,8 +1047,8 @@ function GraphComponent(props: GraphComponentProps) {
    * Selects/Deselects all options in the expand node dialog.
    */
   const handleExpandCheckAll = () => {
-    const allEdges = schema.getEdges(expandNode).map((e) => e['@rid']);
-    let newExpandExclusions = [];
+    const allEdges = schema.getEdges(expandNode).map((e) => e['@rid']) as string[];
+    let newExpandExclusions: string[] = [];
 
     if (expandExclusions.length !== allEdges.length) {
       newExpandExclusions = allEdges;
@@ -1018,10 +1061,10 @@ function GraphComponent(props: GraphComponentProps) {
    * @param {string} cls - KB edge class name to be expanded.
    */
   const handleExpandByClass = (cls) => () => {
-    const updatedExpandExclusions = [];
+    const updatedExpandExclusions: string[] = [];
     schema.getEdges(expandNode).forEach((edge) => {
       if (edge['@class'] !== cls) {
-        updatedExpandExclusions.push(edge['@rid']);
+        updatedExpandExclusions.push(edge['@rid'] as string);
       }
     });
     update({ expandExclusions: updatedExpandExclusions });
@@ -1053,7 +1096,7 @@ function GraphComponent(props: GraphComponentProps) {
   );
 
   // edges dont have an x or y position
-  const actionsNodeIsEdge = actionsNode ? Boolean(!actionsNode.x || !actionsNode.y) : false;
+  const actionsNodeIsEdge = actionsNode ? !('x' in actionsNode && 'y' in actionsNode) : false;
   const actionsRingOptions = actionsNodeIsEdge
     ? [
       {
@@ -1064,7 +1107,7 @@ function GraphComponent(props: GraphComponentProps) {
       {
         name: 'Hide',
         action: () => withClose(handleLinkHide),
-        disabled: false,
+        disabled: () => false,
       }]
     : [
       {
@@ -1115,7 +1158,6 @@ function GraphComponent(props: GraphComponentProps) {
       applyDrag={applyDrag}
       color={graphOptions.getColor(node, 'nodes')}
       detail={detail}
-      expandable={expandable[node.getId()]}
       handleClick={() => handleClick(node)}
       labelKey={graphOptions.nodePreview ? 'preview' : graphOptions.nodeLabelProp}
       node={node}
@@ -1176,7 +1218,7 @@ function GraphComponent(props: GraphComponentProps) {
         </Tooltip>
       </div>
 
-      <div className="svg-wrapper" ref={(node) => { wrapper.current = node; }}>
+      <div className="svg-wrapper" ref={wrapper}>
         <svg
           onClick={(e) => {
             if (e.target === graph.current) {
@@ -1184,12 +1226,12 @@ function GraphComponent(props: GraphComponentProps) {
               handleClick();
             }
           }}
-          ref={(node) => { graph.current = node; }}
+          ref={graph}
         >
           <defs>
             <GraphArrowMarker />
           </defs>
-          <g ref={(node) => { zoom.current = node; }}>
+          <g ref={zoom}>
             {linksDisplay}
             {nodesDisplay}
             {actionsRing}

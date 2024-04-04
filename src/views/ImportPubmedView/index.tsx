@@ -12,7 +12,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 import { tuple } from '@/components/util';
-import handleErrorSaveLocation from '@/services/util';
+import util from '@/services/util';
 
 import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
@@ -32,7 +32,7 @@ const ImportPubmedView = () => {
     tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
     async ({ queryKey: [, body] }) => api.query(body),
     {
-      onError: (err) => handleErrorSaveLocation(err, {
+      onError: (err) => util.handleErrorSaveLocation(err, {
         navigate,
         pathname,
         search: searchParams.toString(),
@@ -63,7 +63,11 @@ const ImportPubmedView = () => {
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(text),
-      onError: (err) => handleErrorSaveLocation(err, history),
+      onError: (err) => util.handleErrorSaveLocation(err, {
+        navigate,
+        pathname,
+        search: searchParams.toString(),
+      }),
     },
   );
 
@@ -84,7 +88,11 @@ const ImportPubmedView = () => {
           snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
           refetchCurrentRecords();
         } catch (err) {
-          handleErrorSaveLocation(err, history);
+          util.handleErrorSaveLocation(err, {
+            navigate,
+            pathname,
+            search: searchParams.toString(),
+          });
         }
       }
     },
@@ -117,19 +125,17 @@ const ImportPubmedView = () => {
       />
       {currentRecords?.map((rec) => (
         <PubmedCard
-          key={rec['@rid']}
-          abstract={rec.description}
-          journalName={rec.journalName}
-          recordId={rec['@rid']}
-          sourceId={rec.sourceId}
-          title={titleCase(rec.name)}
+          key={rec['@rid'] as string}
+          journalName={rec.journalName as string}
+          recordId={rec['@rid'] as string}
+          sourceId={rec.sourceId as string}
+          title={titleCase(rec.name as string)}
         />
       ))}
       {(isImporting || isLoading) && <CircularProgress className="import-view__progress" />}
       {(!currentRecords || !currentRecords.length) && externalRecord && (
         <PubmedCard
           key={text}
-          abstract={externalRecord.description}
           journalName={externalRecord.journalName}
           onClick={handleImport}
           sourceId={text}

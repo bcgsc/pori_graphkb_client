@@ -123,6 +123,8 @@
         "react/function-component-definition": "off",
         "react/jsx-no-constructed-context-values": "off",
         "react/jsx-no-useless-fragment": "off",
+        // Default props deprecated in React v16, to be removed v18
+        "react/require-default-props": "off",
         "jest/no-conditional-expect": "off",
         "max-classes-per-file": "off",
         "no-mixed-operators": "off",

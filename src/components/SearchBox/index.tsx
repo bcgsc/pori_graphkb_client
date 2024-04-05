@@ -25,7 +25,13 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({
-  onSubmit, value, error, helperText, onChange, className, ...props
+  onSubmit = () => {},
+  value = '',
+  error = false,
+  helperText,
+  onChange = () => {},
+  className = '',
+  ...props
 }: SearchBoxProps) => {
   const [searchText, setSearchText] = useState(value);
   const [debouncedSearchText] = useDebounce(searchText, 300);
@@ -72,14 +78,6 @@ const SearchBox = ({
       />
     </div>
   );
-};
-
-SearchBox.defaultProps = {
-  onSubmit: () => {},
-  value: '',
-  error: false,
-  helperText: '',
-  className: '',
 };
 
 export default SearchBox;

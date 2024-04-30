@@ -1,6 +1,6 @@
 import './index.scss';
 
-import kbSchema, { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn, PERMISSIONS } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Table,
@@ -11,8 +11,6 @@ import {
 } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 
-const { constants: { PERMISSIONS } } = kbSchema;
-
 /* eslint-disable no-bitwise */
 
 /**
@@ -22,7 +20,7 @@ const { constants: { PERMISSIONS } } = kbSchema;
 const splitPermissionsByOperation = (permissions) => {
   const permByModelName = {};
 
-  Object.keys(schemaDefn.schema).forEach((modelName) => {
+  Object.keys(schemaDefn.models).forEach((modelName) => {
     const model = schemaDefn.get(modelName);
 
     if (!model.embedded) {
@@ -58,7 +56,7 @@ interface PermissionsTableProps {
   /** flag to indicate this field cannot be edited */
   disabled?: boolean;
   /** the current permissions set */
-  value?:Record<string, unknown>;
+  value?: Record<string, unknown>;
 }
 
 /**

@@ -1,7 +1,7 @@
 import './index.scss';
 
 import { parseVariant } from '@bcgsc-pori/graphkb-parser';
-import kbSchema from '@bcgsc-pori/graphkb-schema';
+import { util } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,
@@ -80,7 +80,7 @@ const QuickSearch = () => {
         if (variant) {
           searchByHGVS();
         }
-      } else if (kbSchema.util.looksLikeRID(value)) {
+      } else if (util.looksLikeRID(value)) {
         navigate({
           pathname: `/view/${value.replace(/^#/, '')}`,
         });

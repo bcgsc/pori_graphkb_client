@@ -104,7 +104,7 @@ const StatementForm = ({
 
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const model = schemaDefn.schema.Statement;
+  const model = schemaDefn.get('Statement');
   const fieldDefs = model.properties;
 
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
@@ -134,7 +134,7 @@ const StatementForm = ({
           return 'prognostic statements should have the Vocabulary record "patient" for the subject';
         }
       }
-    } catch (err) {} // eslint-disable-line no-empty
+    } catch (err) { } // eslint-disable-line no-empty
     return '';
   }, [diagnosticData, prognosticData, therapeuticData]);
 
@@ -370,7 +370,7 @@ const StatementForm = ({
           // for spacing issues only
           : (<div />)}
         {actionInProgress && (
-        <CircularProgress size={50} />
+          <CircularProgress size={50} />
         )}
         {additionalValidationError && (
           <Alert severity="error">{additionalValidationError}</Alert>
@@ -400,8 +400,8 @@ const StatementForm = ({
 };
 
 StatementForm.defaultProps = {
-  onError: () => {},
-  onSubmit: () => {},
+  onError: () => { },
+  onSubmit: () => { },
   onToggleState: undefined,
   rid: null,
   variant: FORM_VARIANT.VIEW,

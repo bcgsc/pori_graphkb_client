@@ -20,7 +20,9 @@ import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
 
-const { schema: { PositionalVariant, CategoryVariant, Position } } = schemaDefn;
+const PositionalVariant = schemaDefn.get('PositionalVariant');
+const CategoryVariant = schemaDefn.get('CategoryVariant');
+const Position = schemaDefn.get('Position');
 
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,
@@ -59,8 +61,8 @@ const { fields: categoryFields } = sortAndGroupFields(
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = Position.descendantTree(true).map((m) => ({
-  label: m.name, value: m.name, key: m.name, caption: m.description,
+const coordinateOptions = schemaDefn.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
+  label: m, value: m, key: m, caption: schemaDefn.get(m).description,
 }));
 
 const MAJOR_FORM_TYPES = {
@@ -294,15 +296,15 @@ const VariantForm = ({
           <FieldGroup
             disabled={false}
             model={
-            hasPositions
-              ? PositionalVariant
-              : CategoryVariant
-          }
+              hasPositions
+                ? PositionalVariant
+                : CategoryVariant
+            }
             ordering={
-            hasPositions
-              ? positionalFields
-              : categoryFields
-          }
+              hasPositions
+                ? positionalFields
+                : categoryFields
+            }
           />
         </List>
       </FormStepWrapper>

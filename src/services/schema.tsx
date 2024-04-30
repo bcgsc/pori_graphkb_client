@@ -1,4 +1,4 @@
-import { ClassModel, Property, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ClassDefinition, PropertyDefinition, schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
 
@@ -42,7 +42,7 @@ const getLink = (obj) => {
 /**
  * Returns record metadata fields
  */
-const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
+const getMetadata = () => Object.values(schemaDefn.getProperties('V'));
 
 /**
  * Returns route and properties of a certain knowledgebase class
@@ -51,10 +51,10 @@ const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
  * class properties list.
  */
 const getProperties = (obj) => {
-  const VPropKeys = schemaDefn.schema.V.properties;
-  const classModel: ClassModel = schemaDefn.get(obj);
+  const VPropKeys = schemaDefn.getProperties('V');
+  const classModel: ClassDefinition = schemaDefn.get(obj);
   return Object.values(classModel?.properties ?? {})
-    .filter((prop: Property) => !VPropKeys[prop.name]);
+    .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
 };
 
 /**
@@ -64,9 +64,9 @@ const getProperties = (obj) => {
  * class properties list.
  */
 const getQueryProperties = (className) => {
-  const VPropKeys = schemaDefn.schema.V.properties;
-  const classModel = schemaDefn.get(className);
-  return Object.values(classModel?.queryProperties ?? {})
+  const VPropKeys = schemaDefn.getProperties('V');
+  const classQueryableProperties = schemaDefn.queryableProperties(className);
+  return Object.values(classQueryableProperties ?? {})
     .filter((prop) => !VPropKeys[prop.name]);
 };
 
@@ -84,7 +84,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): string[];
 
 function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null = null) {
-  const list: string[] = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
+  const list: string[] = schemaDefn.children('E');
 
   if (node) {
     const edges: EdgeType[] = [];
@@ -98,7 +98,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 }
 
 const isEdge = (cls) => !!(schemaDefn.get(cls)
-      && schemaDefn.get(cls).inherits.some((inherited) => inherited === 'E'));
+  && schemaDefn.get(cls).inherits.some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object
@@ -170,7 +170,9 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       if (propModel.type === 'link') {
         valueToValidate = value['@rid'] || value;
       }
-      Property.validateWith(propModel, valueToValidate);
+      // TODO not sure if this is equivalent
+      //Property.validateWith(propModel, valueToValidate);
+      validateProperty(propModel, valueToValidate);
       return { value };
     } catch (err) {
       return { error: err, value };
@@ -195,7 +197,7 @@ const defineGridColumns = (search) => {
 
   const linkChipWidth = 300;
 
-  const allProps: Record<string, Property> = schemaDefn.get(modelName).queryProperties;
+  const allProps: Record<string, Property> = schemaDefn.queryableProperties(modelName);
 
   if (modelName.toLowerCase().includes('variant')) {
     showByDefault.push('reference1', 'reference2', 'type');
@@ -231,8 +233,8 @@ const defineGridColumns = (search) => {
     } else if (data && data.conditions) {
       values = data.conditions.filter((val) => (
         !val['@class'].toLowerCase().includes('variant')
-          && !val['@class'].toLowerCase().includes('disease')
-          && (!data.subject || (data.subject['@rid'] !== val['@rid']))
+        && !val['@class'].toLowerCase().includes('disease')
+        && (!data.subject || (data.subject['@rid'] !== val['@rid']))
       ));
     }
     if (values) {
@@ -377,7 +379,7 @@ const defineGridColumns = (search) => {
           hide,
         }],
       };
-      Object.values((prop.linkedClass || schemaDefn.schema.V).queryProperties).forEach((subProp: Property) => {
+      Object.values(schemaDefn.queryableProperties(prop.linkedClassName || 'V')).forEach((subProp: PropertyDefinition) => {
         if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
           const colDef: ColDef = ({
             field: subProp.name,

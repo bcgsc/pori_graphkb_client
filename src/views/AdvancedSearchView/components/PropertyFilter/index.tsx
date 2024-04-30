@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn, PropertyDefinition } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@material-ui/core';
@@ -107,7 +107,7 @@ const PropertyFilter = ({
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
           if (prop.linkedClass) {
-            Object.values(prop.linkedClass.properties).forEach((subProp) => {
+            Object.values(schema.getQueryProperties(prop.linkedClass)).forEach((subProp) => {
               const key = `${prop.name}.${subProp.name}`;
               choices.push({
                 label: key, value: key, key, caption: subProp.description,
@@ -141,21 +141,25 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel = { ...schema.getQueryProperties(modelName).find((p) => p.name === prop), mandatory: true };
+      let newPropertyModel: PropertyDefinition | null;
+      // where is mandatory: true supposed to be in this
+      newPropertyModel = { ...schemaDefn.getProperty(modelName, prop), mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
       } else {
-        if (subProp) {
-          if (newPropertyModel.linkedClass && newPropertyModel.linkedClass.embedded) {
+        if (subProp && newPropertyModel) {
+          // check if embedded is one of the properties
+          if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
             const parentPropModel = newPropertyModel;
-            newPropertyModel = newPropertyModel.linkedClass.properties[subProp];
+            // get the subprop from the properties. func to get single prop?
+            newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
 
-            if (subProp === '@class') {
-              const choices = parentPropModel.linkedClass.subclasses.map((m) => m.name);
+            if (subProp === '@class' && parentPropModel.linkedClass) {
+              const choices = schemaDefn.children(parentPropModel.linkedClass);
 
-              if (!parentPropModel.linkedClass.isAbstract) {
-                choices.push(parentPropModel.linkedClass.name);
+              if (!schemaDefn.get(parentPropModel.linkedClass).isAbstract) {
+                choices.push(parentPropModel.linkedClass);
               }
               newPropertyModel.choices = choices;
             }
@@ -324,14 +328,14 @@ const PropertyFilter = ({
             />
           </FieldWrapper>
           {property && subqueryType === 'keyword' && (
-          <FieldWrapper className="property-filter__keyword-target">
-            <DropDownSelect
-              disabled={keywordTargetOptions.length < 2}
-              onChange={({ target: { value: newValue } }) => setKeywordTarget(newValue)}
-              options={keywordTargetOptions}
-              value={keywordTarget}
-            />
-          </FieldWrapper>
+            <FieldWrapper className="property-filter__keyword-target">
+              <DropDownSelect
+                disabled={keywordTargetOptions.length < 2}
+                onChange={({ target: { value: newValue } }) => setKeywordTarget(newValue)}
+                options={keywordTargetOptions}
+                value={keywordTarget}
+              />
+            </FieldWrapper>
           )}
           <FormContext.Provider
             value={form}

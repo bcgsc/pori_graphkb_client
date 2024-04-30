@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema } from '@bcgsc-pori/graphkb-schema';
+import { schema, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@material-ui/core';
@@ -9,10 +9,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import FieldWrapper from '../FieldWrapper';
 
 const {
-  schema: {
-    ProteinPosition: { properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT },
-  },
-} = schema;
+  properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT
+} = schema.get('ProteinPosition');
 
 interface Value {
   '@class'?: string;
@@ -55,7 +53,7 @@ const ProteinPosition = ({
       setPositionError('missing required field');
     } else {
       try {
-        posProperty.validate(position || null);
+        validateProperty(posProperty, position || null);
         setPositionError('');
       } catch (err) {
         setPositionError(err.toString());
@@ -69,7 +67,7 @@ const ProteinPosition = ({
       setPositionError('missing required field');
     } else {
       try {
-        refAAProperty.validate(refAA || null);
+        validateProperty(refAAProperty, refAA || null);
         setRefAAError('');
       } catch (err) {
         setRefAAError(err.toString());

@@ -228,11 +228,11 @@ const RecordForm = ({
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && schemaDefn.get(modelName).inherits.includes('V') && (
+      {variant === FORM_VARIANT.VIEW && schemaDefn.children(modelName).includes('V') && (
         <>
           <EdgeTable recordId={form.formContent['@rid']} />
           <RelatedStatementsTable recordId={form.formContent['@rid']} />
-          {schemaDefn.get(modelName).inherits.includes('Ontology') && (
+          {schemaDefn.children(modelName).includes('Ontology') && (
             <RelatedVariantsTable recordId={form.formContent['@rid']} />
           )}
         </>
@@ -253,7 +253,7 @@ const RecordForm = ({
           // for spacing issues only
           : (<div />)}
         {actionInProgress && (
-        <CircularProgress size={50} />
+          <CircularProgress size={50} />
         )}
         {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
           ? (
@@ -281,8 +281,8 @@ const RecordForm = ({
 
 RecordForm.defaultProps = {
   modelName: null,
-  onError: () => {},
-  onSubmit: () => {},
+  onError: () => { },
+  onSubmit: () => { },
   onToggleState: undefined,
   rid: null,
   variant: FORM_VARIANT.VIEW,

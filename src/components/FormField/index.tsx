@@ -78,7 +78,12 @@ const FormField = ({
     iterable,
     format,
   } = model;
-  const linkedClass = schemaDefn.get(linkedClassName, false);
+  let linkedClass;
+  if (typeof linkedClassName === 'string') {
+    linkedClass = schemaDefn.get(linkedClassName);
+  } else {
+    linkedClass = linkedClassName;
+  }
 
   const inputValue = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
@@ -103,7 +108,6 @@ const FormField = ({
   }
 
   let value = inputValue;
-
   if (formVariant !== FORM_VARIANT.SEARCH) {
     if (value === undefined || (!nullable && value === null)) {
       if (defaultValue !== undefined) {
@@ -119,7 +123,6 @@ const FormField = ({
   }
 
   let propComponent;
-
   if (type === 'boolean') {
     propComponent = (
       <BooleanField
@@ -147,7 +150,9 @@ const FormField = ({
       />
     );
   } else if (type.includes('embedded') && linkedClass) {
+
     if (iterable && linkedClass.name === 'StatementReview') {
+
       propComponent = (
         <StatementReviewsTable
           label={name}
@@ -158,6 +163,7 @@ const FormField = ({
         />
       );
     } else if (linkedClass.name === 'Permissions') {
+
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
@@ -170,6 +176,7 @@ const FormField = ({
         />
       );
     } else if (POSITION_CLASSES.includes(linkedClass.name)) {
+
       propComponent = (
         <PositionForm
           baseVariant={baseModel}

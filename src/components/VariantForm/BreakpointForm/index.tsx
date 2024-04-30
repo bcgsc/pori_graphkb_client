@@ -8,7 +8,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 
-interface BreakpointFormProps{
+interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
   /**
@@ -85,7 +85,7 @@ const BreakpointForm = ({
               clearable={false}
               label={`end (${coordinateType})`}
               model={{
-                ...model.properties.break1Start,
+                ...model.properties.break1End,
                 name: end,
                 mandatory: required,
                 linkedClass: schemaDefn.get(coordinateType),

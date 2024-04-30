@@ -272,10 +272,10 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
           }}
           label={label}
           placeholder={
-                (disabled || selectedValues.length)
-                  ? ''
-                  : placeholder
-              }
+            (disabled || selectedValues.length)
+              ? ''
+              : placeholder
+          }
           required={required}
         />
       )}
@@ -301,7 +301,7 @@ RecordAutocomplete.defaultProps = {
   isMulti: false,
   label: '',
   minSearchLength: 1,
-  onChange: () => {},
+  onChange: () => { },
   placeholder: 'Search Records by Name or ID',
   required: false,
   singleLoad: false,

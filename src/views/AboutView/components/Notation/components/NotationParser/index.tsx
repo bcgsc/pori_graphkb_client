@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { variant } from '@bcgsc-pori/graphkb-parser';
+import { parseVariant } from '@bcgsc-pori/graphkb-parser';
 import {
   Table,
   TableBody,
@@ -13,13 +13,13 @@ import React, { useEffect, useState } from 'react';
 
 const NotationParser = () => {
   const [text, setText] = useState('');
-  const [parsed, setParsed] = useState(null);
+  const [parsed, setParsed] = useState<any>(null);
   const [error, setError] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     try {
-      setParsed(variant.parse(text));
+      setParsed(parseVariant(text));
       setError(null);
     } catch (err) {
       setParsed(null);
@@ -60,22 +60,22 @@ const NotationParser = () => {
         value={text || ''}
       />
       {parsed && (
-      <Table className="notation-parser__results" size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Property</TableCell>
-            <TableCell>Parsed Value</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {header.map((col) => (
-            <TableRow key={col}>
-              <TableCell>{col}</TableCell>
-              <TableCell>{content[col]}</TableCell>
+        <Table className="notation-parser__results" size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Property</TableCell>
+              <TableCell>Parsed Value</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {header.map((col) => (
+              <TableRow key={col}>
+                <TableCell>{col}</TableCell>
+                <TableCell>{content[col]}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
     </div>
   );

@@ -41,11 +41,11 @@ function useObject<T extends object>(initialValue: T): {
     setContent({ type: 'update', payload: { name, value } });
   }, [setContent]);
 
-  const update = useCallback((newContent: Partial<T>) => {
+  const update = useCallback((newContent: Partial<T> = {} as T) => {
     setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
-  const replace = useCallback((newContent: T) => {
+  const replace = useCallback((newContent: T = {} as T) => {
     setContent({ type: 'replace', payload: newContent });
   }, [setContent]);
 
@@ -55,8 +55,8 @@ function useObject<T extends object>(initialValue: T): {
   }, [content, setContent]);
 
   useDeepCompareEffect(() => {
-    replace(initialValue);
-  }, [initialValue]);
+    replace(initialValue || {});
+  }, [initialValue || {}]);
 
   return {
     content,

@@ -31,7 +31,7 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
     onClose,
     onError,
     onSubmit,
-    title,
+    title = '',
     variant,
     value,
     ...rest
@@ -70,17 +70,13 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
           modelName={modelName}
           onError={onError}
           onSubmit={onSubmit}
+          title={title}
           value={value}
           variant={variant}
         />
       </DialogContent>
     </Dialog>
   );
-};
-
-RecordFormDialog.defaultProps = {
-  isOpen: false,
-  title: '',
 };
 
 export default RecordFormDialog;

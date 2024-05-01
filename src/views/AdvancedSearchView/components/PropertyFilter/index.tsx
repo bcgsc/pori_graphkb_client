@@ -82,7 +82,7 @@ const PropertyFilter = ({
 }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState([]);
-  const [propertyModel, setPropertyModel] = useState({
+  const [propertyModel, setPropertyModel] = useState<any>({
     type: 'string', name: 'value', mandatory: true, generated: false,
   });
   const [operatorChoices, setOperatorChoices] = useState(['=']);
@@ -90,7 +90,7 @@ const PropertyFilter = ({
   const [subqueryType, setSubqueryType] = useState('');
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
-  const [keywordTargetOptions, setKeywordTargetOptions] = useState([]);
+  const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
 
   // use a schema form so that validation runs on the value based on the property selected
   const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
@@ -101,13 +101,13 @@ const PropertyFilter = ({
 
   // set the property options
   useEffect(() => {
-    const choices = [];
+    let choices = [];
     schema.getQueryProperties(modelName)
       .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
           if (prop.linkedClass) {
-            Object.values(schema.getQueryProperties(prop.linkedClass)).forEach((subProp) => {
+            Object.values(schemaDefn.getProperties(prop.linkedClass)).forEach((subProp) => {
               const key = `${prop.name}.${subProp.name}`;
               choices.push({
                 label: key, value: key, key, caption: subProp.description,
@@ -140,11 +140,10 @@ const PropertyFilter = ({
   // set the property model
   useEffect(() => {
     if (property) {
+      console.log(143);
       const [prop, subProp] = property.split('.');
       let newPropertyModel: PropertyDefinition | null;
-      // where is mandatory: true supposed to be in this
-      newPropertyModel = { ...schemaDefn.getProperty(modelName, prop), mandatory: true };
-
+      newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
       } else {
@@ -209,7 +208,6 @@ const PropertyFilter = ({
         subqueryType,
       );
       setOperatorChoices(choices);
-
       if (choices.length === 1) {
         setOperator(choices[0].value);
       } else if (choices.find((c) => c.label === 'CONTAINSTEXT')) {
@@ -222,8 +220,8 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = originalPropertyModel.linkedClass || schemaDefn.get('V');
-      setKeywordTargetOptions(linkedModel.descendantTree(false).map((m) => m.name).sort());
+      const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
+      setKeywordTargetOptions(schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);
@@ -251,7 +249,7 @@ const PropertyFilter = ({
             ? ['ElementOf']
             : [],
           target: {
-            target: keywordTarget || originalPropertyModel.linkedClass.name || 'V',
+            target: keywordTarget || originalPropertyModel.linkedClass || 'V',
             operator,
             keyword: formContent[property],
             queryType: 'keyword',
@@ -296,7 +294,8 @@ const PropertyFilter = ({
   if (DATE_FIELDS.includes(property)) {
     format = 'date';
   }
-
+  console.dir('297 property filter');
+  console.dir(propertyModel);
   return (
     <>
       <div className={`property-filter ${className}`}>

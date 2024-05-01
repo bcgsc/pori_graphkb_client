@@ -151,7 +151,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
         role="presentation"
         style={{
           width: '100%',
-          height: '352px',
+          height: '353px', // 5 Rows
         }}
       >
         <AgGridReact

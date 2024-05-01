@@ -7,6 +7,8 @@ import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema'
+
 /**
  * returns an array of strings without any of the indicated exclusion values
  *
@@ -55,7 +57,7 @@ const FieldGroup = ({
   model, ordering, exclusions, disabled,
 }: FieldGroupProps) => {
   const { formVariant, formContent } = useContext(FormContext);
-  const { properties: { out, in: tgt, ...properties } } = model;
+  const properties = schemaDefn.getProperties(model.name);
 
   // get the form content
   const fields = [];

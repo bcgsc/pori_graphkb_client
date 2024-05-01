@@ -1,5 +1,7 @@
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router-dom';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ContactsOutlined } from '@material-ui/icons';
 
 const CLASS_MODEL_PROP = '@class';
 
@@ -41,10 +43,14 @@ const sortAndGroupFields = (model, opt = {}) => {
 
   const groupMap = {};
 
-  if (!model) {
+  if (!model || !model.name) {
     return { extraFields: [], fields: [] };
   }
-  const { properties } = model;
+
+  let properties;
+  if (model.name) {
+    properties = schemaDefn.getProperties(model.name);
+  }
 
   groups.forEach((groupItems) => {
     // assume each field only can belong to a single group, overwrite others
@@ -71,7 +77,7 @@ const sortAndGroupFields = (model, opt = {}) => {
 
   const visited = new Set();
 
-  const sortedPropModels = Object.values(model.properties)
+  const sortedPropModels = Object.values(properties)
     .sort((p1, p2) => {
       if (p1.mandatory === p2.mandatory || variant === FORM_VARIANT.VIEW) {
         return p1.name.localeCompare(p2.name);
@@ -124,12 +130,12 @@ const sortAndGroupFields = (model, opt = {}) => {
       visited.add(...fields);
     }
   }
+
   return { fields: mainFields, extraFields };
 };
 
 const cleanLinkedRecords = (content) => {
   const newContent = {};
-
   Object.keys(content).forEach((key) => {
     if (content[key] !== undefined) {
       if (Array.isArray(content[key])) {

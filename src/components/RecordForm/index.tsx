@@ -66,7 +66,7 @@ const RecordForm = ({
 
   useEffect(() => {
     if (modelName) {
-      const { properties } = schemaDefn.get(modelName);
+      const properties = schemaDefn.getProperties(modelName);
       setFieldDefs(properties);
       setIsEdge(schema.isEdge(modelName));
     }

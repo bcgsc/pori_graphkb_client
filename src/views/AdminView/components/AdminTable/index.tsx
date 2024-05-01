@@ -36,7 +36,7 @@ interface AdminTableProps {
  * Component for managing AdminView User form state.
  */
 const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProps) => {
-  const [recordOpen, setRecordOpen] = useState<GeneralRecordType | null>();
+  const [recordOpen, setRecordOpen] = useState<GeneralRecordType | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenEditDialog = (record) => {
@@ -46,22 +46,22 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
 
   const handleOpenNewDialog = () => {
     setDialogOpen(true);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
   };
 
   const handleDialogCancel = () => {
     setDialogOpen(false);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
   };
 
   const handleDialogError = () => {
     setDialogOpen(false);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
   };
 
   const handleDialogSubmit = useCallback(() => {
     setDialogOpen(false);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
     onChange();
   }, [onChange]);
 

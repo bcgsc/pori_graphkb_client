@@ -19,13 +19,14 @@ const FormContext = React.createContext({
   formContent: {},
   formErrors: {},
   formHasErrors: false,
-  updateField: () => {},
-  update: () => {},
   formIsDirty: false,
-  setFormIsDirty: () => {},
-  replaceContent: () => {},
-  updateFieldEvent: () => {},
   formVariant: '',
+  additionalValidationError: '',
+  setFormIsDirty: () => {},
+  update: () => {},
+  updateField: () => {},
+  updateFieldEvent: () => {},
+  replaceContent: () => {},
 });
 
 const withFormContext = (Child) => (props) => (

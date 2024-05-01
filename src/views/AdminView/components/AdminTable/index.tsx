@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
+import { Buffer } from 'buffer';
 import React, {
   useCallback,
   useState,
@@ -19,6 +20,8 @@ import React, {
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
+
+window.Buffer = window.Buffer || Buffer;
 
 interface AdminTableProps {
   /** handler to be triggered when data changes */

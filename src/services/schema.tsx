@@ -52,7 +52,13 @@ const getMetadata = () => Object.values(schemaDefn.getProperties('V'));
  */
 const getProperties = (obj) => {
   const VPropKeys = schemaDefn.getProperties('V');
-  const classModel: ClassDefinition = schemaDefn.get(obj);
+  let objname;
+  if (typeof obj === 'string') {
+    objname = obj;
+  } else if (obj['@class']) {
+    objname = obj['@class'];
+  }
+  const classModel: ClassDefinition = schemaDefn.get(objname);
   return Object.values(classModel?.properties ?? {})
     .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
 };

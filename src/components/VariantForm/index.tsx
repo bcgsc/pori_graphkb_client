@@ -22,7 +22,6 @@ import SteppedForm from './SteppedForm';
 
 const PositionalVariant = schemaDefn.get('PositionalVariant');
 const CategoryVariant = schemaDefn.get('CategoryVariant');
-const Position = schemaDefn.get('Position');
 
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,
@@ -275,8 +274,8 @@ const VariantForm = ({
           disabled={false}
           model={{
             properties: {
-              type: PositionalVariant.properties.type,
-              zygosity: PositionalVariant.properties.zygosity,
+              type: schemaDefn.getProperty('PositionalVariant', 'type'),
+              zygosity: schemaDefn.getProperty('PositionalVariant', 'zygosity'),
             },
           }}
           ordering={['type', 'zygosity']}

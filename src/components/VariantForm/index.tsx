@@ -273,6 +273,7 @@ const VariantForm = ({
         <FieldGroup
           disabled={false}
           model={{
+            // TODO why did this fix the problem when the types should be the same?
             properties: {
               type: schemaDefn.getProperty('PositionalVariant', 'type'),
               zygosity: schemaDefn.getProperty('PositionalVariant', 'zygosity'),

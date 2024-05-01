@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 
 import { useAuth } from '../Auth';
 import LinkEmbeddedPropList from './LinkEmbeddedPropList';
@@ -187,8 +188,8 @@ function DetailDrawer(props: DetailDrawerProps) {
     let properties = Object.keys(record)
       .map((key) => ({ name: key, type: util.parseKBType(record[key]) }));
 
-    if (schema && schema.getProperties(record)) {
-      properties = schema.getProperties(record);
+    if (record['@class'] && schemaDefn.getProperties(record['@class'])) {
+      properties = schema.getProperties(record['@class']);
     }
     const propsList = Object.values(properties)
       .filter((prop) => !identifiers.map((id) => id.split('.')[0]).includes(prop.name)
@@ -205,6 +206,7 @@ function DetailDrawer(props: DetailDrawerProps) {
     const recordId = node['@rid'].replace(/^#/, '');
     const recordClass = node['@class'];
 
+    // is nested?
     const otherProps = formatOtherProps(node);
     const metadata = formatMetadata(node, true);
 

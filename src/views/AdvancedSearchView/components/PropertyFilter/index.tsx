@@ -140,7 +140,6 @@ const PropertyFilter = ({
   // set the property model
   useEffect(() => {
     if (property) {
-      console.log(143);
       const [prop, subProp] = property.split('.');
       let newPropertyModel: PropertyDefinition | null;
       newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
@@ -294,8 +293,6 @@ const PropertyFilter = ({
   if (DATE_FIELDS.includes(property)) {
     format = 'date';
   }
-  console.dir('297 property filter');
-  console.dir(propertyModel);
   return (
     <>
       <div className={`property-filter ${className}`}>

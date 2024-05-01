@@ -123,7 +123,6 @@ const FormField = ({
   }
 
   let propComponent;
-  console.log('126 formfield');
   if (type === 'boolean') {
     propComponent = (
       <BooleanField
@@ -246,7 +245,6 @@ const FormField = ({
         />
       );
     } else {
-      console.log('253');
       if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
         autoProps.getQueryBody = () => ({
           target: `${linkedClass.name}`,

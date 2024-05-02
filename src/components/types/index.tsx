@@ -15,7 +15,9 @@ interface TGeneralRecordType {
   [key: string]: unknown | undefined;
 }
 
-type GeneralRecordType<ReqFields extends keyof TGeneralRecordType = never> = Required<Pick<TGeneralRecordType, ReqFields>> & Omit<TGeneralRecordType, ReqFields>;
+type GeneralRecordType<ReqFields extends keyof TGeneralRecordType = never> =
+  Required<Pick<TGeneralRecordType, ReqFields>> &
+  Omit<TGeneralRecordType, ReqFields>;
 
 /**
  * Represents general format of a statement class record
@@ -25,6 +27,12 @@ interface StatementType extends GeneralRecordType {
   evidence: GeneralRecordType[];
   relevance: GeneralRecordType;
   subject: GeneralRecordType;
+}
+
+interface EdgeType extends GeneralRecordType<'@rid'> {
+  in: GeneralRecordType<'@rid' | '@class'>;
+  out: GeneralRecordType<'uuid'>['uuid'];
+  source: GeneralRecordType<'@rid' | '@class'>;
 }
 
 /**
@@ -46,6 +54,7 @@ interface QueryBody<ReqFields extends string = string> {
 }
 
 export type {
+  EdgeType,
   GeneralRecordType,
   QueryBody,
   StatementType,

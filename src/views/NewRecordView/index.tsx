@@ -3,8 +3,11 @@ import './index.scss';
 import React, {
   ReactNode,
   useCallback,
+  useEffect,
 } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import {
+  useLocation, useNavigate, useParams, useSearchParams,
+} from 'react-router-dom';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -15,24 +18,23 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = (props: RouteComponentProps<{ modelName: string }>) => {
-  const {
-    history,
-    match: {
-      params: { modelName },
-    },
-  } = props;
+const NewRecordView = ({ modelName: propsModelName }) => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+  const { modelName: paramsModelName } = useParams<{ modelName: string }>();
+  const modelName = propsModelName || paramsModelName;
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
   const handleSubmit = useCallback((result = null) => {
     if (result) {
-      history.push(schema.getLink(result));
+      navigate(schema.getLink(result));
     } else {
-      history.push('/');
+      navigate('/');
     }
-  }, [history]);
+  }, [navigate]);
 
   /**
    * Handles the redirect if an error occurs in the child component
@@ -40,10 +42,18 @@ const NewRecordView = (props: RouteComponentProps<{ modelName: string }>) => {
   const handleError = useCallback(({ error = {} }) => {
     const { name } = error;
     const massagedMsg = util.massageRecordExistsError(error);
-    util.handleErrorSaveLocation({ name, message: massagedMsg }, history);
-  }, [history]);
+    util.handleErrorSaveLocation({ name, message: massagedMsg }, { navigate, pathname, search: searchParams.toString() });
+  }, [navigate, pathname, searchParams]);
 
   let innerComponent: ReactNode = null;
+
+  useEffect(() => {
+    if (!modelName) {
+      navigate('/query', { replace: true });
+    }
+  }, [modelName, navigate]);
+
+  if (!modelName) return null;
 
   if (
     VARIANT_CLASSES.includes(modelName.toLowerCase())

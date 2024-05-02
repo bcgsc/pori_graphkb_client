@@ -15,15 +15,23 @@ interface SearchBoxProps {
   /** the text to display below the search box */
   helperText?: string;
   /** handler triggered when the input changes (debounced) */
-  onChange?: (...args: unknown[]) => unknown;
+  onChange: (...args: unknown[]) => unknown;
   /** the handler when the seach icon is pressed or enter is hit */
   onSubmit?: (...args: unknown[]) => unknown;
   /** the initial value in the serach box */
   value?: string;
+  /** Rest of props for TextField */
+  [key: string]: unknown;
 }
 
 const SearchBox = ({
-  onSubmit, value, error, helperText, onChange, className, ...props
+  onSubmit = () => {},
+  value = '',
+  error = false,
+  helperText,
+  onChange = () => {},
+  className = '',
+  ...props
 }: SearchBoxProps) => {
   const [searchText, setSearchText] = useState(value);
   const [debouncedSearchText] = useDebounce(searchText, 300);
@@ -37,10 +45,14 @@ const SearchBox = ({
     onChange(debouncedSearchText);
   }, [debouncedSearchText, onChange]);
 
+  const handleSubmit = useCallback((text) => {
+    if (onSubmit) { onSubmit(text); }
+  }, [onSubmit]);
+
   return (
     <div
       className={`search-box ${className}`}
-      onKeyUp={(event) => event.keyCode === ENTER_KEYCODE && onSubmit(searchText)}
+      onKeyUp={(event) => event.keyCode === ENTER_KEYCODE && handleSubmit(searchText)}
       role="textbox"
       tabIndex={0}
     >
@@ -51,8 +63,8 @@ const SearchBox = ({
         helperText={helperText}
         InputProps={{
           endAdornment: (
-            <InputAdornment>
-              <IconButton color="primary" data-testid="search-box__button" onClick={() => onSubmit(searchText)}>
+            <InputAdornment position="end">
+              <IconButton color="primary" data-testid="search-box__button" onClick={() => handleSubmit(searchText)}>
                 <SearchIcon />
               </IconButton>
             </InputAdornment>
@@ -66,15 +78,6 @@ const SearchBox = ({
       />
     </div>
   );
-};
-
-SearchBox.defaultProps = {
-  onChange: () => {},
-  onSubmit: () => {},
-  value: '',
-  error: false,
-  helperText: '',
-  className: '',
 };
 
 export default SearchBox;

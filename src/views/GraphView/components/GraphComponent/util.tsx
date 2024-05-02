@@ -1,3 +1,5 @@
+import { GraphLink } from './kbgraph';
+
 const TREE_LINK = 'SubClassOf';
 
 const getId = (node) => (node.data
@@ -8,8 +10,14 @@ const getId = (node) => (node.data
  * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
  * are given 0 and child nodes are given 1 more than the rank of their highest ranked parent node
  */
-const computeNodeLevels = (graphLinks) => {
-  const nodes = {};
+const computeNodeLevels = (graphLinks: GraphLink[]) => {
+  const nodes: {
+    [key: string]: {
+      id: number;
+      children,
+      parents
+    }
+  } = {};
   graphLinks.forEach((edge) => {
     const { data: { out: src, in: tgt, '@class': edgeType } } = edge;
 
@@ -33,7 +41,7 @@ const computeNodeLevels = (graphLinks) => {
   while (queue.length) {
     const curr = queue.shift();
 
-    curr.children.forEach((childId) => {
+    curr?.children.forEach((childId) => {
       if (childId) {
         ranks[childId] = Math.max(ranks[childId] || 0, ranks[curr.id] + 1);
         queue.push(nodes[childId]);

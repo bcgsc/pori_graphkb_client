@@ -8,18 +8,20 @@ import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 import { tuple } from '@/components/util';
-import handleErrorSaveLocation from '@/services/util';
+import util from '@/services/util';
 
 import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
-const ImportPubmedView = (props: RouteComponentProps) => {
-  const { history } = props;
+const ImportPubmedView = () => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
   const [text, setText] = useState('');
@@ -30,7 +32,11 @@ const ImportPubmedView = (props: RouteComponentProps) => {
     tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
     async ({ queryKey: [, body] }) => api.query(body),
     {
-      onError: (err) => handleErrorSaveLocation(err, history),
+      onError: (err) => util.handleErrorSaveLocation(err, {
+        navigate,
+        pathname,
+        search: searchParams.toString(),
+      }),
       select: (response) => response[0]?.['@rid'],
     },
   );
@@ -57,7 +63,11 @@ const ImportPubmedView = (props: RouteComponentProps) => {
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(text),
-      onError: (err) => handleErrorSaveLocation(err, history),
+      onError: (err) => util.handleErrorSaveLocation(err, {
+        navigate,
+        pathname,
+        search: searchParams.toString(),
+      }),
     },
   );
 
@@ -78,7 +88,11 @@ const ImportPubmedView = (props: RouteComponentProps) => {
           snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
           refetchCurrentRecords();
         } catch (err) {
-          handleErrorSaveLocation(err, history);
+          util.handleErrorSaveLocation(err, {
+            navigate,
+            pathname,
+            search: searchParams.toString(),
+          });
         }
       }
     },
@@ -111,19 +125,17 @@ const ImportPubmedView = (props: RouteComponentProps) => {
       />
       {currentRecords?.map((rec) => (
         <PubmedCard
-          key={rec['@rid']}
-          abstract={rec.description}
-          journalName={rec.journalName}
-          recordId={rec['@rid']}
-          sourceId={rec.sourceId}
-          title={titleCase(rec.name)}
+          key={rec['@rid'] as string}
+          journalName={rec.journalName as string}
+          recordId={rec['@rid'] as string}
+          sourceId={rec.sourceId as string}
+          title={titleCase(rec.name as string)}
         />
       ))}
       {(isImporting || isLoading) && <CircularProgress className="import-view__progress" />}
       {(!currentRecords || !currentRecords.length) && externalRecord && (
         <PubmedCard
           key={text}
-          abstract={externalRecord.description}
           journalName={externalRecord.journalName}
           onClick={handleImport}
           sourceId={text}

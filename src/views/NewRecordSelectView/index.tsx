@@ -2,20 +2,18 @@ import './index.scss';
 
 import { Paper } from '@material-ui/core';
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import ModelSelect from '@/components/ModelSelect';
 
-const NewRecordSelectView = (props: RouteComponentProps<{ modelName: string }>) => {
-  const {
-    history,
-    match: {
-      params: { modelName },
-    },
-  } = props;
+const NewRecordSelectView = ({ modelName: modelNameParamProp }: { modelName: string }) => {
+  const { modelName: modelNameParams } = useParams();
+  // Use props over params
+  const modelName = modelNameParamProp ?? modelNameParams;
+  const navigate = useNavigate();
 
   const redirectToModel = ({ target: { value } }) => {
-    history.push(`/new/${value}`);
+    navigate(`/new/${value}`);
   };
 
   return (

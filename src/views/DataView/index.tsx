@@ -15,7 +15,7 @@ import React, {
   useState,
 } from 'react';
 import { useIsFetching, useQuery } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
@@ -30,6 +30,7 @@ import Footer from './components/Footer';
 import TableOptions from './components/TableOptions';
 
 const CACHE_BLOCK_SIZE = 50;
+const DEFAULT_BLOCK_SIZE = 100;
 const { DEFAULT_NEIGHBORS, MAX_EXPORT_SIZE } = config;
 
 interface GetQueryPayloadArgs {
@@ -120,16 +121,14 @@ const getRowsFromBlocks = async ({
   return data.slice(startRow - firstBlock, endRow - firstBlock);
 };
 
-interface DataViewProps extends RouteComponentProps {
-  blockSize?: number;
-}
-
 /**
  * Shows the search result filters and an edit button
  */
-const DataView = ({
-  location: { search: initialSearch }, blockSize, history,
-}: DataViewProps) => {
+const DataView = (): JSX.Element => {
+  const {
+    search: initialSearch,
+  } = useLocation();
+  const navigate = useNavigate();
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
@@ -170,7 +169,7 @@ const DataView = ({
           sortModel,
         }) => {
           const result = await getRowsFromBlocks({
-            startRow, endRow, sortModel, search, blockSize,
+            startRow, endRow, sortModel, search, blockSize: DEFAULT_BLOCK_SIZE,
           });
           return [result, totalRows];
         };
@@ -184,7 +183,7 @@ const DataView = ({
     };
       // update the model
     gridApi.setDatasource(dataSource);
-  }, [blockSize, grid.ref, search, totalRows]);
+  }, [grid.ref, search, totalRows]);
 
   useEffect(() => {
     // normalize the input query
@@ -205,11 +204,11 @@ const DataView = ({
 
     initializeGrid();
     gridApi.addEventListener('selectionChanged', handleSelectionChange);
-  }, [blockSize, grid.ref, initializeGrid, search, totalRows]);
+  }, [grid.ref, initializeGrid, search, totalRows]);
 
   const handleError = useCallback((err) => {
-    util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
-  }, [history, search]);
+    util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
+  }, [navigate, search]);
 
   const { data: detailPanelRow } = useQuery(
     tuple('/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }),
@@ -281,7 +280,7 @@ const DataView = ({
         endRow: maxExportSize,
         sortModel: gridApi.sortController.getSortModel(),
         search,
-        blockSize,
+        blockSize: DEFAULT_BLOCK_SIZE,
       });
       const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
       gridOptions.cacheBlockSize = maxExportSize; // in preparation to fetch entire dataset
@@ -305,7 +304,7 @@ const DataView = ({
 
       gridApi.setDatasource(tempDataSource);
     }
-  }, [blockSize, grid.ref, initializeGrid, isExportingData, search, totalRows]);
+  }, [grid.ref, initializeGrid, isExportingData, search, totalRows]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -383,18 +382,14 @@ const DataView = ({
         />
       </div>
       <Footer
-        history={history}
+        navigate={navigate}
         onError={handleError}
         selectedRecords={selectedRecords}
         statusMessage={statusMessage}
-        totalRows={totalRows}
+        totalRows={totalRows as number}
       />
     </div>
   );
-};
-
-DataView.defaultProps = {
-  blockSize: 100,
 };
 
 export default DataView;

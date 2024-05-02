@@ -8,7 +8,7 @@ import React, {
   createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo,
 } from 'react';
 import { useMutation } from 'react-query';
-import { Route, RouteProps } from 'react-router-dom';
+import { RouteProps } from 'react-router-dom';
 
 import api from '@/services/api';
 
@@ -20,11 +20,10 @@ const dbRoles = {
   readonly: 'readonly',
 };
 
-const keycloak = Keycloak({
+const keycloak = new Keycloak({
   realm: window._env_.KEYCLOAK_REALM,
   clientId: window._env_.KEYCLOAK_CLIENT_ID,
   url: window._env_.KEYCLOAK_URL,
-  realm_access: { roles: [window._env_.KEYCLOAK_ROLE] },
 });
 
 interface DecodedKBToken {
@@ -41,7 +40,6 @@ interface AuthContextState {
   logout: () => void;
   error: unknown | undefined;
   isAuthenticating: boolean;
-
   authenticationToken?: string;
   authorizationToken?: string;
   isAuthenticated?: boolean;
@@ -49,7 +47,6 @@ interface AuthContextState {
   hasWriteAccess?: boolean;
   user?: DecodedKBToken['user'];
   username?: string;
-
 }
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
@@ -157,13 +154,17 @@ const Centered = ({ children }: { children: ReactNode }) => (
 );
 
 interface AuthenticatedRouteProps {
-  component: NonNullable<RouteProps['component']>;
-  path: NonNullable<RouteProps['path']>;
+  component: React.ComponentType<any>;
+  componentProps?: any;
   admin?: boolean;
 }
 
 const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
-  const { admin, component, path } = props;
+  const {
+    admin,
+    component: Comp,
+    componentProps = {},
+  } = props;
   const auth = useAuth();
 
   useLayoutEffect(() => {
@@ -174,51 +175,39 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
 
   if (auth.error) {
     return (
-      <Route
-        path={path}
-      >
-        <Centered>
-          <Typography color="error" gutterBottom variant="h2">Error Authenticating</Typography>
-          <Typography paragraph>An Error occurred while authenticating. please logout and try again or contact your administrator if the problem persists</Typography>
-          <Typography paragraph>{auth.error?.message}</Typography>
-          <Button onClick={auth.logout}>logout</Button>
-        </Centered>
-      </Route>
+      <Centered>
+        <Typography color="error" gutterBottom variant="h2">Error Authenticating</Typography>
+        <Typography paragraph>An Error occurred while authenticating. please logout and try again or contact your administrator if the problem persists</Typography>
+        <Typography paragraph>{auth.error?.message}</Typography>
+        <Button onClick={auth.logout}>logout</Button>
+      </Centered>
     );
   }
 
   if (!auth.isAuthenticated) {
     return (
-      <Route
-        path={path}
-      >
-        <Centered>
-          <CircularProgress />
-        </Centered>
-      </Route>
+      <Centered>
+        <CircularProgress />
+      </Centered>
     );
   }
 
   if (admin && !auth.isAdmin) {
     return (
-      <Route
-        path={path}
-      >
-        <Centered>
-          <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
-          <Typography paragraph>You do not have sufficient permissions to see this page.</Typography>
-        </Centered>
-      </Route>
+      <Centered>
+        <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
+        <Typography paragraph>You do not have sufficient permissions to see this page.</Typography>
+      </Centered>
     );
   }
+  const cp = componentProps || {};
 
-  return (
-    <Route component={component} path={path} />
-  );
+  return <Comp {...cp} />;
 };
 
 AuthenticatedRoute.defaultProps = {
   admin: false,
+  componentProps: {},
 };
 
 export {

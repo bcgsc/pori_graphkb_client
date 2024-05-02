@@ -7,7 +7,7 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 import { useIsFetching, useQuery, useQueryClient } from 'react-query';
-import { RouteComponentProps, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
@@ -23,8 +23,9 @@ const { DEFAULT_NEIGHBORS } = config;
 /**
  * Shows the search result filters and an edit button
  */
-const GraphView = ({ history }: RouteComponentProps) => {
+const GraphView = () => {
   const { search } = useLocation();
+  const navigate = useNavigate();
   const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState(null);
   // the existing behaviour of the graph relies on this not changing even when the url *is* updated
@@ -32,8 +33,8 @@ const GraphView = ({ history }: RouteComponentProps) => {
   const queryClient = useQueryClient();
 
   const handleError = useCallback((err) => {
-    util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
-  }, [history, search]);
+    util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
+  }, [navigate, search]);
 
   const { data: graphData } = useQuery(
     tuple('/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }),
@@ -81,8 +82,8 @@ const GraphView = ({ history }: RouteComponentProps) => {
   }, [handleError, queryClient]);
 
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
-    navigateToGraph(nodeRIDs, history, handleError);
-  }, [handleError, history]);
+    navigateToGraph(nodeRIDs, navigate, handleError);
+  }, [handleError, navigate]);
 
   const edges = schema.getEdges();
   const expandedEdgeTypes = util.expandEdges(edges);

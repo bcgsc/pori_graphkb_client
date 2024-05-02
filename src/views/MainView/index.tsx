@@ -8,7 +8,7 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import ActiveLinkContext from '@/components/ActiveLinkContext';
 import { AuthenticatedRoute } from '@/components/Auth';
@@ -34,6 +34,31 @@ const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 const ABSTRACT_CLASSES = Object.values(schemaDefn.schema)
   .filter((m) => m.isAbstract && m.name !== 'Variant')
   .map((m) => m.name);
+
+type AuthenticatedRouteOptions = {
+  admin: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component: React.ComponentType<any>;
+};
+
+const generateAuthenticatedRoutes = (variants: string[], modelNames: string[], authenticatedRouteOptions: AuthenticatedRouteOptions) => (
+  <>
+    {
+        variants.map((variant) => modelNames.map((modelName) => (
+          <Route
+            element={(
+              <AuthenticatedRoute
+                admin={authenticatedRouteOptions.admin}
+                component={authenticatedRouteOptions.component}
+                componentProps={{ variant, modelName }}
+              />
+              )}
+            path={`/${variant}/${modelName}${variant.toLowerCase() === 'new' ? '' : '/:rid'}`}
+          />
+        )))
+      }
+  </>
+);
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
@@ -61,39 +86,37 @@ const Main = () => {
 
         <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <Switch>
-              <AuthenticatedRoute component={FeedbackView} path="/feedback" />
-              <Route component={ErrorView} exact path="/error" />
-              <AuthenticatedRoute component={AboutView} path="/about" />
-              <AuthenticatedRoute component={ActivityView} path="/activity" />
-              <AuthenticatedRoute component={QuickSearch} exact path="/query" />
-              <AuthenticatedRoute component={AdvancedSearchView} exact path="/query-advanced" />
-              <AuthenticatedRoute
-                admin
-                component={RecordView}
-                path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
-              />
-              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:modelName/:rid" />
-              <AuthenticatedRoute component={RecordView} path="/:variant(edit|view)/:rid" />
-              <AuthenticatedRoute
-                admin
-                component={NewRecordView}
-                path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
-              />
-              <AuthenticatedRoute
-                component={NewRecordSelectView}
-                path={`/:variant(new)/:modelName(${
-                  [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map((m) => m.toLowerCase())].join('|')
-                })`}
-              />
-              <AuthenticatedRoute component={NewRecordView} path="/:variant(new)/:modelName" />
-              <AuthenticatedRoute component={DataView} path="/data/table" />
-              <AuthenticatedRoute component={GraphView} path="/data/graph" />
-              <AuthenticatedRoute admin component={AdminView} path="/admin" />
-              <AuthenticatedRoute component={ImportPubmedView} path="/import/pubmed" />
-              <AuthenticatedRoute component={UserProfileView} path="/user-profile" />
-              <Redirect from="/" to="/query" />
-            </Switch>
+            <Routes>
+              <Route element={<AuthenticatedRoute component={FeedbackView} />} path="/feedback" />
+              <Route element={<ErrorView />} path="/error" />
+              <Route element={<AuthenticatedRoute component={AboutView} />} path="/about/*" />
+              <Route element={<AuthenticatedRoute component={ActivityView} />} path="/activity" />
+              <Route element={<AuthenticatedRoute component={QuickSearch} />} path="/query" />
+              <Route element={<AuthenticatedRoute component={AdvancedSearchView} />} path="/query-advanced" />
+              {generateAuthenticatedRoutes(['edit'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
+                component: RecordView,
+                admin: true,
+              })}
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'edit' }} />} path="/edit/:modelName/:rid" />
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'view' }} />} path="/view/:modelName/:rid" />
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'edit' }} />} path="/edit/:rid" />
+              <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'view' }} />} path="/view/:rid" />
+              {generateAuthenticatedRoutes(['new'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
+                component: NewRecordView,
+                admin: true,
+              })}
+              {generateAuthenticatedRoutes(['new'], [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map((m) => m.toLowerCase())], {
+                component: NewRecordSelectView,
+                admin: true,
+              })}
+              <Route element={<AuthenticatedRoute component={NewRecordView} />} path="/new/:modelName" />
+              <Route element={<AuthenticatedRoute component={DataView} />} path="/data/table" />
+              <Route element={<AuthenticatedRoute component={GraphView} />} path="/data/graph" />
+              <Route element={<AuthenticatedRoute admin component={AdminView} />} path="/admin" />
+              <Route element={<AuthenticatedRoute component={ImportPubmedView} />} path="/import/pubmed" />
+              <Route element={<AuthenticatedRoute component={UserProfileView} />} path="/user-profile" />
+              <Route element={<Navigate to="/query" />} path="/*" />
+            </Routes>
           </Suspense>
         </section>
       </ActiveLinkContext.Provider>

@@ -2,6 +2,10 @@
 const path = require('path');
 
 const BASE_DIR = path.resolve(__dirname, '..');
+const libsToConvert = [
+  'd3-force', 'd3-drag', 'd3-selection', 'd3-zoom', 'd3-interpolate', 'd3-color', 'd3-ease', 'ag-grid-community'
+].join("|");
+
 
 module.exports = {
   rootDir: BASE_DIR,
@@ -38,12 +42,11 @@ module.exports = {
   testURL: 'http://localhost',
   transform: {
     '^.+\\.(js|jsx|mjs|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
-    '^.+\\.js$': 'babel-jest',
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
     '^(?!.*\\.(js|jsx|mjs|css|json|ts|tsx)$)': '<rootDir>/config/jest/fileTransform.js',
   },
   transformIgnorePatterns: [
-    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
+    `<rootDir>/node_modules/(?!(${libsToConvert})/)`,
   ],
   moduleNameMapper: {
     '@/(.*)$': '<rootDir>/src/$1',

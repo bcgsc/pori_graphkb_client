@@ -4,12 +4,12 @@ import {
   Tab,
   Tabs,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   NavLink,
   Route,
-  RouteComponentProps,
-  Switch,
+  Routes,
+  useLocation,
 } from 'react-router-dom';
 import slugify from 'slugify';
 
@@ -20,35 +20,45 @@ import GettingStarted from './components/GettingStarted';
 import Matching from './components/Matching';
 import AboutNotation from './components/Notation';
 
-const AboutView = (props: RouteComponentProps) => {
-  const { location: { pathname: currentUri } } = props;
+type TabsList = {
+  label: string;
+  component: (props?: { [key: string]: unknown }) => JSX.Element;
+  slug?: string;
+  uri?: string;
+}[];
+
+const defaultTabsList: TabsList = [
+  { label: 'About', component: AboutMain },
+  { label: 'Getting Started', component: GettingStarted },
+  { label: 'Classes', component: AboutClasses },
+  { label: 'Notation', component: AboutNotation },
+  { label: 'Matching', component: Matching },
+  { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
+];
+
+const AboutView = () => {
+  const { pathname: currentUri } = useLocation();
   const [tabIndex, setTabIndex] = useState(0);
 
   const baseUri = '/about';
-  const tabsList = [
-    { label: 'About', component: AboutMain },
-    { label: 'Getting Started', component: GettingStarted },
-    { label: 'Classes', component: AboutClasses },
-    { label: 'Notation', component: AboutNotation },
-    { label: 'Matching', component: Matching },
-    { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
-  ];
+  const uriLookup = useMemo(() => ({}), []);
 
-  const uriLookup = {};
+  const tabsList = defaultTabsList.map((tab, index) => {
+    const curr = { ...tab, uri: '' };
 
-  tabsList.forEach((tab, index) => {
     if (tab.slug === undefined) {
-      tab.slug = index === 0 ? '' : `/${slugify(tab.label).toLowerCase()}`;
+      curr.slug = index === 0 ? '' : `/${slugify(curr.label).toLowerCase()}`;
     }
-    tab.uri = `${baseUri}${tab.slug}`;
-    uriLookup[tab.uri] = index;
+    curr.uri = `${baseUri}${curr.slug}`;
+    uriLookup[curr.uri] = index;
+    return curr;
   });
 
   useEffect(() => {
     setTabIndex(uriLookup[currentUri]);
   }, [uriLookup, currentUri]);
 
-  const handleTabChange = (event, value) => {
+  const handleTabChange = (_event, value) => {
     setTabIndex(value);
   };
 
@@ -66,17 +76,15 @@ const AboutView = (props: RouteComponentProps) => {
         ))}
       </Tabs>
       <div className="tabs-content">
-        <Switch>
-          {tabsList.map(({ uri, label, component }) => (
+        <Routes>
+          {tabsList.map(({ slug, label, component }) => (
             <Route
               key={label}
-              component={component}
-              exact
-              label={label}
-              path={uri}
+              Component={component}
+              path={slug}
             />
           ))}
-        </Switch>
+        </Routes>
       </div>
     </div>
   );

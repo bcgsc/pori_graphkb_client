@@ -40,7 +40,7 @@ const leftoverPositionalProps = omit(
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
-  { properties: leftoverPositionalProps },
+  leftoverPositionalProps,
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
@@ -55,7 +55,7 @@ const leftoverCategoryProps = omit(
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
-  { properties: leftoverCategoryProps },
+  leftoverCategoryProps,
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 

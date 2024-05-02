@@ -50,7 +50,7 @@ const FormLayout = ({
   } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [model, setModel] = useState(null);
+  const [model, setModel] = useState<any>(null);
 
   useEffect(() => {
     setModel(schemaDefn.get(modelName));
@@ -60,7 +60,7 @@ const FormLayout = ({
     return null;
   }
 
-  const { extraFields, fields } = sortAndGroupFields(model, {
+  const { extraFields, fields } = sortAndGroupFields(model.properties, {
     aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 

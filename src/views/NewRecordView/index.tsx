@@ -18,11 +18,13 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = () => {
+const NewRecordView = ({ modelName: propsModelName }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const { modelName } = useParams<{ modelName: string }>();
+  const { modelName: paramsModelName } = useParams<{ modelName: string }>();
+  const modelName = propsModelName || paramsModelName;
+
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */

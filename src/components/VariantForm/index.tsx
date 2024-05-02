@@ -23,6 +23,7 @@ import SteppedForm from './SteppedForm';
 const PositionalVariant = schemaDefn.get('PositionalVariant');
 const CategoryVariant = schemaDefn.get('CategoryVariant');
 
+// TODO convert to schemaDefn.getProperties here
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,
   [
@@ -41,7 +42,7 @@ const leftoverPositionalProps = omit(
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
-  { properties: leftoverPositionalProps },
+  leftoverPositionalProps,
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
@@ -56,7 +57,7 @@ const leftoverCategoryProps = omit(
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
-  { properties: leftoverCategoryProps },
+  leftoverCategoryProps,
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 

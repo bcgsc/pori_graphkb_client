@@ -26,13 +26,13 @@ enum FORM_VARIANT {
  * @returns {Object.<string,Array.<(string|Array.<string>)>>} the nested grouping structure
  *
  * @example
- * > sortAndGroupFields(model, {
+ * > sortAndGroupFields(schemaDefn.getProperties(model.name), {
  *    aboveFold: ['@class', '@rid', 'createdAt'],
  *    groups: [['createdBy', 'createdAt']]
  * })
  * {fields: ['@class', '@rid', ['createdBy', 'createdAt']], extraFields: []}
  */
-const sortAndGroupFields = (model, opt = {}) => {
+const sortAndGroupFields = (properties, opt = {}) => {
   const {
     belowFold = [],
     aboveFold = [],
@@ -43,13 +43,8 @@ const sortAndGroupFields = (model, opt = {}) => {
 
   const groupMap = {};
 
-  if (!model || !model.name) {
+  if (!properties ) {
     return { extraFields: [], fields: [] };
-  }
-
-  let properties;
-  if (model.name) {
-    properties = schemaDefn.getProperties(model.name);
   }
 
   groups.forEach((groupItems) => {
@@ -71,7 +66,6 @@ const sortAndGroupFields = (model, opt = {}) => {
       });
     }
   });
-
   const mainFields = [];
   const extraFields = [];
 
@@ -86,7 +80,6 @@ const sortAndGroupFields = (model, opt = {}) => {
       }
       return 1;
     });
-
   // get the form content
   for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
     if (prop.name === CLASS_MODEL_PROP

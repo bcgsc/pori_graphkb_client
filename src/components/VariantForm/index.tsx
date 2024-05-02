@@ -20,7 +20,8 @@ import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
 
-const { schema: { PositionalVariant, CategoryVariant, Position } } = schemaDefn;
+const PositionalVariant = schemaDefn.get('PositionalVariant');
+const CategoryVariant = schemaDefn.get('CategoryVariant');
 
 const leftoverPositionalProps = omit(
   PositionalVariant.properties,

@@ -26,7 +26,7 @@ const EdgeFields = ({
       label="Source Record (out)"
       model={{
         description: 'The source record for the relationship',
-        linkedClass: schemaDefn.get(model.sourceModel || 'V'),
+        linkedClass: schemaDefn.get(model.sourceModel || 'V'),  // TODO: check if models have sourceModel property now
         name: 'out',
         type: 'link',
         mandatory: true,
@@ -37,7 +37,7 @@ const EdgeFields = ({
       disabled={disabled}
       label="Target Record (in)"
       model={{
-        linkedClass: schemaDefn.get(model.targetModel || 'V'),
+        linkedClass: schemaDefn.get(model.targetModel || 'V'), // TODO same but targetModel
         description: 'The target record for the relationship',
         name: 'in',
         type: 'link',

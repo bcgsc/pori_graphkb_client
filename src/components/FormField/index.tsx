@@ -146,7 +146,7 @@ const FormField = ({
       />
     );
   } else if (type.includes('embedded') && linkedClass) {
-    if (iterable && linkedClass.name === 'StatementReview') {
+    if (iterable && linkedClass === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
           label={name}
@@ -156,7 +156,7 @@ const FormField = ({
           variant={formVariant}
         />
       );
-    } else if (linkedClass.name === 'Permissions') {
+    } else if (linkedClass === 'Permissions') {
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
@@ -168,7 +168,7 @@ const FormField = ({
           value={value}
         />
       );
-    } else if (POSITION_CLASSES.includes(linkedClass.name)) {
+    } else if (POSITION_CLASSES.includes(linkedClass)) {
       propComponent = (
         <PositionForm
           baseVariant={baseModel}
@@ -213,13 +213,13 @@ const FormField = ({
       helperText,
     };
 
-    if (linkedClass && linkedClass.isAbstract && !disabled) {
-      autoProps.linkedClassName = linkedClass.name;
+    if (linkedClass && schemaDefn.get(linkedClass).isAbstract && !disabled) {
+      autoProps.linkedClassName = linkedClass;
 
       // special case (KBDEV-790) to improve user inputs
-      if (name === 'conditions' && linkedClass.name === 'Biomarker') {
+      if (name === 'conditions' && linkedClass === 'Biomarker') {
         autoProps.filterOptions = [
-          ...schemaDefn.descendants('Variant', {excludeAbstract: false, includeSelf: true})
+          ...schemaDefn.descendants('Variant', {excludeAbstract: false, includeSelf: true}),
           'Disease',
           'CatalogueVariant',
         ];
@@ -237,17 +237,17 @@ const FormField = ({
         />
       );
     } else {
-      if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
+      if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass)) {
         autoProps.getQueryBody = () => ({
-          target: `${linkedClass.name}`,
-          orderBy: linkedClass.name === 'EvidenceLevel'
+          target: `${linkedClass}`,
+          orderBy: linkedClass === 'EvidenceLevel'
             ? ['source.sort', 'sourceId']
             : ['name'],
           neighbors: 1,
         });
         autoProps.singleLoad = true;
       } else {
-        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'));
+        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(schemaDefn.get(linkedClass || 'V'));
       }
 
       propComponent = (

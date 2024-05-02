@@ -31,7 +31,7 @@ const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-const ABSTRACT_CLASSES = Object.values(schemaDefn.schema)
+const ABSTRACT_CLASSES = Object.values(schemaDefn.models)
   .filter((m) => m.isAbstract && m.name !== 'Variant')
   .map((m) => m.name);
 

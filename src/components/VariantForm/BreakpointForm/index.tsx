@@ -85,7 +85,7 @@ const BreakpointForm = ({
               clearable={false}
               label={`end (${coordinateType})`}
               model={{
-                ...model.properties.break1Start,
+                ...model.properties.break1End,  // TODO check that this was not intentional
                 name: end,
                 mandatory: required,
                 linkedClass: schemaDefn.get(coordinateType),

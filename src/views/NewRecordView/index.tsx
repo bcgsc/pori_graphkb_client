@@ -3,6 +3,7 @@ import './index.scss';
 import React, {
   ReactNode,
   useCallback,
+  useEffect,
 } from 'react';
 import {
   useLocation, useNavigate, useParams, useSearchParams,
@@ -17,11 +18,13 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = () => {
+const NewRecordView = ({ modelName: propsModelName }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const { modelName } = useParams<{ modelName: string }>();
+  const { modelName: paramsModelName } = useParams<{ modelName: string }>();
+  const modelName = propsModelName || paramsModelName;
+
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
@@ -44,10 +47,14 @@ const NewRecordView = () => {
 
   let innerComponent: ReactNode = null;
 
-  if (!modelName) {
-    navigate('/', { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!modelName) {
+      navigate('/query', { replace: true });
+    }
+  }, [modelName, navigate]);
+
+  if (!modelName) return null;
+
 
   if (
     VARIANT_CLASSES.includes(modelName.toLowerCase())

@@ -3,6 +3,7 @@ import './index.scss';
 import React, {
   ReactNode,
   useCallback,
+  useEffect,
 } from 'react';
 import {
   useLocation, useNavigate, useParams, useSearchParams,
@@ -44,10 +45,13 @@ const NewRecordView = () => {
 
   let innerComponent: ReactNode = null;
 
-  if (!modelName) {
-    navigate('/', { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!modelName) {
+      navigate('/query', { replace: true });
+    }
+  }, [modelName, navigate]);
+
+  if (!modelName) return null;
 
   if (
     VARIANT_CLASSES.includes(modelName.toLowerCase())

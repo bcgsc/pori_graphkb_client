@@ -1,3 +1,5 @@
+// default config.js file, gets replaced at run-time by env-scripts
+
 window._env_ = {
   KEYCLOAK_CLIENT_ID: 'GraphKB',
   KEYCLOAK_ROLE: 'GraphKB',
@@ -7,5 +9,4 @@ window._env_ = {
   CONTACT_EMAIL: 'graphkb@bcgsc.ca',
   CONTACT_TICKET_URL: 'https://www.bcgsc.ca/jira/projects/KBDEV',
   PUBLIC_PATH: '/',
-  IS_DEMO: '',
 };

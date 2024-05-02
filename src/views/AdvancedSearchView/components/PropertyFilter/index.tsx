@@ -90,7 +90,7 @@ const PropertyFilter = ({
   const [subqueryType, setSubqueryType] = useState('');
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
-  const [keywordTargetOptions, setKeywordTargetOptions] = useState([]);
+  const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
 
   // use a schema form so that validation runs on the value based on the property selected
   const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
@@ -218,9 +218,9 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = originalPropertyModel.linkedClass || schemaDefn.get('V');
-      setKeywordTargetOptions(linkedModel.descendantTree(false).map((m) => m.name).sort());
-      setKeywordTarget(linkedModel.name);
+      const linkedModel = originalPropertyModel?.linkedClass || 'V';
+      setKeywordTargetOptions(schemaDefn.descendants(linkedModel, {excludeAbstract: false, includeSelf: true}).sort());
+      setKeywordTarget(linkedModel);
     }
   }, [modelName, property, subqueryType]);
 

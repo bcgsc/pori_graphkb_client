@@ -2,7 +2,7 @@ import './index.scss';
 
 import { List } from '@material-ui/core';
 import React, { useContext } from 'react';
-
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
@@ -55,7 +55,13 @@ const FieldGroup = ({
   model, ordering, exclusions, disabled,
 }: FieldGroupProps) => {
   const { formVariant, formContent } = useContext(FormContext);
-  const { properties: { out, in: tgt, ...properties } } = model;
+  let properties;
+
+  if (model.name) {
+    properties = schemaDefn.getProperties(model.name);
+  } else {
+    properties = model.properties;
+  }
 
   // get the form content
   const fields = [];

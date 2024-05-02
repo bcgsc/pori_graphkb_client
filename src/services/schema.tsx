@@ -1,4 +1,6 @@
-import { ClassDefinition, PropertyDefinition, schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-schema';
+import {
+  ClassDefinition, PropertyDefinition, schema as schemaDefn, validateProperty,
+} from '@bcgsc-pori/graphkb-schema';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
 
@@ -53,6 +55,7 @@ const getMetadata = () => Object.values(schemaDefn.getProperties('V'));
 const getProperties = (obj) => {
   const VPropKeys = schemaDefn.getProperties('V');
   let objname;
+
   if (typeof obj === 'string') {
     objname = obj;
   } else if (obj['@class']) {
@@ -137,7 +140,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
 
         return newErrors;
       };
-      // TODO model.properties
+
       if (Array.isArray(value) && value.length) {
         // values could have different class models
         value.forEach((val) => {
@@ -176,7 +179,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
         valueToValidate = value['@rid'] || value;
       }
       // TODO not sure if this is equivalent
-      //Property.validateWith(propModel, valueToValidate);
+      // Property.validateWith(propModel, valueToValidate);
       validateProperty(propModel, valueToValidate);
       return { value };
     } catch (err) {

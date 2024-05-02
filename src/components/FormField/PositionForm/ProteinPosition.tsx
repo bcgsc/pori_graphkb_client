@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import FieldWrapper from '../FieldWrapper';
 
 const {
-  properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT
+  properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT,
 } = schema.get('ProteinPosition');
 
 interface Value {

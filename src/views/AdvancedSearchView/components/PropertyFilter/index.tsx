@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn, PropertyDefinition } from '@bcgsc-pori/graphkb-schema';
+import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@material-ui/core';
@@ -101,7 +101,7 @@ const PropertyFilter = ({
 
   // set the property options
   useEffect(() => {
-    let choices = [];
+    const choices = [];
     schema.getQueryProperties(modelName)
       .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
@@ -142,7 +142,9 @@ const PropertyFilter = ({
     if (property) {
       const [prop, subProp] = property.split('.');
       let newPropertyModel: PropertyDefinition | null;
+      // queryable or regular?
       newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
+
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
       } else {
@@ -150,7 +152,7 @@ const PropertyFilter = ({
           // check if embedded is one of the properties
           if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
             const parentPropModel = newPropertyModel;
-            // get the subprop from the properties. func to get single prop?
+            // get the subprop from the properties
             newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
 
             if (subProp === '@class' && parentPropModel.linkedClass) {
@@ -207,6 +209,7 @@ const PropertyFilter = ({
         subqueryType,
       );
       setOperatorChoices(choices);
+
       if (choices.length === 1) {
         setOperator(choices[0].value);
       } else if (choices.find((c) => c.label === 'CONTAINSTEXT')) {

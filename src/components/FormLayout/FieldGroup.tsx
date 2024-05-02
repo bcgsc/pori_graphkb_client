@@ -1,13 +1,12 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@material-ui/core';
 import React, { useContext } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
-
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema'
 
 /**
  * returns an array of strings without any of the indicated exclusion values
@@ -58,6 +57,7 @@ const FieldGroup = ({
 }: FieldGroupProps) => {
   const { formVariant, formContent } = useContext(FormContext);
   let properties;
+
   if (model.name) {
     properties = schemaDefn.getProperties(model.name);
   } else {

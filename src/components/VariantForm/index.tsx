@@ -258,15 +258,17 @@ const VariantForm = ({
                     ...schemaDefn.getProperty('PositionalVariant', 'refSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeq: {...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
+                  untemplatedSeq: {
+                    ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeqSize: {...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeqSize'),
-                  mandatory: isSubstitution,
+                  untemplatedSeqSize: {
+                    ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeqSize'),
+                    mandatory: isSubstitution,
+                  },
                 },
-              }
-            }}
-            ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
+              }}
+              ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
             />
           </List>
         </FormStepWrapper>

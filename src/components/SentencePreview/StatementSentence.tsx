@@ -2,7 +2,6 @@ import { schema as schemaDefn, sentenceTemplates } from '@bcgsc-pori/graphkb-sch
 import { StatementRecord } from '@bcgsc-pori/graphkb-schema/dist/types';
 import React from 'react';
 
-
 import { StatementType } from '@/components/types';
 
 import SentencePreview from '.';

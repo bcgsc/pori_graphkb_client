@@ -68,7 +68,7 @@ describe('schema service', () => {
         relevance: { displayName: 'Mood Swings', '@rid': '1' },
         conditions: [{ displayName: 'Low blood sugar', '@class': 'Disease', '@rid': '2' }],
         subject: { displayName: 'hungertitis', '@rid': '3', '@class': 'Disease' },
-        evidence: [{ displayName: 'A reputable source', '@rid': '4' }]
+        evidence: [{ displayName: 'A reputable source', '@rid': '4' }],
       };
 
       const statementLabel = SCHEMA_DEFN.getPreview(mockStatementRecord);
@@ -102,7 +102,7 @@ describe('schema service', () => {
     });
 
     // TODO: no longer capitalizes; do we want this
-    xtest('returns classModel name', () => {
+    test.skip('returns classModel name', () => {
       const classModel = {
         '@class': 'disease',
       };

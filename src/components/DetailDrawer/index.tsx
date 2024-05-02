@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   Divider,
@@ -22,7 +23,6 @@ import { Link } from 'react-router-dom';
 import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 
 import { useAuth } from '../Auth';
 import LinkEmbeddedPropList from './LinkEmbeddedPropList';

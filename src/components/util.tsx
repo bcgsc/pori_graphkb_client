@@ -1,7 +1,7 @@
-import * as qs from 'qs';
-import { NavigateFunction } from 'react-router-dom';
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { ContactsOutlined } from '@material-ui/icons';
+import * as qs from 'qs';
+import { NavigateFunction } from 'react-router-dom';
 
 const CLASS_MODEL_PROP = '@class';
 
@@ -43,7 +43,7 @@ const sortAndGroupFields = (properties, opt = {}) => {
 
   const groupMap = {};
 
-  if (!properties ) {
+  if (!properties) {
     return { extraFields: [], fields: [] };
   }
 
@@ -80,6 +80,7 @@ const sortAndGroupFields = (properties, opt = {}) => {
       }
       return 1;
     });
+
   // get the form content
   for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
     if (prop.name === CLASS_MODEL_PROP

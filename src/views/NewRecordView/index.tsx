@@ -55,7 +55,6 @@ const NewRecordView = ({ modelName: propsModelName }) => {
 
   if (!modelName) return null;
 
-
   if (
     VARIANT_CLASSES.includes(modelName.toLowerCase())
     || (modelName && VARIANT_CLASSES.includes(modelName.toLowerCase()))

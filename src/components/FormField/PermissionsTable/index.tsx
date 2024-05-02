@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn, PERMISSIONS } from '@bcgsc-pori/graphkb-schema';
+import { PERMISSIONS, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Table,

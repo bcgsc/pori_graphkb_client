@@ -254,17 +254,18 @@ const VariantForm = ({
               model={{
                 properties: {
                   refSeq: {
-                    ...PositionalVariant.properties.refSeq,
+                    ...schemaDefn.getProperty('PositionalVariant', 'refSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeq: {
-                    ...PositionalVariant.properties.untemplatedSeq,
+                  untemplatedSeq: {...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
+                  untemplatedSeqSize: {...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeqSize'),
+                  mandatory: isSubstitution,
                 },
-              }}
-              ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
+              }
+            }}
+            ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
             />
           </List>
         </FormStepWrapper>

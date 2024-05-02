@@ -57,7 +57,12 @@ const FieldGroup = ({
   model, ordering, exclusions, disabled,
 }: FieldGroupProps) => {
   const { formVariant, formContent } = useContext(FormContext);
-  const properties = schemaDefn.getProperties(model.name);
+  let properties;
+  if (model.name) {
+    properties = schemaDefn.getProperties(model.name);
+  } else {
+    properties = model.properties;
+  }
 
   // get the form content
   const fields = [];

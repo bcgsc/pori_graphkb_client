@@ -204,7 +204,7 @@ const RecordForm = ({
       <div className="record-form__header">
         <span className="title">
           <Typography variant="h1">{pageTitle}</Typography>
-          {title !== pageTitle && (<Typography variant="subtitle">{title}</Typography>)}
+          {title !== pageTitle && (<Typography variant="subtitle1">{title}</Typography>)}
         </span>
         <div className={`header__actions header__actions--${variant}`}>
           {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
@@ -230,10 +230,10 @@ const RecordForm = ({
       </FormContext.Provider>
       {variant === FORM_VARIANT.VIEW && schemaDefn.get(modelName).inherits.includes('V') && (
         <>
-          <EdgeTable recordId={form.formContent['@rid']} />
-          <RelatedStatementsTable recordId={form.formContent['@rid']} />
+          <EdgeTable recordId={String(form.formContent['@rid'])} />
+          <RelatedStatementsTable recordId={String(form.formContent['@rid'])} />
           {schemaDefn.get(modelName).inherits.includes('Ontology') && (
-            <RelatedVariantsTable recordId={form.formContent['@rid']} />
+            <RelatedVariantsTable recordId={String(form.formContent['@rid'])} />
           )}
         </>
       )}

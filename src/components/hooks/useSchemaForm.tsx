@@ -34,6 +34,7 @@ const useSchemaForm = (
   /** @todo get type from schema package */
   initialFieldDefs: Record<string, any>,
   initialValue: Record<string, unknown> = {},
+  err: Record<string, any> = {},
   { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
@@ -62,7 +63,7 @@ const useSchemaForm = (
     content: formErrors,
     updateField: setFormFieldError,
     replace: replaceErrors,
-  } = useObject({});
+  } = useObject(err);
 
   const formValidator = useCallback((propName, propValue) => {
     const prop = fieldDefs[propName];
@@ -76,7 +77,7 @@ const useSchemaForm = (
 
   useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some((err) => err);
-    setFormHasErrors(errorState || additionalValidationError);
+    setFormHasErrors(errorState || !!additionalValidationError);
   }, [formErrors || {}, additionalValidationError]);
 
   useDeepCompareEffect(() => {
@@ -139,12 +140,13 @@ const useSchemaForm = (
     formErrors,
     formHasErrors,
     formIsDirty,
+    formVariant,
+    additionalValidationError,
     setFormIsDirty,
     update,
     updateField,
     updateFieldEvent,
-    formVariant,
-    additionalValidationError,
+    replaceContent,
   };
 };
 

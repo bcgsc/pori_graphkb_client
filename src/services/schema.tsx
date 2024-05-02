@@ -1,4 +1,4 @@
-import { ClassModel, Property, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ClassDefinition, PropertyDefinition, schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
 
@@ -42,7 +42,7 @@ const getLink = (obj) => {
 /**
  * Returns record metadata fields
  */
-const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
+const getMetadata = () => Object.values(schemaDefn.getProperties('V'));
 
 /**
  * Returns route and properties of a certain knowledgebase class
@@ -51,10 +51,16 @@ const getMetadata = () => Object.values(schemaDefn.schema.V.properties);
  * class properties list.
  */
 const getProperties = (obj) => {
-  const VPropKeys = schemaDefn.schema.V.properties;
-  const classModel: ClassModel = schemaDefn.get(obj);
-  return Object.values(classModel?.properties ?? {})
-    .filter((prop: Property) => !VPropKeys[prop.name]);
+  const VPropKeys = schemaDefn.getProperties('V');
+  let objname;
+
+  if (typeof obj === 'string') {
+    objname = obj;
+  } else if (obj['@class']) {
+    objname = obj['@class'];
+  }
+  return Object.values(schemaDefn.getProperties(objname) ?? {})
+    .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
 };
 
 /**
@@ -64,9 +70,8 @@ const getProperties = (obj) => {
  * class properties list.
  */
 const getQueryProperties = (className) => {
-  const VPropKeys = schemaDefn.schema.V.properties;
-  const classModel = schemaDefn.get(className);
-  return Object.values(classModel?.queryProperties ?? {})
+  const VPropKeys = schemaDefn.getProperties('V');
+  return Object.values(schemaDefn.queryableProperties(className) ?? {})
     .filter((prop) => !VPropKeys[prop.name]);
 };
 
@@ -84,7 +89,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): string[];
 
 function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null = null) {
-  const list: string[] = schemaDefn.schema.E.subclasses.slice().map((classModel) => classModel.name);
+  const list: string[] = schemaDefn.children('E');
 
   if (node) {
     const edges: EdgeType[] = [];
@@ -98,7 +103,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 }
 
 const isEdge = (cls) => !!(schemaDefn.get(cls)
-      && schemaDefn.get(cls).inherits.some((inherited) => inherited === 'E'));
+      && schemaDefn.ancestors(cls).some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object
@@ -170,7 +175,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       if (propModel.type === 'link') {
         valueToValidate = value['@rid'] || value;
       }
-      Property.validateWith(propModel, valueToValidate);
+      validateProperty(propModel, valueToValidate);
       return { value };
     } catch (err) {
       return { error: err, value };
@@ -195,7 +200,7 @@ const defineGridColumns = (search) => {
 
   const linkChipWidth = 300;
 
-  const allProps: Record<string, Property> = schemaDefn.get(modelName).queryProperties;
+  const allProps: Record<string, PropertyDefinition> = schemaDefn.queryableProperties(modelName);
 
   if (modelName.toLowerCase().includes('variant')) {
     showByDefault.push('reference1', 'reference2', 'type');
@@ -341,6 +346,7 @@ const defineGridColumns = (search) => {
     colId: 'preview',
     field: 'preview',
     sortable: false,
+    // TODO what is second arg doing here?
     valueGetter: ({ data }) => schemaDefn.getPreview(data, false),
     hide: modelName === 'Statement',
   });
@@ -377,7 +383,7 @@ const defineGridColumns = (search) => {
           hide,
         }],
       };
-      Object.values((prop.linkedClass || schemaDefn.schema.V).queryProperties).forEach((subProp: Property) => {
+      Object.values(schemaDefn.queryableProperties(prop.linkedClass || 'V')).forEach((subProp: PropertyDefinition) => {
         if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
           const colDef: ColDef = ({
             field: subProp.name,

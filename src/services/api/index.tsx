@@ -1,7 +1,7 @@
 /**
  * Wrapper for api, handles all requests and special functions.
  */
-import kbSchema from '@bcgsc-pori/graphkb-schema';
+import kbSchema, {schema as schemaDefn} from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
@@ -125,7 +125,7 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
     neighbors: 1,
   };
 
-  if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
+  if (schemaDefn.ancestors(model.name).includes('Ontology') || model.name === 'Ontology') {
     body.orderBy = ['source.sort', 'name', 'sourceId'];
   }
   return body;

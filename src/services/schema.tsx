@@ -58,8 +58,7 @@ const getProperties = (obj) => {
   } else if (obj['@class']) {
     objname = obj['@class'];
   }
-  const classModel: ClassDefinition = schemaDefn.get(objname);
-  return Object.values(classModel?.properties ?? {})
+  return Object.values(schemaDefn.getProperties(objname) ?? {})
     .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
 };
 
@@ -138,7 +137,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
 
         return newErrors;
       };
-
+      // TODO model.properties
       if (Array.isArray(value) && value.length) {
         // values could have different class models
         value.forEach((val) => {

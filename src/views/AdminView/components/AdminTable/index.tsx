@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
+import { Buffer } from 'buffer';
 import React, {
   useCallback,
   useState,
@@ -19,6 +20,8 @@ import React, {
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
+
+window.Buffer = window.Buffer || Buffer;
 
 interface AdminTableProps {
   /** handler to be triggered when data changes */
@@ -33,7 +36,7 @@ interface AdminTableProps {
  * Component for managing AdminView User form state.
  */
 const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProps) => {
-  const [recordOpen, setRecordOpen] = useState<GeneralRecordType | null>();
+  const [recordOpen, setRecordOpen] = useState<GeneralRecordType | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenEditDialog = (record) => {
@@ -43,22 +46,22 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
 
   const handleOpenNewDialog = () => {
     setDialogOpen(true);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
   };
 
   const handleDialogCancel = () => {
     setDialogOpen(false);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
   };
 
   const handleDialogError = () => {
     setDialogOpen(false);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
   };
 
   const handleDialogSubmit = useCallback(() => {
     setDialogOpen(false);
-    setRecordOpen(null);
+    setRecordOpen(undefined);
     onChange();
   }, [onChange]);
 

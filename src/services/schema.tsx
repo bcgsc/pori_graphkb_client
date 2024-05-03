@@ -103,7 +103,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 }
 
 const isEdge = (cls) => !!(schemaDefn.get(cls)
-      && schemaDefn.ancestors(cls).some((inherited) => inherited === 'E'));
+      && schemaDefn.children(cls).some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object

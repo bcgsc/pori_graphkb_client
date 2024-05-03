@@ -232,7 +232,7 @@ const RecordForm = ({
         <>
           <EdgeTable recordId={String(form.formContent['@rid'])} />
           <RelatedStatementsTable recordId={String(form.formContent['@rid'])} />
-          {schemaDefn.ancestors(modelName).includes('Ontology') && (
+          {schemaDefn.children(modelName).includes('Ontology') && (
             <RelatedVariantsTable recordId={String(form.formContent['@rid'])} />
           )}
         </>

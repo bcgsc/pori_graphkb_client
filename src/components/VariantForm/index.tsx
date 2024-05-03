@@ -254,14 +254,14 @@ const VariantForm = ({
               model={{
                 properties: {
                   refSeq: {
-                    ...PositionalVariant.properties.refSeq,
+                    ...schemaDefn.getProperty('PositionalVariant','refSeq'),
                     mandatory: isSubstitution,
                   },
                   untemplatedSeq: {
-                    ...PositionalVariant.properties.untemplatedSeq,
+                    ...schemaDefn.getProperty('PositionalVariant','untemplatedSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
+                  untemplatedSeqSize: schemaDefn.getProperty('PositionalVariant','untemplatedSeqSize'),
                 },
               }}
               ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
@@ -273,9 +273,9 @@ const VariantForm = ({
         <FieldGroup
           disabled={false}
           model={{
-            properties: {
-              type: PositionalVariant.properties.type,
-              zygosity: PositionalVariant.properties.zygosity,
+            properties: {  // TODO this should have same value as original but doesn't, figure out the diff
+              type: schemaDefn.getProperty('PositionalVariant', 'type'),
+              zygosity: schemaDefn.getProperty('PositionalVariant','zygosity'),
             },
           }}
           ordering={['type', 'zygosity']}

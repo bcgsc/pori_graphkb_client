@@ -79,6 +79,8 @@ const FormField = ({
     format,
   } = model;
 
+  // TODO: check again for any other uses of linkedClass
+
   const inputValue = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && formVariant !== FORM_VARIANT.SEARCH);

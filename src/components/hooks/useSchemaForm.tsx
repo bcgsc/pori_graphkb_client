@@ -67,6 +67,7 @@ const useSchemaForm = (
 
   const formValidator = useCallback((propName, propValue) => {
     const prop = fieldDefs[propName];
+
     if (prop) {
       return schema.validateValue(prop, propValue, { ignoreMandatory: ignoreMandatoryErrors });
     }

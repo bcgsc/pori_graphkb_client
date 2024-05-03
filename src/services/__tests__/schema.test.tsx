@@ -22,15 +22,6 @@ describe('schema service', () => {
     test('returns the right properties list', () => {
       const ontology = SCHEMA_DEFN.get('Ontology');
       const testProps = testSchema.getProperties('Ontology');
-      //TODO remove
-      //console.log('start')
-      //console.dir(SCHEMA_DEFN.getProperties('Ontology'));
-      //console.log('start next')
-
-      //console.dir(SCHEMA_DEFN.get('Ontology').properties);
-      //console.log('finish')
-
-
       testProps.forEach((prop) => {
         expect(ontology.properties[prop.name]).toBeDefined();
       });

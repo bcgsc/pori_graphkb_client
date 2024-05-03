@@ -142,7 +142,7 @@ const PropertyFilter = ({
     if (property) {
       const [prop, subProp] = property.split('.');
       let newPropertyModel: PropertyDefinition | null;
-      newPropertyModel = { ...schema.getQueryProperties(modelName)[prop], mandatory: true };
+      newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
@@ -163,7 +163,7 @@ const PropertyFilter = ({
           } else {
             newPropertyModel = null;
           }
-        } else if (newPropertyModel && newPropertyModel.type === 'link') {
+        } else if (newPropertyModel.type === 'link') {
           newPropertyModel.type = 'linkset';
           newPropertyModel.iterable = true;
         }
@@ -219,9 +219,9 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = originalPropertyModel?.linkedClass || 'V';
-      setKeywordTargetOptions(schemaDefn.descendants(linkedModel, {excludeAbstract: false, includeSelf: true}).sort());
-      setKeywordTarget(linkedModel);
+      const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
+      setKeywordTargetOptions(schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
+      setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);
 
@@ -237,7 +237,7 @@ const PropertyFilter = ({
       subqueryType,
     };
 
-    if (subqueryType === 'keyword' && originalPropertyModel) {
+    if (subqueryType === 'keyword') {
       result.query = {
         operator: originalPropertyModel.iterable
           ? 'CONTAINSANY'

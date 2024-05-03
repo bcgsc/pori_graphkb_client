@@ -60,7 +60,7 @@ const FieldGroup = ({
   if (model.name) {
     properties = schemaDefn.getProperties(model.name);
   } else {
-    properties = model.properties;
+    properties = model.properties; // TODO Field Group is used by passing props in some cases
   }
 
   // get the form content

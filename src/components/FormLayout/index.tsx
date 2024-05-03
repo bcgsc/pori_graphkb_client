@@ -60,7 +60,7 @@ const FormLayout = ({
     return null;
   }
 
-  const { extraFields, fields } = sortAndGroupFields(model.properties, {
+  const { extraFields, fields } = sortAndGroupFields(schemaDefn.getProperties(model.name), {
     aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 

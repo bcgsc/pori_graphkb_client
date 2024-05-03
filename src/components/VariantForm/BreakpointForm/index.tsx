@@ -85,7 +85,8 @@ const BreakpointForm = ({
               clearable={false}
               label={`end (${coordinateType})`}
               model={{
-                ...schemaDefn.getProperty(model.name, 'break1End'),                name: end,
+                ...schemaDefn.getProperty(model.name, 'break1End'),
+                name: end,
                 mandatory: required,
                 linkedClass: schemaDefn.get(coordinateType),
                 description: 'end of the breakpoint range',

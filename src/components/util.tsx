@@ -24,7 +24,7 @@ enum FORM_VARIANT {
  * @returns {Object.<string,Array.<(string|Array.<string>)>>} the nested grouping structure
  *
  * @example
- * > sortAndGroupFields(model, {
+ * > sortAndGroupFields(schemaDefn.getProperties(model.name), {
  *    aboveFold: ['@class', '@rid', 'createdAt'],
  *    groups: [['createdBy', 'createdAt']]
  * })

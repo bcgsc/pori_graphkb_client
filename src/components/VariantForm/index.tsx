@@ -60,7 +60,7 @@ const { fields: categoryFields } = sortAndGroupFields(
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = schemaDefn.descendants('Position', {excludeAbstract: true, includeSelf: false}).map((m) => ({
+const coordinateOptions = schemaDefn.descendants('Position', {excludeAbstract: true, includeSelf: true}).map((m) => ({
   label: m, value: m, key: m, caption: schemaDefn.get(m).description,
 }));
 

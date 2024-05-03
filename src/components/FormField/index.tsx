@@ -70,7 +70,7 @@ const FormField = ({
     description,
     example,
     generateDefault,
-    linkedClass,
+    linkedClass: linkedClassName,
     linkedType,
     name,
     type,
@@ -80,6 +80,13 @@ const FormField = ({
   } = model;
 
   // TODO: check again for any other uses of linkedClass
+  let linkedClass;
+
+  if (typeof linkedClassName === 'string') {
+    linkedClass = schemaDefn.get(linkedClassName);
+  } else {
+    linkedClass = linkedClassName;
+  }
 
   const inputValue = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
@@ -148,7 +155,7 @@ const FormField = ({
       />
     );
   } else if (type.includes('embedded') && linkedClass) {
-    if (iterable && linkedClass === 'StatementReview') {
+    if (iterable && linkedClass.name === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
           label={name}
@@ -158,7 +165,7 @@ const FormField = ({
           variant={formVariant}
         />
       );
-    } else if (linkedClass === 'Permissions') {
+    } else if (linkedClass.name === 'Permissions') {
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
@@ -170,7 +177,7 @@ const FormField = ({
           value={value}
         />
       );
-    } else if (POSITION_CLASSES.includes(linkedClass)) {
+    } else if (POSITION_CLASSES.includes(linkedClass.name )) {
       propComponent = (
         <PositionForm
           baseVariant={baseModel}
@@ -215,11 +222,11 @@ const FormField = ({
       helperText,
     };
 
-    if (linkedClass && schemaDefn.get(linkedClass).isAbstract && !disabled) {
-      autoProps.linkedClassName = linkedClass;
+    if (linkedClass && linkedClass.isAbstract && !disabled) {
+      autoProps.linkedClassName = linkedClass.name;
 
       // special case (KBDEV-790) to improve user inputs
-      if (name === 'conditions' && linkedClass === 'Biomarker') {
+      if (name === 'conditions' && linkedClass.name === 'Biomarker') {
         autoProps.filterOptions = [
           ...schemaDefn.descendants('Variant', {excludeAbstract: false, includeSelf: true}),
           'Disease',
@@ -239,17 +246,17 @@ const FormField = ({
         />
       );
     } else {
-      if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass)) {
+      if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
         autoProps.getQueryBody = () => ({
-          target: `${linkedClass}`,
-          orderBy: linkedClass === 'EvidenceLevel'
+          target: `${linkedClass.name}`,
+          orderBy: linkedClass.name === 'EvidenceLevel'
             ? ['source.sort', 'sourceId']
             : ['name'],
           neighbors: 1,
         });
         autoProps.singleLoad = true;
       } else {
-        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(schemaDefn.get(linkedClass || 'V'));
+        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'));
       }
 
       propComponent = (

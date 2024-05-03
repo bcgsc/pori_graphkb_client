@@ -56,7 +56,7 @@ const PositionForm = ({
   variant: initialVariant,
   ...props
 }: PositionFormProps) => {
-  const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, {excludeAbstract: true, includeSelf: false});
+  const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, {excludeAbstract: true, includeSelf: true});
   const [variant, setVariant] = useState(initialVariant);
 
   let PositionComponent;

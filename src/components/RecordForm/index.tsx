@@ -228,7 +228,7 @@ const RecordForm = ({
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (
+      {variant === FORM_VARIANT.VIEW && schemaDefn.children(modelName).includes('V') && (
         <>
           <EdgeTable recordId={String(form.formContent['@rid'])} />
           <RelatedStatementsTable recordId={String(form.formContent['@rid'])} />

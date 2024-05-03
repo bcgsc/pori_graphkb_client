@@ -144,7 +144,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
           embeddedModel = schemaDefn.get(val);
 
           if (embeddedModel) {
-            Object.values(embeddedModel.properties).forEach((subPropModel) => {
+            Object.values(schemaDefn.getProperties(embeddedModel)).forEach((subPropModel) => {
               subErrors = valErrorCheck(subPropModel, val, subErrors);
             });
           }
@@ -158,7 +158,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
           return { error: { '@class': { message: 'Required Value' } } };
         }
 
-        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+        Object.values(schemaDefn.getProperties(embeddedModel)).forEach((subPropModel) => {
           subErrors = valErrorCheck(subPropModel, value, subErrors);
         });
       }

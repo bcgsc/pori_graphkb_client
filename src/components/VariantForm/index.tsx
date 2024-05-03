@@ -24,7 +24,7 @@ const PositionalVariant = schemaDefn.get('PositionalVariant');
 const CategoryVariant = schemaDefn.get('CategoryVariant');
 
 const leftoverPositionalProps = omit(
-  PositionalVariant.properties,
+  schemaDefn.getProperties('PositionalVariant'),
   [
     'break1Start',
     'break1End',
@@ -46,7 +46,7 @@ const { fields: positionalFields } = sortAndGroupFields(
 );
 
 const leftoverCategoryProps = omit(
-  CategoryVariant.properties,
+  schemaDefn.getProperties('CategoryVariant'),
   [
     'reference1',
     'reference2',
@@ -128,12 +128,12 @@ const VariantForm = ({
       ? {
         name: PositionalVariant.name,
         properties: {
-          ...PositionalVariant.properties,
-          break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
-          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
-          refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
+          ...schemaDefn.getProperties('PositionalVariant'),
+          break2Start: { ...schemaDefn.getProperty('PositionalVariant', 'break2Start'), mandatory: !isSubstitution },
+          reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
+          refSeq: { ...schemaDefn.getProperty('PositionalVariant', 'refSeq'), mandatory: isSubstitution },
           untemplatedSeq: {
-            ...PositionalVariant.properties.untemplatedSeq,
+            ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
             mandatory: isSubstitution,
           },
         },
@@ -141,8 +141,8 @@ const VariantForm = ({
       : {
         name: CategoryVariant.name,
         properties: {
-          ...CategoryVariant.properties,
-          reference2: { ...CategoryVariant.properties.reference2, mandatory: isFusion },
+          ...schemaDefn.getProperties('PositionalVariant'),
+          reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
         },
       };
     setModel(newModel);
@@ -195,7 +195,7 @@ const VariantForm = ({
       modelName={model.name}
       onDelete={handleDeleteAction}
       onSubmit={handleSubmitAction}
-      properties={model.properties}
+      properties={schemaDefn.getProperties(model.name)}
       value={value}
     >
       <FormStepWrapper
@@ -273,7 +273,7 @@ const VariantForm = ({
         <FieldGroup
           disabled={false}
           model={{
-            properties: {  // TODO this should have same value as original but doesn't, figure out the diff
+            properties: {
               type: schemaDefn.getProperty('PositionalVariant', 'type'),
               zygosity: schemaDefn.getProperty('PositionalVariant','zygosity'),
             },

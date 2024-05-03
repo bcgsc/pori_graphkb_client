@@ -78,8 +78,6 @@ const FormField = ({
     iterable,
     format,
   } = model;
-
-  // TODO: check again for any other uses of linkedClass
   let linkedClass;
 
   if (typeof linkedClassName === 'string') {

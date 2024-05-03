@@ -66,7 +66,6 @@ function DetailDrawer(props: DetailDrawerProps) {
     onClose,
     isEdge,
   } = props;
-
   const auth = useAuth();
 
   const [opened, setOpened] = useState([]);

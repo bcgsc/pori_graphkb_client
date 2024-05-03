@@ -105,7 +105,6 @@ const VariantForm = ({
   onSubmit, onError, value, formVariant,
 }: VariantFormProps) => {
   let defaultCoordinateType;
-
   if (value.break1Start) {
     defaultCoordinateType = value.break1Start['@class'];
   }

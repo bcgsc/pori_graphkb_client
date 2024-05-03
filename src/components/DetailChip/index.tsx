@@ -137,7 +137,6 @@ function DetailChip(props: DetailChipProps) {
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
-
   /**
    * Closes popover.
    */

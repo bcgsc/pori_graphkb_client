@@ -60,7 +60,7 @@ const { fields: categoryFields } = sortAndGroupFields(
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = schemaDefn.descendants('Position', {excludeAbstract: true, includeSelf: true}).map((m) => ({
+const coordinateOptions = schemaDefn.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
   label: m, value: m, key: m, caption: schemaDefn.get(m).description,
 }));
 
@@ -254,14 +254,14 @@ const VariantForm = ({
               model={{
                 properties: {
                   refSeq: {
-                    ...schemaDefn.getProperty('PositionalVariant','refSeq'),
+                    ...schemaDefn.getProperty('PositionalVariant', 'refSeq'),
                     mandatory: isSubstitution,
                   },
                   untemplatedSeq: {
-                    ...schemaDefn.getProperty('PositionalVariant','untemplatedSeq'),
+                    ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeqSize: schemaDefn.getProperty('PositionalVariant','untemplatedSeqSize'),
+                  untemplatedSeqSize: schemaDefn.getProperty('PositionalVariant', 'untemplatedSeqSize'),
                 },
               }}
               ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
@@ -275,7 +275,7 @@ const VariantForm = ({
           model={{
             properties: {
               type: schemaDefn.getProperty('PositionalVariant', 'type'),
-              zygosity: schemaDefn.getProperty('PositionalVariant','zygosity'),
+              zygosity: schemaDefn.getProperty('PositionalVariant', 'zygosity'),
             },
           }}
           ordering={['type', 'zygosity']}

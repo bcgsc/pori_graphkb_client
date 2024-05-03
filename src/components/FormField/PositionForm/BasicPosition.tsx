@@ -88,7 +88,7 @@ const BasicPositionForm = ({
     onChange({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
   }, [onChange, name, variant, position]);
 
-  const isOffsetVariant = Boolean(schemaDefn.getProperty(variant,'offset'));
+  const isOffsetVariant = Boolean(schemaDefn.getProperty(variant, 'offset'));
 
   return (
     <>

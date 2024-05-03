@@ -24,7 +24,7 @@ import Timestamp from './Timestamp';
 
 const POSITION_CLASSES = [
   'Position',
-  ...schemaDefn.descendants('Position', {excludeAbstract: false, includeSelf: true}),
+  ...schemaDefn.descendants('Position', { excludeAbstract: false, includeSelf: true }),
 ];
 
 interface FormFieldProps {
@@ -177,7 +177,7 @@ const FormField = ({
           value={value}
         />
       );
-    } else if (POSITION_CLASSES.includes(linkedClass.name )) {
+    } else if (POSITION_CLASSES.includes(linkedClass.name)) {
       propComponent = (
         <PositionForm
           baseVariant={baseModel}
@@ -228,7 +228,7 @@ const FormField = ({
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
         autoProps.filterOptions = [
-          ...schemaDefn.descendants('Variant', {excludeAbstract: false, includeSelf: true}),
+          ...schemaDefn.descendants('Variant', { excludeAbstract: false, includeSelf: true }),
           'Disease',
           'CatalogueVariant',
         ];

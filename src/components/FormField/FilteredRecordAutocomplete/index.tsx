@@ -65,7 +65,7 @@ const FilteredRecordAutocomplete = ({
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
-            options={filterOptions || [...schemaDefn.descendants(model.name, {excludeAbstract: false, includeSelf:true})]}
+            options={filterOptions || [...schemaDefn.descendants(model.name, { excludeAbstract: false, includeSelf: true })]}
             value={selectedClassName}
           />
         )}

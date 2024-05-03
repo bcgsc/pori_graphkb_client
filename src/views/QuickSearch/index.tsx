@@ -1,7 +1,7 @@
 import './index.scss';
 
-import {parseVariant} from '@bcgsc-pori/graphkb-parser';
-import {util} from '@bcgsc-pori/graphkb-schema';
+import { parseVariant } from '@bcgsc-pori/graphkb-parser';
+import { util } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,

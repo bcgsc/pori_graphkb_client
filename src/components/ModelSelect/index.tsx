@@ -33,7 +33,7 @@ const ModelSelect = ({
 
   useEffect(() => {
     // TODO: descendants returns what if model name is not found?
-    const models = schemaDefn.descendants(baseModel || '', {excludeAbstract: !includeAbstract, includeSelf: true}).map((m) => ({
+    const models = schemaDefn.descendants(baseModel || '', { excludeAbstract: !includeAbstract, includeSelf: true }).map((m) => ({
       label: m, value: m, caption: schemaDefn.get(m).description, key: m,
     })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);

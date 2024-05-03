@@ -1,8 +1,9 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@material-ui/core';
 import React, { useContext } from 'react';
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';

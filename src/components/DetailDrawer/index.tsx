@@ -1,4 +1,5 @@
 import './index.scss';
+
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,

@@ -101,7 +101,7 @@ describe('schema service', () => {
     });
 
     // TODO: decide if we want it to capitalize
-    xtest('returns classModel name', () => {
+    test.skip('returns classModel name', () => {
       const classModel = {
         '@class': 'disease',
       };

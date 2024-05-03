@@ -1,7 +1,7 @@
 /**
  * Wrapper for api, handles all requests and special functions.
  */
-import {util, schema as schemaDefn} from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';

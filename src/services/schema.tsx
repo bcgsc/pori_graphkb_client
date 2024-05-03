@@ -141,26 +141,25 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       };
 
       if (Array.isArray(value) && value.length) {
-        // values could have different class models
         value.forEach((val) => {
-          embeddedModel = schemaDefn.get(val);
+          embeddedModel = schemaDefn.get(val['@class']);
 
           if (embeddedModel) {
-            Object.values(schemaDefn.getProperties(embeddedModel)).forEach((subPropModel) => {
+            Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
               subErrors = valErrorCheck(subPropModel, val, subErrors);
             });
           }
         });
       } else {
         try {
-          embeddedModel = schemaDefn.get(value);
+          embeddedModel = schemaDefn.get(value['@class']);
         } catch (err) { } // eslint-disable-line no-empty
 
         if (!embeddedModel) {
           return { error: { '@class': { message: 'Required Value' } } };
         }
 
-        Object.values(schemaDefn.getProperties(embeddedModel)).forEach((subPropModel) => {
+        Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
           subErrors = valErrorCheck(subPropModel, value, subErrors);
         });
       }

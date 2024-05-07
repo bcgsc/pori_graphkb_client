@@ -5,6 +5,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import * as qs from 'qs';
+import { Buffer } from 'buffer';
 import React, {
   useCallback, useEffect, useMemo,
   useState,
@@ -24,6 +25,8 @@ import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
+
+window.Buffer = window.Buffer || Buffer;
 
 const DEFAULT_TITLES = {
   [FORM_VARIANT.EDIT]: 'Edit this Record',

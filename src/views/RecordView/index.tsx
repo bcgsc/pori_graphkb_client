@@ -4,8 +4,8 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@material-ui/core';
-import * as qs from 'qs';
 import { Buffer } from 'buffer';
+import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
   useState,
@@ -130,7 +130,7 @@ const RecordView = ({
   const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
-    tuple(`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
+    tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
     async ({ queryKey: [route, options] }) => {
       if (!model) {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });

@@ -90,9 +90,9 @@ const Main = () => {
               <Route element={<AuthenticatedRoute component={FeedbackView} />} path="/feedback" />
               <Route element={<ErrorView />} path="/error" />
               <Route element={<AuthenticatedRoute component={AboutView} />} path="/about/*" />
-              <Route element={<AuthenticatedRoute component={ActivityView} />} path="/activity" />
-              <Route element={<AuthenticatedRoute component={QuickSearch} />} path="/query" />
-              <Route element={<AuthenticatedRoute component={AdvancedSearchView} />} path="/query-advanced" />
+              <Route element={<AuthenticatedRoute component={ActivityView} signedLicenseRequired />} path="/activity" />
+              <Route element={<AuthenticatedRoute component={QuickSearch} signedLicenseRequired />} path="/query" />
+              <Route element={<AuthenticatedRoute component={AdvancedSearchView} signedLicenseRequired />} path="/query-advanced" />
               {generateAuthenticatedRoutes(['edit'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
                 component: RecordView,
                 admin: true,
@@ -114,7 +114,7 @@ const Main = () => {
               <Route element={<AuthenticatedRoute component={GraphView} />} path="/data/graph" />
               <Route element={<AuthenticatedRoute admin component={AdminView} />} path="/admin" />
               <Route element={<AuthenticatedRoute component={ImportPubmedView} />} path="/import/pubmed" />
-              <Route element={<AuthenticatedRoute component={UserProfileView} />} path="/user-profile" />
+              <Route element={<AuthenticatedRoute component={UserProfileView} signedLicenseRequired />} path="/user-profile" />
               <Route element={<Navigate to="/query" />} path="/*" />
             </Routes>
           </Suspense>

@@ -8,7 +8,7 @@ import React, {
   createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo,
 } from 'react';
 import { useMutation } from 'react-query';
-import { RouteProps } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import api from '@/services/api';
 
@@ -157,15 +157,23 @@ interface AuthenticatedRouteProps {
   component: React.ComponentType<any>;
   componentProps?: any;
   admin?: boolean;
+  signedLicenseRequired?: boolean;
 }
 
 const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const {
     admin,
+    signedLicenseRequired,
     component: Comp,
     componentProps = {},
   } = props;
   const auth = useAuth();
+  const navigate = useNavigate();
+
+  const routeChange = () => {
+    const path = '/about/terms';
+    navigate(path);
+  };
 
   useLayoutEffect(() => {
     if (!auth.isAuthenticating && !auth.isAuthenticated && !auth.error) {
@@ -200,6 +208,16 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
       </Centered>
     );
   }
+
+  if (signedLicenseRequired && !auth.user?.signedLicenseAt) {
+    return (
+      <Centered>
+        <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
+        <Typography paragraph>User must sign the license agreement before they can access data.</Typography>
+        <Button onClick={routeChange}>Terms of Use and License Agreement</Button>
+      </Centered>
+    );
+  }
   const cp = componentProps || {};
 
   return <Comp {...cp} />;
@@ -207,6 +225,7 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
 
 AuthenticatedRoute.defaultProps = {
   admin: false,
+  signedLicenseRequired: false,
   componentProps: {},
 };
 

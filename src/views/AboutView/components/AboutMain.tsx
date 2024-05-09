@@ -8,9 +8,13 @@ import Chart from 'react-google-charts';
 import { useQuery } from 'react-query';
 
 import api from '@/services/api';
+import { useAuth } from '@/components/Auth';
 
 const AboutMain = () => {
   const theme = useTheme();
+  const auth = useAuth();
+  const hasSignedLicense = !!auth.user?.signedLicenseAt;
+
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
   const { data: chartData } = useQuery(
@@ -18,6 +22,7 @@ const AboutMain = () => {
     async ({ queryKey: [route] }) => api.get(route),
     {
       staleTime: Infinity,
+      enabled: hasSignedLicense,
       select: (response) => {
         const { Statement: result } = response;
         const data = [['source', 'count']];

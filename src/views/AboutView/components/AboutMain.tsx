@@ -7,8 +7,8 @@ import React from 'react';
 import Chart from 'react-google-charts';
 import { useQuery } from 'react-query';
 
-import api from '@/services/api';
 import { useAuth } from '@/components/Auth';
+import api from '@/services/api';
 
 const AboutMain = () => {
   const theme = useTheme();

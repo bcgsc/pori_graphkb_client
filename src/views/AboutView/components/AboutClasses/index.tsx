@@ -8,12 +8,12 @@ import React from 'react';
 import ClassDescription from './components/ClassDescription';
 
 const AboutClasses = () => {
-  const models = Object.values(schemaDefn.schema)
+  const models = Object.values(schemaDefn.models)
     .filter((m) => !m.embedded && !m.isAbstract && !m.isEdge)
     .sort((m1, m2) => m1.name.localeCompare(m2.name))
     .map((m) => ({ name: m.name, description: m.description }));
 
-  const links = Object.values(schemaDefn.schema)
+  const links = Object.values(schemaDefn.models)
     .filter((m) => !m.embedded && !m.isAbstract && m.isEdge)
     .sort((m1, m2) => m1.name.localeCompare(m2.name))
     .map((m) => ({ name: m.name, description: m.description }));

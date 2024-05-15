@@ -51,7 +51,7 @@ const BreakpointForm = ({
         <FormField
           initialFilterClass="Feature"
           label="reference"
-          model={{ ...model.properties.reference1, required, name: reference }}
+          model={{ ...schemaDefn.getProperty(model.name, 'reference1'), required, name: reference }}
         />
       )}
       {start && (
@@ -72,7 +72,7 @@ const BreakpointForm = ({
             clearable={false}
             label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
             model={{
-              ...model.properties.break1Start,
+              ...schemaDefn.getProperty(model.name, 'break1Start'),
               name: start,
               mandatory: required,
               linkedClass: schemaDefn.get(coordinateType),
@@ -85,7 +85,7 @@ const BreakpointForm = ({
               clearable={false}
               label={`end (${coordinateType})`}
               model={{
-                ...model.properties.break1Start,
+                ...schemaDefn.getProperty(model.name, 'break1End'),
                 name: end,
                 mandatory: required,
                 linkedClass: schemaDefn.get(coordinateType),

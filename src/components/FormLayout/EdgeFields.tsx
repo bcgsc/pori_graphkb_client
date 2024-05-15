@@ -37,7 +37,7 @@ const EdgeFields = ({
       disabled={disabled}
       label="Target Record (in)"
       model={{
-        linkedClass: schemaDefn.get(model.targetModel || 'V'),
+        linkedClass: schemaDefn.get(model.targetModel || 'V'), // TODO same but targetModel
         description: 'The target record for the relationship',
         name: 'in',
         type: 'link',

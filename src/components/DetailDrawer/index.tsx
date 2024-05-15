@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   Divider,
@@ -65,7 +66,6 @@ function DetailDrawer(props: DetailDrawerProps) {
     onClose,
     isEdge,
   } = props;
-
   const auth = useAuth();
 
   const [opened, setOpened] = useState([]);
@@ -187,8 +187,8 @@ function DetailDrawer(props: DetailDrawerProps) {
     let properties = Object.keys(record)
       .map((key) => ({ name: key, type: util.parseKBType(record[key]) }));
 
-    if (schema && schema.getProperties(record)) {
-      properties = schema.getProperties(record);
+    if (record['@class'] && schemaDefn.getProperties(record['@class'])) {
+      properties = schema.getProperties(record['@class']);
     }
     const propsList = Object.values(properties)
       .filter((prop) => !identifiers.map((id) => id.split('.')[0]).includes(prop.name)

@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@material-ui/core';
@@ -82,7 +82,7 @@ const PropertyFilter = ({
 }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState([]);
-  const [propertyModel, setPropertyModel] = useState({
+  const [propertyModel, setPropertyModel] = useState<any>({
     type: 'string', name: 'value', mandatory: true, generated: false,
   });
   const [operatorChoices, setOperatorChoices] = useState(['=']);
@@ -90,7 +90,7 @@ const PropertyFilter = ({
   const [subqueryType, setSubqueryType] = useState('');
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
-  const [keywordTargetOptions, setKeywordTargetOptions] = useState([]);
+  const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
 
   // use a schema form so that validation runs on the value based on the property selected
   const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
@@ -107,7 +107,7 @@ const PropertyFilter = ({
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
           if (prop.linkedClass) {
-            Object.values(prop.linkedClass.properties).forEach((subProp) => {
+            Object.values(schemaDefn.getProperties(prop.linkedClass)).forEach((subProp) => {
               const key = `${prop.name}.${subProp.name}`;
               choices.push({
                 label: key, value: key, key, caption: subProp.description,
@@ -141,21 +141,22 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel = { ...schema.getQueryProperties(modelName).find((p) => p.name === prop), mandatory: true };
+      let newPropertyModel: PropertyDefinition | null;
+      newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
       } else {
-        if (subProp) {
-          if (newPropertyModel.linkedClass && newPropertyModel.linkedClass.embedded) {
+        if (subProp && newPropertyModel) {
+          if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
             const parentPropModel = newPropertyModel;
-            newPropertyModel = newPropertyModel.linkedClass.properties[subProp];
+            newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
 
-            if (subProp === '@class') {
-              const choices = parentPropModel.linkedClass.subclasses.map((m) => m.name);
+            if (subProp === '@class' && parentPropModel.linkedClass) {
+              const choices = schemaDefn.children(parentPropModel.linkedClass);
 
-              if (!parentPropModel.linkedClass.isAbstract) {
-                choices.push(parentPropModel.linkedClass.name);
+              if (!schemaDefn.get(parentPropModel.linkedClass).isAbstract) {
+                choices.push(parentPropModel.linkedClass);
               }
               newPropertyModel.choices = choices;
             }
@@ -218,8 +219,8 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = originalPropertyModel.linkedClass || schemaDefn.get('V');
-      setKeywordTargetOptions(linkedModel.descendantTree(false).map((m) => m.name).sort());
+      const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
+      setKeywordTargetOptions(schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);
@@ -247,7 +248,7 @@ const PropertyFilter = ({
             ? ['ElementOf']
             : [],
           target: {
-            target: keywordTarget || originalPropertyModel.linkedClass.name || 'V',
+            target: keywordTarget || originalPropertyModel.linkedClass || 'V',
             operator,
             keyword: formContent[property],
             queryType: 'keyword',

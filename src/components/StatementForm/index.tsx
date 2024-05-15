@@ -104,8 +104,8 @@ const StatementForm = ({
 
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const model = schemaDefn.schema.Statement;
-  const fieldDefs = model.properties;
+  const model = schemaDefn.get('Statement');
+  const fieldDefs = schemaDefn.getProperties('Statement');
 
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [civicEvidenceId, setCivicEvidenceId] = useState('');

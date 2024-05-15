@@ -1,7 +1,7 @@
 /**
  * Wrapper for api, handles all requests and special functions.
  */
-import kbSchema from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
@@ -110,7 +110,7 @@ const del = (endpoint: string) => {
 const getDefaultSuggestionQueryBody = (model) => (textInput) => {
   let body: Record<string, unknown> = {};
 
-  if (kbSchema.util.looksLikeRID(textInput)) {
+  if (util.looksLikeRID(textInput)) {
     body = {
       target: [textInput],
     };
@@ -125,7 +125,7 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
     neighbors: 1,
   };
 
-  if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
+  if ((model?.name && schemaDefn.inheritsFrom(model.name, 'Ontology')) || model?.name === 'Ontology') {
     body.orderBy = ['source.sort', 'name', 'sourceId'];
   }
   return body;

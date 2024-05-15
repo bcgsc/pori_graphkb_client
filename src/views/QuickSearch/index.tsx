@@ -1,7 +1,7 @@
 import './index.scss';
 
-import kbp from '@bcgsc-pori/graphkb-parser';
-import kbSchema from '@bcgsc-pori/graphkb-schema';
+import { parseVariant } from '@bcgsc-pori/graphkb-parser';
+import { util } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,
@@ -28,7 +28,7 @@ const QuickSearch = () => {
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [variant, setVariant] = useState(null);
+  const [variant, setVariant] = useState<any>(null);
 
   const searchKeyword = useCallback(() => {
     if (value && !errorMessage) {
@@ -80,7 +80,7 @@ const QuickSearch = () => {
         if (variant) {
           searchByHGVS();
         }
-      } else if (kbSchema.util.looksLikeRID(value)) {
+      } else if (util.looksLikeRID(value)) {
         navigate({
           pathname: `/view/${value.replace(/^#/, '')}`,
         });
@@ -108,7 +108,7 @@ const QuickSearch = () => {
       }
     } else {
       try {
-        const parsed = kbp.variant.parse(value);
+        const parsed = parseVariant(value);
         setErrorMessage('');
         setVariant(parsed);
       } catch (err) {

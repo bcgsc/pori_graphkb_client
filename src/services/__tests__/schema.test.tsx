@@ -100,7 +100,7 @@ describe('schema service', () => {
       expect(cutOffLabel).toEqual('super long display name that is going to go ove...');
     });
 
-    // TODO: decide if we want it to capitalize
+    // TODO: decide if we want it to capitalize DEVSU-2295
     test.skip('returns classModel name', () => {
       const classModel = {
         '@class': 'disease',

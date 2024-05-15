@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { schema as schemaDefn, ClassDefinition } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   List,
@@ -50,7 +50,7 @@ const FormLayout = ({
   } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [model, setModel] = useState<any>(null);
+  const [model, setModel] = useState<ClassDefinition | null>(null);
 
   useEffect(() => {
     setModel(schemaDefn.get(modelName));

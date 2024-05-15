@@ -4,6 +4,7 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@material-ui/core';
+import { Buffer } from 'buffer';
 import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
@@ -24,6 +25,8 @@ import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import schema from '@/services/schema';
 import util from '@/services/util';
+
+window.Buffer = window.Buffer || Buffer;
 
 const DEFAULT_TITLES = {
   [FORM_VARIANT.EDIT]: 'Edit this Record',
@@ -127,7 +130,7 @@ const RecordView = ({
   const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
-    tuple(`${model?.routeName}/${rid.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
+    tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
     async ({ queryKey: [route, options] }) => {
       if (!model) {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });

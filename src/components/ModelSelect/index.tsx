@@ -28,12 +28,12 @@ interface ModelSelectProps {
 const ModelSelect = ({
   baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
 }: ModelSelectProps) => {
-  const [choices, setChoices] = useState([]);
+  const [choices, setChoices] = useState<any>([]);
   const model = value || defaultValue;
 
   useEffect(() => {
-    const models = schemaDefn.get(baseModel).descendantTree(!includeAbstract).map((m) => ({
-      label: m.name, value: m.name, caption: m.description, key: m.name,
+    const models = schemaDefn.descendants(baseModel || '', { excludeAbstract: !includeAbstract, includeSelf: true }).map((m) => ({
+      label: m, value: m, caption: schemaDefn.get(m).description, key: m,
     })).sort((m1, m2) => m1.label.localeCompare(m2.label));
     setChoices(models);
   }, [baseModel, includeAbstract, name, onChange, value]);

@@ -12,13 +12,9 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import FieldWrapper from '../FieldWrapper';
 
 const {
-  schema: {
-    CytobandPosition: {
-      properties,
-      properties: { arm, majorBand, minorBand }, name: VARIANT,
-    },
-  },
-} = schema;
+  properties,
+  properties: { arm, majorBand, minorBand }, name: VARIANT,
+} = schema.get('CytobandPosition');
 
 interface CytobandPositionProps {
   /** change handler */

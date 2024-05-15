@@ -131,6 +131,7 @@ const StatementReview = ({
               if (record && record['@rid']) {
                 return record['@rid'];
               }
+
               return `${record}`;
             }}
           />

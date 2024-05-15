@@ -24,7 +24,7 @@ import Timestamp from './Timestamp';
 
 const POSITION_CLASSES = [
   'Position',
-  ...schemaDefn.schema.Position.descendantTree(false).map((m) => m.name),
+  ...schemaDefn.descendants('Position', { excludeAbstract: false, includeSelf: true }),
 ];
 
 interface FormFieldProps {
@@ -70,7 +70,7 @@ const FormField = ({
     description,
     example,
     generateDefault,
-    linkedClass,
+    linkedClass: linkedClassName,
     linkedType,
     name,
     type,
@@ -78,6 +78,13 @@ const FormField = ({
     iterable,
     format,
   } = model;
+  let linkedClass;
+
+  if (typeof linkedClassName === 'string') {
+    linkedClass = schemaDefn.get(linkedClassName);
+  } else {
+    linkedClass = linkedClassName;
+  }
 
   const inputValue = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
@@ -219,7 +226,7 @@ const FormField = ({
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
         autoProps.filterOptions = [
-          ...schemaDefn.schema.Variant.descendantTree(false).map((m) => m.name),
+          ...schemaDefn.descendants('Variant', { excludeAbstract: false, includeSelf: true }),
           'Disease',
           'CatalogueVariant',
         ];

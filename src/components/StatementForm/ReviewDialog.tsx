@@ -35,7 +35,7 @@ const AddReviewDialog = ({
 }: AddReviewDialogProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const { comment, status } = schemaDefn.get(MODEL_NAME).properties;
+  const { comment, status } = schemaDefn.getProperties(MODEL_NAME);
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 

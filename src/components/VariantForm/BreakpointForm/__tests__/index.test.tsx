@@ -17,7 +17,7 @@ describe('BreakpointForm', () => {
         <BreakpointForm
           coordinateType="GenomicPosition"
           end="break1End"
-          model={schemaDefn.schema.PositionalVariant}
+          model={schemaDefn.get('PositionalVariant')}
           reference="reference1"
           start="break1Start"
         />
@@ -35,7 +35,7 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schemaDefn.schema.PositionalVariant}
+            model={schemaDefn.get('PositionalVariant')}
             reference="reference1"
             start="break1Start"
           />
@@ -55,7 +55,7 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schemaDefn.schema.PositionalVariant}
+            model={schemaDefn.get('PositionalVariant')}
             reference="reference1"
             start="break1Start"
           />
@@ -75,7 +75,7 @@ describe('BreakpointForm', () => {
       <QueryClientProvider client={api.queryClient}>
         <BreakpointForm
           coordinateType="GenomicPosition"
-          model={schemaDefn.schema.PositionalVariant}
+          model={schemaDefn.get('PositionalVariant')}
           reference="reference1"
         />
       </QueryClientProvider>,

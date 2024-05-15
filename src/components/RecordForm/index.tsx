@@ -66,7 +66,7 @@ const RecordForm = ({
 
   useEffect(() => {
     if (modelName) {
-      const { properties } = schemaDefn.get(modelName);
+      const properties = schemaDefn.getProperties(modelName);
       setFieldDefs(properties);
       setIsEdge(schema.isEdge(modelName));
     }
@@ -228,11 +228,11 @@ const RecordForm = ({
           variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && schemaDefn.get(modelName).inherits.includes('V') && (
+      {variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (
         <>
           <EdgeTable recordId={String(form.formContent['@rid'])} />
           <RelatedStatementsTable recordId={String(form.formContent['@rid'])} />
-          {schemaDefn.get(modelName).inherits.includes('Ontology') && (
+          {schemaDefn.ancestors(modelName).includes('Ontology') && (
             <RelatedVariantsTable recordId={String(form.formContent['@rid'])} />
           )}
         </>

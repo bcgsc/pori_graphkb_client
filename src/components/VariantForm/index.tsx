@@ -20,10 +20,11 @@ import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
 
-const { schema: { PositionalVariant, CategoryVariant, Position } } = schemaDefn;
+const PositionalVariant = schemaDefn.get('PositionalVariant');
+const CategoryVariant = schemaDefn.get('CategoryVariant');
 
 const leftoverPositionalProps = omit(
-  PositionalVariant.properties,
+  schemaDefn.getProperties('PositionalVariant'),
   [
     'break1Start',
     'break1End',
@@ -40,12 +41,12 @@ const leftoverPositionalProps = omit(
   ],
 );
 const { fields: positionalFields } = sortAndGroupFields(
-  { properties: leftoverPositionalProps },
+  leftoverPositionalProps,
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
 const leftoverCategoryProps = omit(
-  CategoryVariant.properties,
+  schemaDefn.getProperties('CategoryVariant'),
   [
     'reference1',
     'reference2',
@@ -55,12 +56,12 @@ const leftoverCategoryProps = omit(
   ],
 );
 const { fields: categoryFields } = sortAndGroupFields(
-  { properties: leftoverCategoryProps },
+  leftoverCategoryProps,
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = Position.descendantTree(true).map((m) => ({
-  label: m.name, value: m.name, key: m.name, caption: m.description,
+const coordinateOptions = schemaDefn.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
+  label: m, value: m, key: m, caption: schemaDefn.get(m).description,
 }));
 
 const MAJOR_FORM_TYPES = {
@@ -127,12 +128,12 @@ const VariantForm = ({
       ? {
         name: PositionalVariant.name,
         properties: {
-          ...PositionalVariant.properties,
-          break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
-          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
-          refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
+          ...schemaDefn.getProperties('PositionalVariant'),
+          break2Start: { ...schemaDefn.getProperty('PositionalVariant', 'break2Start'), mandatory: !isSubstitution },
+          reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
+          refSeq: { ...schemaDefn.getProperty('PositionalVariant', 'refSeq'), mandatory: isSubstitution },
           untemplatedSeq: {
-            ...PositionalVariant.properties.untemplatedSeq,
+            ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
             mandatory: isSubstitution,
           },
         },
@@ -140,8 +141,8 @@ const VariantForm = ({
       : {
         name: CategoryVariant.name,
         properties: {
-          ...CategoryVariant.properties,
-          reference2: { ...CategoryVariant.properties.reference2, mandatory: isFusion },
+          ...schemaDefn.getProperties('PositionalVariant'),
+          reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
         },
       };
     setModel(newModel);
@@ -194,7 +195,7 @@ const VariantForm = ({
       modelName={model.name}
       onDelete={handleDeleteAction}
       onSubmit={handleSubmitAction}
-      properties={model.properties}
+      properties={schemaDefn.getProperties(model.name)}
       value={value}
     >
       <FormStepWrapper
@@ -253,14 +254,14 @@ const VariantForm = ({
               model={{
                 properties: {
                   refSeq: {
-                    ...PositionalVariant.properties.refSeq,
+                    ...schemaDefn.getProperty('PositionalVariant', 'refSeq'),
                     mandatory: isSubstitution,
                   },
                   untemplatedSeq: {
-                    ...PositionalVariant.properties.untemplatedSeq,
+                    ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
+                  untemplatedSeqSize: schemaDefn.getProperty('PositionalVariant', 'untemplatedSeqSize'),
                 },
               }}
               ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
@@ -273,8 +274,8 @@ const VariantForm = ({
           disabled={false}
           model={{
             properties: {
-              type: PositionalVariant.properties.type,
-              zygosity: PositionalVariant.properties.zygosity,
+              type: schemaDefn.getProperty('PositionalVariant', 'type'),
+              zygosity: schemaDefn.getProperty('PositionalVariant', 'zygosity'),
             },
           }}
           ordering={['type', 'zygosity']}

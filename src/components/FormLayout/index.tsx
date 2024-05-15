@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn, ClassDefinition } from '@bcgsc-pori/graphkb-schema';
+import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Collapse,
   List,

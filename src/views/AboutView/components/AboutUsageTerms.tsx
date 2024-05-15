@@ -21,7 +21,7 @@ const AboutUsageTerms = () => {
   const [hasSigned, setHasSigned] = useState(false);
 
   const { data } = useQuery(
-    ['/license', user.signedLicenseAt],
+    ['/license', user?.signedLicenseAt],
     () => api.get('/license'),
   );
 

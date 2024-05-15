@@ -1,8 +1,10 @@
 import './index.scss';
 
 import {
+  Button,
   Tab,
   Tabs,
+  Typography,
 } from '@material-ui/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -10,8 +12,11 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from 'react-router-dom';
 import slugify from 'slugify';
+
+import { useAuth } from '@/components/Auth';
 
 import AboutClasses from './components/AboutClasses';
 import AboutMain from './components/AboutMain';
@@ -38,9 +43,19 @@ const defaultTabsList: TabsList = [
 
 const AboutView = () => {
   const { pathname: currentUri } = useLocation();
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const routeChange = () => {
+    const path = '/about/terms';
+    navigate(path);
+  };
+
   const [tabIndex, setTabIndex] = useState(0);
 
   const baseUri = '/about';
+  const tabsRequiringTermsAgreement = ['/about/classes', '/about/matching'];
+
   const uriLookup = useMemo(() => ({}), []);
 
   const tabsList = defaultTabsList.map((tab, index) => {
@@ -62,6 +77,32 @@ const AboutView = () => {
     setTabIndex(value);
   };
 
+  const tabsContent = () => {
+    if (!auth.user?.signedLicenseAt && tabsRequiringTermsAgreement.includes(currentUri)) {
+      return (
+        <div className="license-agreement-message">
+          <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
+          <Typography paragraph>User must sign the license agreement before they can access data.</Typography>
+          <Button onClick={routeChange}>Terms of Use and License Agreement</Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="tabs-content">
+        <Routes>
+          {tabsList.map(({ slug, label, component }) => (
+            <Route
+              key={label}
+              Component={component}
+              path={slug}
+            />
+          ))}
+        </Routes>
+      </div>
+    );
+  };
+
   return (
     <div className="about-page">
       <Tabs className="tabs-bar" onChange={handleTabChange} value={tabIndex} variant="scrollable">
@@ -75,17 +116,7 @@ const AboutView = () => {
           />
         ))}
       </Tabs>
-      <div className="tabs-content">
-        <Routes>
-          {tabsList.map(({ slug, label, component }) => (
-            <Route
-              key={label}
-              Component={component}
-              path={slug}
-            />
-          ))}
-        </Routes>
-      </div>
+      {tabsContent()}
     </div>
   );
 };

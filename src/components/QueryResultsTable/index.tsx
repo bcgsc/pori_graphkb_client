@@ -79,6 +79,7 @@ const QueryResultsTable = ({
           columnDefs={columnDefs}
           data={data}
           deltaRowDataMode
+          enableCellTextSelection
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(rowData) => rowData['@rid']}
           pagination

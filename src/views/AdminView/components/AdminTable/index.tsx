@@ -164,6 +164,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
             resizable: true,
             width: 150,
           }}
+          enableCellTextSelection
           frameworkComponents={{ EmailLink, Actions }}
           pagination
           paginationAutoPageSize

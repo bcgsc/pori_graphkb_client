@@ -125,7 +125,7 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
     neighbors: 1,
   };
 
-  if (model && model.name && schemaDefn.ancestors(model.name) && schemaDefn.ancestors(model.name).includes('Ontology') || model.name === 'Ontology') {
+  if ((model?.name && schemaDefn.inheritsFrom(model.name, 'Ontology')) || model?.name === 'Ontology') {
     body.orderBy = ['source.sort', 'name', 'sourceId'];
   }
   return body;

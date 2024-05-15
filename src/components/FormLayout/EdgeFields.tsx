@@ -26,7 +26,7 @@ const EdgeFields = ({
       label="Source Record (out)"
       model={{
         description: 'The source record for the relationship',
-        linkedClass: schemaDefn.get(model.sourceModel || 'V'), // TODO: check if models have sourceModel property now
+        linkedClass: schemaDefn.get(model.sourceModel || 'V'),
         name: 'out',
         type: 'link',
         mandatory: true,

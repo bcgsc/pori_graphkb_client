@@ -74,7 +74,7 @@ const getProperties = (obj) => {
 const getQueryProperties = (className) => {
   const VPropKeys = schemaDefn.getProperties('V');
   return Object.values(schemaDefn.queryableProperties(className) ?? {})
-    .filter((prop) => !VPropKeys[prop.name]);
+    .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
 };
 
 /**
@@ -105,7 +105,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 }
 
 const isEdge = (cls) => !!(schemaDefn.get(cls)
-      && schemaDefn.ancestors(cls).some((inherited) => inherited === 'E'));
+  && schemaDefn.ancestors(cls).some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object
@@ -237,8 +237,8 @@ const defineGridColumns = (search) => {
     } else if (data && data.conditions) {
       values = data.conditions.filter((val) => (
         !val['@class'].toLowerCase().includes('variant')
-          && !val['@class'].toLowerCase().includes('disease')
-          && (!data.subject || (data.subject['@rid'] !== val['@rid']))
+        && !val['@class'].toLowerCase().includes('disease')
+        && (!data.subject || (data.subject['@rid'] !== val['@rid']))
       ));
     }
     if (values) {

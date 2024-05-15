@@ -91,7 +91,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
 function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): string[];
 
 function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null = null) {
-  const list: string[] = schemaDefn.children('E');
+  const list: string[] = schemaDefn.children('E').slice();
 
   if (node) {
     const edges: EdgeType[] = [];
@@ -142,7 +142,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
 
       if (Array.isArray(value) && value.length) {
         value.forEach((val) => {
-          embeddedModel = schemaDefn.get(val['@class']);
+          embeddedModel = schemaDefn.get(val);
 
           if (embeddedModel) {
             Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
@@ -152,7 +152,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
         });
       } else {
         try {
-          embeddedModel = schemaDefn.get(value['@class']);
+          embeddedModel = schemaDefn.get(value);
         } catch (err) { } // eslint-disable-line no-empty
 
         if (!embeddedModel) {
@@ -347,8 +347,7 @@ const defineGridColumns = (search) => {
     colId: 'preview',
     field: 'preview',
     sortable: false,
-    // TODO what is second arg doing here?
-    valueGetter: ({ data }) => schemaDefn.getPreview(data, false),
+    valueGetter: ({ data }) => schemaDefn.getPreview(data),
     hide: modelName === 'Statement',
   });
 

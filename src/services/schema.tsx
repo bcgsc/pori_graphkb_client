@@ -1,5 +1,5 @@
 import {
-  ClassDefinition, PropertyDefinition, schema as schemaDefn, validateProperty,
+  PropertyDefinition, schema as schemaDefn, validateProperty,
 } from '@bcgsc-pori/graphkb-schema';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';

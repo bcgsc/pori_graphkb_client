@@ -123,6 +123,7 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
             },
           ]}
           defaultColDef={{ resizable: true, sortable: true }}
+          enableCellTextSelection
           frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={(data) => data['@rid']}
           pagination

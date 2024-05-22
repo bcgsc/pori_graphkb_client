@@ -95,6 +95,7 @@ const RelatedVariantsTable = ({ recordId }: RelatedVariantsTableProps) => {
           ]}
           defaultColDef={{ resizable: true, sortable: true }}
           deltaRowDataMode
+          enableCellTextSelection
           frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={(data) => data['@rid']}
           pagination

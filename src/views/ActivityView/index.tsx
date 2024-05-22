@@ -135,6 +135,7 @@ const ActivityView = () => {
           ]}
           data={recentRecords}
           deltaRowDataMode
+          enableCellTextSelection
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(data) => data['@rid']}
           pagination

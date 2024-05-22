@@ -356,6 +356,7 @@ const DataView = (): JSX.Element => {
               resizable: true,
               width: 150,
             }}
+            enableCellTextSelection
             groupHeaderHeight={30}
             infiniteInitialRowCount={1}
             maxBlocksInCache={0}

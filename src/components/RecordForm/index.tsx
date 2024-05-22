@@ -280,7 +280,7 @@ const RecordForm = ({
 };
 
 RecordForm.defaultProps = {
-  modelName: null,
+  modelName: '',
   onError: () => {},
   onSubmit: () => {},
   onToggleState: undefined,

@@ -238,7 +238,7 @@ const RecordForm = ({
         </>
       )}
       <div className="record-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT
+        {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (
             <ActionButton
               disabled={actionInProgress}
@@ -267,7 +267,7 @@ const RecordForm = ({
               size="large"
               variant="contained"
             >
-              {variant === FORM_VARIANT.EDIT
+              {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
                 ? 'SUBMIT CHANGES'
                 : 'SUBMIT'}
             </ActionButton>

@@ -355,7 +355,7 @@ const StatementForm = ({
         />
       </FormContext.Provider>
       <div className="statement-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT
+        {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (
             <ActionButton
               disabled={actionInProgress}
@@ -375,7 +375,7 @@ const StatementForm = ({
         {additionalValidationError && (
           <Alert severity="error">{additionalValidationError}</Alert>
         )}
-        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT
+        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (
             <ActionButton
               color="primary"

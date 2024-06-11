@@ -316,7 +316,6 @@ const defineGridColumns = (search) => {
 
   const exclude = [
     'deletedBy',
-    'deletedAt',
     'groupRestrictions',
     'history',
     'groups',

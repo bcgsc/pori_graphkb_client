@@ -209,7 +209,7 @@ const RecordForm = ({
         <div className={`header__actions header__actions--${variant}`}>
           {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
-              allowEdit={auth.hasWriteAccess}
+              allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
               message="Are you sure? You will lose your changes."
               onClick={onToggleState}
               requireConfirm={variant === 'edit' && formIsDirty}

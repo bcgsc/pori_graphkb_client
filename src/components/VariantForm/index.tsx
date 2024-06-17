@@ -153,6 +153,13 @@ const VariantForm = ({
    */
   const handleSubmitAction = useCallback(async (content) => {
     const payload = cleanPayload(content);
+
+    /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
+    Property has the same value as refSeq and should be hidden from users to avoid confusion. */
+    if (payload?.break1Start['@class'] === 'ProteinPosition') {
+      const refAA = payload.refSeq ? payload.refSeq : '';
+      payload.break1Start = { ...payload.break1Start, refAA };
+    }
     const { routeName } = schemaDefn.get(payload);
 
     const actionType = formVariant === FORM_VARIANT.NEW

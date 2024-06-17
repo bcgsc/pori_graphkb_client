@@ -184,13 +184,6 @@ const cleanPayload = (payload) => {
       }
     }
   });
-
-  /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
-  Property has the same value as refSeq and should be hidden from users to avoid confusion. */
-  if (newPayload?.break1Start['@class'] === 'ProteinPosition') {
-    const refAA = newPayload.refSeq ? newPayload.refSeq : '';
-    newPayload.break1Start = { ...newPayload.break1Start, refAA };
-  }
   return newPayload;
 };
 

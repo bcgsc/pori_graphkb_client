@@ -209,7 +209,7 @@ const RecordForm = ({
         <div className={`header__actions header__actions--${variant}`}>
           {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
-              allowEdit={auth.hasWriteAccess}
+              allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
               message="Are you sure? You will lose your changes."
               onClick={onToggleState}
               requireConfirm={variant === 'edit' && formIsDirty}
@@ -238,7 +238,7 @@ const RecordForm = ({
         </>
       )}
       <div className="record-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT
+        {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (
             <ActionButton
               disabled={actionInProgress}
@@ -267,7 +267,7 @@ const RecordForm = ({
               size="large"
               variant="contained"
             >
-              {variant === FORM_VARIANT.EDIT
+              {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
                 ? 'SUBMIT CHANGES'
                 : 'SUBMIT'}
             </ActionButton>

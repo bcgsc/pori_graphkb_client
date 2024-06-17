@@ -136,7 +136,7 @@ describe('RecordForm', () => {
     });
 
     test('shows delete button', () => {
-      expect(screen.getByText('DELETE')).toBeInTheDocument();
+      expect(screen.getByText('DELETE RECORD')).toBeInTheDocument();
     });
 
     test('shows submit button', () => {

@@ -364,7 +364,7 @@ const StatementForm = ({
               size="large"
               variant="outlined"
             >
-              DELETE
+              DELETE RECORD
             </ActionButton>
           )
           // for spacing issues only

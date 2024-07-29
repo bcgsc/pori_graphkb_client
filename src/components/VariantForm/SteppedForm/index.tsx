@@ -37,7 +37,7 @@ const SteppedForm = ({
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
-  const form = useSchemaForm(properties, { '@class': modelName, ...value }, { variant: formVariant });
+  const form = useSchemaForm(properties, { '@class': modelName, ...value }, {}, { variant: formVariant });
   const {
     formContent, formErrors, formHasErrors, formIsDirty,
   } = form;

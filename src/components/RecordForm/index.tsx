@@ -72,7 +72,7 @@ const RecordForm = ({
     }
   }, [modelName]);
 
-  const form = useSchemaForm(fieldDefs, initialValue, { variant });
+  const form = useSchemaForm(fieldDefs, initialValue, {}, { variant });
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
   } = form;

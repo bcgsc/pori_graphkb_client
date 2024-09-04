@@ -2,13 +2,12 @@
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // eslint ignore-line
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
+const { GenerateSW } = require('workbox-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 
@@ -47,38 +46,29 @@ const createBaseConfig = ({
         ],
       },
       {
-        test: /\.js$/,
+        test: /\.[tj]sx?$/,
         include: INCLUDE,
         use: [
           'babel-loader',
-          'eslint-loader',
         ],
         sideEffects: false,
       },
       {
-      // convert images to embeded hashes
+        // convert images to embedded hashes
         test: /\.(bmp|gif|jpeg?|png|ico)$/,
-        loader: 'url-loader',
         include: INCLUDE,
-        options: {
-          limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]',
+        type: 'asset',
+        generator: {
+          filename: 'static/media/[name].[hash:8][ext]',
         },
       },
       {
-        test: /\.html$/,
-        loader: 'html-loader',
-        options: {
-          removeComments: false,
-        },
-      },
-      {
-      // Load everything else
+        // Load everything else
         test: /\.(md|svg|ico|json)$/,
         include: INCLUDE,
-        loader: 'file-loader',
-        options: {
-          name: 'static/[name].[ext]',
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/[name][ext]',
         },
       },
     ],
@@ -86,7 +76,6 @@ const createBaseConfig = ({
 
 
   const plugins = [
-    new webpack.HotModuleReplacementPlugin(),
     // copy the dynamic env js file
     new CopyPlugin({
       patterns: [
@@ -96,17 +85,15 @@ const createBaseConfig = ({
         },
       ],
     }),
-    // separate the css from the main js bundle
     new MiniCssExtractPlugin({
+      ignoreOrder: true,
       filename: 'static/style/[name].css',
     }),
-    new CleanWebpackPlugin(
-      outputPath, { root: BASE_DIR },
-    ),
+    new CleanWebpackPlugin(),
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.DefinePlugin({
       'process.env.npm_package_version': JSON.stringify(process.env.npm_package_version),
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify(mode),
       ...define,
     }),
     // template index.html. Required for running the dev-server properly
@@ -165,44 +152,33 @@ const createBaseConfig = ({
       test: /.*\.(js|css)$/,
       minRatio: 0.8,
     }),
-    /** dd assests manifest */
-    new ManifestPlugin({
-      fileName: 'manifest.json',
-    }),
-    /* From eject react app (Old webpack eject)
+    /** dd assets manifest */
+    new WebpackManifestPlugin({}),
+    /*
    * This service worker is required to ensure that the URL refresh works with a static
    * server (If previously visited)
    * Generate a service worker script that will precache, and keep up to date,
    * the HTML & assets that are part of the Webpack build.
    */
-    new SWPrecacheWebpackPlugin({
-    // By default, a cache-busting query parameter is appended to requests
-    // used to populate the caches, to ensure the responses are fresh.
-    // If a URL is already hashed by Webpack, then there is no concern
-    // about it being stale, and the cache-busting can be skipped.
-      dontCacheBustUrlsMatching: /\.\w{8}\./,
-      filename: 'service-worker.js',
-      logger(message) {
-        if (message.indexOf('Total precache size is') === 0) {
-        // This message occurs for every build and is a bit too noisy.
-          return;
-        }
-        if (message.indexOf('Skipping static resource') === 0) {
-        // This message obscures real errors so we ignore it.
-        // https://github.com/facebookincubator/create-react-app/issues/2612
-          return;
-        }
-        console.log(message);  // eslint-disable-line
-      },
-      minify: true,
+    new GenerateSW({
+      // By default, a cache-busting query parameter is appended to requests
+      // used to populate the caches, to ensure the responses are fresh.
+      // If a URL is already hashed by Webpack, then there is no concern
+      // about it being stale, and the cache-busting can be skipped.
+      dontCacheBustURLsMatching: /\.\w{8}\./,
+      // otherwise it spams console
+      mode: 'production',
       // For unknown URLs, fallback to the index page
       navigateFallback: '/index.html',
-      // Ignores URLs starting from /__ (useful for Firebase):
-      // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-      navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      exclude: [/\.map$/, /asset-manifest\.json$/],
     }),
+    new webpack.ProvidePlugin({
+      // Make a global `process` variable that points to the `process` package,
+      // because the `util` package expects there to be a global variable named `process`.
+      // Thanks to https://stackoverflow.com/a/65018686/14239942
+      process: 'process/browser'
+    })
   ];
 
 
@@ -211,7 +187,7 @@ const createBaseConfig = ({
     context: SRC_PATH,
     entry: [
       './polyfills.js',
-      './index.js',
+      './index.tsx',
     ],
     output: {
       path: outputPath,
@@ -222,32 +198,33 @@ const createBaseConfig = ({
     devServer: {
       host: process.env.HOSTNAME || 'localhost',
       port: 3000,
-      disableHostCheck: true,
+      allowedHosts: 'all',
       hot: true,
-      publicPath: '/',
+      devMiddleware: {
+        publicPath: '/',
+      },
       historyApiFallback: true,
-      compress: true,
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false,
+        },
+      },
     },
     performance: { hints: 'warning' },
-    // production optimizations
     optimization: {
       runtimeChunk: 'single',
-      minimizer: [
-        new TerserWebpackPlugin({
-          terserOptions: {
-            keep_classnames: true,
-            module: true,
-            sourceMap,
-          },
-        }),
-      ],
     },
+    devtool: sourceMap ? 'eval' : false,
     plugins,
     resolve: {
-      extensions: ['.js', '.jsx', '.json'],
+      extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
         '@': SRC_PATH,
       },
+      fallback: { 
+        "util": require.resolve("util/")
+      }
     },
     module: moduleSettings,
 

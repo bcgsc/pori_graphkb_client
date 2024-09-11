@@ -168,6 +168,7 @@ const VariantForm = ({
 
     try {
       let result;
+
       if (formVariant === FORM_VARIANT.NEW) {
         result = await api.post(routeName, payload);
       } else {

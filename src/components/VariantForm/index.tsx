@@ -156,7 +156,7 @@ const VariantForm = ({
 
     /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
     Property has the same value as refSeq and should be hidden from users to avoid confusion. */
-    if (payload?.break1Start['@class'] === 'ProteinPosition') {
+    if (payload?.break1Start && payload?.break1Start['@class'] === 'ProteinPosition') {
       const refAA = payload.refSeq ? payload.refSeq : '';
       payload.break1Start = { ...payload.break1Start, refAA };
     }
@@ -167,10 +167,13 @@ const VariantForm = ({
       : 'edited';
 
     try {
-      const result = await formVariant === FORM_VARIANT.NEW
-        ? api.post(routeName, payload)
-        : api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+      let result;
 
+      if (formVariant === FORM_VARIANT.NEW) {
+        result = await api.post(routeName, payload);
+      } else {
+        result = await api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+      }
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);
     } catch (err) {

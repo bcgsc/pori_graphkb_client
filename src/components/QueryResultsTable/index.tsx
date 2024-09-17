@@ -77,13 +77,13 @@ const QueryResultsTable = ({
         <AgGridReact
           {...grid.props}
           columnDefs={columnDefs}
-          data={data}
           deltaRowDataMode
           enableCellTextSelection
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(rowData) => rowData['@rid']}
           pagination
           paginationAutoPageSize
+          rowData={data}
           suppressHorizontalScroll
         />
       </div>

@@ -107,7 +107,7 @@ const Main = () => {
               })}
               {generateAuthenticatedRoutes(['new'], [...ABSTRACT_CLASSES, ...ABSTRACT_CLASSES.map((m) => m.toLowerCase())], {
                 component: NewRecordSelectView,
-                admin: true,
+                admin: false,
               })}
               <Route element={<AuthenticatedRoute component={NewRecordView} />} path="/new/:modelName" />
               <Route element={<AuthenticatedRoute component={DataView} />} path="/data/table" />

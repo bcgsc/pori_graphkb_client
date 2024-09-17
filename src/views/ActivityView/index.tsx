@@ -71,7 +71,7 @@ const ActivityView = () => {
       }),
     ]);
     const result = [...records, ...edges]
-      .sort((rec1, rec2) => (rec2.updatedAt || rec2.createdAt) - (rec1.updatedAt || rec1.createdAt));
+      .sort((rec1: any, rec2: any) => (rec2.updatedAt || rec2.createdAt) - (rec1.updatedAt || rec1.createdAt));
     return result;
   });
 
@@ -133,13 +133,13 @@ const ActivityView = () => {
               sortable: true,
             },
           ]}
-          data={recentRecords}
           deltaRowDataMode
           enableCellTextSelection
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
+          rowData={recentRecords}
           suppressHorizontalScroll
         />
       </div>

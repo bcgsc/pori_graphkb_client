@@ -133,13 +133,13 @@ const ActivityView = () => {
               sortable: true,
             },
           ]}
-          rowData={recentRecords}
           deltaRowDataMode
           enableCellTextSelection
           frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize
+          rowData={recentRecords}
           suppressHorizontalScroll
         />
       </div>

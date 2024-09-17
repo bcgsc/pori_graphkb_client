@@ -77,7 +77,7 @@ const QueryResultsTable = ({
         <AgGridReact
           {...grid.props}
           columnDefs={columnDefs}
-          data={data}
+          rowData={data}
           deltaRowDataMode
           enableCellTextSelection
           frameworkComponents={{ JumpToRecord }}

@@ -48,10 +48,12 @@ function RelationshipList(props: RelationshipListProps) {
       {edges.map((edge) => {
         const isOpen = linkOpen === rid(edge);
         let isIn = false;
+
         if (edge.in !== undefined) {
           isIn = edge.in && rid(edge.in) === rid(record);
         }
         const targetNode = isIn ? edge.out : edge.in;
+
         if (targetNode === undefined || rid(targetNode) === rid(record)) {
           return null;
         }

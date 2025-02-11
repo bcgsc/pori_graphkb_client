@@ -98,7 +98,7 @@ function getEdges<ReqFields extends string = string>(node: GeneralRecordType<Req
     Object.keys(node)
       .filter((key) => key.split('_')[1] && list.includes(key.split('_')[1]))
       .forEach((key) => {
-        if (node[key].deletedAt === null) {
+        if (node[key].deletedAt === undefined || null) {
           edges.push(...node[key]);
         }
       });

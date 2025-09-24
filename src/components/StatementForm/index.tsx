@@ -5,13 +5,16 @@ import {
   Button, CircularProgress,
   Paper, Typography,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { Alert } from '@material-ui/lab';
+import isempty from 'lodash.isempty';
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
@@ -54,6 +57,9 @@ const StatementForm = ({
   variant,
   ...rest
 }: StatementFormProps) => {
+  const params = useParams();
+  const navigate = useNavigate();
+
   const { data: diagnosticData } = useQuery(
     tuple(
       '/query',
@@ -100,6 +106,30 @@ const StatementForm = ({
       },
     ),
     async ({ queryKey: [, body] }) => api.query(body),
+  );
+
+  // Fetch and populate the fields for quick copy of record
+  useQuery(
+    `/statements/${params.rid}?neighbors=1`,
+    async ({ queryKey: [route] }) => api.get(route),
+    {
+      enabled: (isempty(initialValue) && Boolean(params.rid)),
+      onSuccess: (data) => {
+        navigate('/new/statement', { replace: true });
+        const keysToIgnore = [
+          '@rid', '@class',
+          'createdAt', 'createdBy',
+          'updatedAt', 'updatedBy',
+          'deletedAt', 'deletedBy',
+          'uuid', 'reviews',
+        ];
+        Object.entries(data).forEach(([key, value]) => {
+          if (!keysToIgnore.includes(key)) {
+            updateField(key, value);
+          }
+        });
+      },
+    },
   );
 
   const snackbar = useSnackbar();
@@ -322,6 +352,17 @@ const StatementForm = ({
             >
               <LocalLibraryIcon classes={{ root: 'review-icon' }} />
               Add Review
+            </Button>
+          )}
+          {variant === FORM_VARIANT.VIEW && (
+            <Button
+              className="header__review-action"
+              component={Link}
+              target="_blank"
+              to={!isempty(initialValue) ? `/new/${initialValue['@class'].toLowerCase()}/${initialValue['@rid'].replace(/^#/, '')}/` : ''}
+              variant="outlined"
+            >
+              <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy
             </Button>
           )}
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}

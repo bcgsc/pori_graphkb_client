@@ -6,6 +6,7 @@ import {
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import { MemoryRouter } from 'react-router-dom';
 
 import { AuthContext } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
@@ -86,13 +87,15 @@ describe('StatementForm', () => {
       <QueryClientProvider client={api.queryClient}>
         <AuthContext.Provider value={auth}>
           <SnackbarProvider onEnter={snackbarSpy}>
-            <StatementForm
-              onError={onErrorSpy}
-              onSubmit={onSubmitSpy}
-              title="blargh monkeys"
-              value={{ }}
-              variant={FORM_VARIANT.EDIT}
-            />
+            <MemoryRouter>
+              <StatementForm
+                onError={onErrorSpy}
+                onSubmit={onSubmitSpy}
+                title="blargh monkeys"
+                value={{ }}
+                variant={FORM_VARIANT.EDIT}
+              />
+            </MemoryRouter>
           </SnackbarProvider>
         </AuthContext.Provider>
       </QueryClientProvider>,
@@ -106,13 +109,15 @@ describe('StatementForm', () => {
         <QueryClientProvider client={api.queryClient}>
           <SnackbarProvider onEnter={snackbarSpy}>
             <AuthContext.Provider value={auth}>
-              <StatementForm
-                onError={onErrorSpy}
-                onSubmit={onSubmitSpy}
-                title="blargh monkeys"
-                value={{ }}
-                variant={FORM_VARIANT.NEW}
-              />
+              <MemoryRouter>
+                <StatementForm
+                  onError={onErrorSpy}
+                  onSubmit={onSubmitSpy}
+                  title="blargh monkeys"
+                  value={{ }}
+                  variant={FORM_VARIANT.NEW}
+                />
+              </MemoryRouter>
             </AuthContext.Provider>
           </SnackbarProvider>
         </QueryClientProvider>,

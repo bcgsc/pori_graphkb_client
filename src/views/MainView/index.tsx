@@ -109,6 +109,7 @@ const Main = () => {
                 component: NewRecordSelectView,
                 admin: false,
               })}
+              <Route element={<AuthenticatedRoute component={NewRecordView} />} path="/new/:modelName/:rid" />
               <Route element={<AuthenticatedRoute component={NewRecordView} />} path="/new/:modelName" />
               <Route element={<AuthenticatedRoute component={DataView} />} path="/data/table" />
               <Route element={<AuthenticatedRoute component={GraphView} />} path="/data/graph" />

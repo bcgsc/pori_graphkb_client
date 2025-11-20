@@ -1,6 +1,6 @@
 {
   "name": "@bcgsc-pori/graphkb-client",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "private": true,
   "bugs": {
     "email": "graphkb@bcgsc.ca"

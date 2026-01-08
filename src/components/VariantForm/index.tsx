@@ -172,7 +172,8 @@ const VariantForm = ({
       if (formVariant === FORM_VARIANT.NEW) {
         result = await api.post(routeName, payload);
       } else {
-        result = await api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+        const { displayName, ...rest } = payload;
+        result = await api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, rest);
       }
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);

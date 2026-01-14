@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface DefaultPopupComponentProps {
@@ -135,23 +135,22 @@ function DetailChip(props: DetailChipProps) {
     PopUpProps,
     ...rest
   } = props;
-
   const [anchorEl, setAnchorEl] = useState(null);
 
   /**
    * Closes popover.
    */
-  const handlePopoverClose = () => {
+  const handlePopoverClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
   /**
    * Opens popover.
    * @param {Event} event - User click event.
    */
-  const handlePopoverOpen = (event) => {
+  const handlePopoverOpen = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
   return (
     <div className="detail-chip" {...rest}>
@@ -159,7 +158,9 @@ function DetailChip(props: DetailChipProps) {
         anchorEl={anchorEl}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         className="detail-chip__popover detail-popover"
+        onClick={(e) => e.stopPropagation()}
         onClose={handlePopoverClose}
+        onMouseDown={(e) => e.stopPropagation()}
         open={!!anchorEl}
         transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >

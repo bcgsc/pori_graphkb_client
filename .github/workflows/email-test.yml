@@ -1,0 +1,24 @@
+name: Email test for master
+
+on:
+  pull_request:
+    branches:
+      - actions/KBDEV-1393-test  # Target production branch
+    types: [closed]
+
+jobs:
+  send-email:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send PR email
+        run: node .github/scripts/sendPrEmail.js
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_SENDER_EMAIL: ${{ secrets.AZURE_SENDER_EMAIL }}
+          RECIPIENT_EMAIL: recipient@example.com
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}

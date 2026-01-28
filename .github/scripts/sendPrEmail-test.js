@@ -1,4 +1,4 @@
-import https from 'https';
+const https = require('https');
 
 const {
   AZURE_TENANT_ID,

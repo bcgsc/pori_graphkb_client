@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Send PR email
-        run: node .github/scripts/sendPrEmail.js
+        run: node .github/scripts/sendPrEmail-test.js
         env:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

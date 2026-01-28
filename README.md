@@ -59,3 +59,5 @@ Advaced queries can be built using the query builder. The example below shows a 
 drug sensitivity statements loaded from [CIViC](https://civicdb.org).
 
 ![search](docs/images/graphkb-search-sens-civic-statements.gif)
+
+<!-- Oh no I added text to the readme -->

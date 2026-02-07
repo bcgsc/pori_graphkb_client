@@ -1,10 +1,16 @@
 name: Email on master merge
 
 on:
-  pull_request:
-    branches:
-      - master
-    types: [closed]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      pr_title:
+        required: true
+      pr_body:
+        required: true
+      recipient_email:
+        required: true
 
 jobs:
   send-email:

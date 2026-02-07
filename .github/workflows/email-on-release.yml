@@ -1,14 +1,19 @@
-name: Email on master merge
+name: Release email on release published
 
 on:
-  pull_request:
-    branches:
-      - master
-    types: [closed]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      pr_title:
+        required: true
+      pr_body:
+        required: true
+      recipient_email:
+        required: true
 
 jobs:
   send-email:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:

@@ -6,8 +6,8 @@ const {
   AZURE_CLIENT_SECRET,
   AZURE_SENDER_EMAIL,
   RECIPIENT_EMAIL,
-  PR_TITLE,
-  PR_BODY
+  RELEASE_TITLE,
+  RELEASE_BODY
 } = process.env;
 
 /**
@@ -92,10 +92,10 @@ const formatBody = (body = 'No description provided.') => {
 const sendMail = async (token) => {
   const payload = JSON.stringify({
     message: {
-      subject: `GraphKb Client ${PR_TITLE}`,
+      subject: `GraphKb Client ${RELEASE_TITLE}`,
       body: {
         contentType: 'HTML',
-        content: formatBody(PR_BODY)
+        content: formatBody(RELEASE_BODY)
       },
       toRecipients: [
         {

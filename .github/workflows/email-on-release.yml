@@ -5,9 +5,9 @@ on:
     types: [published]
   workflow_dispatch:
     inputs:
-      pr_title:
+      release_title:
         required: true
-      pr_body:
+      release_body:
         required: true
       recipient_email:
         required: true
@@ -26,12 +26,12 @@ jobs:
           node-version: 20
 
       - name: Send PR email
-        run: node .github/scripts/sendPrEmail.js
+        run: node .github/scripts/sendReleaseEmail.js
         env:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_SENDER_EMAIL: ${{ secrets.AZURE_SENDER_EMAIL }}
           RECIPIENT_EMAIL: ${{ inputs.recipient_email || vars.OUTLOOK_TARGET_EMAIL }}
-          PR_TITLE: ${{ github.event.pull_request.title || inputs.pr_title }}
-          PR_BODY: ${{ github.event.pull_request.body || inputs.pr_body }}
+          RELEASE_TITLE: ${{ github.event.release.title || inputs.release_title }}
+          RELEASE_BODY: ${{ github.event.release.body || inputs.release_body }}

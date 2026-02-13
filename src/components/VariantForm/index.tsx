@@ -123,6 +123,7 @@ const VariantForm = ({
   useEffect(() => {
     if (formVariant !== FORM_VARIANT.NEW && value) {
       setInputType(pickInputType(value));
+
       if (value?.break1Start) {
         setCoordinateType(value.break1Start['@class']);
       }
@@ -184,18 +185,18 @@ const VariantForm = ({
     {
       onSuccess: (result) => {
         const actionType = formVariant === FORM_VARIANT.NEW ? 'created' : 'edited';
-        
+
         if (result['@rid']) {
           const { routeName } = schemaDefn.get(result);
           const cleanRid = result['@rid'].replace(/^#/, '');
-          
+
           queryClient.invalidateQueries({
             predicate: (query) => {
               const queryString = String(query.queryKey[0]);
               return queryString.includes(routeName) && queryString.includes(cleanRid);
             },
           });
-          
+
           queryClient.refetchQueries({
             predicate: (query) => {
               const queryString = String(query.queryKey[0]);
@@ -203,7 +204,7 @@ const VariantForm = ({
             },
           });
         }
-        
+
         snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
         onSubmit(result);
       },

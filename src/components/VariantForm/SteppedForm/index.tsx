@@ -28,11 +28,12 @@ interface SteppedFormProps {
   properties: Record<string, unknown>;
   className?: string;
   formVariant?: FORM_VARIANT;
+  isLoading?: boolean;
   value?: Record<string, unknown>;
 }
 
 const SteppedForm = ({
-  children, modelName, properties, onSubmit, className, value, formVariant, onDelete,
+  children, modelName, properties, onSubmit, className, value, formVariant, onDelete, isLoading,
 }: SteppedFormProps) => {
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
@@ -106,6 +107,7 @@ const SteppedForm = ({
           {formVariant === FORM_VARIANT.EDIT && (
           <ActionButton
             className="stepped-form__actions--secondary"
+            disabled={isLoading}
             onClick={handleDelete}
             requireConfirm
             variant="outlined"
@@ -115,7 +117,7 @@ const SteppedForm = ({
           )}
           <ActionButton
             className="stepped-form__actions--primary"
-            disabled={formHasErrors || isIncomplete || (formVariant === FORM_VARIANT.EDIT && !formIsDirty)}
+            disabled={isLoading || formHasErrors || isIncomplete || (formVariant === FORM_VARIANT.EDIT && !formIsDirty)}
             onClick={handleSubmit}
             requireConfirm={false}
           >
@@ -129,6 +131,7 @@ const SteppedForm = ({
 
 SteppedForm.defaultProps = {
   className: '',
+  isLoading: false,
   value: {},
   formVariant: FORM_VARIANT.NEW,
 };

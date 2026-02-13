@@ -46,6 +46,11 @@ const BasicPositionForm = ({
   const [offset, setOffset] = useState(initialOffset);
   const [offsetError, setOffsetError] = useState('');
 
+  useEffect(() => {
+    setPosition(value?.pos);
+    setOffset(value?.offset);
+  }, [value]);
+
   // validate the position input
   useEffect(() => {
     if (!position && required && posProperty.mandatory) {

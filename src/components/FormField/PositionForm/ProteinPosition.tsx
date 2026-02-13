@@ -47,6 +47,11 @@ const ProteinPosition = ({
   const [refAA, setRefAA] = useState(initialRefAA);
   const [refAAError, setRefAAError] = useState('');
 
+  useEffect(() => {
+    setPosition(value?.pos);
+    setRefAA(value?.refAA);
+  }, [value]);
+
   // validate the position input
   useEffect(() => {
     if (!position && required && posProperty.mandatory) {

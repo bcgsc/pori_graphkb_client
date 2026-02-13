@@ -34,6 +34,9 @@ const valueToString = (record) => {
   if (Array.isArray(record)) {
     return `Array(${record.length})`;
   }
+  if (typeof record === 'object') {
+    return JSON.stringify(record, null, 2);
+  }
   return `${record}`;
 };
 

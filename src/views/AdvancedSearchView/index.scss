@@ -1,13 +1,13 @@
-@import '../../globals';
+@use '../../globals';
 
 .advanced-search {
   padding: 20px;
 
   &__class-select {
-    margin: $default-spacing $default-spacing;
+    margin: globals.$default-spacing globals.$default-spacing;
     margin-top: 2px;
 
-    @media (min-width: $breakpoint-mobile) {
+    @media (min-width: globals.$breakpoint-mobile) {
       margin-top: 20px;
     }
   }
@@ -18,7 +18,7 @@
     margin-right: auto;
     width: calc(100% - 40px);
 
-    @media (min-width: $breakpoint-lg) {
+    @media (min-width: globals.$breakpoint-lg) {
       width: calc(100% - 110px);
     }
   }

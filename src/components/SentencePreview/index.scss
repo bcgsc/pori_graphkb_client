@@ -1,4 +1,4 @@
-@import '../../globals';
+@use '../../globals';
 
 .sentence-preview {
   align-items: center;
@@ -8,13 +8,13 @@
   min-height: 40px;
   padding-left: 5px;
 
-  @media (min-width: #{$breakpoint-med}) {
+  @media (min-width: #{globals.$breakpoint-med}) {
     margin-left: 40px;
     padding-left: 10px;
   }
 
   &__chunk--highlighted {
-    background: $palette__secondary--light;
+    background: globals.$palette__secondary--light;
     display: inline;
 
     font-weight: 600;

@@ -1,8 +1,8 @@
-@import '../../../../globals';
+@use '../../../../globals';
 
 .advanced-search {
   .property-filter {
-    border: 1px solid $palette__primary--light;
+    border: 1px solid globals.$palette__primary--light;
     border-radius: 15px;
     max-width: 100%;
 
@@ -23,7 +23,7 @@
       }
     }
 
-    @media (min-width: $breakpoint-lg) {
+    @media (min-width: globals.$breakpoint-lg) {
       &__content {
         display: flex;
         flex-flow: wrap;

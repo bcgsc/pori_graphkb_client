@@ -1,4 +1,4 @@
-@import '../../globals';
+@use '../../globals';
 
 .detail-chip {
   max-width: 100%;
@@ -30,7 +30,7 @@
     }
 
     td:last-child {
-      max-width: $readable-max;
+      max-width: globals.$readable-max;
     }
   }
 

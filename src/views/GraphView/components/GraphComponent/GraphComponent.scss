@@ -1,5 +1,5 @@
-@import '../../../../globals';
-@import '../../dataview';
+@use '../../../../globals';
+@use '../../dataview';
 
 .graph-wrapper {
   bottom: 0;
@@ -9,12 +9,12 @@
 }
 
 .toolbar {
-  background: $palette__background--default;
-  border-top: solid $palette__divider 1px;
+  background: globals.$palette__background--default;
+  border-top: solid globals.$palette__divider 1px;
   bottom: 0;
   display: flex;
   flex-direction: row-reverse;
-  height: calc(#{$toolbar-height} - 1px);
+  height: calc(#{dataview.$toolbar-height} - 1px);
   left: 0;
   margin: auto;
   overflow-x: auto;
@@ -22,10 +22,10 @@
   position: fixed;
   right: 0;
   transition: padding 255ms;
-  z-index: calc(#{$drawer-z-index} + 1);
+  z-index: calc(#{globals.$drawer-z-index} + 1);
 
   .table-btn {
-    background-color: $palette__secondary--extra-light;
+    background-color: globals.$palette__secondary--extra-light;
     margin: auto 24px auto 8px;
   }
 

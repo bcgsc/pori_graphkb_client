@@ -1,9 +1,9 @@
-@import '../../globals';
+@use '../../globals';
 
 .import-view {
   margin-left: auto;
   margin-right: auto;
-  max-width: $readable-max;
+  max-width: globals.$readable-max;
   padding: 10px;
 
   &__title {
@@ -20,6 +20,6 @@
 
   &__search-box {
     margin: 20px;
-    max-width: calc($readable-max - 40px);
+    max-width: calc(globals.$readable-max - 40px);
   }
 }

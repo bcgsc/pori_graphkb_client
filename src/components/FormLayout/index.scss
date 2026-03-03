@@ -1,4 +1,4 @@
-@import '../../globals';
+@use '../../globals';
 
 .form-layout {
   &__content,
@@ -12,7 +12,7 @@
   &__content,
   &__content-subgroup {
     > .form-field {
-      @media (min-width: #{$breakpoint-med}) {
+      @media (min-width: #{globals.$breakpoint-med}) {
         margin-right: 20px;
         width: calc(50% - 20px);
       }
@@ -25,7 +25,7 @@
   }
 
   & &__content-subgroup {
-    @include field-set;
+    @include globals.field-set;
     margin: 0;
     margin-bottom: 20px;
     margin-top: 20px;

@@ -1,15 +1,15 @@
-@import '../../../../globals';
+@use '../../../../globals';
 
 .match-view {
   margin-left: auto;
   margin-right: auto;
-  max-width: $readable-max;
-  padding: $default-spacing;
+  max-width: globals.$readable-max;
+  padding: globals.$default-spacing;
 
   &__description,
   &__input,
   &__matches-count-bar {
-    margin-bottom: $default-spacing;
+    margin-bottom: globals.$default-spacing;
   }
 
   &__matches-count-bar {

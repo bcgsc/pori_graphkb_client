@@ -1,11 +1,11 @@
-@import '../../../../globals';
+@use '../../../../globals';
 
 .filter-group {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
   margin-top: 10px;
-  padding: $default-spacing;
+  padding: globals.$default-spacing;
 
   &__content {
     display: flex;

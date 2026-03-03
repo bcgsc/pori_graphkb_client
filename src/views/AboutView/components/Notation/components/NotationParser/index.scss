@@ -1,9 +1,9 @@
-@import '../../../../../../globals';
+@use '../../../../../../globals';
 
 .notation-parser {
   margin-left: auto;
   margin-right: auto;
-  max-width: $readable-max;
+  max-width: globals.$readable-max;
 
   &__input {
     margin-bottom: 20px;

@@ -1,7 +1,7 @@
-@import '../../globals';
+@use '../../globals';
 
 .search {
-  border: 1px solid #{$palette__grey--A100};
+  border: 1px solid #{globals.$palette__grey--A100};
   border-radius: 4px;
   left: 16px;
   max-width: unset;
@@ -11,7 +11,7 @@
   right: 16px;
   top: 35vh;
 
-  @media (min-width: $breakpoint-sm) {
+  @media (min-width: globals.$breakpoint-sm) {
     left: 0;
     margin: auto;
     max-width: 60vw;

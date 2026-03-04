@@ -5,12 +5,17 @@ import {
 } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import GettingStarted from '..';
 
 describe('GettingStarted', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   let getAllByText;

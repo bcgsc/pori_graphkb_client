@@ -1,3 +1,14 @@
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+// necessary for extend-expect to work until upgrade to v6
+global.expect = expect;
+window.expect = expect;
+
+// Automatically clean up the DOM after each test run
+afterEach(() => {
+  cleanup(); // from @testing-library/react
+});
+
 window._env_ = {
   KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || "GraphKB",
   KEYCLOAK_ROLE: process.env.KEYCLOAK_ROLE || "GraphKB",
@@ -7,3 +18,4 @@ window._env_ = {
   CONTACT_EMAIL: process.env.CONTACT_EMAIL || "graphkb@bcgsc.ca",
   CONTACT_TICKET_URL: process.env.CONTACT_TICKET_URL || "https://www.bcgsc.ca/jira/projects/KBDEV",
 };
+

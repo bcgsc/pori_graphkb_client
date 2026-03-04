@@ -2,33 +2,39 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import {
+  afterEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsPanel';
 import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
-jest.mock('../../../../components/DropDownSelect', () => ({
-  options = [], value, onChange, name,
-}) => {
-  const handleChange = (event) => {
-    const option = options.find(
-      (opt) => opt === event.currentTarget.value,
+vi.mock('../../../../components/DropDownSelect', () => ({
+  default: ({
+    options = [], value, onChange, name,
+  }) => {
+    const handleChange = (event) => {
+      const option = options.find(
+        (opt) => opt === event.currentTarget.value,
+      );
+      onChange({ target: { value: option, name } });
+    };
+    return (
+      <select data-testid={`${name}`} onChange={handleChange} value={value}>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
     );
-    onChange({ target: { value: option, name } });
-  };
-  return (
-    <select data-testid={`${name}`} onChange={handleChange} value={value}>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  );
-});
+  },
+}));
 
 describe('<GraphOptionsPanel />', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const testNodes = [
@@ -39,8 +45,8 @@ describe('<GraphOptionsPanel />', () => {
   const propsMap = new PropsMap();
   testNodes.forEach((t) => propsMap.loadNode(t));
 
-  const handleDialogClose = jest.fn();
-  const handleGraphOptionsChange = jest.fn();
+  const handleDialogClose = vi.fn();
+  const handleGraphOptionsChange = vi.fn();
 
   const defaultProps = {
     graphOptions: new GraphOptions(),

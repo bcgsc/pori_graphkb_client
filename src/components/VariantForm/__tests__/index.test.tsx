@@ -3,6 +3,11 @@ import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import api from '@/services/api';
 
@@ -14,7 +19,7 @@ describe('NewVariant', () => {
   let queryByText;
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   beforeEach(() => {

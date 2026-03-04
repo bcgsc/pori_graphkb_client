@@ -2,40 +2,29 @@
     "env": {
         "browser": true,
         "es6": true,
-        "jest": true,
-        "node": true
+        "node": true,
+        "jest": false
     },
     "extends": [
         "airbnb",
         "airbnb-typescript",
         "airbnb/hooks",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:jest/recommended",
-        "plugin:jest-formatting/recommended"
+        "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
         "project": "./tsconfig.json"
     },
     "plugins": [
         "react",
-        "babel",
         "react-hooks",
-        "jest",
-        "jest-formatting",
         "import",
         "simple-import-sort"
     ],
     "rules": {
-        "babel/semi": "warn",
+        "import/extensions": ["error", "never", { "svg": "always", "png": "always" }],
         "import/no-cycle": "warn",
         "import/order": "off",
         "import/prefer-default-export": "warn",
-        "jest/consistent-test-it": [
-            "error",
-            {
-                "fn": "test"
-            }
-        ],
         "max-len": [
             "off",
             {
@@ -125,7 +114,6 @@
         "react/jsx-no-useless-fragment": "off",
         // Default props deprecated in React v16, to be removed v18
         "react/require-default-props": "off",
-        "jest/no-conditional-expect": "off",
         "max-classes-per-file": "off",
         "no-mixed-operators": "off",
         "react/prop-types": "off",
@@ -136,12 +124,5 @@
         "@typescript-eslint/no-shadow": "off",
         "@typescript-eslint/default-param-last": "off",
         "@typescript-eslint/no-use-before-define": "off"
-    },
-    "settings": {
-        "import/resolver": {
-            "webpack": {
-                "config": "config/webpack/common.js"
-            }
-        }
     }
 }

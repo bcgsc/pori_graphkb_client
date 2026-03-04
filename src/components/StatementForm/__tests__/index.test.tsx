@@ -7,6 +7,10 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import { MemoryRouter } from 'react-router-dom';
+import {
+  afterEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import { AuthContext } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
@@ -16,7 +20,7 @@ import StatementForm from '..';
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.spyOn(api, 'query').mockImplementation(async (payload) => {
+vi.spyOn(api, 'query').mockImplementation(async (payload) => {
   // to prevent other records causing validation error when running `checkLogicalStatement`
   if (payload.queryType === 'similarTo') {
     return [];
@@ -42,7 +46,7 @@ jest.spyOn(api, 'query').mockImplementation(async (payload) => {
   ];
 });
 
-jest.spyOn(api, 'post').mockImplementation(async (_, payload) => payload);
+vi.spyOn(api, 'post').mockImplementation(async (_, payload) => payload);
 
 const selectFromAutocomplete = async (label, option, search = 'anything') => {
   const input = screen.getByLabelText(label);
@@ -75,12 +79,12 @@ console.error = (msg) => {
 
 describe('StatementForm', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  const onSubmitSpy = jest.fn();
-  const onErrorSpy = jest.fn();
-  const snackbarSpy = jest.fn();
+  const onSubmitSpy = vi.fn();
+  const onErrorSpy = vi.fn();
+  const snackbarSpy = vi.fn();
 
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(

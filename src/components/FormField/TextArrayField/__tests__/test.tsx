@@ -1,5 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import {
+  afterEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import TextArrayField from '..';
 
@@ -9,7 +13,7 @@ describe('TextArrayField', () => {
       <TextArrayField
         label="test"
         name="test"
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />,
     );
     // input the text and hit the enter key
@@ -26,7 +30,7 @@ describe('TextArrayField', () => {
       <TextArrayField
         label="test"
         name="test"
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />,
     );
     // input the text
@@ -43,7 +47,7 @@ describe('TextArrayField', () => {
   });
 
   test('deletes last added value with backspace', () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextArrayField
@@ -84,7 +88,7 @@ describe('TextArrayField', () => {
   });
 
   test('does not delete added value with backspace if input isn\'t empty', () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <TextArrayField
         label="test"
@@ -114,7 +118,7 @@ describe('TextArrayField', () => {
   });
 
   test('deletes when delete icon is clicked (new value)', () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <TextArrayField
         label="test"
@@ -152,7 +156,7 @@ describe('TextArrayField', () => {
   });
 
   test('deletes value when delete icon is clicked', () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <TextArrayField
         label="test"
@@ -178,7 +182,7 @@ describe('TextArrayField', () => {
   });
 
   test('shows error when trying to add duplicate value', () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <TextArrayField
         label="test"
@@ -202,7 +206,7 @@ describe('TextArrayField', () => {
   });
 
   test('deleted value is restored when restore icon is clicked', () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <TextArrayField
         label="test"
@@ -235,6 +239,6 @@ describe('TextArrayField', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 });

@@ -1,3 +1,10 @@
+import AddIcon from '@mui/icons-material/Add';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HomeIcon from '@mui/icons-material/Home';
+import InputIcon from '@mui/icons-material/Input';
+import SearchIcon from '@mui/icons-material/Search';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import {
   Divider,
   Drawer,
@@ -8,17 +15,9 @@ import {
   ListItemText,
   MenuItem,
   Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import HomeIcon from '@material-ui/icons/Home';
-import InputIcon from '@material-ui/icons/Input';
-import SearchIcon from '@material-ui/icons/Search';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+} from '@mui/material';
 import React, { useCallback, useContext, useState } from 'react';
 
-import ActiveLinkContext from '@/components/ActiveLinkContext';
 import { useAuth } from '@/components/Auth';
 import logo from '@/static/gsclogo.svg';
 
@@ -32,7 +31,6 @@ interface MainNavProps {
 const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
   const [subMenuOpenLink, setSubMenuOpenLink] = useState('/query');
   const auth = useAuth();
-  const { setActiveLink } = useContext(ActiveLinkContext);
 
   /**
    * Handles closing of drawer.
@@ -50,10 +48,9 @@ const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
     if (group) {
       handleOpen(group);
     } else {
-      setActiveLink(link);
       onChange({ isOpen });
     }
-  }, [handleOpen, isOpen, onChange, setActiveLink]);
+  }, [handleOpen, isOpen, onChange]);
 
   return (
     <Drawer
@@ -65,7 +62,7 @@ const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
       variant="persistent"
     >
       <div className="main-nav-drawer__banner">
-        <IconButton onClick={handleClose}>
+        <IconButton onClick={handleClose} size="large">
           <ChevronLeftIcon />
         </IconButton>
       </div>

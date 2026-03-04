@@ -146,9 +146,15 @@
   transition-property: width;
   width: globals.$drawer-width;
   z-index: calc(#{globals.$drawer-z-index} + 4);
+  overflow: hidden;
 
   @media (max-width: globals.$breakpoint-sm) {
     width: calc(100vw - #{globals.$banner-height});
+  }
+
+  // otherwise label are visible when drawer is closed
+  .MuiListItemIcon-root {
+    min-width: globals.$closed-drawer-width;
   }
 
   .footer__label {
@@ -174,15 +180,19 @@
     flex-grow: 1;
     position: relative;
     top: 0;
-  }
 
-  &__link {
-    color: globals.$palette__text--primary;
-
-    &--selected.MuiTypography-body1 {
+    .active {
       color: globals.$palette__secondary--main;
     }
   }
+
+  // &__link {
+  //   color: globals.$palette__text--primary;
+
+  //   &--selected.MuiTypography-body1 {
+  //     color: globals.$palette__secondary--main;
+  //   }
+  // }
 
   &__footer {
     background: globals.$palette__background--default;

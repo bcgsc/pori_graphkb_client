@@ -1,8 +1,8 @@
 import {
   Chip,
   CircularProgress, Typography,
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import React from 'react';
 import Chart from 'react-google-charts';
 import { useQuery } from 'react-query';
@@ -60,24 +60,24 @@ const AboutMain = () => {
               <Chip
                 color="primary"
                 label={`DB ${versions.db}`}
-                variant="outline"
+                variant="outlined"
               />
               <Chip
                 color="primary"
                 label={`API v${versions.api}`}
-                variant="outline"
+                variant="outlined"
               />
               <Chip
                 color="primary"
                 label={`Schema v${versions.schema}`}
-                variant="outline"
+                variant="outlined"
               />
             </>
           )}
           <Chip
             color="primary"
             label={`Client v${guiVersion}`}
-            variant="outline"
+            variant="outlined"
           />
         </div>
       </div>

@@ -1,13 +1,13 @@
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Collapse,
   Divider,
   ListItem,
   ListItemText,
   Typography,
-} from '@material-ui/core';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
 import React from 'react';
 
 import schema from '@/services/schema';

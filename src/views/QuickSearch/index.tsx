@@ -2,6 +2,7 @@ import './index.scss';
 
 import { parseVariant } from '@bcgsc-pori/graphkb-parser';
 import { util } from '@bcgsc-pori/graphkb-schema';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Checkbox,
   FormControlLabel,
@@ -9,8 +10,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -153,7 +153,7 @@ const QuickSearch = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment>
-                  <IconButton color="primary" onClick={handleSubmit}>
+                  <IconButton color="primary" onClick={handleSubmit} size="large">
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>

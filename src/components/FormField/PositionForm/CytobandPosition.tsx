@@ -3,7 +3,7 @@ import './index.scss';
 import { schema } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 

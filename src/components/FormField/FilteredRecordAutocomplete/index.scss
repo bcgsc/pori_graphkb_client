@@ -31,10 +31,7 @@
 
     &__content {
       display: flex;
-    }
-
-    .record-autocomplete {
-      align-self: flex-start;
+      align-items: center;
     }
   }
 }

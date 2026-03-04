@@ -2,11 +2,11 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
   IconButton,
-} from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+} from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useCallback,
@@ -326,7 +326,11 @@ const DataView = (): JSX.Element => {
       <div className="data-view__header">
         <ActiveFilters search={search} />
         <Tooltip title="click here for table and export options">
-          <IconButton className="data-view__edit-filters" onClick={handleOpenOptionsMenu}>
+          <IconButton
+            className="data-view__edit-filters"
+            onClick={handleOpenOptionsMenu}
+            size="large"
+          >
             <MoreHorizIcon color="action" />
           </IconButton>
         </Tooltip>

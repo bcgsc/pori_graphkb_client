@@ -1,4 +1,7 @@
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LinkIcon from '@mui/icons-material/Link';
 import {
   Collapse,
   Divider,
@@ -8,10 +11,7 @@ import {
   ListItemText,
   ListSubheader,
   Typography,
-} from '@material-ui/core';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import LinkIcon from '@material-ui/icons/Link';
+} from '@mui/material';
 import React from 'react';
 
 import { GeneralRecordType } from '@/components/types';

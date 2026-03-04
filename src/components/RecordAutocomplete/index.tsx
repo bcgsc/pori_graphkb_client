@@ -1,8 +1,9 @@
 import './index.scss';
 
-import { CircularProgress, ListSubheader, TextField } from '@material-ui/core';
-import { Search as SearchIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import { Search as SearchIcon } from '@mui/icons-material';
+import {
+  Autocomplete, CircularProgress, ListSubheader, TextField,
+} from '@mui/material';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
@@ -231,8 +232,8 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       filterOptions={filterOptions}
       filterSelectedOptions
       getOptionLabel={(option) => schema.getLabel(option)}
-      getOptionSelected={(option, value_) => option['@rid'] === value_['@rid']}
       groupBy={getGroup}
+      isOptionEqualToValue={(option, value_) => option['@rid'] === value_['@rid']}
       ListboxProps={{
         dense: true,
       }}

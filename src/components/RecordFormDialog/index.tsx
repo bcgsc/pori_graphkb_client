@@ -1,13 +1,13 @@
 import './index.scss';
 
+import CancelIcon from '@mui/icons-material/Cancel';
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+} from '@mui/material';
 import React from 'react';
 
 import RecordForm from '@/components/RecordForm';
@@ -57,9 +57,7 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
           {title || defaultTitle}
         </DialogTitle>
         <DialogActions>
-          <IconButton
-            onClick={onClose}
-          >
+          <IconButton onClick={onClose} size="large">
             <CancelIcon />
           </IconButton>
         </DialogActions>

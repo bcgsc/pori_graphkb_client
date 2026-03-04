@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import React, { ReactNode, useState } from 'react';
 
 import ConfirmActionDialog from './ConfirmActionDialog';

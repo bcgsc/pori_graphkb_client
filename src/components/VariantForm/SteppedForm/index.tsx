@@ -6,7 +6,7 @@ import {
   StepContent,
   StepLabel,
   Stepper,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { ReactNode, useCallback, useState } from 'react';
 

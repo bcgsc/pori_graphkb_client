@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { OpenInNew } from '@material-ui/icons';
+import { OpenInNew } from '@mui/icons-material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 

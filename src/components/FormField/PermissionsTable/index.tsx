@@ -8,7 +8,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
 /* eslint-disable no-bitwise */

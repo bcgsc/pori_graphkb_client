@@ -1,6 +1,8 @@
 import './index.scss';
 
 import { schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
+import CopyIcon from '@mui/icons-material/FileCopyOutlined';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   Button,
   Card,
@@ -12,9 +14,7 @@ import {
   Popover,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import CopyIcon from '@material-ui/icons/FileCopyOutlined';
-import FilterListIcon from '@material-ui/icons/FilterList';
+} from '@mui/material';
 import copy from 'copy-to-clipboard';
 import React, {
   useCallback, useMemo, useState,
@@ -99,9 +99,7 @@ const ActiveFilters = ({ search }: { search: string; }) => {
       <Typography variant="h5">Search</Typography>
       <Tooltip title="click here to see active filter groups">
         <span>
-          <IconButton
-            onClick={handleToggleOpen}
-          >
+          <IconButton onClick={handleToggleOpen} size="large">
             <FilterListIcon />
           </IconButton>
         </span>

@@ -1,14 +1,14 @@
 import './index.scss';
 
 import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
   Collapse,
   List,
   ListItem,
   ListItemText,
-} from '@material-ui/core';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import FormContext from '@/components/FormContext';

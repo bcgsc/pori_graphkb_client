@@ -10,10 +10,10 @@ import CytobandPosition from '../CytobandPosition';
 
 describe('CytobandPosition', () => {
   test('shows all fields', () => {
-    const { getByText } = render(<CytobandPosition onChange={vi.fn()} value={{}} />);
-    expect(getByText(/\barm\b.*/)).toBeInTheDocument();
-    expect(getByText('majorBand')).toBeInTheDocument();
-    expect(getByText('minorBand')).toBeInTheDocument();
+    const { getByLabelText } = render(<CytobandPosition onChange={vi.fn()} value={{}} />);
+    expect(getByLabelText(/arm/)).toBeInTheDocument();
+    expect(getByLabelText('majorBand')).toBeInTheDocument();
+    expect(getByLabelText('minorBand')).toBeInTheDocument();
   });
 
   test('uses input values', () => {

@@ -3,7 +3,7 @@ import './index.scss';
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 import { Buffer } from 'buffer';
 import * as qs from 'qs';
 import React, {

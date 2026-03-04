@@ -1,11 +1,11 @@
+import TreeIcon from '@mui/icons-material/AccountTree';
+import ShareIcon from '@mui/icons-material/Share';
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   Typography,
-} from '@material-ui/core';
-import TreeIcon from '@material-ui/icons/AccountTree';
-import ShareIcon from '@material-ui/icons/Share';
+} from '@mui/material';
 import React from 'react';
 
 import treeDiagram from '@/static/images/tree.png';

@@ -1,11 +1,7 @@
-import { CssBaseline } from '@material-ui/core';
-import {
-  createGenerateClassName, createMuiTheme,
-  jssPreset,
-  MuiThemeProvider,
-  StylesProvider,
-} from '@material-ui/core/styles';
-import { create } from 'jss';
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
+import { CssBaseline } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -16,9 +12,21 @@ import api from '@/services/api';
 
 import MainView from './views/MainView';
 
-const theme = createMuiTheme({
+const cache = createCache({
+  key: 'css',
+  prepend: true,
+});
+
+const theme = createTheme({
   direction: 'ltr',
+  components: {
+    MuiTextField: {
+      defaultProps: { variant: 'standard' },
+    },
+  },
+  mixins: {},
   palette: {
+    mode: 'light',
     primary: {
       main: '#1b2786',
       light: '#4682b4',
@@ -40,7 +48,6 @@ const theme = createMuiTheme({
     text: {
       primary: 'rgba(0, 0, 0, 0.7)',
       secondary: 'rgba(0, 0, 0, 0.54)',
-      hint: 'rgba(0, 0, 0, 0.38)',
       disabled: 'rgba(0, 0, 0, 0.38)',
     },
   },
@@ -57,23 +64,14 @@ const theme = createMuiTheme({
   },
 });
 
-const generateClassName = createGenerateClassName();
-const jss = create({
-  ...jssPreset(),
-  // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
-  insertionPoint: 'jss-insertion-point',
-  injectFirst: true,
-  generateClassName,
-});
-
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 function App() {
   return (
-    <StylesProvider jss={jss}>
+    <CacheProvider value={cache}>
       <CssBaseline />
-      <MuiThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
         <QueryClientProvider client={api.queryClient}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <BrowserRouter basename={window._env_.PUBLIC_PATH}>
@@ -83,8 +81,8 @@ function App() {
             </BrowserRouter>
           </SnackbarProvider>
         </QueryClientProvider>
-      </MuiThemeProvider>
-    </StylesProvider>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
 

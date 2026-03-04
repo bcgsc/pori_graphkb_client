@@ -2,7 +2,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';

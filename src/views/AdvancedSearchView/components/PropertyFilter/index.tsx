@@ -3,7 +3,7 @@ import './index.scss';
 import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, {
   useCallback,
   useEffect,

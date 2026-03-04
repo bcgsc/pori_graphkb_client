@@ -1,15 +1,15 @@
 import './index.scss';
 
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Dialog,
   DialogContent,
-} from '@material-ui/core';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TreeItem from '@material-ui/lab/TreeItem';
-import TreeView from '@material-ui/lab/TreeView';
+} from '@mui/material';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
+import { TreeView } from '@mui/x-tree-view/TreeView';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import useGrid from '@/components/hooks/useGrid';
@@ -96,7 +96,13 @@ const ColumnConfiguration = ({
       open={isOpen}
     >
       <DialogContent className="column-configuration__content">
-        <TreeView>
+        <TreeView
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+          onNodeSelect={(_, [childId]) => {
+            handleToggleColumn(childId, !openCols[childId]);
+          }}
+        >
           {columns.map((column) => {
             if (column.children) {
               // column group
@@ -104,8 +110,6 @@ const ColumnConfiguration = ({
                 <TreeItem
                   key={column.id}
                   className="column-configuration__item"
-                  collapseIcon={<ExpandMoreIcon />}
-                  expandIcon={<ChevronRightIcon />}
                   label={column.title}
                   nodeId={column.id}
                 >
@@ -118,8 +122,6 @@ const ColumnConfiguration = ({
                         : (<CheckBoxOutlineBlankIcon />)}
                       label={child.title}
                       nodeId={child.id}
-                      onIconClick={() => handleToggleColumn(child.id, !openCols[child.id])}
-                      onLabelClick={() => handleToggleColumn(child.id, !openCols[child.id])}
                     />
                   ))}
                 </TreeItem>
@@ -135,8 +137,6 @@ const ColumnConfiguration = ({
                   : (<CheckBoxOutlineBlankIcon />)}
                 label={column.title}
                 nodeId={column.id}
-                onIconClick={() => handleToggleColumn(column.id, !openCols[column.id])}
-                onLabelClick={() => handleToggleColumn(column.id, !openCols[column.id])}
               />
             );
           })}

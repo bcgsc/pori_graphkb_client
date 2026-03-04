@@ -1,13 +1,12 @@
 import './index.scss';
 
+import { Timeline as TimelineIcon } from '@mui/icons-material';
 import {
-  Button,
+  Alert, Button,
   CircularProgress,
   TextField,
   Typography,
-} from '@material-ui/core';
-import { Timeline as TimelineIcon } from '@material-ui/icons';
-import { Alert } from '@material-ui/lab';
+} from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback,

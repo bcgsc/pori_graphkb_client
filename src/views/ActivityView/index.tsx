@@ -2,8 +2,8 @@ import './index.scss';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import { Typography } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Typography } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import { formatDistanceToNow } from 'date-fns';
 import React, {

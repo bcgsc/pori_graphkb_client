@@ -8,8 +8,8 @@ import ProteinPosition from '../ProteinPosition';
 
 describe('ProteinPosition', () => {
   test('shows both fields', () => {
-    const { getByText } = render(<ProteinPosition value={{}} />);
-    expect(getByText(/\bposition\b.*/)).toBeInTheDocument();
-    expect(getByText('refAA')).toBeInTheDocument();
+    const { getByLabelText } = render(<ProteinPosition value={{}} />);
+    expect(getByLabelText(/position/)).toBeInTheDocument();
+    expect(getByLabelText('refAA')).toBeInTheDocument();
   });
 });

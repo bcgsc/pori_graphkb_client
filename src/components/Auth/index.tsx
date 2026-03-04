@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Typography } from '@mui/material';
 import fetchIntercept from 'fetch-intercept';
 import jwtDecode from 'jwt-decode';
 import Keycloak from 'keycloak-js';
@@ -135,7 +135,7 @@ const AuthProvider = (props: { children: ReactNode }) => {
     },
     isAuthenticating,
     error,
-    ...data || {},
+    ...(data || {}),
   }), [data, isAuthenticating, logInOrOut, error]);
 
   return (

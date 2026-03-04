@@ -1,12 +1,12 @@
 import './index.scss';
 
+import TimelineIcon from '@mui/icons-material/Timeline';
 import {
   CircularProgress,
   IconButton,
   Typography,
-} from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
-import TimelineIcon from '@material-ui/icons/Timeline';
+} from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import React, {
   useCallback,
 } from 'react';
@@ -31,7 +31,6 @@ const DataViewFooter = ({
   }, [navigate, onError, selectedRecords]);
 
   return (
-
     <div className="data-view__footer">
       <div className="footer__selected-records">
         <Typography variant="body2">
@@ -42,6 +41,7 @@ const DataViewFooter = ({
             <IconButton
               disabled={selectedRecords.length === 0}
               onClick={handleSwapToGraph}
+              size="large"
             >
               <TimelineIcon
                 color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
@@ -61,7 +61,6 @@ const DataViewFooter = ({
       <Typography className="footer__total-rows" variant="body2">
         Total Rows: {totalRows === null ? 'Unknown' : totalRows}
       </Typography>
-
     </div>
   );
 };

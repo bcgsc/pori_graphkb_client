@@ -35,7 +35,7 @@ describe('FormLayout', () => {
   });
 
   test('view variant shows generated fields', () => {
-    const { getByText, getByTestId } = render(
+    const { getByText, getByLabelText, getByTestId } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={{ formContent: { '@rid': '#3:4', name: 'name' }, formVariant: 'view', updateFieldEvent: vi.fn() }}>
           <FormLayout
@@ -46,7 +46,7 @@ describe('FormLayout', () => {
     );
 
     expect(getByText('The username')).toBeInTheDocument();
-    expect(getByText('@rid')).toBeInTheDocument();
+    expect(getByLabelText('@rid')).toBeInTheDocument();
     expect(getByTestId('@rid')).toBeInTheDocument();
     expect(getByTestId('@rid').value).toEqual('#3:4');
   });

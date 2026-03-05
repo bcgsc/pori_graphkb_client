@@ -130,7 +130,7 @@ const RecordView = ({
   const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery(
-    tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true }),
+    tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
     async ({ queryKey: [route, options] }) => {
       if (!model) {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });
@@ -146,6 +146,7 @@ const RecordView = ({
     },
     {
       enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
+      refetchOnMount: 'always',
       onError: (err) => handleError({ error: err }),
       onSuccess: (result) => result && setModelName(result['@class']),
     },

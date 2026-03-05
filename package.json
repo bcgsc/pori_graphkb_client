@@ -16,9 +16,9 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^5.18.0",
-    "@mui/material": "^5.18.0",
-    "@mui/x-tree-view": "^6.17.0",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^6.5.0",
+    "@mui/x-tree-view": "^7.29.10",
     "@types/lodash.uniq": "^4.5.7",
     "@types/lodash.without": "^4.4.7",
     "ag-grid-community": "~27.0.0",
@@ -46,6 +46,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-charts": "^3.0.15",
+    "react-is": "^17.0.2",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.22.2",
     "slugify": "^1.4.0",
@@ -106,5 +107,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "overrides": {
+    "react-is": "^17.0.2"
   }
 }

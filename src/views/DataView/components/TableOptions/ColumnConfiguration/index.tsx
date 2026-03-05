@@ -8,8 +8,8 @@ import {
   Dialog,
   DialogContent,
 } from '@mui/material';
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import { TreeView } from '@mui/x-tree-view/TreeView';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import useGrid from '@/components/hooks/useGrid';
@@ -96,7 +96,7 @@ const ColumnConfiguration = ({
       open={isOpen}
     >
       <DialogContent className="column-configuration__content">
-        <TreeView
+        <SimpleTreeView
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
           onNodeSelect={(_, [childId]) => {
@@ -140,7 +140,7 @@ const ColumnConfiguration = ({
               />
             );
           })}
-        </TreeView>
+        </SimpleTreeView>
       </DialogContent>
     </Dialog>
   );

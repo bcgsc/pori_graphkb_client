@@ -16,12 +16,11 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 import { useAuth } from '@/components/Auth';
 import logo from '@/static/gsclogo.svg';
-
-import MenuLink from './MenuLink';
 
 interface MainNavProps {
   isOpen?: boolean;
@@ -29,28 +28,8 @@ interface MainNavProps {
 }
 
 const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
-  const [subMenuOpenLink, setSubMenuOpenLink] = useState('/query');
   const auth = useAuth();
-
-  /**
-   * Handles closing of drawer.
-   */
-  const handleClose = useCallback(() => {
-    onChange({ isOpen: false });
-  }, [onChange]);
-
-  const handleOpen = useCallback((defaultRoute) => {
-    onChange({ isOpen: true });
-    setSubMenuOpenLink(defaultRoute);
-  }, [onChange]);
-
-  const handleClickLink = useCallback((link, group) => {
-    if (group) {
-      handleOpen(group);
-    } else {
-      onChange({ isOpen });
-    }
-  }, [handleOpen, isOpen, onChange]);
+  const [subMenuOpenLink, setSubMenuOpenLink] = useState<'new' | 'import' | null>(null);
 
   return (
     <Drawer
@@ -62,76 +41,83 @@ const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
       variant="persistent"
     >
       <div className="main-nav-drawer__banner">
-        <IconButton onClick={handleClose} size="large">
+        <IconButton
+          onClick={() => {
+            onChange?.({ isOpen: !isOpen });
+            setSubMenuOpenLink(null);
+          }}
+        >
           <ChevronLeftIcon />
         </IconButton>
       </div>
       <Divider />
-      <List className="main-nav-drawer__links">
-        <MenuLink icon={<HomeIcon />} label="Quick Search" onClick={handleClickLink} route="/query" />
-        <MenuLink icon={<SearchIcon />} label="Advanced Search" onClick={handleClickLink} route="/query-advanced" />
+      <List className="main-nav-drawer__links" component="nav" dense>
+        <MenuItem component={NavLink} to="/query">
+          <ListItemIcon><HomeIcon /></ListItemIcon>
+          <ListItemText primary="Quick Search" />
+        </MenuItem>
+        <MenuItem component={NavLink} to="/query-advanced">
+          <ListItemIcon><SearchIcon /></ListItemIcon>
+          <ListItemText primary="Advanced Search" />
+        </MenuItem>
         {auth.hasWriteAccess && (
-          <MenuItem onClick={() => handleOpen('/new/ontology')}>
+          <MenuItem
+            onClick={() => {
+              setSubMenuOpenLink((prev) => (!isOpen || prev !== 'new' ? 'new' : null));
+              onChange?.({ isOpen: true });
+            }}
+          >
             <ListItemIcon><AddIcon /></ListItemIcon>
             <ListItemText primary="Add new Record" />
           </MenuItem>
         )}
-        {auth.hasWriteAccess && isOpen && subMenuOpenLink === '/new/ontology' && (
+        {auth.hasWriteAccess && subMenuOpenLink === 'new' && (
           <>
             {auth.isAdmin && (
-              <MenuLink
-                inset
-                label="Source*"
-                onClick={handleClickLink}
-                route="/new/source"
-              />
+            <MenuItem component={NavLink} to="/new/source">
+              <ListItemText inset primary="Source*" />
+            </MenuItem>
             )}
-            <MenuLink
-              inset
-              label="Ontology"
-              onClick={handleClickLink}
-              route="/new/ontology"
-            />
-            <MenuLink
-              inset
-              label="Variant"
-              onClick={handleClickLink}
-              route="/new/variant"
-            />
-            <MenuLink
-              inset
-              label="Statement"
-              onClick={handleClickLink}
-              route="/new/statement"
-            />
-            <MenuLink
-              inset
-              label="Relationship"
-              onClick={handleClickLink}
-              route="/new/e"
-            />
+            <MenuItem component={NavLink} to="/new/ontology">
+              <ListItemText inset primary="Ontology" />
+            </MenuItem>
+            <MenuItem component={NavLink} to="/new/variant">
+              <ListItemText inset primary="Variant" />
+            </MenuItem>
+            <MenuItem component={NavLink} to="/new/statement">
+              <ListItemText inset primary="Statement" />
+            </MenuItem>
+            <MenuItem component={NavLink} to="/new/e">
+              <ListItemText inset primary="Relationship" />
+            </MenuItem>
           </>
         )}
         {auth.hasWriteAccess && (
-          <MenuItem onClick={() => handleOpen('import')}>
-            <ListItemIcon>
-              <InputIcon />
-            </ListItemIcon>
+          <MenuItem
+            onClick={() => {
+              setSubMenuOpenLink((prev) => (!isOpen || prev !== 'import' ? 'import' : null));
+              onChange?.({ isOpen: true });
+            }}
+          >
+            <ListItemIcon><InputIcon /></ListItemIcon>
             <ListItemText primary="Import" />
           </MenuItem>
         )}
-        {auth.hasWriteAccess && isOpen && subMenuOpenLink === 'import' && (
+        {auth.hasWriteAccess && subMenuOpenLink === 'import' && (
           <>
-            <MenuLink
-              inset
-              label="PubMed"
-              onClick={handleClickLink}
-              route="/import/pubmed"
-            />
+            <MenuItem component={NavLink} to="/import/pubmed">
+              <ListItemText inset primary="PubMed" />
+            </MenuItem>
           </>
         )}
-        <MenuLink icon={<TrendingUpIcon />} label="Activity" onClick={handleClickLink} route="/activity" />
-        <MenuLink icon={<HelpOutlineIcon />} label="About" onClick={handleClickLink} route="/about" />
+        <MenuItem component={NavLink} to="/activity">
+          <ListItemIcon><TrendingUpIcon /></ListItemIcon>
+          <ListItemText primary="Activity" />
+        </MenuItem>
+        <MenuItem component={NavLink} to="/about">
+          <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+          <ListItemText primary="About" />
+        </MenuItem>
       </List>
       <div className="main-nav-drawer__footer">
         <Divider />

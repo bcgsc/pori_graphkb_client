@@ -1,9 +1,7 @@
 import './index.scss';
 
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
-  Avatar,
   Card,
   CardContent,
   Chip,
@@ -57,7 +55,7 @@ const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
           </Typography>
           {getLink && getLink(retrievedDetails) && (
             <Link target="_blank" to={getLink(retrievedDetails)}>
-              <IconButton size="large">
+              <IconButton>
                 <OpenInNewIcon />
               </IconButton>
             </Link>
@@ -184,7 +182,6 @@ function DetailChip(props: DetailChipProps) {
 
 DetailChip.defaultProps = {
   ChipProps: {
-    avatar: (<Avatar><AssignmentOutlinedIcon /></Avatar>),
     variant: 'outlined',
     color: 'primary',
   },

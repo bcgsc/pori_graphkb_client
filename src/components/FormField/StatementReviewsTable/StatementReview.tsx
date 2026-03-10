@@ -115,7 +115,6 @@ const StatementReview = ({
         <TableCell>
           <DetailChip
             ChipProps={{
-              avatar: (<Avatar><EmbeddedIcon /></Avatar>),
               variant: 'outlined',
               color: 'secondary',
             }}

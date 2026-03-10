@@ -8,7 +8,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 
-interface BreakpointFormProps{
+interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
   /**

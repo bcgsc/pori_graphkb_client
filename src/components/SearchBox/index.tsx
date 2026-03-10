@@ -68,7 +68,6 @@ const SearchBox = ({
                 color="primary"
                 data-testid="search-box__button"
                 onClick={() => handleSubmit(searchText)}
-                size="large"
               >
                 <SearchIcon />
               </IconButton>

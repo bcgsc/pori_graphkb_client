@@ -235,24 +235,23 @@ function DetailDrawer(props: DetailDrawerProps) {
           </div>
           {auth.hasWriteAccess && (
           <Link target="_blank" to={`/edit/${recordClass}/${recordId}`}>
-            <IconButton size="large" variant="outlined">
+            <IconButton>
               <EditIcon />
             </IconButton>
           </Link>
           )}
           <Link target="_blank" to={`/view/${recordClass}/${recordId}`}>
-            <IconButton size="large" variant="outlined">
+            <IconButton>
               <OpenInNewIcon />
             </IconButton>
           </Link>
-          <IconButton onClick={onClose} size="large">
+          <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </div>
         <Divider />
         {otherProps}
         <ListItem
-          button
           dense
           onClick={() => handleExpand('metadata')}
         >

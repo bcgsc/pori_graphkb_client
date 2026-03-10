@@ -57,7 +57,7 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
           {title || defaultTitle}
         </DialogTitle>
         <DialogActions>
-          <IconButton onClick={onClose} size="large">
+          <IconButton onClick={onClose}>
             <CancelIcon />
           </IconButton>
         </DialogActions>

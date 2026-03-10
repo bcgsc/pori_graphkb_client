@@ -204,7 +204,6 @@ const TextArrayField = (props: TextArrayFieldProps) => {
           color="primary"
           disabled={disabled}
           onClick={handleAddCurrent}
-          size="large"
         >
           <AddIcon />
         </IconButton>

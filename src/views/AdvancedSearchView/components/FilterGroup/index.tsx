@@ -93,7 +93,6 @@ function FilterGroup({
           className="filter-group__cancel-btn"
           data-testid="cancel-btn"
           onClick={() => { onDelete(name); }}
-          size="large"
         >
           <CancelIcon />
         </IconButton>

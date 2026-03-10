@@ -83,7 +83,7 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
         <Typography variant="h5">
           {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
         </Typography>
-        <IconButton onClick={handleHelpClose} size="large">
+        <IconButton onClick={handleHelpClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -125,7 +125,6 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
           data-testid="close-btn"
           id="options-close-btn"
           onClick={handleDialogClose}
-          size="large"
         >
           <CloseIcon />
         </IconButton>
@@ -136,7 +135,6 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
             data-testid="main-help-btn"
             id="main-help-btn"
             onClick={() => handleHelpOpen('mainHelp')}
-            size="large"
           >
             <HelpIcon />
           </IconButton>

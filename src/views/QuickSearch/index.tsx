@@ -153,7 +153,7 @@ const QuickSearch = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment>
-                  <IconButton color="primary" onClick={handleSubmit} size="large">
+                  <IconButton color="primary" onClick={handleSubmit}>
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>

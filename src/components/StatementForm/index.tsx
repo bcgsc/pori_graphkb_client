@@ -400,7 +400,6 @@ const StatementForm = ({
               disabled={actionInProgress}
               message="Are you sure you want to delete this record?"
               onClick={handleDeleteAction}
-              size="large"
               variant="outlined"
             >
               DELETE RECORD
@@ -423,7 +422,6 @@ const StatementForm = ({
                 ? handleEditAction
                 : handleNewAction}
               requireConfirm={false}
-              size="large"
               variant="contained"
             >
               {variant === FORM_VARIANT.EDIT

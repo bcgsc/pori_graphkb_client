@@ -11,12 +11,20 @@
 
   &__content,
   &__content-subgroup {
+    margin: 0;
+
     > .form-field {
       @media (min-width: #{globals.$breakpoint-med}) {
         margin-right: 20px;
         width: calc(50% - 20px);
       }
       float: left;
+    }
+    // will have to find different solution if ever swap to use SSR
+    // but there is no good alternative when children are mixed types
+    // so will require adding consistent wrapper to all children
+    > :not(:last-child) {
+      margin-bottom: 10px;
     }
   }
 
@@ -26,11 +34,6 @@
 
   & &__content-subgroup {
     @include globals.field-set;
-    margin: 0;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    padding-bottom: 10px;
-    padding-top: 10px;
     width: 100%;
   }
 }

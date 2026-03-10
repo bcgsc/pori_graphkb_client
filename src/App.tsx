@@ -20,9 +20,22 @@ const cache = createCache({
 const theme = createTheme({
   direction: 'ltr',
   components: {
-    MuiTextField: {
-      defaultProps: { variant: 'standard' },
-    },
+    MuiButton: { defaultProps: { size: 'small' } },
+    MuiChip: { defaultProps: { size: 'small' } },
+    MuiFab: { defaultProps: { size: 'small' } },
+    MuiFilledInput: { defaultProps: { margin: 'dense' } },
+    MuiFormControl: { defaultProps: { margin: 'none' } },
+    MuiFormHelperText: { defaultProps: { margin: 'dense' } },
+    MuiIconButton: { defaultProps: { size: 'small' } },
+    MuiInputLabel: { defaultProps: { margin: 'dense' } },
+    MuiListItem: { defaultProps: { dense: true } },
+    MuiOutlinedInput: { defaultProps: { margin: 'dense' } },
+    MuiSvgIcon: { defaultProps: { fontSize: 'small' } },
+    MuiTable: { defaultProps: { size: 'small' } },
+    MuiTextField: { defaultProps: { variant: 'standard' } },
+    MuiToggleButton: { defaultProps: { size: 'small' } },
+    MuiToggleButtonGroup: { defaultProps: { size: 'small' } },
+    MuiToolbar: { defaultProps: { variant: 'dense' } },
   },
   mixins: {},
   palette: {

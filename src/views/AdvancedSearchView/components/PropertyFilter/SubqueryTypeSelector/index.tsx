@@ -75,7 +75,7 @@ function RecordFormStateToggle({
           <TreeIcon /><span className="toggle-option__text">Subclass Tree</span>
         </ToggleButton>
       </ToggleButtonGroup>
-      <IconButton onClick={toggleHelp} size="large"><HelpIcon /></IconButton>
+      <IconButton onClick={toggleHelp}><HelpIcon /></IconButton>
       <HelpDialog isOpen={helpIsOpen} onClose={() => setHelpIsOpen(false)} />
     </div>
   );

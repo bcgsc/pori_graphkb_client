@@ -117,7 +117,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
   ]);
 
   const Actions = ({ data: record }: { data: Record<string, unknown> }) => (
-    <IconButton onClick={() => handleOpenEditDialog(record)} size="large">
+    <IconButton onClick={() => handleOpenEditDialog(record)}>
       <EditIcon />
     </IconButton>
   );

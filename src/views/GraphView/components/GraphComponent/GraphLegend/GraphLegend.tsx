@@ -66,7 +66,6 @@ function GraphLegend(props: GraphLegendProps) {
                     name: 'nodesLegend',
                   },
                 })}
-                size="large"
               >
                 <CloseIcon />
               </IconButton>
@@ -123,7 +122,6 @@ function GraphLegend(props: GraphLegendProps) {
                       name: 'linksLegend',
                     },
                   })}
-                  size="large"
                 >
                   <CloseIcon />
                 </IconButton>

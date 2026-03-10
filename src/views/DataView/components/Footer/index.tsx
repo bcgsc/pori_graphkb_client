@@ -41,7 +41,6 @@ const DataViewFooter = ({
             <IconButton
               disabled={selectedRecords.length === 0}
               onClick={handleSwapToGraph}
-              size="large"
             >
               <TimelineIcon
                 color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}

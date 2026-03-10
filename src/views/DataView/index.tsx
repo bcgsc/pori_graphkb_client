@@ -329,7 +329,6 @@ const DataView = (): JSX.Element => {
           <IconButton
             className="data-view__edit-filters"
             onClick={handleOpenOptionsMenu}
-            size="large"
           >
             <MoreHorizIcon color="action" />
           </IconButton>

@@ -99,7 +99,7 @@ const ActiveFilters = ({ search }: { search: string; }) => {
       <Typography variant="h5">Search</Typography>
       <Tooltip title="click here to see active filter groups">
         <span>
-          <IconButton onClick={handleToggleOpen} size="large">
+          <IconButton onClick={handleToggleOpen}>
             <FilterListIcon />
           </IconButton>
         </span>

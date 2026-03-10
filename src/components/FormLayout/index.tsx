@@ -143,6 +143,7 @@ FormLayout.defaultProps = {
     'email',
     'source',
     'sourceId',
+    'description',
   ],
   disabled: false,
   belowFold: ['deprecated', 'history'],

@@ -42,7 +42,7 @@
 
     &__btn {
       animation: globals.fade-in(0.2s);
-      margin: auto 4px;
+      margin: auto 8px;
 
       &--drawer-open {
         visibility: hidden;
@@ -92,7 +92,7 @@
 
 #bcc-logo {
   height: 24px;
-  width: 24px;
+  width: 28px;
 }
 
 .user-menu {
@@ -121,6 +121,14 @@
 
   &__content {
     width: globals.$user-menu-width;
+
+    .active {
+      color: globals.$palette__secondary--main;
+    }
+
+    a {
+      display: block;
+    }
   }
 
   &__icon {
@@ -152,11 +160,6 @@
     width: calc(100vw - #{globals.$banner-height});
   }
 
-  // otherwise label are visible when drawer is closed
-  .MuiListItemIcon-root {
-    min-width: globals.$closed-drawer-width;
-  }
-
   .footer__label {
     margin-left: 15px;
     margin-right: 20px;
@@ -186,19 +189,15 @@
     }
   }
 
-  // &__link {
-  //   color: globals.$palette__text--primary;
-
-  //   &--selected.MuiTypography-body1 {
-  //     color: globals.$palette__secondary--main;
-  //   }
-  // }
+  .MuiMenuItem-root {
+    padding-left: 14px;
+  }
 
   &__footer {
     background: globals.$palette__background--default;
     bottom: 0;
     flex-shrink: 0;
-    height: 57px;
+    height: 48px;
     left: 0;
     position: sticky;
     right: 0;
@@ -208,7 +207,7 @@
       box-sizing: border-box;
       height: globals.$banner-height;
       overflow: hidden;
-      padding: 12px 16px;
+      padding: 12px 8px;
       white-space: nowrap;
     }
   }
@@ -222,7 +221,7 @@
 
     button {
       margin: auto;
-      margin-left: 8px;
+      margin-left: 4px;
     }
   }
 }

@@ -97,6 +97,7 @@ const FieldGroup = ({
 
   filteredOrdering.forEach((item) => {
     if (Array.isArray(item)) { // subgrouping
+      if (!item.length) return;
       const key = item.join('--');
       fields.push((
         <List key={key} className="form-layout__content-subgroup">

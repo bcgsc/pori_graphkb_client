@@ -4,6 +4,10 @@ import {
   fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import React from 'react';
+import {
+  afterEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import { FORM_VARIANT } from '@/components/util';
 
@@ -11,7 +15,7 @@ import RecordFormStateToggle from '..';
 
 describe('RecordFormStateToggle', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('shows graph/edit/view buttons', () => {
@@ -41,7 +45,7 @@ describe('RecordFormStateToggle', () => {
   });
 
   test('onClick handler returns new state', () => {
-    const clickSpy = jest.fn();
+    const clickSpy = vi.fn();
     render((
       <RecordFormStateToggle
         allowEdit
@@ -56,7 +60,7 @@ describe('RecordFormStateToggle', () => {
 
   describe('confirm required', () => {
     test('callback is called when confirmed', () => {
-      const clickSpy = jest.fn();
+      const clickSpy = vi.fn();
       render((
         <RecordFormStateToggle
           allowEdit
@@ -75,7 +79,7 @@ describe('RecordFormStateToggle', () => {
     });
 
     test('callback is not called when user cancels', () => {
-      const clickSpy = jest.fn();
+      const clickSpy = vi.fn();
       render((
         <RecordFormStateToggle
           allowEdit

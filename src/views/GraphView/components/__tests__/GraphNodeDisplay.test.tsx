@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import {
+  describe, expect, test, vi,
+} from 'vitest';
 
 import GraphNodeDisplay from '../GraphComponent/GraphNodeDisplay/GraphNodeDisplay';
 import { GraphNode } from '../GraphComponent/kbgraph';
@@ -75,7 +78,7 @@ describe('<GraphNodeDisplay />', () => {
   });
 
   test('successfully applies drag function to node (doesn\'t test triggering)', () => {
-    const applyDrag = jest.fn();
+    const applyDrag = vi.fn();
     const { container } = render(
       <svg>
         <GraphNodeDisplay

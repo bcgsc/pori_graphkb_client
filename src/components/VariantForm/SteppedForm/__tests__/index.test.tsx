@@ -2,18 +2,23 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import FormStepWrapper from '../../FormStepWrapper';
 import SteppedForm from '..';
 
 describe('SteppedForm', () => {
-  const submissionSpy = jest.fn();
+  const submissionSpy = vi.fn();
   let getByText;
   let getByTestId;
   let queryByText;
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   beforeEach(() => {

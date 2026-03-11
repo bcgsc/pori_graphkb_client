@@ -7,6 +7,9 @@ import {
 } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import {
+  afterEach, beforeEach, describe, expect, test, vi,
+} from 'vitest';
 
 import { AuthContext } from '@/components/Auth';
 
@@ -93,7 +96,7 @@ const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
 
 describe('DetailDrawer', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('empty record value does not cause crash (Drawer closes)', () => {
@@ -106,7 +109,7 @@ describe('DetailDrawer', () => {
 
   describe('Detail drawer with ontology node', () => {
     let dom;
-    const onCloseSpy = jest.fn();
+    const onCloseSpy = vi.fn();
 
     beforeEach(() => {
       dom = render(
@@ -179,7 +182,7 @@ describe('DetailDrawer', () => {
 
   describe('Statement class detail drawer', () => {
     let dom;
-    const onCloseSpy = jest.fn();
+    const onCloseSpy = vi.fn();
 
     beforeEach(() => {
       dom = render(

@@ -9,10 +9,10 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 22
       - run: npm ci
       - run: npm run lint
-      - run: npm test
+      - run: npm run test -- --reporter=default --reporter=junit --outputFile=coverage/junit.xml --coverage
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.6
         if: always()

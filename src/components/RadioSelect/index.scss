@@ -1,10 +1,10 @@
-@import '../../globals';
+@use '../../globals';
 
 .radio-select {
   max-width: 100%;
 
-  @media (min-width: $breakpoint-lg) {
-    max-width: $readable-max;
+  @media (min-width: globals.$breakpoint-lg) {
+    max-width: globals.$readable-max;
   }
 
   .radio-option {

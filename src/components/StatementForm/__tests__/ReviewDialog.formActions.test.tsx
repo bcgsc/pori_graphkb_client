@@ -1,43 +1,51 @@
 import '@testing-library/jest-dom/extend-expect';
 
 import {
-  fireEvent, render, screen, waitFor,
+  fireEvent, render, screen,
+  waitFor,
 } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import { AuthContext } from '@/components/Auth';
 
 import ReviewDialog from '../ReviewDialog';
 
-jest.mock('../../DropDownSelect', () => ({
-  options = [], value, onChange, name,
-}) => {
-  const handleChange = (event) => {
-    const option = options.find(
-      (opt) => opt === event.currentTarget.value,
-    );
+vi.mock('../../DropDownSelect', () => ({
+  default: ({
+    options = [], value, onChange, name,
+  }) => {
+    const handleChange = (event) => {
+      const option = options.find(
+        (opt) => opt === event.currentTarget.value,
+      );
 
-    onChange({ target: { value: option, name } });
-  };
-  return (
-    <select data-testid="select" onChange={handleChange} value={value}>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt.label || opt}
-        </option>
-      ))}
-    </select>
-  );
-});
+      onChange({ target: { value: option, name } });
+    };
+    return (
+      <select data-testid="select" onChange={handleChange} value={value}>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt.label || opt}
+          </option>
+        ))}
+      </select>
+    );
+  },
+}));
 
 describe('ReviewDialog formActions', () => {
-  const onSubmitSpy = jest.fn();
-  const onCancelSpy = jest.fn();
-  const snackbarSpy = jest.fn();
+  const onSubmitSpy = vi.fn();
+  const onCancelSpy = vi.fn();
+  const snackbarSpy = vi.fn();
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   beforeEach(() => {

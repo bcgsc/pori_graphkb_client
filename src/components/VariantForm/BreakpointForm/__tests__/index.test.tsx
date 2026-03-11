@@ -4,6 +4,9 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  describe, expect, test, vi,
+} from 'vitest';
 
 import FormContext from '@/components/FormContext';
 import api from '@/services/api';
@@ -48,7 +51,7 @@ describe('BreakpointForm', () => {
   });
 
   test('clears end from form when uncertain is unset', () => {
-    const form = { formContent: { break1End: {} }, updateField: jest.fn() };
+    const form = { formContent: { break1End: {} }, updateField: vi.fn() };
     const { getByText, getByTestId } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={form}>

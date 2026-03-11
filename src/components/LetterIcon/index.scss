@@ -1,11 +1,10 @@
-@import '../../globals';
-@import '../../theme';
+@use '../../globals';
 
 .letter-icon {
   align-items: center;
   border-radius: 50%;
   display: flex;
-  font-family: $roboto;
+  font-family: globals.$roboto;
   font-size: 1rem;
   font-weight: bold;
   height: 50px;
@@ -15,22 +14,22 @@
   width: 50px;
 
   &--primary.letter-icon--contained {
-    background-color: $palette__primary--main;
-    color: $palette__common--white;
+    background-color: globals.$palette__primary--main;
+    color: globals.$palette__common--white;
   }
 
   &--primary.letter-icon--outlined {
-    border: 1px solid  $palette__primary--dark;
-    color: $palette__primary--dark;
+    border: 1px solid  globals.$palette__primary--dark;
+    color: globals.$palette__primary--dark;
   }
 
   &--secondary.letter-icon--contained {
-    background-color: $palette__secondary--main;
-    color: $palette__common--white;
+    background-color: globals.$palette__secondary--main;
+    color: globals.$palette__common--white;
   }
 
   &--secondary.letter-icon--outlined {
-    border: 1px solid  $palette__secondary--dark;
-    color: $palette__secondary--dark;
+    border: 1px solid  globals.$palette__secondary--dark;
+    color: globals.$palette__secondary--dark;
   }
 }

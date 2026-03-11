@@ -1,16 +1,16 @@
-@import '../../globals';
+@use '../../globals';
 
 .detail-drawer {
   max-width: 100%; // use full screen for ipad/mobile
-  transition-duration: $transitions__duration--standard;
+  transition-duration: globals.$transitions__duration--standard;
   transition-property: width;
   width: 100%;
   word-break: break-word;
-  z-index: $drawer-z-index;
+  z-index: globals.$drawer-z-index;
 
-  @media (min-width: $breakpoint-med) {
-    max-width: $secondary-drawer-max-width;
-    width: $secondary-drawer-width;
+  @media (min-width: globals.$breakpoint-med) {
+    max-width: globals.$secondary-drawer-max-width;
+    width: globals.$secondary-drawer-width;
   }
 
   &--closed {
@@ -40,15 +40,15 @@
   }
 
   &__content {
-    height: calc(100% - #{$banner-height});
+    height: calc(100% - #{globals.$banner-height});
     overflow: auto;
     position: absolute;
-    top: $banner-height;
+    top: globals.$banner-height;
     width: 100%;
   }
 
   &__relationships-subheader {
-    background: $palette__background--default;
+    background: globals.$palette__background--default;
     z-index: 1;
   }
 
@@ -56,7 +56,7 @@
     margin-left: 32px;
     z-index: 0;
 
-    @media (min-width: $breakpoint-sm) {
+    @media (min-width: globals.$breakpoint-sm) {
       margin-left: 56px;
     }
   }
@@ -72,7 +72,7 @@
     display: grid;
     grid-template-columns: 144px 8px auto;
 
-    @media (min-width: $breakpoint-sm) {
+    @media (min-width: globals.$breakpoint-sm) {
       grid-template-columns: 164px 24px auto;
     }
 
@@ -94,7 +94,7 @@
 .detail-closed {
   width: 0;
 
-  @media (max-width: $breakpoint-sm) {
+  @media (max-width: globals.$breakpoint-sm) {
     min-width: 0;
   }
 }
@@ -106,5 +106,5 @@
 .detail-important,
 .detail-other,
 .detail-relationships {
-  @include paper;
+  @include globals.paper;
 }

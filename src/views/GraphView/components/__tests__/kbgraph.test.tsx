@@ -1,4 +1,8 @@
 import {
+  describe, expect, test,
+} from 'vitest';
+
+import {
   GraphLink,
   GraphNode,
   GraphOptions,

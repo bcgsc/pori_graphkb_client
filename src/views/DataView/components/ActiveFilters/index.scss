@@ -1,9 +1,9 @@
-@import '../../../../theme';
+@use '../../../../globals';
 
 .active-filters-card {
   &__content {
-    border-bottom: 2px solid $palette__grey--300;
-    border-top: 2px solid $palette__grey--300;
+    border-bottom: 2px solid globals.$palette__grey--300;
+    border-top: 2px solid globals.$palette__grey--300;
   }
 
   &__actions {

@@ -1,5 +1,4 @@
-@import '../../globals';
-@import '../../theme';
+@use '../../globals';
 
 .about-page {
   height: 100%;
@@ -13,7 +12,7 @@
 
   &__content {
     margin-right: 5%;
-    padding: $default-spacing;
+    padding: globals.$default-spacing;
 
     h1,
     h2,
@@ -26,7 +25,7 @@
     >* {
       margin-left: auto;
       margin-right: auto;
-      max-width: $readable-max;
+      max-width: globals.$readable-max;
     }
 
     h2:not(:first-child) {
@@ -38,7 +37,7 @@
     display: block;
   }
 
-  @media (min-width: #{$breakpoint-med}) {
+  @media (min-width: #{globals.$breakpoint-med}) {
     &__version-chips {
       display: flex;
       justify-content: center;
@@ -67,41 +66,41 @@
   }
 
   .tabs-content {
-    max-height: calc(100% - #{$tab-bar-height});
+    max-height: calc(100% - #{globals.$tab-bar-height});
     overflow-y: scroll;
   }
 
   .tabs-bar {
-    box-shadow: $shadows--level-4;
-    height: $tab-bar-height;
+    box-shadow: globals.$shadows--level-4;
+    height: globals.$tab-bar-height;
   }
 
   .two-column-grid {
-    @include two-column-grid;
+    @include globals.two-column-grid;
     margin: 40px 0;
   }
 
   #about-notation {
     // Fix for non mui components
-    color: $palette__text--primary;
-    font-family: $roboto;
+    color: globals.$palette__text--primary;
+    font-family: globals.$roboto;
     font-size: 1rem;
     font-weight: 400;
     letter-spacing: 0.00938em;
     line-height: 1.5;
 
     pre {
-      background-color: $palette__background--default;
+      background-color: globals.$palette__background--default;
       padding: 5px;
 
       code {
-        font-family: $code-font;
+        font-family: globals.$code-font;
       }
     }
 
     h1,
     h2 {
-      color: $palette__text--primary;
+      color: globals.$palette__text--primary;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-weight: 400;
       letter-spacing: 0;
@@ -125,8 +124,8 @@
   }
 
   .about-version-info {
-    min-width: $readable-min;
-    max-width: $readable-max;
+    min-width: globals.$readable-min;
+    max-width: globals.$readable-max;
     width: 700px;
   }
 
@@ -136,7 +135,7 @@
     top: -1px;
 
     th {
-      background: $palette__background--default;
+      background: globals.$palette__background--default;
       position: sticky;
       top: -1px;
       z-index: 1;

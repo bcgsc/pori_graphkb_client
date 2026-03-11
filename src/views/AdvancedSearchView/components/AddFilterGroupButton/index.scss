@@ -1,10 +1,9 @@
 
-@import '../../../../theme';
-@import '../../../../globals';
+@use '../../../../globals';
 
 .add-filter-group {
-  border: 1px dashed $palette__grey--300;
+  border: 1px dashed globals.$palette__grey--300;
   border-radius: 4px;
-  margin-bottom: $default-spacing;
+  margin-bottom: globals.$default-spacing;
   width: 100%;
 }

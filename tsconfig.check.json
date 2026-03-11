@@ -1,0 +1,8 @@
+{
+  // can get rid of this file once all existing type errors are fixed
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // ignore errors within node_modules
+    "skipLibCheck": true
+  },
+}

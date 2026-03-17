@@ -43,7 +43,43 @@ interface FormLayoutProps {
 }
 
 const FormLayout = ({
-  exclusions, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
+  exclusions = [],
+  modelName,
+  disabled = false,
+  className = '',
+  aboveFold = [
+    CLASS_MODEL_PROP,
+    'displayName',
+    'name',
+    'groups',
+    'journalName',
+    'out',
+    'in',
+    'permissions',
+    'evidenceLevel',
+    'reviewStatus',
+    'reviews',
+    'refSeq',
+    'recruitmentStatus',
+    'email',
+    'source',
+    'sourceId',
+    'description',
+  ],
+  belowFold = ['deprecated', 'history'],
+  collapseExtra = false,
+  groups = [
+    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
+    ['relevance', 'subject'],
+    ['refSeq', 'untemplatedSeq'],
+    ['reviewStatus', 'reviews'],
+    ['reference1', 'break1Repr', 'break1Start', 'break1End'],
+    ['reference2', 'break2Repr', 'break2Start', 'break2End'],
+    ['source', 'sourceId', 'sourceIdVersion'],
+    ['startYear', 'completionYear'],
+    ['city', 'country'],
+    ['out', 'in'],
+  ],
 }: FormLayoutProps) => {
   const {
     formContent = {}, formVariant,
@@ -123,46 +159,6 @@ const FormLayout = ({
       )}
     </div>
   );
-};
-
-FormLayout.defaultProps = {
-  aboveFold: [
-    CLASS_MODEL_PROP,
-    'displayName',
-    'name',
-    'groups',
-    'journalName',
-    'out',
-    'in',
-    'permissions',
-    'evidenceLevel',
-    'reviewStatus',
-    'reviews',
-    'refSeq',
-    'recruitmentStatus',
-    'email',
-    'source',
-    'sourceId',
-    'description',
-  ],
-  disabled: false,
-  belowFold: ['deprecated', 'history'],
-  className: '',
-  collapseExtra: false,
-  groups: [
-    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-    ['relevance', 'subject'],
-    ['refSeq', 'untemplatedSeq'],
-    ['reviewStatus', 'reviews'],
-    ['reference1', 'break1Repr', 'break1Start', 'break1End'],
-    ['reference2', 'break2Repr', 'break2Start', 'break2End'],
-    ['source', 'sourceId', 'sourceIdVersion'],
-    ['startYear', 'completionYear'],
-    ['city', 'country'],
-    ['out', 'in'],
-  ],
-  modelName: null,
-  exclusions: [],
 };
 
 export default FormLayout;

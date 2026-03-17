@@ -12,15 +12,10 @@ interface FieldWrapperProps {
 /**
  * Wraps a input field inside a list item with standard styling
  */
-const FieldWrapper = ({ children, className, type }: FieldWrapperProps) => (
+const FieldWrapper = ({ children, className = '', type = '' }: FieldWrapperProps) => (
   <ListItem className={`form-field ${type && `form-field--${type}`} ${className}`} component="li">
     {children}
   </ListItem>
 );
-
-FieldWrapper.defaultProps = {
-  className: '',
-  type: '',
-};
 
 export default FieldWrapper;

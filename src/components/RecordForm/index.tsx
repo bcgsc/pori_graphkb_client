@@ -48,13 +48,13 @@ interface RecordFormProps {
  * Form/View that displays the contents of a single node
  */
 const RecordForm = ({
-  value: initialValue,
-  modelName,
+  value: initialValue = {},
+  modelName = '',
   title,
   onToggleState,
   onSubmit,
   onError,
-  variant,
+  variant = FORM_VARIANT.VIEW,
   ...rest
 }: RecordFormProps) => {
   const snackbar = useSnackbar();
@@ -275,16 +275,6 @@ const RecordForm = ({
       </div>
     </Paper>
   );
-};
-
-RecordForm.defaultProps = {
-  modelName: '',
-  onError: () => {},
-  onSubmit: () => {},
-  onToggleState: undefined,
-  rid: null,
-  variant: FORM_VARIANT.VIEW,
-  value: {},
 };
 
 export default RecordForm;

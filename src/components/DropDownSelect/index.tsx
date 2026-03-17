@@ -94,22 +94,22 @@ interface DropDownSelectProps {
  */
 function DropDownSelect(props: DropDownSelectProps) {
   const {
-    options,
+    options = [],
     value,
     onChange,
-    name,
-    label,
-    children,
-    required,
+    name = '',
+    label = '',
+    children = DefaultOptionComponent,
+    required = false,
     id,
-    innerProps,
-    error,
-    helperText,
-    dense,
-    variant,
-    className,
-    disabled,
-    IconComponent,
+    innerProps = {},
+    error = false,
+    helperText = '',
+    dense = false,
+    variant = 'standard',
+    className = '',
+    disabled = false,
+    IconComponent = ArrowDropDownIcon,
   } = props;
 
   const optionsDisplay = options.map((option) => children(option, disabled));
@@ -157,24 +157,5 @@ function DropDownSelect(props: DropDownSelectProps) {
     </FormControl>
   );
 }
-
-DropDownSelect.defaultProps = {
-  children: DefaultOptionComponent,
-  options: [],
-  onChange: null,
-  name: '',
-  label: '',
-  required: false,
-  error: false,
-  id: undefined,
-  dense: false,
-  variant: 'standard',
-  className: '',
-  disabled: false,
-  helperText: '',
-  innerProps: {},
-  value: null,
-  IconComponent: ArrowDropDownIcon,
-};
 
 export default DropDownSelect;

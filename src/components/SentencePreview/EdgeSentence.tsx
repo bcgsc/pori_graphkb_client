@@ -43,9 +43,4 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }: EdgeSentenceProps) => {
   );
 };
 
-EdgeSentence.defaultProps = {
-  srcRecord: null,
-  tgtRecord: null,
-};
-
 export default EdgeSentence;

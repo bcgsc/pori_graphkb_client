@@ -48,12 +48,12 @@ interface StatementFormProps {
  * Form/View that displays the contents of a single node
  */
 const StatementForm = ({
-  value: initialValue,
+  value: initialValue = {},
   title,
   onToggleState,
   onSubmit,
   onError,
-  variant,
+  variant = FORM_VARIANT.VIEW,
   ...rest
 }: StatementFormProps) => {
   const params = useParams();
@@ -434,15 +434,6 @@ const StatementForm = ({
       </div>
     </Paper>
   );
-};
-
-StatementForm.defaultProps = {
-  onError: () => {},
-  onSubmit: () => {},
-  onToggleState: undefined,
-  rid: null,
-  variant: FORM_VARIANT.VIEW,
-  value: {},
 };
 
 export default StatementForm;

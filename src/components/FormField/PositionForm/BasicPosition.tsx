@@ -36,9 +36,9 @@ const BasicPositionForm = ({
   onChange,
   variant,
   value,
-  name,
-  required,
-  disabled,
+  name = '',
+  required = true,
+  disabled = false,
 }: BasicPositionFormProps) => {
   const { pos: initialPos, offset: initialOffset } = value || {};
   const [position, setPosition] = useState(initialPos);
@@ -131,13 +131,6 @@ const BasicPositionForm = ({
       )}
     </>
   );
-};
-
-BasicPositionForm.defaultProps = {
-  required: true,
-  name: '',
-  disabled: false,
-  value: null,
 };
 
 export default BasicPositionForm;

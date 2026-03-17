@@ -9,14 +9,9 @@ interface IndentProps {
   level?: number;
 }
 
-const Indent = ({ level, indent }: IndentProps) => (
+const Indent = ({ level = 0, indent = '  ' }: IndentProps) => (
   <pre className={`json-view__indent json-view__indent--level-${level}`}>{indent.repeat(level)}</pre>
 );
-
-Indent.defaultProps = {
-  indent: '  ',
-  level: 0,
-};
 
 const DefaultValueComponent = ({ value }) => JSON.stringify(value);
 
@@ -27,7 +22,7 @@ interface ValueViewProps {
 }
 
 const ValueView = ({
-  name, value, ValueComponent, ...rest
+  name = '', value, ValueComponent = DefaultValueComponent, ...rest
 }: ValueViewProps) => (
   <div>
     <Indent {...rest} />
@@ -36,11 +31,6 @@ const ValueView = ({
     </span>
   </div>
 );
-
-ValueView.defaultProps = {
-  name: '',
-  ValueComponent: DefaultValueComponent,
-};
 
 interface ObjectViewProps {
   data: Record<string, unknown>;
@@ -51,7 +41,7 @@ interface ObjectViewProps {
 }
 
 const ObjectView = ({
-  data, level, closingBrace, ...rest
+  data, level = 0, closingBrace = '}', ...rest
 }: ObjectViewProps) => (
   <>
     {Object.entries(data).map(([key, value]) => {
@@ -93,11 +83,6 @@ const ObjectView = ({
   </>
 );
 
-ObjectView.defaultProps = {
-  level: 0,
-  closingBrace: '}',
-};
-
 interface ArrayViewProps {
   data: unknown[];
   closingBrace?: string;
@@ -105,7 +90,7 @@ interface ArrayViewProps {
 }
 
 const ArrayView = ({
-  data, level, closingBrace, ...rest
+  data, level = 0, closingBrace = ']', ...rest
 }: ArrayViewProps) => (
   <>
     {data.map((value, key) => {
@@ -129,11 +114,6 @@ const ArrayView = ({
     <div><Indent {...rest} level={level} /><span>{closingBrace}</span></div>
   </>
 );
-
-ArrayView.defaultProps = {
-  level: 0,
-  closingBrace: ']',
-};
 
 const JSONView = (props: ObjectViewProps) => (
   <>

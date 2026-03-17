@@ -93,10 +93,6 @@ const SentencePreview = ({ content, highlighted = [] }:SentencePreviewProps) => 
   );
 };
 
-SentencePreview.defaultProps = {
-  highlighted: [],
-};
-
 export { chunkSentence };
 
 export default SentencePreview;

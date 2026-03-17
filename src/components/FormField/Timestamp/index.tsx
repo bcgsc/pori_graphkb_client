@@ -9,7 +9,7 @@ interface TimestampProps {
 }
 
 const Timestamp = ({
-  value, name, onChange, ...rest
+  value = '', name, onChange, ...rest
 }: TimestampProps) => {
   const [displayValue, setDisplayValue] = useState('');
 
@@ -33,10 +33,6 @@ const Timestamp = ({
       value={displayValue}
     />
   );
-};
-
-Timestamp.defaultProps = {
-  value: '',
 };
 
 export default Timestamp;

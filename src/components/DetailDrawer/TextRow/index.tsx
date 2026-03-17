@@ -37,7 +37,7 @@ interface TextRowProps {
  */
 function TextRow(props: TextRowProps) {
   const {
-    name, value, isStatic, isNested, opened, handleExpand,
+    name = '', value = {}, isStatic, isNested, opened, handleExpand,
   } = props;
 
   const LongValue = () => {
@@ -121,11 +121,5 @@ function TextRow(props: TextRowProps) {
 
   return formattedString;
 }
-
-TextRow.defaultProps = {
-  handleExpand: () => {},
-  name: '',
-  value: {},
-};
 
 export default TextRow;

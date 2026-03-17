@@ -42,10 +42,10 @@ interface GraphOptionsPanelProps {
  */
 function GraphOptionsPanel(props: GraphOptionsPanelProps) {
   const {
-    graphOptionsOpen,
-    graphOptions,
-    propsMap,
-    linkLegendDisabled,
+    graphOptionsOpen = false,
+    graphOptions = {},
+    propsMap = { nodeProps: [], linkProps: [] },
+    linkLegendDisabled = true,
     handleDialogClose,
     handleGraphOptionsChange,
   } = props;
@@ -265,12 +265,5 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
     </>
   );
 }
-
-GraphOptionsPanel.defaultProps = {
-  graphOptions: {},
-  propsMap: { nodeProps: [], linkProps: [] },
-  graphOptionsOpen: false,
-  linkLegendDisabled: true,
-};
 
 export default GraphOptionsPanel;

@@ -29,7 +29,7 @@ interface FilterGroupProps {
  * Displays Filter Groups and filter chips.
  */
 function FilterGroup({
-  name, filters = [], onDelete, onSelect, isSelected, onDeleteFilter,
+  name, filters = [], onDelete, onSelect, isSelected = false, onDeleteFilter,
 }: FilterGroupProps) {
   const handleDeleteFilter = useCallback((filterIndex) => {
     onDeleteFilter(filterIndex, name);
@@ -100,12 +100,5 @@ function FilterGroup({
     </Paper>
   );
 }
-
-FilterGroup.defaultProps = {
-  isSelected: false,
-  onDelete: null,
-  onDeleteFilter: null,
-  onSelect: () => {},
-};
 
 export default FilterGroup;

@@ -31,13 +31,13 @@ interface BooleanFieldProps {
  */
 const BooleanField = (props: BooleanFieldProps) => {
   const {
-    disabled,
-    error,
-    label,
+    disabled = false,
+    error = false,
+    label = '',
     name,
     onChange,
-    required,
-    helperText,
+    required = false,
+    helperText = '',
     value: initialValue,
     ...rest
   } = props;
@@ -72,15 +72,6 @@ const BooleanField = (props: BooleanFieldProps) => {
       </FormControl>
     </div>
   );
-};
-
-BooleanField.defaultProps = {
-  disabled: false,
-  error: false,
-  label: '',
-  required: false,
-  helperText: '',
-  value: undefined,
 };
 
 export default BooleanField;

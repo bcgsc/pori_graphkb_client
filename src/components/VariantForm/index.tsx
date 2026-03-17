@@ -103,7 +103,7 @@ interface VariantFormProps {
  * Input form for new Variants
  */
 const VariantForm = ({
-  onSubmit, onError, value = {}, formVariant,
+  onSubmit, onError, value = {}, formVariant = FORM_VARIANT.NEW,
 }: VariantFormProps) => {
   let defaultCoordinateType;
 
@@ -367,11 +367,6 @@ const VariantForm = ({
       </FormStepWrapper>
     </SteppedForm>
   );
-};
-
-VariantForm.defaultProps = {
-  value: {},
-  formVariant: FORM_VARIANT.NEW,
 };
 
 export default VariantForm;

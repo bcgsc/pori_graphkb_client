@@ -53,7 +53,7 @@ interface FieldGroupProps {
  * Given some ordering of fields (possibly grouped) return the set of fields
  */
 const FieldGroup = ({
-  model, ordering, exclusions, disabled,
+  model, ordering, exclusions = [], disabled = false,
 }: FieldGroupProps) => {
   const { formVariant, formContent } = useContext(FormContext);
   let properties;
@@ -124,11 +124,6 @@ const FieldGroup = ({
   return (
     <>{fields}</>
   );
-};
-
-FieldGroup.defaultProps = {
-  exclusions: [],
-  disabled: false,
 };
 
 export default FieldGroup;

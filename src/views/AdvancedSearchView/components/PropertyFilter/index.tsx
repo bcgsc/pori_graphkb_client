@@ -78,7 +78,7 @@ interface PropertyFilterProps {
  * Form to choose a filter to add (property, value, operator)
  */
 const PropertyFilter = ({
-  modelName, onSubmit, className,
+  modelName, onSubmit, className = '',
 }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState([]);
@@ -360,10 +360,6 @@ const PropertyFilter = ({
       </div>
     </>
   );
-};
-
-PropertyFilter.defaultProps = {
-  className: '',
 };
 
 export default PropertyFilter;

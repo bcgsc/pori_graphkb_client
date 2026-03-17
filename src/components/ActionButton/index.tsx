@@ -51,14 +51,14 @@ function ActionButton(props: ActionButtonProps) {
 
   const {
     children,
-    className,
-    color,
-    disabled,
+    className = '',
+    color = 'primary',
+    disabled = false,
     message = 'Are you sure?',
     onClick,
-    requireConfirm,
-    size,
-    variant,
+    requireConfirm = true,
+    size = 'large',
+    variant = 'contained',
     ...rest
   } = props;
 
@@ -86,15 +86,5 @@ function ActionButton(props: ActionButtonProps) {
     </div>
   );
 }
-
-ActionButton.defaultProps = {
-  requireConfirm: true,
-  message: 'Are you sure?',
-  className: '',
-  variant: 'contained',
-  color: 'primary',
-  disabled: false,
-  size: 'large',
-};
 
 export default ActionButton;

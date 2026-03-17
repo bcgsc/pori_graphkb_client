@@ -112,8 +112,4 @@ const AddReviewDialog = ({
   );
 };
 
-AddReviewDialog.defaultProps = {
-  isOpen: false,
-};
-
 export default AddReviewDialog;

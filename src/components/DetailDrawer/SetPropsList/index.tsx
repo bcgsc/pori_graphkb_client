@@ -46,7 +46,7 @@ interface SetPropsListProps {
  */
 function SetPropsList(props: SetPropsListProps) {
   const {
-    prop, value, identifiers = [], opened = [], handleExpand,
+    prop = {}, value = {}, identifiers = [], opened = [], handleExpand,
   } = props;
   const { type, name } = prop;
   if (value.length === 0) return null;
@@ -118,13 +118,5 @@ function SetPropsList(props: SetPropsListProps) {
     </React.Fragment>
   );
 }
-
-SetPropsList.defaultProps = {
-  handleExpand: () => {},
-  identifiers: [],
-  opened: [],
-  prop: {},
-  value: {},
-};
 
 export default SetPropsList;

@@ -303,7 +303,7 @@ function GraphComponent(props: GraphComponentProps) {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
-    const { edgeTypes } = props;
+    const { edgeTypes = [] } = props;
     let {
       nodes, // eslint-disable-line no-shadow
       links, // eslint-disable-line no-shadow
@@ -964,7 +964,7 @@ function GraphComponent(props: GraphComponentProps) {
    * Removes node and all corresponding edges/links from the graph.
    */
   const handleNodeHide = () => {
-    const { edgeTypes, handleDetailDrawerClose } = props;
+    const { edgeTypes = [], handleDetailDrawerClose } = props;
 
     if (nodes.length === 1 || !(actionsNode instanceof GraphNode)) return;
 
@@ -1242,11 +1242,5 @@ function GraphComponent(props: GraphComponentProps) {
     </div>
   );
 }
-
-GraphComponent.defaultProps = {
-  detail: null,
-  edgeTypes: [],
-  handleGraphStateSave: () => {},
-};
 
 export default GraphComponent;

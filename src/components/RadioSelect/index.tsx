@@ -41,7 +41,7 @@ interface RadioSelectProps {
  * Add captions below choices when provided
  */
 const RadioSelect = ({
-  options, onChange, className, label, value, optionToKey, name,
+  options, onChange, className = '', label = '', value, optionToKey = (o) => (o.key || o), name = '',
 }: RadioSelectProps) => (
   <MenuList className={`radio-select ${className}`}>
     {label && (<FormLabel>{label}</FormLabel>)}
@@ -70,14 +70,5 @@ const RadioSelect = ({
     })}
   </MenuList>
 );
-
-RadioSelect.defaultProps = {
-  label: '',
-  name: '',
-  onChange: () => {},
-  className: '',
-  value: null,
-  optionToKey: (o) => o.key || o,
-};
 
 export default RadioSelect;

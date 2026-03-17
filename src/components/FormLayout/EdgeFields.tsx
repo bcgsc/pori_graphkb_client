@@ -18,7 +18,7 @@ interface EdgeFieldsProps {
  * Renders the two edge specific input fields (out/in)
  */
 const EdgeFields = ({
-  model, disabled,
+  model, disabled = false,
 }: EdgeFieldsProps) => (
   <React.Fragment key="relationship-content">
     <FormField
@@ -47,9 +47,5 @@ const EdgeFields = ({
     />
   </React.Fragment>
 );
-
-EdgeFields.defaultProps = {
-  disabled: false,
-};
 
 export default EdgeFields;

@@ -36,7 +36,7 @@ interface LinkEmbeddedPropListProps {
  */
 function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   const {
-    prop, isNested, value, identifiers, handleExpand, formatOtherProps, opened,
+    prop = {}, isNested = false, value = {}, identifiers = [], handleExpand, formatOtherProps, opened = [],
   } = props;
   const { name, type } = prop;
   let previewStr;
@@ -100,14 +100,5 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
     </React.Fragment>
   );
 }
-
-LinkEmbeddedPropList.defaultProps = {
-  handleExpand: () => {},
-  identifiers: [],
-  isNested: false,
-  opened: [],
-  prop: {},
-  value: {},
-};
 
 export default LinkEmbeddedPropList;

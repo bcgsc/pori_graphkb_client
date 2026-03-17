@@ -43,17 +43,17 @@ interface PositionFormProps {
 }
 
 const PositionForm = ({
-  baseVariant,
-  clearable,
-  disabled,
-  error,
-  helperText,
-  label,
+  baseVariant = DEFAULT_BASE_VARIANT,
+  clearable = true,
+  disabled = false,
+  error = false,
+  helperText = '',
+  label = '',
   name,
   onChange,
-  required,
+  required = false,
   value,
-  variant: initialVariant,
+  variant: initialVariant = '',
   ...props
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
@@ -114,18 +114,6 @@ const PositionForm = ({
       <FormHelperText error={error}>{helperText}</FormHelperText>
     </FormControl>
   );
-};
-
-PositionForm.defaultProps = {
-  baseVariant: DEFAULT_BASE_VARIANT,
-  clearable: true,
-  disabled: false,
-  error: false,
-  helperText: '',
-  label: '',
-  required: false,
-  value: null,
-  variant: '',
 };
 
 export default PositionForm;

@@ -27,7 +27,7 @@ interface PubmedCardProps {
 }
 
 const PubmedCard = ({
-  title, sourceId, recordId, onClick, journalName,
+  title = '', sourceId, recordId, onClick, journalName = '',
 }: PubmedCardProps) => (
   <Card className="pubmed-card" elevation={3}>
     <CardContent>
@@ -61,12 +61,5 @@ const PubmedCard = ({
     </CardActions>
   </Card>
 );
-
-PubmedCard.defaultProps = {
-  onClick: () => {},
-  journalName: '',
-  recordId: null,
-  title: '',
-};
 
 export default PubmedCard;

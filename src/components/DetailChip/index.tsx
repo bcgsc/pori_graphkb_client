@@ -36,10 +36,10 @@ interface DefaultPopupComponentProps {
  */
 const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
   const {
-    details,
-    getDetails,
+    details = {},
+    getDetails = (d) => d,
     label,
-    valueToString,
+    valueToString = (s) => `${s}`,
     getLink,
     title,
   } = props;
@@ -83,14 +83,6 @@ const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
   );
 };
 
-DefaultPopupComponent.defaultProps = {
-  getDetails: (d) => d,
-  details: {},
-  valueToString: (s) => `${s}`,
-  getLink: null,
-  title: null,
-};
-
 interface DetailChipProps {
   /** label for the record */
   label: string;
@@ -120,13 +112,16 @@ interface DetailChipProps {
  */
 function DetailChip(props: DetailChipProps) {
   const {
-    details,
+    details = {},
     onDelete,
-    className,
-    getDetails,
+    className = '',
+    getDetails = (d) => d,
     label,
-    valueToString,
-    ChipProps,
+    valueToString = (s) => `${s}`,
+    ChipProps = {
+      variant: 'outlined',
+      color: 'primary',
+    },
     getLink,
     title,
     PopUpComponent = DefaultPopupComponent,
@@ -179,21 +174,5 @@ function DetailChip(props: DetailChipProps) {
     </div>
   );
 }
-
-DetailChip.defaultProps = {
-  ChipProps: {
-    variant: 'outlined',
-    color: 'primary',
-  },
-  PopUpComponent: DefaultPopupComponent,
-  PopUpProps: null,
-  className: '',
-  details: {},
-  getDetails: (d) => d,
-  onDelete: null,
-  valueToString: (s) => `${s}`,
-  getLink: null,
-  title: null,
-};
 
 export default DetailChip;

@@ -56,9 +56,9 @@ const FormField = ({
   model,
   disabled = false,
   label = null,
-  innerProps,
+  innerProps = {},
   helperText: defaultHelperText,
-  baseModel,
+  baseModel = '',
 }: FormFieldProps) => {
   const {
     formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
@@ -309,15 +309,6 @@ const FormField = ({
       {propComponent}
     </FieldWrapper>
   );
-};
-
-FormField.defaultProps = {
-  className: '',
-  disabled: false,
-  label: null,
-  innerProps: {},
-  helperText: '',
-  baseModel: '',
 };
 
 export default FormField;

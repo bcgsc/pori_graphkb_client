@@ -35,7 +35,7 @@ interface TextArrayFieldProps {
  */
 const TextArrayField = (props: TextArrayFieldProps) => {
   const {
-    value: valueProp, name, onChange, label = '', disabled, error,
+    value: valueProp = [], name, onChange, label = '', disabled = false, error = false,
   } = props;
   /** the current list of values (including deleted) */
   const [value, setValue] = useState((valueProp || []).slice());
@@ -210,13 +210,6 @@ const TextArrayField = (props: TextArrayFieldProps) => {
       </div>
     </div>
   );
-};
-
-TextArrayField.defaultProps = {
-  disabled: false,
-  error: false,
-  label: '',
-  value: [],
 };
 
 export default TextArrayField;

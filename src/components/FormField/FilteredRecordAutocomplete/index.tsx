@@ -31,12 +31,12 @@ interface FilteredRecordAutocompleteProps {
  */
 const FilteredRecordAutocomplete = ({
   linkedClassName,
-  defaultFilterClassName,
-  disabled,
-  isMulti,
-  helperText,
+  defaultFilterClassName = '',
+  disabled = false,
+  isMulti = false,
+  helperText = '',
   filterOptions,
-  error,
+  error = false,
   name,
   ...rest
 }: FilteredRecordAutocompleteProps) => {
@@ -83,15 +83,6 @@ const FilteredRecordAutocomplete = ({
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
     </FormControl>
   );
-};
-
-FilteredRecordAutocomplete.defaultProps = {
-  disabled: false,
-  defaultFilterClassName: '',
-  filterOptions: null,
-  isMulti: false,
-  helperText: '',
-  error: false,
 };
 
 export default FilteredRecordAutocomplete;

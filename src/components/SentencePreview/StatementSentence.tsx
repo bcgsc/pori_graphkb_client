@@ -8,7 +8,7 @@ interface StatementSentenceProps {
   content?: StatementRecord;
 }
 
-const StatementSentence = ({ content: record }: StatementSentenceProps) => {
+const StatementSentence = ({ content: record = {} }: StatementSentenceProps) => {
   const { content, highlighted } = sentenceTemplates.generateStatementSentence(schemaDefn.getPreview, record);
 
   return (
@@ -17,10 +17,6 @@ const StatementSentence = ({ content: record }: StatementSentenceProps) => {
       highlighted={highlighted}
     />
   );
-};
-
-StatementSentence.defaultProps = {
-  content: {},
 };
 
 export default StatementSentence;

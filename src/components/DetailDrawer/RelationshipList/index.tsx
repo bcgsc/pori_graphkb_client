@@ -35,7 +35,7 @@ interface RelationshipListProps {
  */
 function RelationshipList(props: RelationshipListProps) {
   const {
-    linkOpen, record, handleLinkExpand, formatMetadata, formatOtherProps,
+    linkOpen = {}, record = {}, handleLinkExpand, formatMetadata, formatOtherProps,
   } = props;
   // Checks subclasses
   const edges = schema.getEdges(record);
@@ -106,8 +106,4 @@ function RelationshipList(props: RelationshipListProps) {
   );
 }
 
-RelationshipList.defaultProps = {
-  linkOpen: {},
-  record: {},
-};
 export default RelationshipList;

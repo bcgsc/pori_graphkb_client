@@ -63,7 +63,7 @@ interface PermissionsTableProps {
  * Table to display permissions state for a certain user group.
  */
 const PermissionsTable = ({
-  value, disabled, onChange, name,
+  value = {}, disabled = false, onChange, name,
 }: PermissionsTableProps) => {
   const [content, setContent] = useState(value || {});
   const [topBoxes, setTopboxes] = useState({});
@@ -164,11 +164,6 @@ const PermissionsTable = ({
       </Table>
     </div>
   );
-};
-
-PermissionsTable.defaultProps = {
-  value: {},
-  disabled: false,
 };
 
 export default PermissionsTable;

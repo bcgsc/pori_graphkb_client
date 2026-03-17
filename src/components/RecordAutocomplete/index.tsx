@@ -88,19 +88,19 @@ interface RecordAutocompleteProps {
  */
 const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   const {
-    className,
-    disabled,
-    errorText,
-    isMulti,
-    label,
+    className = '',
+    disabled = false,
+    errorText = '',
+    isMulti = false,
+    label = '',
     minSearchLength = 1,
     name,
     onChange,
-    placeholder,
-    required,
+    placeholder = 'Search Records by Name or ID',
+    required = false,
     getQueryBody,
-    singleLoad,
-    helperText: initialHelperText,
+    singleLoad = false,
+    helperText: initialHelperText = '',
     value,
   } = props;
 
@@ -296,21 +296,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       value={selectedValues}
     />
   );
-};
-
-RecordAutocomplete.defaultProps = {
-  className: '',
-  disabled: false,
-  errorText: '',
-  isMulti: false,
-  label: '',
-  minSearchLength: 1,
-  onChange: () => {},
-  placeholder: 'Search Records by Name or ID',
-  required: false,
-  singleLoad: false,
-  value: null,
-  helperText: '',
 };
 
 export default RecordAutocomplete;

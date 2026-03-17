@@ -41,9 +41,9 @@ interface GraphActionsNodeProps {
  */
 function GraphActionsNode(props: GraphActionsNodeProps) {
   const {
-    options,
+    options = [],
     actionsNode,
-    edge,
+    edge = false,
   } = props;
 
   if (!actionsNode) return null;
@@ -136,11 +136,5 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
     </g>
   );
 }
-
-GraphActionsNode.defaultProps = {
-  options: [],
-  actionsNode: null,
-  edge: false,
-};
 
 export default GraphActionsNode;

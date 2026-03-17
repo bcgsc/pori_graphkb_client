@@ -36,7 +36,7 @@ interface StatementReviewProps {
 const StatementReview = ({
   value,
   index,
-  variant,
+  variant = FORM_VARIANT.VIEW,
   onDelete,
   label,
 }: StatementReviewProps) => {
@@ -138,10 +138,6 @@ const StatementReview = ({
       </TableRow>
     </React.Fragment>
   );
-};
-
-StatementReview.defaultProps = {
-  variant: FORM_VARIANT.VIEW,
 };
 
 export default StatementReview;

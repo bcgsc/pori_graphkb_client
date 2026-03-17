@@ -130,9 +130,4 @@ const MainNav = ({ isOpen = false, onChange }: MainNavProps) => {
   );
 };
 
-MainNav.defaultProps = {
-  isOpen: false,
-  onChange: () => { },
-};
-
 export default MainNav;

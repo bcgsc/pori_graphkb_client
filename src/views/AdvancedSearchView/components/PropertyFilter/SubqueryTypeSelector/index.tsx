@@ -21,8 +21,8 @@ interface RecordFormStateToggleProps {
  */
 function RecordFormStateToggle({
   onChange,
-  value: inputValue,
-  disabled,
+  value: inputValue = '',
+  disabled = false,
 }: RecordFormStateToggleProps) {
   const [value, setValue] = useState(inputValue);
   const [helpIsOpen, setHelpIsOpen] = useState(false);
@@ -80,11 +80,5 @@ function RecordFormStateToggle({
     </div>
   );
 }
-
-RecordFormStateToggle.defaultProps = {
-  onChange: () => {},
-  value: '',
-  disabled: false,
-};
 
 export default RecordFormStateToggle;

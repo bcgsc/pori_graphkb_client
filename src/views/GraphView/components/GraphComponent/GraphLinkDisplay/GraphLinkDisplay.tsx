@@ -41,13 +41,13 @@ interface GraphLinkDisplayProps {
 function GraphLinkDisplay(props: GraphLinkDisplayProps) {
   const {
     link,
-    color,
+    color = '#999',
     labelKey,
-    marker,
+    marker = '',
     handleClick,
     detail,
     actionsNode,
-    filter,
+    filter = '',
   } = props;
 
   if (link.source === link.target) return null;
@@ -143,15 +143,5 @@ function GraphLinkDisplay(props: GraphLinkDisplayProps) {
     </g>
   );
 }
-
-GraphLinkDisplay.defaultProps = {
-  detail: null,
-  actionsNode: null,
-  labelKey: null,
-  color: '#999',
-  handleClick: null,
-  marker: '',
-  filter: '',
-};
 
 export default GraphLinkDisplay;

@@ -162,8 +162,8 @@ interface AuthenticatedRouteProps {
 
 const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const {
-    admin,
-    signedLicenseRequired,
+    admin = false,
+    signedLicenseRequired = false,
     component: Comp,
     componentProps = {},
   } = props;
@@ -221,12 +221,6 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const cp = componentProps || {};
 
   return <Comp {...cp} />;
-};
-
-AuthenticatedRoute.defaultProps = {
-  admin: false,
-  signedLicenseRequired: false,
-  componentProps: {},
 };
 
 export {

@@ -29,7 +29,7 @@ interface ColumnConfigurationProps {
  */
 const ColumnConfiguration = ({
   onClose,
-  isOpen,
+  isOpen = false,
   gridRef,
 }: ColumnConfigurationProps) => {
   const [columns, setColumns] = useState([]);
@@ -145,11 +145,6 @@ const ColumnConfiguration = ({
     </Dialog>
   );
   return result;
-};
-
-ColumnConfiguration.defaultProps = {
-  onClose: () => {},
-  isOpen: false,
 };
 
 export default ColumnConfiguration;

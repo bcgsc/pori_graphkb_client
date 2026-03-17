@@ -31,7 +31,7 @@ interface StatementReviewsTableProps {
 const StatementReviewsTable = (props: StatementReviewsTableProps) => {
   const {
     values = [],
-    variant,
+    variant = FORM_VARIANT.VIEW,
     onChange,
     name,
   } = props;
@@ -70,11 +70,6 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
       </Table>
     </div>
   );
-};
-
-StatementReviewsTable.defaultProps = {
-  values: [],
-  variant: FORM_VARIANT.VIEW,
 };
 
 export default StatementReviewsTable;

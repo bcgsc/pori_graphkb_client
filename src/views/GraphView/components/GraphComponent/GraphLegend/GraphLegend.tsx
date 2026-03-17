@@ -34,7 +34,7 @@ function GraphLegend(props: GraphLegendProps) {
   const {
     graphOptions,
     onChange,
-    linkDisabled,
+    linkDisabled = true,
     propsMap,
   } = props;
 
@@ -156,9 +156,5 @@ function GraphLegend(props: GraphLegendProps) {
     </div>
   );
 }
-
-GraphLegend.defaultProps = {
-  linkDisabled: true,
-};
 
 export default GraphLegend;

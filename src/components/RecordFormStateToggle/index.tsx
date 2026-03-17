@@ -28,10 +28,10 @@ interface RecordFormStateToggleProps {
  */
 function RecordFormStateToggle({
   onClick,
-  requireConfirm,
+  requireConfirm = false,
   message = 'Are you sure?',
   value = FORM_VARIANT.VIEW,
-  allowEdit,
+  allowEdit = false,
 }: RecordFormStateToggleProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const nextValue = useRef(value);
@@ -104,13 +104,5 @@ function RecordFormStateToggle({
     </>
   );
 }
-
-RecordFormStateToggle.defaultProps = {
-  onClick: undefined,
-  allowEdit: false,
-  requireConfirm: false,
-  message: 'Are you sure?',
-  value: FORM_VARIANT.VIEW,
-};
 
 export default RecordFormStateToggle;

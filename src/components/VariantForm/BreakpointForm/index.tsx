@@ -32,7 +32,7 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, required, model,
+  coordinateType, reference, start = '', end = '', required = true, model,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -97,12 +97,6 @@ const BreakpointForm = ({
       )}
     </div>
   );
-};
-
-BreakpointForm.defaultProps = {
-  required: true,
-  start: '',
-  end: '',
 };
 
 export default BreakpointForm;

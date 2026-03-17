@@ -37,9 +37,9 @@ interface ProteinPositionProps {
 const ProteinPosition = ({
   onChange,
   value,
-  name,
-  required,
-  disabled,
+  name = '',
+  required = true,
+  disabled = false,
 }: ProteinPositionProps) => {
   const { pos: initialPos, refAA: initialRefAA } = value || {};
   const [position, setPosition] = useState(initialPos);
@@ -124,12 +124,6 @@ const ProteinPosition = ({
       </FieldWrapper>
     </>
   );
-};
-
-ProteinPosition.defaultProps = {
-  required: true,
-  name: '',
-  disabled: false,
 };
 
 export default ProteinPosition;

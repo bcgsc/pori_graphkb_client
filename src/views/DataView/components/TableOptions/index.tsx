@@ -78,10 +78,4 @@ const TableOptions = ({
   return result;
 };
 
-TableOptions.defaultProps = {
-  onExportToTsv: () => { },
-  anchorEl: null,
-  onClose: () => {},
-};
-
 export default TableOptions;

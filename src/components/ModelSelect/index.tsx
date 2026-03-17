@@ -26,7 +26,7 @@ interface ModelSelectProps {
  * Select a database model class
  */
 const ModelSelect = ({
-  baseModel, defaultValue, value, includeAbstract, onChange, name, variant, disabled, ...props
+  baseModel = 'V', defaultValue = '', value = '', includeAbstract = false, onChange, name = '', variant = 'select', disabled = false, ...props
 }: ModelSelectProps) => {
   const [choices, setChoices] = useState<any>([]);
   const model = value || defaultValue;
@@ -60,16 +60,6 @@ const ModelSelect = ({
       {...props}
     />
   );
-};
-
-ModelSelect.defaultProps = {
-  baseModel: 'V',
-  defaultValue: '',
-  includeAbstract: false,
-  value: '',
-  variant: 'select',
-  disabled: false,
-  name: '',
 };
 
 export default ModelSelect;

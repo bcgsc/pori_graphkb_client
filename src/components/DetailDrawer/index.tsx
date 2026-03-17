@@ -64,7 +64,7 @@ function DetailDrawer(props: DetailDrawerProps) {
   const {
     node,
     onClose,
-    isEdge,
+    isEdge = false,
   } = props;
   const auth = useAuth();
 
@@ -314,11 +314,5 @@ function DetailDrawer(props: DetailDrawerProps) {
     </Drawer>
   );
 }
-
-DetailDrawer.defaultProps = {
-  node: null,
-  onClose: null,
-  isEdge: false,
-};
 
 export default DetailDrawer;

@@ -14,15 +14,16 @@ import React, {
   useState,
 } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';
 import DropDownSelect from '@/components/DropDownSelect';
 import SearchBox from '@/components/SearchBox';
+import { GeneralRecordType } from '@/components/types';
 import { navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
-import handleErrorSaveLocation from '@/services/util';
+import util from '@/services/util';
 
 const MATCH_LIMIT = 100;
 
@@ -96,8 +97,9 @@ const ROOT_TERM_MAPPING = {
 
 const DEBOUNCE_MS = 100;
 
-const MatchView = (props: RouteComponentProps) => {
-  const { history } = props;
+const MatchView = () => {
+  const { search, pathname } = useLocation();
+  const navigate = useNavigate();
   const snackbar = useSnackbar();
   const [text, setText] = useState('');
   const [term] = useDebounce(text, DEBOUNCE_MS);
@@ -106,7 +108,7 @@ const MatchView = (props: RouteComponentProps) => {
   const [rootTerm] = useDebounce(rootText, DEBOUNCE_MS);
   const queryClient = useQueryClient();
 
-  const { data: { hasTooManyRecords, matches = [], isLoading } = {} } = useQuery(
+  const { data: { hasTooManyRecords, matches = [] } = {}, isLoading } = useQuery(
     ['queries', rootTerm, term, termType],
     async () => {
       const queries = [
@@ -123,11 +125,10 @@ const MatchView = (props: RouteComponentProps) => {
           tuple('/query', query),
           async ({ queryKey: [, body] }) => api.query(body),
           { staleTime: Infinity },
-          { throwOnError: true },
         )),
       );
 
-      const terms = {};
+      const terms: Record<string, GeneralRecordType> = {};
       treeTerms.forEach((currentTerm) => {
         terms[currentTerm['@rid']] = currentTerm;
       });
@@ -146,7 +147,7 @@ const MatchView = (props: RouteComponentProps) => {
       };
     },
     {
-      onError: (err) => handleErrorSaveLocation(err, history),
+      onError: (err) => util.handleErrorSaveLocation(err, { navigate, search, pathname }),
     },
   );
 
@@ -173,10 +174,10 @@ const MatchView = (props: RouteComponentProps) => {
   }, []);
 
   const handleJumpToGraph = useCallback(() => {
-    navigateToGraph(matches.map((m) => m['@rid']), history, (err) => {
+    navigateToGraph(matches.map((m) => m['@rid']), navigate, (err) => {
       snackbar.enqueueSnackbar(err, { variant: 'error' });
     });
-  }, [history, matches, snackbar]);
+  }, [navigate, matches, snackbar]);
 
   let alertText = '';
 
@@ -252,7 +253,7 @@ const MatchView = (props: RouteComponentProps) => {
         {matches.map((match) => (
           <DetailChip
             key={match['@rid']}
-            details={{ ...match, source: match.source.displayName }}
+            details={{ ...match, source: match.source?.displayName }}
             label={`${match.displayName} (${match['@rid']})`}
           />
         ))}

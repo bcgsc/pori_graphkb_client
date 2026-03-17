@@ -20,6 +20,7 @@ interface ModelSelectProps {
   value?: string;
   /** the display type (radio or select) */
   variant?: string;
+  className?: string;
 }
 
 /**

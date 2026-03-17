@@ -80,7 +80,7 @@ interface RecordAutocompleteProps {
   /** load the initial options and do not requery */
   singleLoad?: boolean;
   /** the initial selected value(s) */
-  value?: Record<string, unknown>[] | Record<string, unknown>;
+  value?: unknown[] | unknown;
 }
 
 /**
@@ -172,12 +172,12 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
       if (actionType === 'select-option' && !isMulti) {
         setSelectedValues(isMulti ? newValue : [option]);
-        onChange({ target: { name, value: option } });
+        onChange?.({ target: { name, value: option } });
       } else {
         setSelectedValues(newValue);
 
         if (actionType !== 'blur') {
-          onChange({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
+          onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
         }
       }
     },
@@ -234,9 +234,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       getOptionLabel={(option) => schema.getLabel(option)}
       groupBy={getGroup}
       isOptionEqualToValue={(option, value_) => option['@rid'] === value_['@rid']}
-      ListboxProps={{
-        dense: true,
-      }}
       loading={isLoading}
       multiple
       onBlur={handleOnBlur}

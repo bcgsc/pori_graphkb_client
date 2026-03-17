@@ -1,12 +1,13 @@
 import { titleCase } from 'change-case';
 import React from 'react';
 
+import { GeneralRecordType } from '../types';
 import SentencePreview from '.';
 
 interface EdgeSentenceProps {
   type: string;
-  srcRecord?: Record<string, unknown>;
-  tgtRecord?: Record<string, unknown>;
+  srcRecord?: GeneralRecordType;
+  tgtRecord?: GeneralRecordType;
 }
 
 const EdgeSentence = ({ srcRecord, tgtRecord, type }: EdgeSentenceProps) => {
@@ -25,13 +26,13 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }: EdgeSentenceProps) => {
       : '[target record]',
   ];
 
-  const highlights = [];
+  const highlights: string[] = [];
 
-  if (srcRecord) {
+  if (srcRecord?.displayName) {
     highlights.push(srcRecord.displayName);
   }
 
-  if (tgtRecord) {
+  if (tgtRecord?.displayName) {
     highlights.push(tgtRecord.displayName);
   }
 

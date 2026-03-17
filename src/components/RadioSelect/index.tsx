@@ -10,17 +10,30 @@ import {
   MenuList,
   Radio,
 } from '@mui/material';
+import isObject from 'lodash.isobject';
 import React, { ReactNode } from 'react';
 
-interface Option {
+interface Option<V = unknown> {
   label: string;
-  value: unknown;
+  value: V;
   caption?: ReactNode;
+  key: string;
 }
 
-interface RadioSelectProps {
+function asOption<V>(opt: Option<V> | V) {
+  if (!isObject(opt)) {
+    return {
+      label: String(opt),
+      key: String(opt),
+      value: opt,
+    };
+  }
+  return opt as Option<V>;
+}
+
+interface RadioSelectProps<V = unknown> {
   /** the options to display */
-  options: (Option | string)[];
+  options: (Option<V> | V)[];
   /** css class name to add to the top-level component */
   className?: string;
   /** optional label for the field */
@@ -28,11 +41,11 @@ interface RadioSelectProps {
   /** the name to use for the input and reporting change to the parent handler */
   name?: string;
   /** the change handler to report the selection back to the parent */
-  onChange?: (arg: { target: { name?: string; value: unknown } }) => unknown;
+  onChange?: (arg: { target: { name?: string; value: V } }) => unknown;
   /** the function to generate a key from a selection value */
-  optionToKey?: (option: Option | string) => string;
+  optionToKey?: (option: Option<V> | V) => string;
   /** the current value */
-  value?: unknown;
+  value?: V;
 }
 
 /**
@@ -40,35 +53,41 @@ interface RadioSelectProps {
  *
  * Add captions below choices when provided
  */
-const RadioSelect = ({
-  options, onChange, className = '', label = '', value, optionToKey = (o) => (o.key || o), name = '',
-}: RadioSelectProps) => (
-  <MenuList className={`radio-select ${className}`}>
-    {label && (<FormLabel>{label}</FormLabel>)}
-    {options.map((option) => {
-      const optionValue = option.value === undefined ? option : option.value;
-      const checked = Boolean(value === optionValue);
-      return (
-        <MenuItem
-          key={optionToKey(option)}
-          className="radio-option"
-          onClick={() => {
-            onChange({ target: { name, value: optionValue } });
-          }}
-          selected={checked}
-          value={optionValue}
-        >
-          <Radio checked={checked} inputProps={{ 'data-testid': `radio-option__${optionToKey(option)}` }} />
-          <ListItemText
-            primary={option.label || option}
-            primaryTypographyProps={{ className: 'radio-option__title' }}
-            secondary={option.caption || ''}
-            secondaryTypographyProps={{ className: 'radio-option__caption' }}
-          />
-        </MenuItem>
-      );
-    })}
-  </MenuList>
-);
+function RadioSelect<V>({
+  options, onChange, className, label, value, optionToKey = (o) => asOption(o).key, name,
+}: RadioSelectProps<V>) {
+  return (
+    <MenuList className={`radio-select ${className}`}>
+      {label && (<FormLabel>{label}</FormLabel>)}
+      {options.map((optionOrValue) => {
+        const option = asOption(optionOrValue);
+        const checked = Boolean(value === option.value);
+        return (
+          <MenuItem
+            key={optionToKey(option)}
+            className="radio-option"
+            onClick={() => {
+              onChange?.({ target: { name, value: option.value } });
+            }}
+            selected={checked}
+          >
+            <Radio
+              checked={checked}
+              inputProps={{
+                [('data-testid' as any)]: `radio-option__${optionToKey(option)}`,
+              }}
+            />
+            <ListItemText
+              primary={option.label}
+              primaryTypographyProps={{ className: 'radio-option__title' }}
+              secondary={option.caption || ''}
+              secondaryTypographyProps={{ className: 'radio-option__caption' }}
+            />
+          </MenuItem>
+        );
+      })}
+    </MenuList>
+  );
+}
 
 export default RadioSelect;

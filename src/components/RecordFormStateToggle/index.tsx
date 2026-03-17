@@ -94,7 +94,6 @@ function RecordFormStateToggle({
       </ToggleButtonGroup>
       {requireConfirm && (
         <ConfirmActionDialog
-          className="action-button__dialog"
           isOpen={dialogOpen}
           message={message}
           onCancel={handleDialogCancel}

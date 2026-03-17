@@ -1,8 +1,8 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@mui/material';
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
@@ -11,14 +11,14 @@ import { FORM_VARIANT } from '@/components/util';
 /**
  * returns an array of strings without any of the indicated exclusion values
  *
- * @param {Array.<string>} orderingList specifies property display ordering
- * @param {Array.<string>} exclusions fields that should not be rendered
+ * @param orderingList specifies property display ordering
+ * @param exclusions fields that should not be rendered
  */
-const exclusionFilter = (orderingList, exclusionList) => {
-  const newOrdering = [];
+const exclusionFilter = (orderingList: (string | string[])[], exclusionList: string[]) => {
+  const newOrdering: (string | string[])[] = [];
   orderingList.forEach((filter) => {
     if (Array.isArray(filter)) {
-      newOrdering.push(exclusionFilter(filter, exclusionList));
+      newOrdering.push(exclusionFilter(filter, exclusionList) as string[]);
     } else if (!exclusionList.includes(filter)) {
       newOrdering.push(filter);
     }
@@ -26,11 +26,11 @@ const exclusionFilter = (orderingList, exclusionList) => {
   return newOrdering;
 };
 
-const filterNullFields = (orderingList, formContent) => {
-  const newOrdering = [];
+const filterNullFields = (orderingList: (string | string[])[], formContent) => {
+  const newOrdering: (string | string[])[] = [];
   orderingList.forEach((field) => {
     if (Array.isArray(field)) {
-      newOrdering.push(filterNullFields(field, formContent));
+      newOrdering.push(filterNullFields(field, formContent) as string[]);
     } else if (formContent[field] === 0 || formContent[field]) {
       newOrdering.push(field);
     }
@@ -40,7 +40,7 @@ const filterNullFields = (orderingList, formContent) => {
 
 interface FieldGroupProps {
   /** ClassModel */
-  model: Record<string, unknown>;
+  model: Partial<Pick<ClassDefinition, 'properties' | 'isEdge' | 'name'>>;
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
   /** if field should be disabled */
@@ -65,14 +65,14 @@ const FieldGroup = ({
   }
 
   // get the form content
-  const fields = [];
+  const fields: ReactNode[] = [];
 
-  const filterGeneratedFields = (order) => {
-    const newOrder = [];
+  function filterGeneratedFields(order: (string | string[])[]): (string | string[])[] {
+    const newOrder: typeof order = [];
 
     order.forEach((item) => {
       if (Array.isArray(item)) {
-        const subgroup = filterGeneratedFields(item);
+        const subgroup = filterGeneratedFields(item) as string[];
 
         if (subgroup.length) {
           newOrder.push(subgroup);
@@ -84,7 +84,7 @@ const FieldGroup = ({
       }
     });
     return newOrder;
-  };
+  }
 
   let filteredOrdering = ordering;
 
@@ -93,7 +93,7 @@ const FieldGroup = ({
   } else if (formVariant === FORM_VARIANT.VIEW) {
     filteredOrdering = filterNullFields(filteredOrdering, formContent);
   }
-  filteredOrdering = exclusionFilter(filteredOrdering, exclusions);
+  filteredOrdering = exclusionFilter(filteredOrdering, exclusions ?? []);
 
   filteredOrdering.forEach((item) => {
     if (Array.isArray(item)) { // subgrouping

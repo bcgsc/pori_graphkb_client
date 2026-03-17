@@ -1,6 +1,7 @@
 import './index.scss';
 
 import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { StatementRecord } from '@bcgsc-pori/graphkb-schema/dist/types';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
@@ -20,8 +21,17 @@ import {
   sortAndGroupFields,
 } from '@/components/util';
 
+import { EdgeType, GeneralRecordType, StatementType } from '../types';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
+
+function getIsStatement(model: ClassDefinition, record: GeneralRecordType | undefined): record is StatementType {
+  return Boolean(model) && model.name === 'Statement';
+}
+
+function getIsEdge(model: ClassDefinition, record: GeneralRecordType | undefined): record is EdgeType {
+  return Boolean(model) && model.isEdge;
+}
 
 interface FormLayoutProps {
   /** the property names which should be put above the collapse */
@@ -92,7 +102,7 @@ const FormLayout = ({
     setModel(schemaDefn.get(modelName));
   }, [modelName]);
 
-  if (!model) {
+  if (!model || !formVariant) {
     return null;
   }
 
@@ -100,9 +110,9 @@ const FormLayout = ({
     aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 
-  const isEdge = model && model.isEdge;
+  const isEdge = getIsEdge(model, formContent);
 
-  const isStatement = model && model.name === 'Statement';
+  const isStatement = getIsStatement(model, formContent);
 
   return (
     <div className={`form-layout ${className}`}>
@@ -133,7 +143,7 @@ const FormLayout = ({
           </List>
           {extraFields.length > 0 && (
             <>
-              <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+              <ListItem onClick={() => setIsExpanded(!isExpanded)}>
                 <ListItemText
                   primary={
                     isExpanded

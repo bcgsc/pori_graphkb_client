@@ -19,6 +19,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
+import { GeneralRecordType } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -66,10 +67,10 @@ const getQueryPayload = ({
     content.skip = skip;
     content.limit = limit;
 
-    if (sortModel.length) {
+    if (sortModel?.length) {
       const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
       content.orderBy = orderBy;
-      content.orderByDirection = orderByDirection.toUpperCase();
+      content.orderByDirection = orderByDirection.toUpperCase() as 'DESC' | 'ASC';
     }
   }
 
@@ -97,7 +98,7 @@ const getRowsFromBlocks = async ({
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
 
-  const blockRequests = [];
+  const blockRequests: Promise<GeneralRecordType[]>[] = [];
 
   for (let block = firstBlock; block <= lastBlock; block += blockSize) {
     const payload = getQueryPayload({
@@ -109,7 +110,7 @@ const getRowsFromBlocks = async ({
       async ({ queryKey: [, body] }) => api.query(body),
     ));
   }
-  const data = [];
+  const data: GeneralRecordType[] = [];
   (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
@@ -132,7 +133,7 @@ const DataView = (): JSX.Element => {
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
-  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
   const [detailsRowId, setDetailsRowId] = useState(null);
   const grid = useGrid();
@@ -141,7 +142,7 @@ const DataView = (): JSX.Element => {
     search, count: true,
   }), [search]);
 
-  const { data: totalRows = null } = useQuery(
+  const { data: totalRows } = useQuery(
     tuple('/query', payload),
     async ({ queryKey: [, body] }) => api.query(body),
     {
@@ -158,8 +159,8 @@ const DataView = (): JSX.Element => {
       ...schema.defineGridColumns(search),
     ]);
 
-    const dataSource = {
-      rowCount: null,
+    gridApi.setDatasource({
+      rowCount: undefined,
       getRows: ({
         successCallback, failCallback, ...params
       }) => {
@@ -171,7 +172,7 @@ const DataView = (): JSX.Element => {
           const result = await getRowsFromBlocks({
             startRow, endRow, sortModel, search, blockSize: DEFAULT_BLOCK_SIZE,
           });
-          return [result, totalRows];
+          return [result, totalRows] as const;
         };
 
         getTableData(params)
@@ -180,9 +181,7 @@ const DataView = (): JSX.Element => {
             successCallback(rows, lastRow);
           }).catch(() => failCallback());
       },
-    };
-      // update the model
-    gridApi.setDatasource(dataSource);
+    });
   }, [grid.ref, search, totalRows]);
 
   useEffect(() => {
@@ -211,7 +210,7 @@ const DataView = (): JSX.Element => {
   }, [navigate, search]);
 
   const { data: detailPanelRow } = useQuery(
-    tuple('/query', { target: [detailsRowId], neighbors: DEFAULT_NEIGHBORS }),
+    tuple('/query', { target: [detailsRowId!], neighbors: DEFAULT_NEIGHBORS }),
     async ({ queryKey: [, body] }) => api.query(body),
     {
       enabled: Boolean(detailsRowId),
@@ -273,15 +272,17 @@ const DataView = (): JSX.Element => {
     if (!isExportingData) {
       setIsExportingData(true);
 
-      const maxExportSize = Math.min(MAX_EXPORT_SIZE, totalRows);
+      const maxExportSize = Math.min(MAX_EXPORT_SIZE, totalRows ?? 0);
 
       const allRows = await getRowsFromBlocks({
         startRow: 0,
         endRow: maxExportSize,
+        // @ts-expect-error private property
         sortModel: gridApi.sortController.getSortModel(),
         search,
         blockSize: DEFAULT_BLOCK_SIZE,
       });
+      // @ts-expect-error doesn't exist?
       const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
       gridOptions.cacheBlockSize = maxExportSize; // in preparation to fetch entire dataset
 
@@ -347,7 +348,7 @@ const DataView = (): JSX.Element => {
             anchorEl={optionsMenuAnchor}
             gridRef={grid.ref}
             onClose={() => setOptionsMenuAnchor(null)}
-            onExportToTsv={(totalRows !== null) && handleClickExport}
+            onExportToTsv={(totalRows !== null) ? handleClickExport : undefined}
           />
           <AgGridReact
             {...grid.props}

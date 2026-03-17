@@ -18,12 +18,14 @@ import api from '@/services/api';
 
 import RecordForm from '..';
 
-const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
+const auth = {
+  user: { '@rid': '23:9', name: 'name', groups: [] }, hasWriteAccess: true, login: () => {}, logout: () => {}, isAuthenticated: true, error: undefined, isAuthenticating: false,
+};
 
-vi.spyOn(api, 'post').mockImplementation((route, payload) => payload);
-vi.spyOn(api, 'patch').mockImplementation(() => []);
-vi.spyOn(api, 'delete').mockImplementation(() => []);
-vi.spyOn(api, 'get').mockImplementation(() => []);
+vi.spyOn(api, 'post').mockImplementation(async (route, payload) => payload);
+vi.spyOn(api, 'patch').mockImplementation(async () => ({}));
+vi.spyOn(api, 'delete').mockImplementation(async () => []);
+vi.spyOn(api, 'get').mockImplementation(async () => []);
 
 vi.mock('@/components/RecordAutocomplete', () => ({
   default: ({
@@ -98,7 +100,7 @@ describe('RecordForm', () => {
     });
 
     test('click edit triggers onToggleState handler', () => {
-      const editButton = screen.getByText('Edit').closest('button');
+      const editButton = screen.getByText('Edit').closest('button')!;
       fireEvent.click(editButton);
       expect(onToggleStateSpy).toHaveBeenCalledTimes(1);
       expect(onToggleStateSpy).toHaveBeenCalledWith(FORM_VARIANT.EDIT);
@@ -191,7 +193,7 @@ describe('RecordForm', () => {
       await waitFor(() => {
         expect(screen.getByText('SUBMIT').closest('button')).not.toBeDisabled();
       });
-      fireEvent.click(screen.getByText('SUBMIT').closest('button'));
+      fireEvent.click(screen.getByText('SUBMIT').closest('button')!);
       await waitFor(() => {
         expect(api.post).toHaveBeenCalled();
         expect(onSubmitSpy).toHaveBeenCalled();
@@ -205,7 +207,7 @@ describe('RecordForm', () => {
       await waitFor(() => {
         expect(screen.getByText('SUBMIT').closest('button')).toBeDisabled();
       });
-      fireEvent.click(screen.getByText('SUBMIT').closest('button'));
+      fireEvent.click(screen.getByText('SUBMIT').closest('button')!);
       await waitFor(() => {
         expect(onSubmitSpy).not.toHaveBeenCalled();
       });
@@ -218,7 +220,7 @@ describe('RecordForm', () => {
     test('form is not disabled when pristine with errors', async () => {
       // make bad change
       expect(screen.getByText('SUBMIT').closest('button')).not.toBeDisabled();
-      fireEvent.click(screen.getByText('SUBMIT').closest('button'));
+      fireEvent.click(screen.getByText('SUBMIT').closest('button')!);
 
       await waitFor(() => {
         expect(onSubmitSpy).not.toHaveBeenCalled();

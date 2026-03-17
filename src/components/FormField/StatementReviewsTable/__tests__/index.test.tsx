@@ -38,18 +38,12 @@ describe('StatementReviewsTable', () => {
     },
   ];
 
-  const mockReviewProps = {
-    content: { reviews },
-    updateContent: () => {},
-  };
-
   test('does not crash with empty reviews array', () => {
     render(
       <QueryClientProvider client={api.queryClient}>
         <StatementReviewsTable
           name="reviews"
           onChange={vi.fn()}
-          reviewProps={mockReviewProps}
           values={[]}
         />
       </QueryClientProvider>,
@@ -64,7 +58,6 @@ describe('StatementReviewsTable', () => {
         <StatementReviewsTable
           name="reviews"
           onChange={vi.fn()}
-          reviewProps={mockReviewProps}
           values={reviews}
         />
       </QueryClientProvider>,

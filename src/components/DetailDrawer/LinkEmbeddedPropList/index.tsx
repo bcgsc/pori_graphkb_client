@@ -1,3 +1,4 @@
+import { ClassDefinition, PropertyDefinition as PropDefinition } from '@bcgsc-pori/graphkb-schema';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
@@ -11,6 +12,7 @@ import {
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -20,15 +22,15 @@ interface LinkEmbeddedPropListProps {
   /** adds prop to opened object and handles expansion */
   handleExpand?: (name: string) => unknown;
   /** props to be displayed for submenu */
-  identifiers?: unknown[];
+  identifiers?: string[];
   /** is the prop nested */
   isNested?: boolean;
   /** opened dropdowns in drawer */
   opened?: string[];
   /** link/embedded property model */
-  prop?: Record<string, unknown>;
+  prop: PropDefinition;
   /** contains link/embedded records */
-  value?: Record<string, unknown>;
+  value: GeneralRecordType;
 }
 
 /**
@@ -36,7 +38,7 @@ interface LinkEmbeddedPropListProps {
  */
 function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   const {
-    prop = {}, isNested = false, value = {}, identifiers = [], handleExpand, formatOtherProps, opened = [],
+    prop, isNested = false, value = {}, identifiers = [], handleExpand, formatOtherProps, opened = [],
   } = props;
   const { name, type } = prop;
   let previewStr;
@@ -45,11 +47,11 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   if (isNested) {
     previewStr = schema.getLabel(value);
   } else {
-    listItemProps = { button: true, onClick: () => handleExpand(name) };
-    previewStr = value.displayName;
+    listItemProps = { button: true, onClick: () => handleExpand?.(name) };
+    previewStr = value?.displayName;
 
     if (type === 'embedded') {
-      previewStr = value['@class'];
+      previewStr = value?.['@class'];
     }
   }
   return (
@@ -84,7 +86,7 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
                       </Typography>
                       <Typography>
                         {item === '@rid'
-                          ? <RecordIdLink recordClass={value['@class']} recordId={value[item]} />
+                          ? <RecordIdLink recordClass={value['@class'] as string} recordId={value[item] as string} />
                           : value[identifiers[index]]}
                       </Typography>
                     </div>

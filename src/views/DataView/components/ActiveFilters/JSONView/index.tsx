@@ -1,6 +1,6 @@
 import './index.scss';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 /* eslint-disable react/no-array-index-key */
 
@@ -15,9 +15,9 @@ const Indent = ({ level = 0, indent = '  ' }: IndentProps) => (
 
 const DefaultValueComponent = ({ value }) => JSON.stringify(value);
 
-interface ValueViewProps {
+interface ValueViewProps extends IndentProps {
   value: unknown;
-  ValueComponent?: ({ value }) => JSX.Element;
+  ValueComponent?: ({ value }) => ReactNode;
   name?: string;
 }
 
@@ -27,17 +27,19 @@ const ValueView = ({
   <div>
     <Indent {...rest} />
     <span>
-      {name && (`${name}: `)} <ValueComponent value={value} />
+      {name && (`${name}: `)} {ValueComponent({ value })}
     </span>
   </div>
 );
 
 interface ObjectViewProps {
-  data: Record<string, unknown>;
+  data: object;
   // eslint-disable-next-line react/require-default-props
   closingBrace?: string;
   // eslint-disable-next-line react/require-default-props
   level?: number;
+  indent?: string;
+  ValueComponent?: ValueViewProps['ValueComponent'];
 }
 
 const ObjectView = ({

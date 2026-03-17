@@ -81,12 +81,11 @@ const SteppedForm = ({
           if (!child) {
             return child;
           }
-          const { fields, label } = child.props;
+          const { fields, label } = (child as any).props;
           const errors = fields.some((f) => formErrors[f]);
           return (
             <Step>
               <StepButton
-                completed={visited[index] && !errors}
                 data-testid={`stepped-form__step-button-${index}`}
                 onClick={() => handleOnClick(index)}
               >

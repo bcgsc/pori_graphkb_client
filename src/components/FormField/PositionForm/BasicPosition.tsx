@@ -13,7 +13,7 @@ const { offset: offsetProperty } = schemaDefn.getProperties('CdsPosition');
 
 interface BasicPositionFormProps {
   /** change handler */
-  onChange: (...args: unknown[]) => unknown;
+  onChange?: (...args: unknown[]) => unknown;
   /** the class model to use to build the form */
   variant: 'GenomicPosition' | 'ExonicPosition' | 'IntronicPosition' | 'RnaPosition' | 'CdsPosition';
   /** flag to indicate this field is disabled */
@@ -25,7 +25,7 @@ interface BasicPositionFormProps {
   /** the initial value */
   value?: {
     pos?: number;
-    offset?: number;
+    offset?: number | '';
   },
 }
 
@@ -60,7 +60,7 @@ const BasicPositionForm = ({
         validateProperty(posProperty, position);
         setPositionError('');
       } catch (err) {
-        setPositionError(err.toString());
+        setPositionError((err as Error).toString());
       }
     }
   }, [position, required]);
@@ -78,19 +78,19 @@ const BasicPositionForm = ({
         validateProperty(offsetProperty, offset);
         setOffsetError('');
       } catch (err) {
-        setOffsetError(err.toString());
+        setOffsetError((err as Error).toString());
       }
     }
   }, [offset, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
     setPosition(newValue);
-    onChange({ target: { name, value: { '@class': variant, pos: newValue, offset } } });
+    onChange?.({ target: { name, value: { '@class': variant, pos: newValue, offset } } });
   }, [onChange, name, variant, offset]);
 
   const handleOffsetChange = useCallback(({ target: { value: newValue } }) => {
     setOffset(newValue);
-    onChange({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
+    onChange?.({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
   }, [onChange, name, variant, position]);
 
   const isOffsetVariant = Boolean(schemaDefn.getProperty(variant, 'offset'));

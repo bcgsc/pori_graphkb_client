@@ -26,7 +26,7 @@ const ClassDescription = ({ name, description }: ClassDescriptionProps) => {
       const [result] = await api.query(body);
       return result;
     },
-    { staleTime: Infinity, throwOnError: false },
+    { staleTime: Infinity },
   );
 
   const { isFetching: countIsFetching, data: count } = useQuery(

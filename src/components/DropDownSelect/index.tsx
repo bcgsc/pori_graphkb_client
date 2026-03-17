@@ -78,7 +78,7 @@ interface DropDownSelectProps {
   /** DOM node name property. */
   name?: string;
   /** Parent function to trigger on item select. */
-  onChange?: (...args: unknown[]) => unknown;
+  onChange?: SelectProps['onChange']
   /** List of options to be selected from. */
   options?: (SelectOption | string)[];
   /** Required flag for input component. */

@@ -1,11 +1,13 @@
-import { TextField } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 
-interface TimestampProps {
+import { FormContextState } from '@/components/FormContext';
+
+interface TimestampProps extends Omit<TextFieldProps, 'onChange'> {
   name: string;
-  onChange: (...args: unknown[]) => void;
-  value?: unknown;
+  onChange: FormContextState['updateFieldEvent'];
+  value?: any;
 }
 
 const Timestamp = ({

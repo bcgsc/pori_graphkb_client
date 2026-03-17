@@ -22,7 +22,7 @@ describe('TextArrayField', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
 
     expect(screen.getByText('someElement')).toBeTruthy();
-    expect(screen.getByLabelText('test').value).toEqual('');
+    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
   });
 
   test('adds value on button click', () => {
@@ -43,7 +43,7 @@ describe('TextArrayField', () => {
     fireEvent.click(button);
 
     expect(screen.getByText('someElement')).toBeTruthy();
-    expect(screen.getByLabelText('test').value).toEqual('');
+    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
   });
 
   test('deletes last added value with backspace', () => {
@@ -65,7 +65,7 @@ describe('TextArrayField', () => {
       fireEvent.keyDown(input, { key: 'Enter' });
       // should now be a chip element
       expect(screen.getByText(text)).toBeTruthy();
-      expect(screen.getByLabelText('test').value).toEqual('');
+      expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
     };
 
     addValue('value 1');
@@ -105,7 +105,7 @@ describe('TextArrayField', () => {
     expect(onChange).toHaveBeenCalledTimes(1);
 
     fireEvent.change(input, { target: { value: 'blargh' } });
-    expect(screen.getByLabelText('test').value).toEqual('blargh');
+    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('blargh');
 
     fireEvent.keyDown(
       input,
@@ -134,7 +134,7 @@ describe('TextArrayField', () => {
     // should now be a single chip element
     const chip = screen.getByText('someElement');
     expect(chip).toBeTruthy();
-    expect(screen.getByLabelText('test').value).toEqual('');
+    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).lastCalledWith({
       target: {
@@ -143,7 +143,7 @@ describe('TextArrayField', () => {
       },
     });
 
-    fireEvent.click(chip.nextElementSibling);
+    fireEvent.click(chip.nextElementSibling!);
     // should not be any chips
     expect(screen.queryByText('someElement')).toBeFalsy();
     expect(onChange).toHaveBeenCalledTimes(2);
@@ -170,7 +170,7 @@ describe('TextArrayField', () => {
     expect(chip).toBeTruthy();
 
     // now delete the newly added chip
-    fireEvent.click(chip.nextElementSibling);
+    fireEvent.click(chip.nextElementSibling!);
     // should not have any chips now
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).lastCalledWith({
@@ -217,7 +217,7 @@ describe('TextArrayField', () => {
     );
 
     let chip = screen.getByText('someElement');
-    fireEvent.click(chip?.nextElementSibling);
+    fireEvent.click(chip.nextElementSibling!);
 
     expect(onChange).lastCalledWith({
       target: {
@@ -227,7 +227,7 @@ describe('TextArrayField', () => {
     });
 
     chip = screen.getByText('someElement');
-    fireEvent.click(chip?.nextElementSibling);
+    fireEvent.click(chip.nextElementSibling!);
 
     expect(onChange).toHaveBeenCalledTimes(2);
     expect(onChange).lastCalledWith({

@@ -87,10 +87,10 @@ function getEdges(): string[];
  * @param {Object} node - Object to retrieve edges from if input.
  */
 function getEdges(node: null): string[];
-function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): EdgeType[];
-function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null): string[];
+function getEdges<R extends GeneralRecordType>(node: R): EdgeType[];
+function getEdges<R extends GeneralRecordType>(node: R | null): string[] | EdgeType[];
 
-function getEdges<ReqFields extends string = string>(node: GeneralRecordType<ReqFields> | null = null) {
+function getEdges<R extends GeneralRecordType>(node: R | null = null) {
   const list: string[] = schemaDefn.children('E').slice();
 
   if (node) {

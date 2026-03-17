@@ -85,7 +85,7 @@ const RecordView = ({
     if (path) {
       try {
         const name = getModelFromName(path, modelNameParam, variant);
-        setModelName(name);
+        setModelName(name as ModelNamesType);
       } catch (err) {
         if (err instanceof Error) {
           const error: NavigateOptions = { state: { error: { name: err.name, message: err.toString() } } };

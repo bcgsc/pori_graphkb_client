@@ -8,10 +8,25 @@ import {
   describe, expect, test, vi,
 } from 'vitest';
 
-import FormContext from '@/components/FormContext';
+import FormContext, { FormContextState } from '@/components/FormContext';
+import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 
 import BreakpointForm from '..';
+
+const CONTEXT_DEFAULTS: FormContextState = {
+  formContent: {},
+  formVariant: FORM_VARIANT.VIEW,
+  update: () => {},
+  replaceContent: () => {},
+  updateField: () => {},
+  updateFieldEvent: () => {},
+  setFormIsDirty: () => {},
+  formHasErrors: false,
+  formIsDirty: false,
+  formErrors: {},
+  additionalValidationError: '',
+};
 
 describe('BreakpointForm', () => {
   test('displays start when given', () => {
@@ -34,7 +49,7 @@ describe('BreakpointForm', () => {
   test('defaults to uncertain if end is filled in form', () => {
     const { getByText, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ formContent: { break1End: {} } }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { break1End: {} } }}>
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
@@ -51,7 +66,7 @@ describe('BreakpointForm', () => {
   });
 
   test('clears end from form when uncertain is unset', () => {
-    const form = { formContent: { break1End: {} }, updateField: vi.fn() };
+    const form = { ...CONTEXT_DEFAULTS, formContent: { break1End: {} }, updateField: vi.fn() };
     const { getByText, getByTestId, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={form}>

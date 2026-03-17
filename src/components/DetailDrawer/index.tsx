@@ -68,13 +68,13 @@ function DetailDrawer(props: DetailDrawerProps) {
   } = props;
   const auth = useAuth();
 
-  const [opened, setOpened] = useState([]);
+  const [opened, setOpened] = useState<string[]>([]);
 
   /**
    * Toggles collapsed list item.
-   * @param {string} key - list item key.
+   * @param key - list item key.
    */
-  const handleExpand = (key) => {
+  const handleExpand = (key: string) => {
     if (opened.includes(key)) {
       opened.splice(opened.indexOf(key), 1);
     } else {
@@ -83,13 +83,13 @@ function DetailDrawer(props: DetailDrawerProps) {
     setOpened([...opened]);
   };
 
-  const [linkOpen, setLinkOpen] = useState(null);
+  const [linkOpen, setLinkOpen] = useState<string | null>(null);
 
   /**
    * Toggles collapsed link list item.
-   * @param {string} key - list item key.
+   * @param  key - list item key.
    */
-  const handleLinkExpand = (key) => {
+  const handleLinkExpand = (key: string) => {
     if (linkOpen === key) {
       setLinkOpen(null);
       setOpened(opened.filter((o) => !o.includes(key)));
@@ -179,9 +179,9 @@ function DetailDrawer(props: DetailDrawerProps) {
   /**
    * Formats non-identifying, non-metadata properties of the input record.
    * @param {Object} node - Record being displayed.
-   * @param {boolean} isNested - Nested flag indicating if record is embedded
+   * @param isNested - Nested flag indicating if record is embedded
    */
-  const formatOtherProps = (record, isNested) => {
+  const formatOtherProps = (record, isNested?: boolean) => {
     const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(record)
@@ -202,8 +202,8 @@ function DetailDrawer(props: DetailDrawerProps) {
   let content: ReactNode = null;
 
   if (drawerIsOpen) {
-    const recordId = node['@rid'].replace(/^#/, '');
-    const recordClass = node['@class'];
+    const recordId = node?.['@rid']?.replace(/^#/, '');
+    const recordClass = node?.['@class'];
 
     const otherProps = formatOtherProps(node);
     const metadata = formatMetadata(node, true);
@@ -218,7 +218,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       // Only for kbp nodes so far.
     } catch (e) {
       preview = 'Invalid variant';
-      errorMessage = e.message;
+      errorMessage = (e as Error).message;
     }
     content = (
       <div className="detail-drawer__content">

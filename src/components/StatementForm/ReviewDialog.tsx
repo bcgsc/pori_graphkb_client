@@ -64,7 +64,6 @@ const AddReviewDialog = ({
     <Dialog
       maxWidth="lg"
       onClose={onClose}
-      onEscapeKeyDown={onClose}
       open={isOpen}
     >
       <div className="review-dialog">

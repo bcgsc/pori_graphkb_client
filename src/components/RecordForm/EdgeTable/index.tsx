@@ -47,9 +47,9 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
     {
       select: (response) => {
         const [record] = response;
-        const newEdges = [];
+        const newEdges: unknown[] = [];
         Object.entries(record).forEach(([propName, value]) => {
-          if ((propName.startsWith('out_') || propName.startsWith('in_')) && value) {
+          if ((propName.startsWith('out_') || propName.startsWith('in_')) && Array.isArray(value)) {
             value.forEach((edge) => {
               const model = schemaDefn.get(edge);
               const reversed = isReversed(recordId, edge);

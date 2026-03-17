@@ -13,14 +13,6 @@ enum FORM_VARIANT {
  * described here is the collapsible block. Elements above the fold are in the top non-collapsed block
  * whereas fields below the fold are put into the collapsible section
  *
- * @param {ClassModel} model the current class model to base the form off of
- * @param {object} opt grouping options
- * @param {Array.<string>} opt.belowFold names of properties that should fall below the fold
- * @param {Array.<string>} opt.aboveFold names of properties that should be promoted above the fold
- * @param {boolean} opt.collapseExtra flag to indicate if a collaspible section should be created
- * @param {Array.<Array.<string>>} opt.groups properties that should co-occur
- * @param {string} opt.variant the form variant this is being grouped for
- *
  * @returns {Object.<string,Array.<(string|Array.<string>)>>} the nested grouping structure
  *
  * @example
@@ -30,7 +22,22 @@ enum FORM_VARIANT {
  * })
  * {fields: ['@class', '@rid', ['createdBy', 'createdAt']], extraFields: []}
  */
-const sortAndGroupFields = (properties, opt = {}) => {
+const sortAndGroupFields = (
+  /** the current class model to base the form off of */
+  properties: unknown,
+  opt: {
+    /** names of properties that should fall below the fold */
+    belowFold?: string[];
+    /** names of properties that should be promoted above the fold */
+    aboveFold?: string[];
+    /** flag to indicate if a collaspible section should be created */
+    collapseExtra?: boolean;
+    /** properties that should co-occur */
+    groups?: string[][],
+    /** the form variant this is being grouped for */
+    variant?: FORM_VARIANT,
+  } = {},
+) => {
   const {
     belowFold = [],
     aboveFold = [],
@@ -65,8 +72,8 @@ const sortAndGroupFields = (properties, opt = {}) => {
     }
   });
 
-  const mainFields = [];
-  const extraFields = [];
+  const mainFields: (string | string[])[] = [];
+  const extraFields: (string | string[])[] = [];
 
   const visited = new Set();
 
@@ -120,7 +127,9 @@ const sortAndGroupFields = (properties, opt = {}) => {
     visited.add(name);
 
     if (fields) {
-      visited.add(...fields);
+      fields.forEach((field) => {
+        visited.add(field);
+      });
     }
   }
   return { fields: mainFields, extraFields };
@@ -195,7 +204,7 @@ const cleanPayload = (payload) => {
  * @param {function} onErrorCallback callback function to call if error occurs
  */
 const navigateToGraph = (nodeRIDs, navigate: NavigateFunction, onErrorCallback) => {
-  const savedState = {};
+  const savedState: { nodes?: string } = {};
   let encodedState;
 
   try {

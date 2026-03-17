@@ -19,6 +19,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/x-tree-view": "^8.27.2",
+    "@types/lodash.omit": "^4.5.9",
     "@types/lodash.uniq": "^4.5.7",
     "@types/lodash.without": "^4.4.7",
     "ag-grid-community": "~27.0.0",

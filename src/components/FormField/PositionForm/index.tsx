@@ -11,6 +11,7 @@ import {
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
+import { FormContextState } from '@/components/FormContext';
 
 import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';
@@ -22,7 +23,7 @@ interface PositionFormProps {
   /** the form field name to pass up to the change handler */
   name: string;
   /** change handler */
-  onChange: (...args: unknown[]) => unknown;
+  onChange: FormContextState['updateFieldEvent'];
   baseVariant?: string;
   /** can this position be removed/deleted/set to null */
   clearable?: boolean;

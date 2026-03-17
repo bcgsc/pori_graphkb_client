@@ -25,7 +25,7 @@ interface RelationshipListProps {
   /** adds link to opened list */
   handleLinkExpand: (rid: string) => void;
   /** edge record opened */
-  linkOpen?: Record<string, unknown>;
+  linkOpen?: string | null;
   /** Record being displayed. */
   record?: GeneralRecordType
 }
@@ -38,7 +38,7 @@ function RelationshipList(props: RelationshipListProps) {
     linkOpen = {}, record = {}, handleLinkExpand, formatMetadata, formatOtherProps,
   } = props;
   // Checks subclasses
-  const edges = schema.getEdges(record);
+  const edges = schema.getEdges(record ?? null);
 
   const rid = (rec) => rec['@rid'] || rec;
 
@@ -67,7 +67,6 @@ function RelationshipList(props: RelationshipListProps) {
         return (
           <React.Fragment key={rid(edge)}>
             <ListItem
-              button
               className="detail-link-wrapper"
               dense
               onClick={() => handleLinkExpand(rid(edge))}

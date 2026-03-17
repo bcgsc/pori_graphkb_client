@@ -2,22 +2,35 @@
  * Represents a general record type from schema
  */
 interface TGeneralRecordType {
-  '@rid'?: string;
-  '@class'?: string;
-  uuid?: string;
-  createdAt?: number;
-  deletedAt?: number;
-  updatedAt?: number;
-  createdBy?: TGeneralRecordType;
-  name?: string;
-  displayName?: string;
+  '@rid': string;
+  '@class': string;
+  uuid: string;
+  createdAt: number;
+  deletedAt: number;
+  updatedAt: number;
+  name: string;
+  displayName: string;
+  displayNameTemplate: string;
+  createdBy: TGeneralRecordType | string;
   [key: `out_${string}` | `in_${string}`]: unknown[] | undefined;
-  [key: string]: unknown | undefined;
+
+  // add other properties that exist on any record type
+  comment: unknown;
+  status: unknown;
+  break1Start: Partial<TGeneralRecordType>;
+  break1End: Partial<TGeneralRecordType>;
+  source: Partial<TGeneralRecordType>;
+  sourceId: string;
+  reviews: unknown[];
+  email: string;
+  journalName: string;
+
+  count: number;
 }
 
-type GeneralRecordType<ReqFields extends keyof TGeneralRecordType = never> =
-  Required<Pick<TGeneralRecordType, ReqFields>> &
-  Omit<TGeneralRecordType, ReqFields>;
+type GeneralRecordType<ReqFields extends string = never> =
+  Pick<TGeneralRecordType, ReqFields & keyof TGeneralRecordType> &
+  Partial<TGeneralRecordType>;
 
 /**
  * Represents general format of a statement class record
@@ -31,7 +44,7 @@ interface StatementType extends GeneralRecordType {
 
 interface EdgeType extends GeneralRecordType<'@rid'> {
   in: GeneralRecordType<'@rid' | '@class'>;
-  out: GeneralRecordType<'uuid'>['uuid'];
+  out: GeneralRecordType<'@rid' | '@class'>;
   source: GeneralRecordType<'@rid' | '@class'>;
 }
 
@@ -49,8 +62,10 @@ interface QueryBody<ReqFields extends string = string> {
   returnProperties?: ReqFields[];
   neighbors?: number;
   limit?: number;
-  orderBy?: string[];
+  skip?: number;
+  orderBy?: string[] | string;
   orderByDirection?: 'DESC' | 'ASC';
+  count?: boolean;
 }
 
 export type {

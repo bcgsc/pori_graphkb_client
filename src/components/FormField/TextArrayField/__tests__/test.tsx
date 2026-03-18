@@ -14,6 +14,7 @@ describe('TextArrayField', () => {
         label="test"
         name="test"
         onChange={vi.fn()}
+        value={undefined}
       />,
     );
     // input the text and hit the enter key
@@ -31,6 +32,7 @@ describe('TextArrayField', () => {
         label="test"
         name="test"
         onChange={vi.fn()}
+        value={undefined}
       />,
     );
     // input the text
@@ -54,6 +56,7 @@ describe('TextArrayField', () => {
         label="test"
         name="test"
         onChange={onChange}
+        value={undefined}
       />,
     );
 
@@ -94,6 +97,7 @@ describe('TextArrayField', () => {
         label="test"
         name="test"
         onChange={onChange}
+        value={undefined}
       />,
     );
     // input the text and hit the enter key
@@ -124,6 +128,7 @@ describe('TextArrayField', () => {
         label="test"
         name="test"
         onChange={onChange}
+        value={undefined}
       />,
     );
     // input the text and hit the enter key

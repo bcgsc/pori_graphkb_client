@@ -44,7 +44,7 @@ describe('StatementReviewsTable', () => {
         <StatementReviewsTable
           name="reviews"
           onChange={vi.fn()}
-          values={[]}
+          value={[]}
         />
       </QueryClientProvider>,
     );
@@ -58,7 +58,7 @@ describe('StatementReviewsTable', () => {
         <StatementReviewsTable
           name="reviews"
           onChange={vi.fn()}
-          values={reviews}
+          value={reviews}
         />
       </QueryClientProvider>,
     );

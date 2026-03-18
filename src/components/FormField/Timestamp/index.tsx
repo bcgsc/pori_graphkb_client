@@ -2,12 +2,9 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 
-import { FormContextState } from '@/components/FormContext';
+import { BaseFormFieldProps } from '../types';
 
-interface TimestampProps extends Omit<TextFieldProps, 'onChange'> {
-  name: string;
-  onChange: FormContextState['updateFieldEvent'];
-  value?: any;
+interface TimestampProps extends BaseFormFieldProps<any>, Pick<TextFieldProps, 'inputProps' | 'multiline' | 'rows' | 'variant'> {
 }
 
 const Timestamp = ({
@@ -19,7 +16,7 @@ const Timestamp = ({
   );
 
   const onDatePicked = ({ target: { value: eventValue } }) => {
-    onChange({ target: { name, value: new Date(eventValue).getTime() } });
+    onChange?.({ target: { name, value: new Date(eventValue).getTime() } });
   };
 
   return (

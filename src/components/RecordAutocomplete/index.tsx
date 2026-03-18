@@ -12,6 +12,7 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import DetailChip from '../DetailChip';
+import { BaseFormFieldProps } from '../FormField/types';
 import { QueryBody } from '../types';
 import { tuple } from '../util';
 
@@ -51,34 +52,21 @@ const sortByGroup = (a, b) => {
   return 0;
 };
 
-interface RecordAutocompleteProps {
+interface RecordAutocompleteProps extends BaseFormFieldProps {
   /** function to get body of request ot /query endpoint */
   getQueryBody: (search: string) => QueryBody;
-  /** the name of the field, used for propgating events */
-  name: string;
   /** Additional css class name to use on the main select component */
   className?: string;
-  /** flag to indicate this input is disabled */
-  disabled?: boolean;
   /** Error message */
   errorText?: string;
-  helperText?: string;
   /** flag to indicate this field accepts multiple records */
   isMulti?: boolean;
-  /** the label for this form field */
-  label?: string;
   /** the minimum length of characters required before the async options handler is called */
   minSearchLength?: number;
-  /** the parent handler function */
-  onChange?: (arg: { target: { name: string; value: unknown; } }) => unknown;
   /** the text placeholder for the search box */
   placeholder?: string;
-  /** flag to indicate that this field must be filled */
-  required?: boolean;
   /** load the initial options and do not requery */
   singleLoad?: boolean;
-  /** the initial selected value(s) */
-  value?: unknown[] | unknown;
 }
 
 /**

@@ -24,6 +24,7 @@ describe('RecordAutocomplete', () => {
           name="test"
           onChange={vi.fn()}
           placeholder={placeholder}
+          value={undefined}
         />
       </QueryClientProvider>,
     );

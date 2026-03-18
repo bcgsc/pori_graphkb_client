@@ -10,19 +10,13 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-import { FormContextState } from '@/components/FormContext';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
+import { BaseFormFieldProps } from '../types';
 import StatementReviewRow from './StatementReview';
 
-interface StatementReviewsTableProps {
-  /** the name of this field (for propagating change events) */
-  name: string;
-  /** parent change handler function */
-  onChange: FormContextState['updateFieldEvent'];
-  /** linked records to be displayed in table */
-  values?: GeneralRecordType[];
+interface StatementReviewsTableProps extends BaseFormFieldProps<GeneralRecordType[]> {
   /** mode that dialog is in. One of ['view','edit']. */
   variant?: FORM_VARIANT | '';
 }
@@ -32,7 +26,7 @@ interface StatementReviewsTableProps {
  */
 const StatementReviewsTable = (props: StatementReviewsTableProps) => {
   const {
-    values = [],
+    value: values = [],
     variant = FORM_VARIANT.VIEW,
     onChange,
     name,
@@ -40,7 +34,7 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
 
   const handleDeleteReview = ({ index }) => {
     const newValue = [...values.slice(0, index), ...values.slice(index + 1)];
-    onChange({ target: { name, value: newValue } });
+    onChange?.({ target: { name, value: newValue } });
   };
 
   return (

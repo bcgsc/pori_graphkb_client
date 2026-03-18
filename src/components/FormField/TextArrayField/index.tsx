@@ -12,20 +12,7 @@ import uniq from 'lodash.uniq';
 import without from 'lodash.without';
 import React, { useState } from 'react';
 
-interface TextArrayFieldProps {
-  /** Input name attribute. */
-  name: string;
-  /** Parent component change handler. */
-  onChange: (arg: { target: { name: string; value: string[] } }) => unknown;
-  /** Disabled flag. */
-  disabled?: boolean;
-  /** TextField error flag or message. */
-  error?: boolean;
-  /** TextField label. */
-  label?: string;
-  /** Embedded set property as array. */
-  value?: string[];
-}
+import { BaseFormFieldProps } from '../types';
 
 /**
  * Field which stores a list of non-redundant strings from user typed input.
@@ -33,7 +20,7 @@ interface TextArrayFieldProps {
  * the parent form. Options that were passed in from the parent form are instead
  * staged for deletion
  */
-const TextArrayField = (props: TextArrayFieldProps) => {
+const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
   const {
     value: valueProp = [], name, onChange, label = '', disabled = false, error = false,
   } = props;
@@ -67,7 +54,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         setValue(nextValue);
         setTextInputValue('');
         setTextInputError('');
-        onChange({ target: { name, value: nextValue.filter((v) => !deleted.includes(v)) } });
+        onChange?.({ target: { name, value: nextValue.filter((v) => !deleted.includes(v)) } });
       }
     }
   };
@@ -95,7 +82,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         nextValue = without(value, text);
         setValue(nextValue);
       }
-      onChange({ target: { name, value: nextValue.filter((v) => !nextDeleted.includes(v)) } });
+      onChange?.({ target: { name, value: nextValue.filter((v) => !nextDeleted.includes(v)) } });
     }
   };
 
@@ -106,7 +93,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
   const handleRestore = (text: string) => {
     const nextDeleted = without(deleted, text);
     setDeleted(nextDeleted);
-    onChange({ target: { name, value: value.filter((v) => !nextDeleted.includes(v)) } });
+    onChange?.({ target: { name, value: value.filter((v) => !nextDeleted.includes(v)) } });
   };
 
   /**

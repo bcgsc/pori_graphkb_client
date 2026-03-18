@@ -4,7 +4,7 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import FormContext from '@/components/FormContext';
@@ -21,6 +21,7 @@ import PositionForm from './PositionForm';
 import StatementReviewsTable from './StatementReviewsTable';
 import TextArrayField from './TextArrayField';
 import Timestamp from './Timestamp';
+import { BaseFormFieldProps } from './types';
 
 const POSITION_CLASSES = [
   'Position',
@@ -59,7 +60,7 @@ const FormField = ({
   model,
   disabled = false,
   label,
-  innerProps,
+  innerProps = {},
   helperText: defaultHelperText,
   baseModel = '',
 }: FormFieldProps) => {
@@ -123,43 +124,41 @@ const FormField = ({
     }
   }
 
+  const sharedProps: BaseFormFieldProps<any> = {
+    required: mandatory,
+    error: errorFlag,
+    disabled: generated || disabled,
+    name,
+    helperText,
+    label: label || name,
+    onChange: updateFieldEvent,
+    value,
+  };
+
   if (value !== inputValue) {
     updateFieldEvent({ target: { name, value } });
   }
 
-  let propComponent;
+  let propComponent: ReactNode;
 
   if (type === 'boolean') {
     propComponent = (
       <BooleanField
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value}
+        {...sharedProps}
       />
     );
   } else if (type.includes('embedded') && linkedType === 'string' && iterable) {
     propComponent = (
       <TextArrayField
-        disabled={disabled || generated}
-        error={errorFlag}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        value={value}
+        {...sharedProps}
       />
     );
   } else if (type.includes('embedded') && linkedClass) {
     if (iterable && linkedClass.name === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
-          name={name}
-          onChange={updateFieldEvent}
-          values={value || []}
+          {...sharedProps}
+          value={sharedProps.value || []}
           variant={formVariant}
         />
       );
@@ -167,55 +166,33 @@ const FormField = ({
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
-          disabled={disabled || generated}
-          name={name}
-          onChange={updateFieldEvent}
-          value={value}
+          {...sharedProps}
         />
       );
     } else if (POSITION_CLASSES.includes(linkedClass.name)) {
       propComponent = (
         <PositionForm
+          {...sharedProps}
           baseVariant={baseModel}
-          disabled={disabled}
-          error={errorFlag}
-          helperText={helperText}
-          label={label || name}
-          name={name}
-          onChange={updateFieldEvent}
-          value={value}
-          variant={value && value['@class']}
+          variant={sharedProps.value && sharedProps.value['@class']}
         />
       );
     }
   } else if (choices) {
     propComponent = (
       <DropDownSelect
+        {...sharedProps}
         className={className}
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText}
         innerProps={innerProps}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
         options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices]}
-        required={mandatory}
-        value={value || ''}
+        value={sharedProps.value || ''}
       />
     );
   } else if (type === 'link' || type === 'linkset') {
     const autoProps = {
-      disabled: generated || disabled,
-      error: errorFlag,
+      ...sharedProps,
       isMulti: type === 'linkset',
-      label: label || name,
       className,
-      name,
-      onChange: updateFieldEvent,
-      required: mandatory,
-      value,
-      helperText,
     };
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
@@ -271,17 +248,10 @@ const FormField = ({
     propComponent = (
       <Timestamp
         {...innerProps}
-        className="text-field"
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText || ' '}
-        InputLabelProps={{ shrink: !!value }}
+        {...sharedProps}
+        helperText={sharedProps.helperText || ' '}
         inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
-        label={name}
-        name={label || name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value || ''}
+        value={sharedProps.value || ''}
       />
     );
   }
@@ -293,16 +263,16 @@ const FormField = ({
         multiline
         {...innerProps}
         className="text-field"
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText || ' '}
-        InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
-        label={name}
-        name={label || name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value || ''}
+        disabled={sharedProps.disabled}
+        error={sharedProps.error}
+        helperText={sharedProps.helperText || ' '}
+        InputLabelProps={{ shrink: !!sharedProps.value }}
+        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': sharedProps.name }}
+        label={sharedProps.label}
+        name={sharedProps.name}
+        onChange={sharedProps.onChange}
+        required={sharedProps.required}
+        value={sharedProps.value || ''}
       />
     );
   }

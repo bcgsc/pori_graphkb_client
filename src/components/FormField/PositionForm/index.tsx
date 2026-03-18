@@ -11,34 +11,18 @@ import {
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
-import { FormContextState } from '@/components/FormContext';
 
+import { BaseFormFieldProps } from '../types';
 import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';
 import ProteinPosition from './ProteinPosition';
 
 const DEFAULT_BASE_VARIANT = 'Position';
 
-interface PositionFormProps {
-  /** the form field name to pass up to the change handler */
-  name: string;
-  /** change handler */
-  onChange: FormContextState['updateFieldEvent'];
+interface PositionFormProps extends BaseFormFieldProps<Record<string, unknown> | null> {
   baseVariant?: string;
   /** can this position be removed/deleted/set to null */
   clearable?: boolean;
-  /** flag to indicate this field is disabled */
-  disabled?: boolean;
-  /** indicates there is an outstanding error */
-  error?: boolean;
-  /** text to be displayed below the input field */
-  helperText?: string;
-  /**  label to display above the field */
-  label?: string;
-  /** flag to indicate this field must be filled */
-  required?: boolean;
-  /** the initial value */
-  value?: Record<string, unknown>;
   /** the position class model name */
   variant?: string;
 }
@@ -87,7 +71,7 @@ const PositionForm = ({
         <IconButton
           className="position-form__cancel"
           onClick={() => {
-            onChange({ target: { name, value: null } });
+            onChange?.({ target: { name, value: null } });
             setVariant('');
           }}
         >

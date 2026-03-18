@@ -16,6 +16,8 @@ import React, { ReactNode } from 'react';
 
 import { GeneralRecordType } from '@/components/types';
 
+import { BaseFormFieldProps } from '../FormField/types';
+
 interface SelectOption {
   key?: string;
   value?: string;
@@ -59,32 +61,19 @@ const DefaultOptionComponent = (option, disabled) => {
 
 type SelectProps = React.ComponentProps<typeof Select>;
 
-interface DropDownSelectProps {
+interface DropDownSelectProps extends Omit<BaseFormFieldProps<GeneralRecordType | string>, 'name'> {
+  name?: string;
   IconComponent?: SelectProps['IconComponent'];
   /** Function to produce list items. */
   children?: (option: SelectOption | string, disabled: boolean | undefined) => ReactNode;
   className?: string;
   /** Flag for dense variant, which has smaller font size. */
   dense?: boolean;
-  disabled?: boolean;
-  /** Error flag for input component. */
-  error?: boolean;
-  helperText?: string;
   /** CSS selector id for root component. */
   id?: string;
   innerProps?: SelectProps['inputProps'];
-  /** Component label text. */
-  label?: string;
-  /** DOM node name property. */
-  name?: string;
-  /** Parent function to trigger on item select. */
-  onChange?: (e: { target: { name: string; value: string } }) => void;
   /** List of options to be selected from. */
   options?: (SelectOption | string)[];
-  /** Required flag for input component. */
-  required?: boolean;
-  /** Parent property to bind output data to. */
-  value?: string;
   /** Material UI Select variant (outlined, filled, standard) */
   variant?: React.ComponentProps<typeof FormControl>['variant'];
 }

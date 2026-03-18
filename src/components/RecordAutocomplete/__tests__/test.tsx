@@ -28,6 +28,7 @@ describe('RecordAutocomplete (data-fetching)', () => {
           onChange={vi.fn()}
           placeholder={placeholder}
           singleLoad
+          value={undefined}
         />
       </QueryClientProvider>,
     );

@@ -9,20 +9,16 @@ import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 
-interface FilteredRecordAutocompleteProps {
+import { BaseFormFieldProps } from '../types';
+
+interface FilteredRecordAutocompleteProps extends BaseFormFieldProps {
   /** the base class for creating the class filter for the paired autocomplete component */
   linkedClassName: string;
-  /** the field name used in passing to parent handlers */
-  name: string;
   /** the initial class selection for the class filter */
   defaultFilterClassName?: string;
   /** allows multiple selections for the autocomplete */
   isMulti?: boolean;
-  // all remaining properties are passed to the RecordAutocomplete component
-  disabled?: boolean;
-  error?: boolean;
   filterOptions?: string[];
-  helperText?: string;
 }
 
 /**
@@ -38,6 +34,7 @@ const FilteredRecordAutocomplete = ({
   filterOptions,
   error = false,
   name,
+  required,
   ...rest
 }: FilteredRecordAutocompleteProps) => {
   const [selectedClassName, setSelectedClassName] = useState(
@@ -56,28 +53,34 @@ const FilteredRecordAutocomplete = ({
   ), [selectedClassName]);
 
   return (
-    <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
+    <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error} required={required}>
       <div className="filtered-record-autocomplete__content">
         {!disabled && (
           <DropDownSelect
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
+            disabled={disabled}
+            error={error}
             IconComponent={FilterIcon}
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={handleClassChange}
             options={filterOptions || [...schemaDefn.descendants(model.name, { excludeAbstract: false, includeSelf: true })]}
+            required={required}
             value={selectedClassName}
           />
         )}
         <RecordAutocomplete
           {...rest}
           disabled={disabled}
+          error={error}
           getQueryBody={getQueryBody}
+          helperText=""
           isMulti={isMulti}
           name={name}
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
             : `Search for an Existing ${selectedClassName} Record`}
+          required={required}
         />
       </div>
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}

@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
-import { FormContextState } from '@/components/FormContext';
+import { BaseFormFieldProps } from '../types';
 
 /* eslint-disable no-bitwise */
 
@@ -55,23 +55,12 @@ const splitPermissionsByOperation = (permissions: Record<string, number>) => {
   return permByModelName;
 };
 
-interface PermissionsTableProps {
-  /** field name to use in simulating events */
-  name: string;
-  /** handler to propogate changes to the parent form */
-  onChange: FormContextState['updateFieldEvent'];
-  /** flag to indicate this field cannot be edited */
-  disabled?: boolean;
-  /** the current permissions set */
-  value?: Record<string, number>;
-}
-
 /**
  * Table to display permissions state for a certain user group.
  */
 const PermissionsTable = ({
   value = {}, disabled = false, onChange, name,
-}: PermissionsTableProps) => {
+}: BaseFormFieldProps<Record<string, number>>) => {
   const [content, setContent] = useState<Record<string, number>>(value || {});
   const [topBoxes, setTopboxes] = useState({});
 
@@ -115,7 +104,7 @@ const PermissionsTable = ({
     }
     setContent(newContent);
     setTopboxes(newTopBoxes);
-    onChange({ target: { name, value: newContent } });
+    onChange?.({ target: { name, value: newContent } });
   }, [content, name, onChange, topBoxes]);
 
   const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];

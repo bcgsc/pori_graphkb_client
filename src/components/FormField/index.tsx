@@ -97,11 +97,14 @@ const FormField = ({
   const errorFlag = Boolean(formErrors[name] && !generated && formIsDirty);
 
   let helperText = defaultHelperText;
+  let errorText: string | undefined;
+
+  if (errorFlag) {
+    errorText = formErrors[name]!.message;
+  }
 
   if (!helperText) {
-    if (errorFlag) {
-      helperText = formErrors[name]!.message;
-    } else if (formVariant === FORM_VARIANT.EDIT && example !== undefined) {
+    if (formVariant === FORM_VARIANT.EDIT && example !== undefined) {
       if (!description) {
         helperText = `ex. ${example}`;
       } else {
@@ -133,6 +136,7 @@ const FormField = ({
     label: label || name,
     onChange: updateFieldEvent,
     value,
+    errorText,
   };
 
   if (value !== inputValue) {
@@ -265,7 +269,7 @@ const FormField = ({
         className="text-field"
         disabled={sharedProps.disabled}
         error={sharedProps.error}
-        helperText={sharedProps.helperText || ' '}
+        helperText={sharedProps.errorText || sharedProps.helperText || ' '}
         InputLabelProps={{ shrink: !!sharedProps.value }}
         inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': sharedProps.name }}
         label={sharedProps.label}

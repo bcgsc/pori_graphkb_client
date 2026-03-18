@@ -22,6 +22,7 @@ const BooleanField = (props: BaseFormFieldProps<string | boolean>) => {
     onChange,
     required = false,
     helperText = '',
+    errorText,
     value: initialValue,
   } = props;
   const value = initialValue === undefined || initialValue === null
@@ -48,7 +49,7 @@ const BooleanField = (props: BaseFormFieldProps<string | boolean>) => {
           <FormControlLabel control={<Radio checked={value === 'true'} />} label="Yes" value="true" />
           <FormControlLabel control={<Radio checked={value === 'false'} />} label="No" value="false" />
         </RadioGroup>
-        {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
+        {(errorText || helperText) && (<FormHelperText>{errorText || helperText}</FormHelperText>)}
       </FormControl>
     </div>
   );

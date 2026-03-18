@@ -31,6 +31,7 @@ const FilteredRecordAutocomplete = ({
   disabled = false,
   isMulti = false,
   helperText = '',
+  errorText,
   filterOptions,
   error = false,
   name,
@@ -74,7 +75,6 @@ const FilteredRecordAutocomplete = ({
           disabled={disabled}
           error={error}
           getQueryBody={getQueryBody}
-          helperText=""
           isMulti={isMulti}
           name={name}
           placeholder={isMulti
@@ -83,7 +83,7 @@ const FilteredRecordAutocomplete = ({
           required={required}
         />
       </div>
-      {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
+      {(errorText || helperText) && (<FormHelperText>{errorText || helperText}</FormHelperText>)}
     </FormControl>
   );
 };

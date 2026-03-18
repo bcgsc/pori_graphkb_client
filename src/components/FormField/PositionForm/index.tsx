@@ -32,6 +32,7 @@ const PositionForm = ({
   clearable = true,
   disabled = false,
   error = false,
+  errorText,
   helperText = '',
   label = '',
   name,
@@ -96,7 +97,7 @@ const PositionForm = ({
           {...props}
         />
       )}
-      <FormHelperText error={error}>{helperText}</FormHelperText>
+      <FormHelperText error={error}>{errorText || helperText}</FormHelperText>
     </FormControl>
   );
 };

@@ -57,8 +57,6 @@ interface RecordAutocompleteProps extends BaseFormFieldProps {
   getQueryBody: (search: string) => QueryBody;
   /** Additional css class name to use on the main select component */
   className?: string;
-  /** Error message */
-  errorText?: string;
   /** flag to indicate this field accepts multiple records */
   isMulti?: boolean;
   /** the minimum length of characters required before the async options handler is called */

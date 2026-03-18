@@ -10,6 +10,7 @@ export interface BaseFormFieldProps<V = unknown> {
   /** the field label */
   label?: string | undefined;
   helperText?: string | undefined;
+  errorText?: string | undefined;
   /** the current value */
   value: V | undefined;
   onChange?: (e: { target: { name: string; value: V } }) => void;

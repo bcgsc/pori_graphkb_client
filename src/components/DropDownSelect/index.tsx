@@ -93,6 +93,7 @@ function DropDownSelect(props: DropDownSelectProps) {
     id,
     innerProps = {},
     error = false,
+    errorText,
     helperText = '',
     dense = false,
     variant = 'standard',
@@ -142,7 +143,7 @@ function DropDownSelect(props: DropDownSelectProps) {
       >
         {optionsDisplay}
       </Select>
-      <FormHelperText>{helperText}</FormHelperText>
+      <FormHelperText>{errorText || helperText}</FormHelperText>
     </FormControl>
   );
 }

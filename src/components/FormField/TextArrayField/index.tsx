@@ -22,7 +22,7 @@ import { BaseFormFieldProps } from '../types';
  */
 const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
   const {
-    value: valueProp = [], name, onChange, label = '', disabled = false, error = false,
+    value: valueProp = [], name, onChange, label = '', disabled = false, error = false, errorText, helperText,
   } = props;
   /** the current list of values (including deleted) */
   const [value, setValue] = useState((valueProp || []).slice());
@@ -166,7 +166,7 @@ const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
         className="text-array-field__text-field"
         disabled={disabled}
         error={Boolean(textInputError || error)}
-        helperText={textInputError}
+        helperText={textInputError || errorText || helperText}
         id={`${label.toLowerCase()}-temp`}
         InputProps={{
           classes: {

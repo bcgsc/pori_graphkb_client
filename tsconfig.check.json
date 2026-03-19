@@ -9,7 +9,6 @@
     // TODO fix type errors and remove this
     "src/*.tsx",
     "src/views/MainView/",
-    "src/views/AdvancedSearchView/",
     "src/views/GraphView/",
   ],
 }

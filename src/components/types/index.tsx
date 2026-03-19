@@ -48,6 +48,13 @@ interface EdgeType extends GeneralRecordType<'@rid'> {
   source: GeneralRecordType<'@rid' | '@class'>;
 }
 
+interface FilterType {
+  query?: unknown;
+  AND?: FilterType[];
+  OR?: FilterType[];
+  [key: string]: unknown;
+}
+
 /**
  * body of request sent to /query endpoint
  */
@@ -56,9 +63,9 @@ interface QueryBody<ReqFields extends string = string> {
   target?: {
     queryType: string;
     target: string;
-    filters: Record<string, unknown>;
+    filters: FilterType;
   } | string[] | string,
-  filters?: Record<string, unknown> | Record<string, unknown>[];
+  filters?: FilterType | FilterType[];
   returnProperties?: ReqFields[];
   neighbors?: number;
   limit?: number;
@@ -70,6 +77,7 @@ interface QueryBody<ReqFields extends string = string> {
 
 export type {
   EdgeType,
+  FilterType,
   GeneralRecordType,
   QueryBody,
   StatementType,

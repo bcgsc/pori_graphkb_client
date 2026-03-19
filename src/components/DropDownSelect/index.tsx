@@ -78,13 +78,13 @@ interface DropDownSelectProps {
   /** DOM node name property. */
   name?: string;
   /** Parent function to trigger on item select. */
-  onChange?: SelectProps['onChange']
+  onChange?: (e: { target: { name: string; value: string } }) => void;
   /** List of options to be selected from. */
   options?: (SelectOption | string)[];
   /** Required flag for input component. */
   required?: boolean;
   /** Parent property to bind output data to. */
-  value?: GeneralRecordType | string;
+  value?: string;
   /** Material UI Select variant (outlined, filled, standard) */
   variant?: React.ComponentProps<typeof FormControl>['variant'];
 }

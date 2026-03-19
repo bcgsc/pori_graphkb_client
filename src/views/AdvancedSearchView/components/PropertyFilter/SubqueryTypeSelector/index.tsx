@@ -11,7 +11,7 @@ import HelpDialog from './HelpDialog';
 interface RecordFormStateToggleProps {
   disabled?: boolean;
   /** parent handler function to toggle states */
-  onChange?: (arg: { target: { value: unknown } }) => void;
+  onChange?: (arg: { target: { value: '' | 'keyword' | 'tree' } }) => void;
   /** starting variant value */
   value?: '' | 'keyword' | 'tree';
 }
@@ -34,7 +34,7 @@ function RecordFormStateToggle({
   const handleChange = useCallback((event, newValue) => {
     if (value !== newValue) {
       setValue(newValue);
-      onChange({ target: { value: newValue } });
+      onChange?.({ target: { value: newValue } });
     }
   }, [onChange, value]);
 
@@ -48,7 +48,6 @@ function RecordFormStateToggle({
         aria-label="subquery toggle"
         className="subquery-toggle"
         exclusive
-        label="subquery type"
         onChange={handleChange}
         value={value}
       >

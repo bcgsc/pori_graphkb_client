@@ -71,7 +71,6 @@ function AdvancedSearchView() {
       </div>
       <PropertyFilter
         className="advanced-search__property-filter"
-        group={selectedGroup}
         modelName={modelName}
         onSubmit={addFilterToGroup}
       />
@@ -83,7 +82,7 @@ function AdvancedSearchView() {
             isSelected={groupId === selectedGroup}
             name={groupId}
             onDelete={groupId === defaultGroup
-              ? null
+              ? undefined
               : () => removeGroup(groupId)}
             onDeleteFilter={removeFilterAt}
             onSelect={() => setSelectedGroup(groupId)}

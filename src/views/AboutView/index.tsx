@@ -6,7 +6,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   NavLink,
   Route,
@@ -14,7 +14,6 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import slugify from 'slugify';
 
 import { useAuth } from '@/components/Auth';
 
@@ -28,17 +27,16 @@ import AboutNotation from './components/Notation';
 type TabsList = {
   label: string;
   component: (props?: { [key: string]: unknown }) => JSX.Element;
-  slug?: string;
-  uri?: string;
+  uri: string;
 }[];
 
-const defaultTabsList: TabsList = [
-  { label: 'About', component: AboutMain },
-  { label: 'Getting Started', component: GettingStarted },
-  { label: 'Classes', component: AboutClasses },
-  { label: 'Notation', component: AboutNotation },
-  { label: 'Matching', component: Matching },
-  { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
+const tabsList: TabsList = [
+  { label: 'About', component: AboutMain, uri: '/about' },
+  { label: 'Getting Started', component: GettingStarted, uri: '/about/getting-started' },
+  { label: 'Classes', component: AboutClasses, uri: '/about/classes' },
+  { label: 'Notation', component: AboutNotation, uri: '/about/notation' },
+  { label: 'Matching', component: Matching, uri: '/about/matching' },
+  { label: 'Terms of Use', component: AboutUsageTerms, uri: '/about/terms' },
 ];
 
 const AboutView = () => {
@@ -47,35 +45,12 @@ const AboutView = () => {
   const navigate = useNavigate();
 
   const routeChange = () => {
-    const path = '/about/terms';
-    navigate(path);
+    navigate('/about/terms');
   };
 
-  const [tabIndex, setTabIndex] = useState(0);
+  const tabIndex = useMemo(() => tabsList.findIndex(((tab) => currentUri === tab.uri)), [currentUri]);
 
-  const baseUri = '/about';
   const tabsRequiringTermsAgreement = ['/about/classes', '/about/matching'];
-
-  const uriLookup = useMemo(() => ({}), []);
-
-  const tabsList = defaultTabsList.map((tab, index) => {
-    const curr = { ...tab, uri: '' };
-
-    if (tab.slug === undefined) {
-      curr.slug = index === 0 ? '' : `/${slugify(curr.label).toLowerCase()}`;
-    }
-    curr.uri = `${baseUri}${curr.slug}`;
-    uriLookup[curr.uri] = index;
-    return curr;
-  });
-
-  useEffect(() => {
-    setTabIndex(uriLookup[currentUri]);
-  }, [uriLookup, currentUri]);
-
-  const handleTabChange = (_event, value) => {
-    setTabIndex(value);
-  };
 
   const tabsContent = () => {
     if (!auth.user?.signedLicenseAt && tabsRequiringTermsAgreement.includes(currentUri)) {
@@ -91,11 +66,11 @@ const AboutView = () => {
     return (
       <div className="tabs-content">
         <Routes>
-          {tabsList.map(({ slug, label, component }) => (
+          {tabsList.map(({ uri, label, component }) => (
             <Route
               key={label}
               Component={component}
-              path={slug}
+              path={uri.replace('/about', '')}
             />
           ))}
         </Routes>
@@ -105,7 +80,7 @@ const AboutView = () => {
 
   return (
     <div className="about-page">
-      <Tabs className="tabs-bar" onChange={handleTabChange} value={tabIndex} variant="scrollable">
+      <Tabs className="tabs-bar" value={tabIndex} variant="scrollable">
         {tabsList.map(({ uri, label }, index) => (
           <Tab
             key={label}

@@ -6,9 +6,7 @@ import {
   Paper, Typography,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import React, {
-  useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useMutation } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
@@ -60,17 +58,8 @@ const RecordForm = ({
   const snackbar = useSnackbar();
   const auth = useAuth();
 
-  const [isEdge, setIsEdge] = useState(false);
-
-  const [fieldDefs, setFieldDefs] = useState({});
-
-  useEffect(() => {
-    if (modelName) {
-      const properties = schemaDefn.getProperties(modelName);
-      setFieldDefs(properties);
-      setIsEdge(schema.isEdge(modelName));
-    }
-  }, [modelName]);
+  const isEdge = useMemo(() => (modelName ? schema.isEdge(modelName) : false), [modelName]);
+  const fieldDefs = useMemo(() => (modelName ? schemaDefn.getProperties(modelName) : {}), [modelName]);
 
   const form = useSchemaForm(fieldDefs, initialValue, {}, { variant });
   const {

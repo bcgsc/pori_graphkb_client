@@ -4,7 +4,7 @@ import TreeIcon from '@mui/icons-material/AccountTree';
 import HelpIcon from '@mui/icons-material/HelpOutline';
 import ShareIcon from '@mui/icons-material/Share';
 import { IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import HelpDialog from './HelpDialog';
 
@@ -21,19 +21,13 @@ interface RecordFormStateToggleProps {
  */
 function RecordFormStateToggle({
   onChange,
-  value: inputValue = '',
+  value = '',
   disabled = false,
 }: RecordFormStateToggleProps) {
-  const [value, setValue] = useState(inputValue);
   const [helpIsOpen, setHelpIsOpen] = useState(false);
-
-  useEffect(() => {
-    setValue(inputValue);
-  }, [inputValue]);
 
   const handleChange = useCallback((event, newValue) => {
     if (value !== newValue) {
-      setValue(newValue);
       onChange?.({ target: { value: newValue } });
     }
   }, [onChange, value]);

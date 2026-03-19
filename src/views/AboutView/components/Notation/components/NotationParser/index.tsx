@@ -9,21 +9,23 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 const NotationParser = () => {
   const [text, setText] = useState('');
-  const [parsed, setParsed] = useState<any>(null);
-  const [error, setError] = useState<Error | null>(null);
   const [isDirty, setIsDirty] = useState(false);
 
-  useEffect(() => {
+  const { parsed, error } = useMemo(() => {
     try {
-      setParsed(parseVariant(text));
-      setError(null);
+      return {
+        parsed: parseVariant(text),
+        error: null,
+      };
     } catch (err) {
-      setParsed(null);
-      setError(err as Error);
+      return {
+        parsed: null,
+        error: err as Error,
+      };
     }
   }, [text]);
 
@@ -35,12 +37,12 @@ const NotationParser = () => {
   const content = {};
 
   Object.keys(parsed || {}).forEach((col) => {
-    if (typeof parsed[col] === 'object' && parsed[col] !== null) {
+    if (typeof parsed?.[col] === 'object' && parsed[col] !== null) {
       Object.keys(parsed[col]).forEach((key) => {
         content[`${col}.${key}`] = parsed[col][key];
       });
     } else {
-      content[col] = parsed[col];
+      content[col] = parsed?.[col];
     }
   });
 

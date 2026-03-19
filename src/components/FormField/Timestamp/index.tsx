@@ -1,6 +1,6 @@
 import { TextField, TextFieldProps } from '@mui/material';
 import { format } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { FormContextState } from '@/components/FormContext';
 
@@ -13,11 +13,10 @@ interface TimestampProps extends Omit<TextFieldProps, 'onChange'> {
 const Timestamp = ({
   value = '', name, onChange, ...rest
 }: TimestampProps) => {
-  const [displayValue, setDisplayValue] = useState('');
-
-  useEffect(() => {
-    if (value) { setDisplayValue(format(new Date(value), 'yyyy-MM-dd\'T\'HH:mm')); }
-  }, [value]);
+  const displayValue = useMemo(
+    () => (value ? format(new Date(value), 'yyyy-MM-dd\'T\'HH:mm') : ''),
+    [value],
+  );
 
   const onDatePicked = ({ target: { value: eventValue } }) => {
     onChange({ target: { name, value: new Date(eventValue).getTime() } });

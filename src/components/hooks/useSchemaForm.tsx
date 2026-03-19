@@ -1,11 +1,7 @@
 /**
  * Basic formContent and error management states
  */
-import {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { useCallback, useState } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import schema from '@/services/schema';
@@ -37,17 +33,12 @@ const useSchemaForm = (
   initialFieldDefs: Record<string, any>,
   initialValue: GeneralRecordType = {},
   err: Record<string, any> = {},
-  { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
+  { ignoreMandatoryErrors = false, variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
-  const [formVariant, setFormVariant] = useState(variant);
   const [fieldDefs, setFieldDefs] = useState(initialFieldDefs);
   const [additionalValidationError, setAdditionalValidationError] = useState('');
-
-  useEffect(() => {
-    setFormVariant(variant);
-  }, [variant]);
 
   useDeepCompareEffect(() => {
     setFieldDefs(initialFieldDefs);

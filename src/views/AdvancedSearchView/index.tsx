@@ -1,9 +1,6 @@
 import './index.scss';
 
-import React, {
-  useCallback,
-  useEffect, useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ActionButton from '@/components/ActionButton';
@@ -37,10 +34,6 @@ function AdvancedSearchView() {
     reset,
   } = useFilterGroups();
 
-  useEffect(() => {
-    setModelName(modelName || 'Statement');
-  }, [modelName, reset]);
-
   const handleSubmit = useCallback(() => {
     try {
       const query = getQuery(modelName);
@@ -55,7 +48,7 @@ function AdvancedSearchView() {
   }, [getQuery, navigate, modelName]);
 
   const handleModelChange = useCallback(({ target: { value: newValue } }) => {
-    setModelName(newValue);
+    setModelName(newValue || 'Statement');
     reset();
   }, [reset]);
 

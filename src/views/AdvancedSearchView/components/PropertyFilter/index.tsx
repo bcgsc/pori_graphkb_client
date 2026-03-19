@@ -7,6 +7,7 @@ import {
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -81,36 +82,18 @@ const PropertyFilter = ({
   modelName, onSubmit, className = '',
 }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
-  const [propertyChoices, setPropertyChoices] = useState<{
-    label: string;
-    value: string;
-    key: string;
-    caption?: string;
-  }[]>([]);
-  const [propertyModel, setPropertyModel] = useState<any>({
-    type: 'string', name: 'value', mandatory: true, generated: false,
-  });
-  const [operatorChoices, setOperatorChoices] = useState<ReturnType<typeof constructOperatorOptions>>([{
-    key: '=',
-    value: '=',
-    label: '=',
-  }]);
   const [operator, setOperator] = useState('=');
   const [subqueryType, setSubqueryType] = useState<'' | 'keyword' | 'tree'>('');
-  const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
-  const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
-
-  // use a schema form so that validation runs on the value based on the property selected
-  const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
-  const {
-    formContent,
-    formHasErrors,
-  } = form;
 
   // set the property options
-  useEffect(() => {
-    const choices: typeof propertyChoices = [];
+  const propertyChoices = useMemo(() => {
+    const choices: {
+      label: string;
+      value: string;
+      key: string;
+      caption?: string;
+    }[] = [];
     schema.getQueryProperties(modelName)
       .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
@@ -130,106 +113,129 @@ const PropertyFilter = ({
         }
       });
     choices.sort(propertySort);
-    setPropertyChoices(choices);
+    return choices;
+  }, [modelName]);
 
-    if (choices.length) {
-      let defaultProperty = choices[0].value;
+  useEffect(() => {
+    if (propertyChoices.length) {
+      let defaultProperty = propertyChoices[0].value;
 
       if (modelName === 'Statement') {
         defaultProperty = 'relevance';
       } if (['PositionalVariant', 'CategoryVariant'].includes(modelName)) {
         defaultProperty = 'reference1';
-      } else if (choices.find((c) => c.label === 'name')) {
+      } else if (propertyChoices.find((c) => c.label === 'name')) {
         defaultProperty = 'name';
       }
       setProperty(defaultProperty);
     }
-  }, [modelName]);
+  }, [modelName, propertyChoices]);
 
   // set the property model
-  useEffect(() => {
+  const propertyModel = useMemo(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
       let newPropertyModel: PropertyDefinition | null;
       newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
 
       if (subqueryType === 'keyword') {
-        setPropertyModel({ name: property, type: 'string', mandatory: true });
-      } else {
-        if (subProp && newPropertyModel) {
-          if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
-            const parentPropModel = newPropertyModel;
-            newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
-
-            if (subProp === '@class' && parentPropModel.linkedClass) {
-              const choices = schemaDefn.children(parentPropModel.linkedClass);
-
-              if (!schemaDefn.get(parentPropModel.linkedClass).isAbstract) {
-                choices.push(parentPropModel.linkedClass);
-              }
-              newPropertyModel.choices = choices;
-            }
-          } else {
-            newPropertyModel = null;
-          }
-        } else if (newPropertyModel.type === 'link') {
-          newPropertyModel.type = 'linkset';
-          newPropertyModel.iterable = true;
-        }
-
-        setPropertyModel({ type: 'string', ...newPropertyModel, mandatory: true });
+        return { name: property, type: 'string', mandatory: true };
       }
+      if (subProp && newPropertyModel) {
+        if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
+          const parentPropModel = newPropertyModel;
+          newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
+
+          if (subProp === '@class' && parentPropModel.linkedClass) {
+            const choices = schemaDefn.children(parentPropModel.linkedClass);
+
+            if (!schemaDefn.get(parentPropModel.linkedClass).isAbstract) {
+              choices.push(parentPropModel.linkedClass);
+            }
+            newPropertyModel.choices = choices;
+          }
+        } else {
+          newPropertyModel = null;
+        }
+      } else if (newPropertyModel.type === 'link') {
+        newPropertyModel.type = 'linkset';
+        newPropertyModel.iterable = true;
+      }
+
+      return { type: 'string', ...newPropertyModel, mandatory: true };
     }
-  }, [property, modelName, subqueryType]);
+    return {
+      type: 'string', name: 'value', mandatory: true, generated: false,
+    };
+  }, [modelName, property, subqueryType]);
 
   // set the subquery status
-  useEffect(() => {
+  const canSubquery = useMemo(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
-
-    if (
+    return Boolean(
       originalPropertyModel
-      && originalPropertyModel.type.includes('link')
-    ) {
-      setCanSubquery(true);
-    } else {
-      setSubqueryType('');
-      setCanSubquery(false);
-    }
+      && originalPropertyModel.type.includes('link'),
+    );
   }, [modelName, property]);
 
-  // if the keyword subquery is selected then this requires a target
   useEffect(() => {
-    if (subqueryType !== 'keyword') {
-      setKeywordTarget('');
+    if (!canSubquery) {
+      setSubqueryType('');
     }
-  }, [subqueryType]);
+  }, [canSubquery]);
+
+  // use a schema form so that validation runs on the value based on the property selected
+  const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
+  const {
+    formContent,
+    formHasErrors,
+  } = form;
 
   // limit the choices for operators to select based on the property selected and the current value
-  useEffect(() => {
+  const operatorChoices = useMemo(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
-    if (property) {
-      const choices = constructOperatorOptions(
-        originalPropertyModel,
-        formContent[property],
-        subqueryType,
-      );
-      setOperatorChoices(choices);
-
-      if (choices.length === 1) {
-        setOperator(choices[0].value);
-      } else if (choices.find((c) => c.label === 'CONTAINSTEXT')) {
-        setOperator('CONTAINSTEXT');
-      }
+    if (!property) {
+      return [{
+        key: '=',
+        value: '=',
+        label: '=',
+      }];
     }
+    return constructOperatorOptions(
+      originalPropertyModel,
+      formContent[property],
+      subqueryType,
+    );
   }, [formContent, modelName, property, subqueryType]);
 
   useEffect(() => {
+    if (property) {
+      if (operatorChoices.length === 1) {
+        setOperator(operatorChoices[0].value);
+      } else if (operatorChoices.find((c) => c.label === 'CONTAINSTEXT')) {
+        setOperator('CONTAINSTEXT');
+      }
+    }
+  }, [operatorChoices, property]);
+
+  const keywordTargetOptions = useMemo(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
       const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
-      setKeywordTargetOptions(schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
+      return schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort();
+    }
+    return [];
+  }, [modelName, property, subqueryType]);
+
+  useEffect(() => {
+    const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
+
+    if (subqueryType !== 'keyword') {
+      setKeywordTarget('');
+    } else if (property) {
+      const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);
@@ -350,7 +356,7 @@ const PropertyFilter = ({
             <FormField
               className="property-filter__value"
               disabled={!property}
-              model={{ type: 'string', ...propertyModel, format }}
+              model={{ ...propertyModel, format }}
             />
           </FormContext.Provider>
 

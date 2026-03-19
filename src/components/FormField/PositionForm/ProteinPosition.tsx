@@ -4,7 +4,7 @@ import { schema, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
@@ -41,52 +41,41 @@ const ProteinPosition = ({
   required = true,
   disabled = false,
 }: ProteinPositionProps) => {
-  const { pos: initialPos, refAA: initialRefAA } = value || {};
-  const [position, setPosition] = useState(initialPos);
-  const [positionError, setPositionError] = useState('');
-  const [refAA, setRefAA] = useState(initialRefAA);
-  const [refAAError, setRefAAError] = useState('');
-
-  useEffect(() => {
-    setPosition(value?.pos);
-    setRefAA(value?.refAA);
-  }, [value]);
+  const { pos: position, refAA } = value || {};
 
   // validate the position input
-  useEffect(() => {
+  const positionError = useMemo(() => {
     if (!position && required && posProperty.mandatory) {
-      setPositionError('missing required field');
-    } else {
-      try {
-        validateProperty(posProperty, position || null);
-        setPositionError('');
-      } catch (err) {
-        setPositionError((err as Error).toString());
-      }
+      return 'missing required field';
+    }
+
+    try {
+      validateProperty(posProperty, position || null);
+      return '';
+    } catch (err) {
+      return (err as Error).toString();
     }
   }, [position, required]);
 
   // validate the offset input
-  useEffect(() => {
+  const refAAError = useMemo(() => {
     if (!refAA && required && refAAProperty.mandatory) {
-      setPositionError('missing required field');
-    } else {
-      try {
-        validateProperty(refAAProperty, refAA || null);
-        setRefAAError('');
-      } catch (err) {
-        setRefAAError((err as Error).toString());
-      }
+      return 'missing required field';
+    }
+
+    try {
+      validateProperty(refAAProperty, refAA || null);
+      return '';
+    } catch (err) {
+      return (err as Error).toString();
     }
   }, [refAA, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
-    setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, pos: newValue, refAA } } });
   }, [onChange, name, refAA]);
 
   const handleRefAAChange = useCallback(({ target: { value: newValue } }) => {
-    setRefAA(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, refAA: newValue, pos: position } } });
   }, [onChange, name, position]);
 

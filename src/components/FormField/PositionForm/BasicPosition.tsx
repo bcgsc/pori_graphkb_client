@@ -4,7 +4,7 @@ import { schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-sche
 import {
   TextField,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
@@ -40,56 +40,44 @@ const BasicPositionForm = ({
   required = true,
   disabled = false,
 }: BasicPositionFormProps) => {
-  const { pos: initialPos, offset: initialOffset } = value || {};
-  const [position, setPosition] = useState(initialPos);
-  const [positionError, setPositionError] = useState('');
-  const [offset, setOffset] = useState(initialOffset);
-  const [offsetError, setOffsetError] = useState('');
-
-  useEffect(() => {
-    setPosition(value?.pos);
-    setOffset(value?.offset);
-  }, [value]);
+  const { pos: position, offset } = value || {};
 
   // validate the position input
-  useEffect(() => {
+  const positionError = useMemo(() => {
     if (!position && required && posProperty.mandatory) {
-      setPositionError('missing required property');
-    } else {
-      try {
-        validateProperty(posProperty, position);
-        setPositionError('');
-      } catch (err) {
-        setPositionError((err as Error).toString());
-      }
+      return 'missing required property';
+    }
+
+    try {
+      validateProperty(posProperty, position);
+      return '';
+    } catch (err) {
+      return (err as Error).toString();
     }
   }, [position, required]);
 
   // validate the offset input
-  useEffect(() => {
+  const offsetError = useMemo(() => {
     if (!offset && offset !== 0) {
       if (required && offsetProperty.mandatory) {
-        setOffsetError('missing required property');
-      } else {
-        setOffsetError('');
+        return 'missing required property';
       }
-    } else {
-      try {
-        validateProperty(offsetProperty, offset);
-        setOffsetError('');
-      } catch (err) {
-        setOffsetError((err as Error).toString());
-      }
+      return '';
+    }
+
+    try {
+      validateProperty(offsetProperty, offset);
+      return '';
+    } catch (err) {
+      return (err as Error).toString();
     }
   }, [offset, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
-    setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': variant, pos: newValue, offset } } });
   }, [onChange, name, variant, offset]);
 
   const handleOffsetChange = useCallback(({ target: { value: newValue } }) => {
-    setOffset(newValue);
     onChange?.({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
   }, [onChange, name, variant, position]);
 

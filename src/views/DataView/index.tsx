@@ -132,7 +132,11 @@ const DataView = (): JSX.Element => {
   const navigate = useNavigate();
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
-  const [search, setSearch] = useState(initialSearch);
+  const search = useMemo(
+    // normalize the input query
+    () => api.getSearchFromQuery(api.getQueryFromSearch(initialSearch)),
+    [initialSearch],
+  );
   const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
   const [detailsRowId, setDetailsRowId] = useState(null);
@@ -183,12 +187,6 @@ const DataView = (): JSX.Element => {
       },
     });
   }, [grid.ref, search, totalRows]);
-
-  useEffect(() => {
-    // normalize the input query
-    const newSearch = api.getSearchFromQuery(api.getQueryFromSearch(initialSearch));
-    setSearch(newSearch);
-  }, [initialSearch]);
 
   // set up infinitite row model data source
   useEffect(() => {

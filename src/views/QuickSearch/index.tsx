@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import api from '@/services/api';
@@ -27,8 +27,36 @@ const QuickSearch = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState('');
   const [hgvs, setHgvs] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [variant, setVariant] = useState<any>(null);
+
+  // validate
+  const { variant, errorMessage } = useMemo(() => {
+    const next = { variant: null as null | ReturnType<typeof parseVariant>, errorMessage: '' };
+
+    if (value && !hgvs) {
+      const trimmed = String(value)
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word) => word.length >= MIN_WORD_LENGTH);
+
+      if (!trimmed.length) {
+        next.errorMessage = `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`;
+      }
+    } else {
+      try {
+        next.variant = parseVariant(value);
+      } catch (err: any) {
+        // if it was partially parsed use that result
+        next.errorMessage = `${err || err.message}`;
+
+        if (err.content && err.content.parsed) {
+          const { content: { parsed: { variantString, ...parsed } } } = err;
+          next.variant = parsed;
+        }
+      }
+    }
+    return next;
+  }, [hgvs, value]);
 
   const searchKeyword = useCallback(() => {
     if (value && !errorMessage) {
@@ -89,41 +117,6 @@ const QuickSearch = () => {
       }
     }
   }, [hgvs, navigate, searchByHGVS, searchKeyword, value, variant]);
-
-  // validate
-  useEffect(() => {
-    if (!value) {
-      setErrorMessage('');
-    } else if (!hgvs) {
-      const trimmed = String(value)
-        .trim()
-        .toLowerCase()
-        .split(/\s+/)
-        .filter((word) => word.length >= MIN_WORD_LENGTH);
-
-      if (!trimmed.length) {
-        setErrorMessage(`Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`);
-      } else {
-        setErrorMessage('');
-      }
-    } else {
-      try {
-        const parsed = parseVariant(value);
-        setErrorMessage('');
-        setVariant(parsed);
-      } catch (err: any) {
-      // if it was partially parsed use that result
-        if (err.content && err.content.parsed) {
-          const { content: { parsed: { variantString, ...parsed } } } = err;
-          setErrorMessage(`${err || err.message}`);
-          setVariant(parsed);
-        } else {
-          setErrorMessage(`${err || err.message}`);
-          setVariant(null);
-        }
-      }
-    }
-  }, [hgvs, value]);
 
   const handleClickHgvs = useCallback(() => {
     setHgvs(!hgvs);

@@ -4,9 +4,7 @@ import { Search as SearchIcon } from '@mui/icons-material';
 import {
   Autocomplete, CircularProgress, ListSubheader, TextField,
 } from '@mui/material';
-import React, {
-  useCallback, useEffect, useMemo, useState,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDebounce } from 'use-debounce';
 
@@ -105,18 +103,13 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [helperText, setHelperText] = useState(initialHelperText);
-  const [selectedValues, setSelectedValues] = useState(getAsArray(value));
+  const [isFocused, setIsFocused] = useState<boolean | null>(null);
+  const selectedValues = useMemo(() => getAsArray(value), [value]);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
-  // update the selected value if the initial input value changes
-  useEffect(() => {
-    setSelectedValues(getAsArray(value));
-  }, [value]);
-
-  // check if there are any short terms below min length and give warning if so
-  useEffect(() => {
+  const helperText = useMemo(() => {
     if (searchTerm) {
+      // check if there are any short terms below min length and give warning if so
       const terms = searchTerm.split(' ');
       const searchTerms = terms.filter((term) => term); // remove empty/null terms
 
@@ -125,11 +118,18 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
         if (badTerms.length) {
           const badLengthText = `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
-          setHelperText(badLengthText);
+          return badLengthText;
         }
       }
     }
-  }, [searchTerm]);
+    if ((searchTerm.length < minSearchLength && searchTerm.length >= 0 && !singleLoad) || (isFocused && isMulti && !disabled)) {
+      return `Requires ${minSearchLength} or more characters to search`;
+    }
+    if (isFocused === false && !errorText && isMulti && !disabled) {
+      return 'May take more than one value';
+    }
+    return initialHelperText;
+  }, [disabled, errorText, initialHelperText, isFocused, isMulti, minSearchLength, searchTerm, singleLoad]);
 
   const searchBody = useMemo(
     () => {
@@ -168,47 +168,31 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
   const handleChange = useCallback(
     (e, newValue, actionType, { option } = {}) => {
-      setSelectedValues(newValue);
-
       if (actionType === 'select-option' && !isMulti) {
-        setSelectedValues(isMulti ? newValue : [option]);
         onChange?.({ target: { name, value: option } });
-      } else {
-        setSelectedValues(newValue);
-
-        if (actionType !== 'blur') {
-          onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
-        }
+      } else if (actionType !== 'blur') {
+        onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
       }
     },
     [isMulti, name, onChange],
   );
 
   const handleInputChange = useCallback((e, newSearchTerm) => {
-    const newHelperText = (newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0 && !singleLoad)
-      ? `Requires ${minSearchLength} or more characters to search`
-      : '';
-
-    setHelperText(newHelperText);
     setSearchTerm(newSearchTerm);
-  }, [minSearchLength, singleLoad]);
+  }, []);
 
   const handleOnFocus = useCallback(
     () => {
-      if (isMulti && !disabled) {
-        setHelperText(`Requires ${minSearchLength} or more characters to search`);
-      }
+      setIsFocused(true);
     },
-    [disabled, isMulti, minSearchLength],
+    [],
   );
 
   const handleOnBlur = useCallback(
     () => {
-      if (!errorText && isMulti && !disabled) {
-        setHelperText('May take more than one value');
-      }
+      setIsFocused(false);
     },
-    [disabled, errorText, isMulti],
+    [],
   );
 
   const filterOptions = useCallback((opts, { inputValue }) => {

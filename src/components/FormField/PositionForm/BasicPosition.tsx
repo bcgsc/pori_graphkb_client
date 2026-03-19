@@ -7,26 +7,18 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
+import { BaseFormFieldProps } from '../types';
 
 const { pos: posProperty } = schemaDefn.getProperties('GenomicPosition');
 const { offset: offsetProperty } = schemaDefn.getProperties('CdsPosition');
 
-interface BasicPositionFormProps {
-  /** change handler */
-  onChange?: (...args: unknown[]) => unknown;
+interface BasicPositionFormProps extends BaseFormFieldProps<{
+  pos?: number;
+  offset?: number | '';
+  '@class'?: string;
+}> {
   /** the class model to use to build the form */
   variant: 'GenomicPosition' | 'ExonicPosition' | 'IntronicPosition' | 'RnaPosition' | 'CdsPosition';
-  /** flag to indicate this field is disabled */
-  disabled?: boolean;
-  /** the form field name to pass up to the change handler */
-  name?: string;
-  /** flag to indicate this field must be filled */
-  required?: boolean;
-  /** the initial value */
-  value?: {
-    pos?: number;
-    offset?: number | '';
-  },
 }
 
 /**
@@ -39,6 +31,7 @@ const BasicPositionForm = ({
   name = '',
   required = true,
   disabled = false,
+  readOnly,
 }: BasicPositionFormProps) => {
   const { pos: position, offset } = value || {};
 
@@ -88,15 +81,18 @@ const BasicPositionForm = ({
       <FieldWrapper>
         <TextField
           className="position-form__position form-field"
-          disabled={disabled}
+          disabled={disabled && !readOnly}
           error={Boolean(positionError)}
           helperText={positionError || ''}
-          InputLabelProps={{ shrink: !!position }}
-          inputProps={{ 'data-testid': `${name}.pos` }}
           label="position"
           name="pos"
           onChange={handlePositionChange}
           required={required}
+          slotProps={{
+            inputLabel: { shrink: !!position },
+            htmlInput: { 'data-testid': `${name}.pos` },
+            input: { readOnly },
+          }}
           value={position}
         />
       </FieldWrapper>
@@ -104,15 +100,18 @@ const BasicPositionForm = ({
         <FieldWrapper>
           <TextField
             className="position-form__offset form-field"
-            disabled={disabled}
+            disabled={disabled && !readOnly}
             error={Boolean(offsetError)}
             helperText={offsetError || ''}
-            InputLabelProps={{ shrink: offset !== '' }}
-            inputProps={{ 'data-testid': `${name}.offset` }}
             label="offset"
             name="offset"
             onChange={handleOffsetChange}
             required={required}
+            slotProps={{
+              inputLabel: { shrink: offset !== '' },
+              htmlInput: { 'data-testid': `${name}.offset` },
+              input: { readOnly },
+            }}
             value={offset}
           />
         </FieldWrapper>

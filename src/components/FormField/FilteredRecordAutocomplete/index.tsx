@@ -36,6 +36,7 @@ const FilteredRecordAutocomplete = ({
   error = false,
   name,
   required,
+  readOnly,
   ...rest
 }: FilteredRecordAutocompleteProps) => {
   const [selectedClassName, setSelectedClassName] = useState(
@@ -56,11 +57,9 @@ const FilteredRecordAutocomplete = ({
   return (
     <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error} required={required}>
       <div className="filtered-record-autocomplete__content">
-        {!disabled && (
+        {!(disabled || readOnly) && (
           <DropDownSelect
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
-            disabled={disabled}
-            error={error}
             IconComponent={FilterIcon}
             label={`Filter (${name}) Search by Class`}
             name="search-class"
@@ -72,7 +71,7 @@ const FilteredRecordAutocomplete = ({
         )}
         <RecordAutocomplete
           {...rest}
-          disabled={disabled}
+          disabled={disabled && !readOnly}
           error={error}
           getQueryBody={getQueryBody}
           isMulti={isMulti}
@@ -80,6 +79,7 @@ const FilteredRecordAutocomplete = ({
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
             : `Search for an Existing ${selectedClassName} Record`}
+          readOnly={readOnly}
           required={required}
         />
       </div>

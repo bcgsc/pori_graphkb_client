@@ -59,7 +59,7 @@ const splitPermissionsByOperation = (permissions: Record<string, number>) => {
  * Table to display permissions state for a certain user group.
  */
 const PermissionsTable = ({
-  value = {}, disabled = false, onChange, name,
+  value = {}, disabled = false, readOnly, onChange, name = '',
 }: BaseFormFieldProps<Record<string, number>>) => {
   const [content, setContent] = useState<Record<string, number>>(value || {});
   const [topBoxes, setTopboxes] = useState({});
@@ -123,18 +123,19 @@ const PermissionsTable = ({
               </TableCell>
             ))}
           </TableRow>
-          <TableRow>
-            <TableCell size="small" />
-            {operationOrder.map((operation) => (
-              <TableCell key={operation} padding="checkbox">
-                <Checkbox
-                  checked={topBoxes[operation]}
-                  disabled={disabled}
-                  onChange={() => handleClick(operation, null)}
-                />
-              </TableCell>
-            ))}
-          </TableRow>
+          {!disabled && !readOnly && (
+            <TableRow>
+              <TableCell size="small" />
+              {operationOrder.map((operation) => (
+                <TableCell key={operation} padding="checkbox">
+                  <Checkbox
+                    checked={topBoxes[operation]}
+                    onChange={() => handleClick(operation, null)}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
+          )}
         </TableHead>
         <TableBody>
           {modelOrder.map((modelName) => {
@@ -147,8 +148,9 @@ const PermissionsTable = ({
                     {permission[operation] !== null && (
                       <Checkbox
                         checked={permission[operation] !== 0}
-                        disabled={disabled}
+                        disabled={disabled && !readOnly}
                         onChange={() => handleClick(operation, modelName)}
+                        readOnly={readOnly}
                       />
                     )}
                   </TableCell>

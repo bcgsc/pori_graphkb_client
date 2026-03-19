@@ -130,7 +130,8 @@ const FormField = ({
   const sharedProps: BaseFormFieldProps<any> = {
     required: mandatory,
     error: errorFlag,
-    disabled: generated || disabled,
+    disabled: (generated || disabled) && formVariant !== FORM_VARIANT.VIEW,
+    readOnly: formVariant === FORM_VARIANT.VIEW,
     name,
     helperText,
     label: label || name,
@@ -163,7 +164,6 @@ const FormField = ({
         <StatementReviewsTable
           {...sharedProps}
           value={sharedProps.value || []}
-          variant={formVariant}
         />
       );
     } else if (linkedClass.name === 'Permissions') {
@@ -270,12 +270,15 @@ const FormField = ({
         disabled={sharedProps.disabled}
         error={sharedProps.error}
         helperText={sharedProps.errorText || sharedProps.helperText || ' '}
-        InputLabelProps={{ shrink: !!sharedProps.value }}
-        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': sharedProps.name }}
         label={sharedProps.label}
         name={sharedProps.name}
         onChange={sharedProps.onChange}
         required={sharedProps.required}
+        slotProps={{
+          htmlInput: { ...(innerProps?.inputProps || {}), 'data-testid': sharedProps.name },
+          inputLabel: { shrink: !!sharedProps.value },
+          input: { readOnly: sharedProps.readOnly, disableUnderline: sharedProps.readOnly || sharedProps.disabled },
+        }}
         value={sharedProps.value || ''}
       />
     );

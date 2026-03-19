@@ -5,6 +5,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   Chip,
+  ChipProps,
   IconButton,
   TextField,
 } from '@mui/material';
@@ -22,7 +23,7 @@ import { BaseFormFieldProps } from '../types';
  */
 const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
   const {
-    value: valueProp = [], name, onChange, label = '', disabled = false, error = false, errorText, helperText,
+    value: valueProp = [], name = '', onChange, label = '', disabled = false, error = false, errorText, helperText, readOnly,
   } = props;
   /** the current list of values (including deleted) */
   const [value, setValue] = useState((valueProp || []).slice());
@@ -137,24 +138,25 @@ const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
   const chips = value
     .map(
       (text) => {
-        const isDeleted = deleted.includes(text);
-        const props = {
-          deleteIcon: isDeleted
-            ? <RefreshIcon />
-            : <CancelIcon />,
-          onDelete: isDeleted
-            ? () => handleRestore(text)
-            : () => handleDelete(text),
-          className: `text-array-field__chip${isDeleted
-            ? ' text-array-field__chip--deleted'
-            : ''
-          }`,
+        const chipProps: ChipProps = {
+          className: 'text-array-field__chip',
         };
+
+        if (!readOnly && !disabled) {
+          if (deleted.includes(text)) {
+            chipProps.deleteIcon = <RefreshIcon />;
+            chipProps.onDelete = () => handleRestore(text);
+            chipProps.className += ' text-array-field__chip--deleted';
+          } else {
+            chipProps.deleteIcon = <CancelIcon />;
+            chipProps.onDelete = () => handleDelete(text);
+          }
+        }
         return (
           <Chip
             key={text}
             label={text}
-            {...props}
+            {...chipProps}
           />
         );
       },
@@ -164,27 +166,31 @@ const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
     <div className="text-array-field">
       <TextField
         className="text-array-field__text-field"
-        disabled={disabled}
+        disabled={disabled && !readOnly}
         error={Boolean(textInputError || error)}
         helperText={textInputError || errorText || helperText}
         id={`${label.toLowerCase()}-temp`}
-        InputProps={{
-          classes: {
-            root: 'text-array-field__field',
-          },
-          inputProps: {
-            className: 'text-array-field__input',
-          },
-          startAdornment: chips.length > 0
-            ? chips
-            : undefined,
-        }}
         label={label}
         name={label.toLowerCase()}
         onChange={handleInputChange}
         onKeyDown={handleInputKeyPress}
+        slotProps={{
+          input: {
+            readOnly,
+            classes: {
+              root: 'text-array-field__field',
+            },
+            startAdornment: chips.length > 0
+              ? chips
+              : undefined,
+          },
+          htmlInput: {
+            className: 'text-array-field__input',
+          },
+        }}
         value={textInputValue}
       />
+      {!readOnly && (
       <div className="text-array-field__btns">
         <IconButton
           aria-label="add"
@@ -195,6 +201,7 @@ const TextArrayField = (props: BaseFormFieldProps<string[]>) => {
           <AddIcon />
         </IconButton>
       </div>
+      )}
     </div>
   );
 };

@@ -78,7 +78,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     isMulti = false,
     label = '',
     minSearchLength = 1,
-    name,
+    name = '',
     onChange,
     placeholder = 'Search Records by Name or ID',
     required = false,
@@ -86,6 +86,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     singleLoad = false,
     helperText: initialHelperText = '',
     value,
+    readOnly,
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -133,7 +134,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     [debouncedSearchTerm, getQueryBody, singleLoad],
   );
 
-  let enabled = !disabled;
+  let enabled = !disabled && !readOnly;
 
   if (!singleLoad) {
     enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength);
@@ -198,7 +199,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   return (
     <Autocomplete
       className={`record-autocomplete ${className}`}
-      disabled={disabled}
+      disabled={disabled && !readOnly}
       filterOptions={filterOptions}
       filterSelectedOptions
       getOptionLabel={(option) => schema.getLabel(option)}
@@ -211,7 +212,8 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       onFocus={handleOnFocus}
       onInputChange={handleInputChange}
       options={options ?? []}
-      popupIcon={<SearchIcon />}
+      popupIcon={!(disabled || readOnly) ? <SearchIcon /> : null}
+      readOnly={readOnly}
       renderGroup={(params) => [
         <ListSubheader
           key={params.key}
@@ -225,7 +227,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          disabled={disabled || (!isMulti && Boolean(selectedValues.length))}
+          disabled={(disabled && !readOnly)}
           error={Boolean(errorText)}
           helperText={helperText || errorText}
           InputLabelProps={{
@@ -239,7 +241,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
                 {params.InputProps.endAdornment}
               </>
             ),
-            disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
+            disableUnderline: (disabled || readOnly),
           }}
           label={label}
           placeholder={

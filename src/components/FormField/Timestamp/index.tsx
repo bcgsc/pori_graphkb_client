@@ -8,7 +8,7 @@ interface TimestampProps extends BaseFormFieldProps<any>, Pick<TextFieldProps, '
 }
 
 const Timestamp = ({
-  value = '', name, onChange, errorText, helperText, ...rest
+  value = '', name = '', onChange, errorText, helperText, readOnly, inputProps, disabled, ...rest
 }: TimestampProps) => {
   const displayValue = useMemo(
     () => (value ? format(new Date(value), 'yyyy-MM-dd\'T\'HH:mm') : ''),
@@ -23,11 +23,15 @@ const Timestamp = ({
     <TextField
       {...rest}
       className="text-field"
+      disabled={disabled && !readOnly}
       helperText={errorText || helperText}
-      InputLabelProps={{ shrink: true }}
-      inputProps={{ ...(rest.inputProps || {}), 'data-testid': name }}
       name={name}
       onChange={onDatePicked}
+      slotProps={{
+        input: { readOnly, disableUnderline: disabled || readOnly },
+        inputLabel: { shrink: true },
+        htmlInput: { ...(inputProps || {}), 'data-testid': name },
+      }}
       type="datetime-local"
       value={displayValue}
     />

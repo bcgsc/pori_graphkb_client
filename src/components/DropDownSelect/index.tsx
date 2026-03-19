@@ -61,7 +61,7 @@ const DefaultOptionComponent = (option, disabled) => {
 
 type SelectProps = React.ComponentProps<typeof Select>;
 
-interface DropDownSelectProps extends Omit<BaseFormFieldProps<GeneralRecordType | string>, 'name'> {
+interface DropDownSelectProps extends Omit<BaseFormFieldProps<string>, 'name'> {
   name?: string;
   IconComponent?: SelectProps['IconComponent'];
   /** Function to produce list items. */
@@ -99,6 +99,7 @@ function DropDownSelect(props: DropDownSelectProps) {
     variant = 'standard',
     className = '',
     disabled = false,
+    readOnly,
     IconComponent = ArrowDropDownIcon,
   } = props;
 
@@ -115,7 +116,7 @@ function DropDownSelect(props: DropDownSelectProps) {
   return (
     <FormControl
       className={`option-select ${className}`}
-      disabled={disabled}
+      disabled={disabled && !readOnly}
       error={error}
       id={id}
       variant={variant}
@@ -130,12 +131,15 @@ function DropDownSelect(props: DropDownSelectProps) {
         {label}
       </InputLabel>
       <Select
-        IconComponent={disabled
+        disabled={disabled && !readOnly}
+        disableUnderline={disabled || readOnly}
+        IconComponent={(disabled || readOnly)
           ? 'span'
           : IconComponent}
         input={<InputComponent id={`option-select-${name}`} name={name} />}
         inputProps={innerProps}
         onChange={onChange}
+        readOnly={readOnly}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}

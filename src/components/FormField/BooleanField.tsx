@@ -5,6 +5,7 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
+  RadioProps,
 } from '@mui/material';
 import React from 'react';
 
@@ -23,17 +24,20 @@ const BooleanField = (props: BaseFormFieldProps<string | boolean>) => {
     required = false,
     helperText = '',
     errorText,
+    readOnly,
     value: initialValue,
   } = props;
   const value = initialValue === undefined || initialValue === null
     ? null
     : initialValue.toString();
 
+  const slotProps: RadioProps['slotProps'] = { input: { readOnly } };
+
   return (
     <div>
       <FormControl
         component="fieldset"
-        disabled={disabled}
+        disabled={disabled && !readOnly}
         error={error}
         required={required}
       >
@@ -46,8 +50,8 @@ const BooleanField = (props: BaseFormFieldProps<string | boolean>) => {
           style={{ flexDirection: 'row' }}
           value={value}
         >
-          <FormControlLabel control={<Radio checked={value === 'true'} />} label="Yes" value="true" />
-          <FormControlLabel control={<Radio checked={value === 'false'} />} label="No" value="false" />
+          <FormControlLabel control={<Radio checked={value === 'true'} slotProps={slotProps} />} label="Yes" value="true" />
+          <FormControlLabel control={<Radio checked={value === 'false'} slotProps={slotProps} />} label="No" value="false" />
         </RadioGroup>
         {(errorText || helperText) && (<FormHelperText>{errorText || helperText}</FormHelperText>)}
       </FormControl>

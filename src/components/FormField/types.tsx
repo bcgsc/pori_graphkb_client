@@ -1,8 +1,9 @@
 export interface BaseFormFieldProps<V = unknown> {
   /** the name of the field used in propogating events */
-  name: string;
+  name?: string;
   /** flag to indicate the user cannot change this field */
   disabled?: boolean | undefined;
+  readOnly?: boolean | undefined;
   /** flag to indicate there has been an error filling this field */
   error?: boolean | undefined;
   /** flag to indicate this field must be filled */

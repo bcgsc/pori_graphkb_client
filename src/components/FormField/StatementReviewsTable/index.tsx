@@ -11,25 +11,20 @@ import {
 import React from 'react';
 
 import { GeneralRecordType } from '@/components/types';
-import { FORM_VARIANT } from '@/components/util';
 
 import { BaseFormFieldProps } from '../types';
 import StatementReviewRow from './StatementReview';
 
-interface StatementReviewsTableProps extends BaseFormFieldProps<GeneralRecordType[]> {
-  /** mode that dialog is in. One of ['view','edit']. */
-  variant?: FORM_VARIANT | '';
-}
-
 /**
  * Table to display related linked records as detailChips in embedded link set.
  */
-const StatementReviewsTable = (props: StatementReviewsTableProps) => {
+const StatementReviewsTable = (props: BaseFormFieldProps<GeneralRecordType[]>) => {
   const {
     value: values = [],
-    variant = FORM_VARIANT.VIEW,
     onChange,
-    name,
+    name = '',
+    readOnly,
+    disabled,
   } = props;
 
   const handleDeleteReview = ({ index }) => {
@@ -56,10 +51,11 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
         <TableBody>
           {values.map((value, index) => (
             <StatementReviewRow
+              disabled={disabled}
               index={index}
               onDelete={handleDeleteReview}
+              readOnly={readOnly}
               value={value}
-              variant={variant}
             />
           ))}
         </TableBody>

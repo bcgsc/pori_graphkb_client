@@ -7,6 +7,7 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
+import { BaseFormFieldProps } from '../types';
 
 const {
   properties: { pos: posProperty, refAA: refAAProperty }, name: VARIANT,
@@ -18,19 +19,6 @@ interface Value {
   refAA?: string;
 }
 
-interface ProteinPositionProps {
-  /** change handler */
-  onChange?: (arg: { target: { name?: string; value: Value } }) => unknown;
-  /** the initial value */
-  value: Value;
-  /** flag to indicate this field is disabled */
-  disabled?: boolean;
-  /** the form field name to pass up to the change handler */
-  name?: string;
-  /** flag to indicate this field must be filled */
-  required?: boolean;
-}
-
 /**
  * Protein Position Input form
  */
@@ -40,7 +28,8 @@ const ProteinPosition = ({
   name = '',
   required = true,
   disabled = false,
-}: ProteinPositionProps) => {
+  readOnly,
+}: BaseFormFieldProps<Value>) => {
   const { pos: position, refAA } = value || {};
 
   // validate the position input
@@ -84,30 +73,36 @@ const ProteinPosition = ({
       <FieldWrapper>
         <TextField
           className="position-form__refaa"
-          disabled={disabled}
+          disabled={disabled && !readOnly}
           error={Boolean(refAAError)}
           helperText={refAAError || ''}
-          InputLabelProps={{ shrink: Boolean(refAA) }}
-          inputProps={{ 'data-testid': `${name}.refAA` }}
           label="refAA"
           name="refAA"
           onChange={handleRefAAChange}
           required={required && refAAProperty.mandatory}
+          slotProps={{
+            inputLabel: { shrink: Boolean(refAA) },
+            htmlInput: { 'data-testid': `${name}.refAA` },
+            input: { readOnly },
+          }}
           value={refAA}
         />
       </FieldWrapper>
       <FieldWrapper>
         <TextField
           className="position-form__position"
-          disabled={disabled}
+          disabled={disabled && !readOnly}
           error={Boolean(positionError)}
           helperText={positionError || ''}
-          InputLabelProps={{ shrink: Boolean(position) }}
-          inputProps={{ 'data-testid': `${name}.pos` }}
           label="position"
           name="pos"
           onChange={handlePositionChange}
           required={required && posProperty.mandatory}
+          slotProps={{
+            inputLabel: { shrink: Boolean(position) },
+            htmlInput: { 'data-testid': `${name}.pos` },
+            input: { readOnly },
+          }}
           value={position}
         />
       </FieldWrapper>

@@ -35,11 +35,12 @@ const PositionForm = ({
   errorText,
   helperText = '',
   label = '',
-  name,
+  name = '',
   onChange,
   required = false,
   value,
   variant: initialVariant = '',
+  readOnly,
   ...props
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
@@ -66,9 +67,9 @@ const PositionForm = ({
   return (
     <FormControl className="position-form" component="ul">
       {label && (
-        <FormLabel disabled={disabled} error={error} required={required}>{label}</FormLabel>
+        <FormLabel disabled={disabled && !readOnly} error={error} required={required}>{label}</FormLabel>
       )}
-      {!disabled && clearable && variant && (
+      {!disabled && !readOnly && clearable && variant && (
         <IconButton
           className="position-form__cancel"
           onClick={() => {
@@ -84,6 +85,7 @@ const PositionForm = ({
           disabled={disabled}
           onChange={handleVariantChange}
           options={positionVariants}
+          readOnly={readOnly}
           value={variant}
         />
       )}
@@ -92,6 +94,7 @@ const PositionForm = ({
           disabled={disabled}
           name={name}
           onChange={onChange}
+          readOnly={readOnly}
           value={value}
           variant={variant || positionVariants[0]}
           {...props}

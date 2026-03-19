@@ -1,7 +1,6 @@
 import '../index.scss';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import EmbeddedIcon from '@mui/icons-material/SelectAll';
 import {
   Avatar,
   Card,
@@ -18,7 +17,7 @@ import { useQuery } from 'react-query';
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
 import { GeneralRecordType } from '@/components/types';
-import { FORM_VARIANT, tuple } from '@/components/util';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 interface StatementReviewProps {
@@ -27,8 +26,8 @@ interface StatementReviewProps {
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
   value: GeneralRecordType;
-  /** one of ['view', 'edit'] mode */
-  variant?: FORM_VARIANT | '';
+  disabled?: boolean;
+  readOnly?: boolean;
 }
 
 /**
@@ -37,9 +36,10 @@ interface StatementReviewProps {
 const StatementReview = ({
   value,
   index,
-  variant = FORM_VARIANT.VIEW,
   onDelete,
   label,
+  disabled,
+  readOnly,
 }: StatementReviewProps) => {
   const {
     status, createdBy, comment,
@@ -92,7 +92,7 @@ const StatementReview = ({
             {comment}
           </Typography>
           <div className="review-card__action-button">
-            {variant === 'edit' && (
+            {(!readOnly && !disabled) && (
               <ActionButton
                 color="primary"
                 onClick={() => onDelete({ index })}

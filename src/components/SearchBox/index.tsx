@@ -1,9 +1,9 @@
+import SearchIcon from '@mui/icons-material/Search';
 import {
   IconButton,
   InputAdornment,
   TextField,
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
@@ -64,7 +64,12 @@ const SearchBox = ({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton color="primary" data-testid="search-box__button" onClick={() => handleSubmit(searchText)}>
+              <IconButton
+                color="primary"
+                data-testid="search-box__button"
+                onClick={() => handleSubmit(searchText)}
+                size="large"
+              >
                 <SearchIcon />
               </IconButton>
             </InputAdornment>

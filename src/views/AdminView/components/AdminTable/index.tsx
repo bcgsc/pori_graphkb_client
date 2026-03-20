@@ -2,13 +2,13 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Button,
   IconButton,
   Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
+} from '@mui/material';
 import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { Buffer } from 'buffer';
@@ -117,7 +117,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
   ]);
 
   const Actions = ({ data: record }: { data: Record<string, unknown> }) => (
-    <IconButton onClick={() => handleOpenEditDialog(record)}>
+    <IconButton onClick={() => handleOpenEditDialog(record)} size="large">
       <EditIcon />
     </IconButton>
   );

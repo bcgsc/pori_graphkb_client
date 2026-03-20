@@ -1,4 +1,4 @@
-import { ListItem } from '@material-ui/core';
+import { ListItem } from '@mui/material';
 import React, { ReactNode } from 'react';
 
 interface FieldWrapperProps {

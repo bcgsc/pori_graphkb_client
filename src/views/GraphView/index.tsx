@@ -2,7 +2,7 @@ import './index.scss';
 
 import {
   CircularProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, {
   useCallback, useMemo, useState,
 } from 'react';

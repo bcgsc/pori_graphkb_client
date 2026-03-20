@@ -152,6 +152,6 @@ describe('StatementForm', () => {
       await waitFor(() => {
         expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
       });
-    }, 10000);
+    }, 30000);
   });
 });

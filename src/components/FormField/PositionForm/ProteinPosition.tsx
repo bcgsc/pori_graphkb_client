@@ -3,7 +3,7 @@ import './index.scss';
 import { schema, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';

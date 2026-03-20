@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 

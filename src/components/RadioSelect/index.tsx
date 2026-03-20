@@ -9,7 +9,7 @@ import {
   MenuItem,
   MenuList,
   Radio,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { ReactNode } from 'react';
 
 interface Option {

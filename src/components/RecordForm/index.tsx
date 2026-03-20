@@ -4,7 +4,7 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
   Paper, Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback, useEffect, useState,

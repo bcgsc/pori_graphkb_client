@@ -1,8 +1,8 @@
 import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
-import { FormControl, FormHelperText } from '@material-ui/core';
-import FilterIcon from '@material-ui/icons/FilterList';
+import FilterIcon from '@mui/icons-material/FilterList';
+import { FormControl, FormHelperText } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';

@@ -1,6 +1,11 @@
 import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Collapse,
   Divider,
@@ -11,12 +16,7 @@ import {
   ListItemText,
   ListSubheader,
   Typography,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import EditIcon from '@material-ui/icons/Edit';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+} from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -49,7 +49,7 @@ const movePropToTop = (properties, propToBeMovedToTop) => {
 };
 
 interface DetailDrawerProps {
-  /** Function triggered on @material-ui/Drawer onClose event. */
+  /** Function triggered on @mui/Drawer onClose event. */
   isEdge?: boolean;
   /** Ontology to be displayed in drawer. */
   node?: GeneralRecordType;
@@ -235,21 +235,17 @@ function DetailDrawer(props: DetailDrawerProps) {
           </div>
           {auth.hasWriteAccess && (
           <Link target="_blank" to={`/edit/${recordClass}/${recordId}`}>
-            <IconButton
-              variant="outlined"
-            >
+            <IconButton size="large" variant="outlined">
               <EditIcon />
             </IconButton>
           </Link>
           )}
           <Link target="_blank" to={`/view/${recordClass}/${recordId}`}>
-            <IconButton
-              variant="outlined"
-            >
+            <IconButton size="large" variant="outlined">
               <OpenInNewIcon />
             </IconButton>
           </Link>
-          <IconButton onClick={onClose}>
+          <IconButton onClick={onClose} size="large">
             <CloseIcon />
           </IconButton>
         </div>

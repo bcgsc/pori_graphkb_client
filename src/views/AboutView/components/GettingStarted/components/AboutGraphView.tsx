@@ -3,7 +3,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 
 import graphActions from '@/static/images/graph-actions.png';

@@ -1,13 +1,13 @@
 import './index.scss';
 
+import TreeIcon from '@mui/icons-material/AccountTree';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ShareIcon from '@mui/icons-material/Share';
 import {
   Chip, IconButton,
   Paper,
   Typography,
-} from '@material-ui/core';
-import TreeIcon from '@material-ui/icons/AccountTree';
-import CancelIcon from '@material-ui/icons/Cancel';
-import ShareIcon from '@material-ui/icons/Share';
+} from '@mui/material';
 import { format } from 'date-fns';
 import React, { ReactNode, useCallback } from 'react';
 
@@ -93,6 +93,7 @@ function FilterGroup({
           className="filter-group__cancel-btn"
           data-testid="cancel-btn"
           onClick={() => { onDelete(name); }}
+          size="large"
         >
           <CancelIcon />
         </IconButton>

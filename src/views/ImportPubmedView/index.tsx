@@ -3,7 +3,7 @@ import './index.scss';
 import {
   CircularProgress,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';

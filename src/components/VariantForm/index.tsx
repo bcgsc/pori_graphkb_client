@@ -1,7 +1,7 @@
 import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
-import { List } from '@material-ui/core';
+import { List } from '@mui/material';
 import omit from 'lodash.omit';
 import { useSnackbar } from 'notistack';
 import React, {

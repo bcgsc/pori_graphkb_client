@@ -2,7 +2,7 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   List,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 
 import ClassDescription from './components/ClassDescription';

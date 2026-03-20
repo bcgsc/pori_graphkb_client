@@ -2,7 +2,7 @@ import './index.scss';
 
 import {
   List, ListItem, ListItemText, Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 
 import NotationParser from './components/NotationParser';

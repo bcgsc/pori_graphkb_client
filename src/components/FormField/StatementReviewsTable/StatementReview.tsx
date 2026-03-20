@@ -1,5 +1,7 @@
 import '../index.scss';
 
+import DeleteIcon from '@mui/icons-material/Delete';
+import EmbeddedIcon from '@mui/icons-material/SelectAll';
 import {
   Avatar,
   Card,
@@ -9,9 +11,7 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EmbeddedIcon from '@material-ui/icons/SelectAll';
+} from '@mui/material';
 import React from 'react';
 import { useQuery } from 'react-query';
 

@@ -1,5 +1,7 @@
 import './GraphOptionsPanel.scss';
 
+import CloseIcon from '@mui/icons-material/Close';
+import HelpIcon from '@mui/icons-material/Help';
 import {
   Checkbox,
   Dialog,
@@ -10,9 +12,7 @@ import {
   FormControlLabel,
   IconButton,
   Typography,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import HelpIcon from '@material-ui/icons/Help';
+} from '@mui/material';
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -79,11 +79,11 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
       onClose={handleHelpClose}
       open={helpOpen}
     >
-      <DialogTitle className="help-title" disableTypography>
+      <DialogTitle className="help-title">
         <Typography variant="h5">
           {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
         </Typography>
-        <IconButton onClick={handleHelpClose}>
+        <IconButton onClick={handleHelpClose} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -125,16 +125,18 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
           data-testid="close-btn"
           id="options-close-btn"
           onClick={handleDialogClose}
+          size="large"
         >
           <CloseIcon />
         </IconButton>
-        <DialogTitle className="options-title" disableTypography>
+        <DialogTitle className="options-title">
           <Typography variant="h6">Graph Options</Typography>
           <IconButton
             color="primary"
             data-testid="main-help-btn"
             id="main-help-btn"
             onClick={() => handleHelpOpen('mainHelp')}
+            size="large"
           >
             <HelpIcon />
           </IconButton>

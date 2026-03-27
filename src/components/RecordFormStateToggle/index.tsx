@@ -1,9 +1,9 @@
 import './index.scss';
 
-import EditIcon from '@material-ui/icons/Create';
-import GraphIcon from '@material-ui/icons/Timeline';
-import ViewIcon from '@material-ui/icons/Visibility';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import EditIcon from '@mui/icons-material/Create';
+import GraphIcon from '@mui/icons-material/Timeline';
+import ViewIcon from '@mui/icons-material/Visibility';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React, { useCallback, useRef, useState } from 'react';
 
 import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';

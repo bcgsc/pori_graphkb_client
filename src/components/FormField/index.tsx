@@ -3,7 +3,7 @@ import './index.scss';
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -287,6 +287,7 @@ const FormField = ({
     // for lack of better option default to text field as catch all
     propComponent = (
       <TextField
+        multiline
         {...innerProps}
         className="text-field"
         disabled={generated || disabled}

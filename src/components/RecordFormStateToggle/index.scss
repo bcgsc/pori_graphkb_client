@@ -1,5 +1,4 @@
-@import '../../theme';
-@import '../../globals';
+@use '../../globals';
 
 .record-form-state-toggle {
   .toggle-option {
@@ -7,7 +6,7 @@
       display: none;
     }
 
-    @media (min-width: #{$breakpoint-med}) {
+    @media (min-width: #{globals.$breakpoint-med}) {
 
       // allow 2 columns for large dislays
       &__text {

@@ -2,7 +2,7 @@ import './index.scss';
 
 import {
   Popover,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
 import useGrid from '@/components/hooks/useGrid';

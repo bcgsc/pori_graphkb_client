@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import {
+  describe, expect, test, vi,
+} from 'vitest';
 
 import testSchema from '@/services/schema';
 
@@ -26,11 +29,11 @@ describe('<GraphExpansionDialog />', () => {
     render(
       <GraphExpansionDialog
         node={testNode}
-        onClose={jest.fn()}
-        onExpand={jest.fn()}
-        onStage={jest.fn()}
-        onStageAll={jest.fn()}
-        onStageClass={jest.fn()}
+        onClose={vi.fn()}
+        onExpand={vi.fn()}
+        onStage={vi.fn()}
+        onStageAll={vi.fn()}
+        onStageClass={vi.fn()}
         open
         schema={testSchema}
       />,

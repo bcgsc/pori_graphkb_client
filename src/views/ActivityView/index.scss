@@ -1,14 +1,14 @@
-@import '../../globals';
+@use '../../globals';
 
 $title-bar-height: 36px;
 
 .activity-view {
-  height: calc(100% - #{$default-spacing});
-  margin-top: $default-spacing;
+  height: calc(100% - #{globals.$default-spacing});
+  margin-top: globals.$default-spacing;
 
   &__title {
     height: $title-bar-height;
-    margin-left: $default-spacing;
+    margin-left: globals.$default-spacing;
   }
 
   &__table {

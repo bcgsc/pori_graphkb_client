@@ -1,4 +1,4 @@
-@import '../../../globals';
+@use '../../../globals';
 
 .filtered-record-autocomplete {
   max-width: 100%;
@@ -20,7 +20,7 @@
     }
   }
 
-  @media (min-width: #{$breakpoint-xl}) {
+  @media (min-width: #{globals.$breakpoint-xl}) {
     align-items: flex-start;
     display: flex;
 
@@ -31,10 +31,7 @@
 
     &__content {
       display: flex;
-    }
-
-    .record-autocomplete {
-      align-self: flex-start;
+      align-items: center;
     }
   }
 }

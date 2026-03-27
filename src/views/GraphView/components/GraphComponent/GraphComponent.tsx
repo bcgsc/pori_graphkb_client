@@ -1,12 +1,12 @@
 import './GraphComponent.scss';
 
+import RefreshIcon from '@mui/icons-material/Refresh';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SaveStateIcon from '@mui/icons-material/SettingsRemote';
 import {
   IconButton,
   Tooltip,
-} from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import SettingsIcon from '@material-ui/icons/Settings';
-import SaveStateIcon from '@material-ui/icons/SettingsRemote';
+} from '@mui/material';
 import { D3DragEvent } from 'd3-drag';
 import * as d3Force from 'd3-force';
 import * as d3Select from 'd3-selection';
@@ -1185,13 +1185,13 @@ function GraphComponent(props: GraphComponentProps) {
         linkLegendDisabled={linkLegendDisabled}
         propsMap={propsMap.current}
       />
-
       <div className="toolbar">
         <Tooltip placement="top" title="Graph options">
           <IconButton
             color="primary"
             id="graph-options-btn"
             onClick={openGraphOptions}
+            size="large"
           >
             <SettingsIcon />
           </IconButton>
@@ -1201,6 +1201,7 @@ function GraphComponent(props: GraphComponentProps) {
             color="primary"
             id="clipboard-copy-btn"
             onClick={() => copyURLToClipBoard(snackbar)}
+            size="large"
           >
             <SaveStateIcon />
           </IconButton>
@@ -1208,16 +1209,12 @@ function GraphComponent(props: GraphComponentProps) {
 
         <Tooltip placement="top" title="Rerun Layout">
           <div className="refresh-wrapper">
-            <IconButton
-              color="primary"
-              onClick={() => refresh()}
-            >
+            <IconButton color="primary" onClick={() => refresh()} size="large">
               <RefreshIcon />
             </IconButton>
           </div>
         </Tooltip>
       </div>
-
       <div className="svg-wrapper" ref={wrapper}>
         <svg
           onClick={(e) => {

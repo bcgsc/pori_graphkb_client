@@ -2,13 +2,14 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { render } from '@testing-library/react';
 import React from 'react';
+import { describe, expect, test } from 'vitest';
 
 import ProteinPosition from '../ProteinPosition';
 
 describe('ProteinPosition', () => {
   test('shows both fields', () => {
-    const { getByText } = render(<ProteinPosition value={{}} />);
-    expect(getByText(/\bposition\b.*/)).toBeInTheDocument();
-    expect(getByText('refAA')).toBeInTheDocument();
+    const { getByLabelText } = render(<ProteinPosition value={{}} />);
+    expect(getByLabelText(/position/)).toBeInTheDocument();
+    expect(getByLabelText('refAA')).toBeInTheDocument();
   });
 });

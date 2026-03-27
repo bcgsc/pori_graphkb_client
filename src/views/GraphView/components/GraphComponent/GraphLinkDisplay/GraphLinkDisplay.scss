@@ -1,7 +1,7 @@
-@import '../../../../../globals';
+@use '../../../../../globals';
 
 .link {
-  animation: fade-in();
+  animation: globals.fade-in();
   cursor: pointer;
   stroke-opacity: 0.3;
   stroke-width: 2.5;
@@ -9,14 +9,14 @@
 
 .link-label {
   cursor: pointer;
-  font-family: $roboto;
+  font-family: globals.$roboto;
   font-size: 14px;
   font-weight: 300;
 }
 
 .link-widen {
   cursor: pointer;
-  stroke: $palette__common--white;
+  stroke: globals.$palette__common--white;
   stroke-opacity: 0;
   stroke-width: 10;
 }

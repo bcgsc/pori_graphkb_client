@@ -1,4 +1,4 @@
-@import '../../../../../globals';
+@use '../../../../../globals';
 
 .options-panel-wrapper {
   width: 100%;
@@ -20,13 +20,13 @@
 
   .graph-input-wrapper {
     svg {
-      color: $palette__secondary--main;
+      color: globals.$palette__secondary--main;
     }
   }
 
   span {
     .label {
-      color: $palette__primary--main;
+      color: globals.$palette__primary--main;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-size: 0.7em;
       margin: 0;
@@ -34,7 +34,7 @@
   }
 
   .graph-input {
-    border: 1px solid $palette__grey--A100;
+    border: 1px solid globals.$palette__grey--A100;
     border-radius: 4px;
     overflow: hidden;
 

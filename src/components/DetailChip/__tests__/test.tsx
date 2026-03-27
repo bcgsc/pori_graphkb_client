@@ -3,12 +3,15 @@ import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import {
+  afterEach, beforeEach, describe, test, vi,
+} from 'vitest';
 
 import DetailChip from '..';
 
 describe('DetailChip', () => {
-  const onDeleteSpy = jest.fn();
-  const getLinkSpy = jest.fn(() => '/test');
+  const onDeleteSpy = vi.fn();
+  const getLinkSpy = vi.fn(() => '/test');
   let queryFunctions;
 
   beforeEach(() => {
@@ -25,7 +28,7 @@ describe('DetailChip', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   test('Detail Chip is rendered with correct labels', () => {

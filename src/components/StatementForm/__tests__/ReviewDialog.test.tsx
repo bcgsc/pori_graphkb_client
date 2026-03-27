@@ -3,6 +3,11 @@ import '@testing-library/jest-dom/extend-expect';
 import { render } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import { AuthContext } from '@/components/Auth';
 
@@ -13,12 +18,12 @@ describe('ReviewDialog', () => {
   let queryByText;
   let getAllByText;
 
-  const onSubmitSpy = jest.fn();
-  const onCancelSpy = jest.fn();
-  const snackbarSpy = jest.fn();
+  const onSubmitSpy = vi.fn();
+  const onCancelSpy = vi.fn();
+  const snackbarSpy = vi.fn();
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   beforeEach(() => {

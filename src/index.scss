@@ -1,5 +1,4 @@
-@import 'theme';
-@import 'globals';
+@use 'globals';
 
 html {
   box-sizing: border-box;
@@ -22,8 +21,9 @@ body {
   transition: visibility 0.01s;
 }
 
+
 a {
-  color: $palette__secondary--main;
+  color: globals.$palette__secondary--main;
   text-decoration: none;
   &[disabled] {
     pointer-events: none;
@@ -31,5 +31,5 @@ a {
 }
 
 .content-wrapper {
-  @include content-wrapper;
+  @include globals.content-wrapper;
 }

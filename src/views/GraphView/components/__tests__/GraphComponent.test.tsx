@@ -6,6 +6,11 @@ import {
   waitFor,
 } from '@testing-library/react';
 import React from 'react';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import GraphComponent from '../GraphComponent/GraphComponent';
 
@@ -53,9 +58,9 @@ const mockData = [
   },
 ];
 
-const handleErrSpy = jest.fn();
+const handleErrSpy = vi.fn();
 
-const getRecordMockFnc = jest.fn()
+const getRecordMockFnc = vi.fn()
   .mockResolvedValue(mockData);
 
 const cacheSpy = ({
@@ -64,12 +69,12 @@ const cacheSpy = ({
 
 describe('<GraphComponent />', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   let dom;
-  const handleDetailDrawerOpen = jest.fn();
-  const handleDetailDrawerClose = jest.fn();
+  const handleDetailDrawerOpen = vi.fn();
+  const handleDetailDrawerClose = vi.fn();
 
   beforeEach(() => {
     dom = render(

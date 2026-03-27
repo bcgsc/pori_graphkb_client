@@ -1,21 +1,21 @@
-@import '../../globals';
+@use '../../globals';
 
 .data-view {
   height: 100%;
   width: 100%;
 
   &--squished {
-    transition: width $transitions__duration--standard;
-    width: calc(100% - #{$secondary-drawer-width});
+    transition: width globals.$transitions__duration--standard;
+    width: calc(100% - #{globals.$secondary-drawer-width});
   }
 
   &__header,
   &__footer {
     align-items: center;
     display: flex;
-    height: $banner-height;
+    height: globals.$banner-height;
     left: 0;
-    max-height: $banner-height;
+    max-height: globals.$banner-height;
     overflow: hidden;
     padding: 5px;
     position: relative;
@@ -74,11 +74,11 @@
   }
 
   &__content {
-    height: calc(100% - 2 * #{$banner-height});
+    height: calc(100% - 2 * #{globals.$banner-height});
     width: 100%;
 
     &--graph-view {
-      height: calc(100% - 2 * #{$banner-height});
+      height: calc(100% - 2 * #{globals.$banner-height});
       position: absolute;
       width: 100%;
     }

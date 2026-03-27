@@ -3,12 +3,16 @@ import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  afterEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import api from '@/services/api';
 
 import RecordAutocomplete from '..';
 
-const spy = jest
+const spy = vi
   .spyOn(api, 'query')
   .mockImplementation(async () => [{ name: 'bob', '@rid': '#1:0' }, { name: 'alice', '@rid': '#1:1' }]);
 
@@ -21,7 +25,7 @@ describe('RecordAutocomplete (data-fetching)', () => {
           getQueryBody={() => ({})}
           minSearchLength={0}
           name="test"
-          onChange={jest.fn()}
+          onChange={vi.fn()}
           placeholder={placeholder}
           singleLoad
         />
@@ -43,6 +47,6 @@ describe('RecordAutocomplete (data-fetching)', () => {
   test.todo('query triggered on input change');
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 });

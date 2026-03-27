@@ -2,13 +2,13 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback, useContext, useState } from 'react';
 
 import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 
-interface BreakpointFormProps{
+interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
   /**

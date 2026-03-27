@@ -1,13 +1,13 @@
 import './index.scss';
 
+import AddIcon from '@mui/icons-material/Add';
+import CancelIcon from '@mui/icons-material/Cancel';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   Chip,
   IconButton,
   TextField,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import CancelIcon from '@material-ui/icons/Cancel';
-import RefreshIcon from '@material-ui/icons/Refresh';
+} from '@mui/material';
 import uniq from 'lodash.uniq';
 import without from 'lodash.without';
 import React, { useState } from 'react';
@@ -204,6 +204,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
           color="primary"
           disabled={disabled}
           onClick={handleAddCurrent}
+          size="large"
         >
           <AddIcon />
         </IconButton>

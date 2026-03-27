@@ -3,7 +3,7 @@ import './index.scss';
 import { schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import FieldWrapper from '../FieldWrapper';
@@ -45,6 +45,11 @@ const BasicPositionForm = ({
   const [positionError, setPositionError] = useState('');
   const [offset, setOffset] = useState(initialOffset);
   const [offsetError, setOffsetError] = useState('');
+
+  useEffect(() => {
+    setPosition(value?.pos);
+    setOffset(value?.offset);
+  }, [value]);
 
   // validate the position input
   useEffect(() => {

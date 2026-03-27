@@ -1,15 +1,15 @@
-@import '../../globals';
+@use '../../globals';
 
 $title-bar-height: 36px;
 
 .user-profile-view {
-  height: calc(100% - #{$default-spacing});
-  margin-top: $default-spacing;
-  padding: $default-spacing;
+  height: calc(100% - #{globals.$default-spacing});
+  margin-top: globals.$default-spacing;
+  padding: globals.$default-spacing;
 
   &__title {
     height: $title-bar-height;
-    margin-left: $default-spacing;
+    margin-left: globals.$default-spacing;
   }
 
   &__table {

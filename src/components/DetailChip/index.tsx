@@ -1,5 +1,7 @@
 import './index.scss';
 
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Avatar,
   Card,
@@ -13,9 +15,7 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from '@material-ui/core';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+} from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -57,7 +57,7 @@ const DefaultPopupComponent = (props: DefaultPopupComponentProps) => {
           </Typography>
           {getLink && getLink(retrievedDetails) && (
             <Link target="_blank" to={getLink(retrievedDetails)}>
-              <IconButton>
+              <IconButton size="large">
                 <OpenInNewIcon />
               </IconButton>
             </Link>

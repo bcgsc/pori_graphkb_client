@@ -1,4 +1,5 @@
 import { schema as SCHEMA_DEFN } from '@bcgsc-pori/graphkb-schema';
+import { describe, expect, test } from 'vitest';
 
 import testSchema from '../schema';
 

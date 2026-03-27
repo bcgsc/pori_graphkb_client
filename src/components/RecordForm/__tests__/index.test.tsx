@@ -6,6 +6,11 @@ import {
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  afterEach,
+  beforeEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import { AuthContext } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
@@ -15,32 +20,34 @@ import RecordForm from '..';
 
 const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
 
-jest.spyOn(api, 'post').mockImplementation((route, payload) => payload);
-jest.spyOn(api, 'patch').mockImplementation(() => []);
-jest.spyOn(api, 'delete').mockImplementation(() => []);
-jest.spyOn(api, 'get').mockImplementation(() => []);
+vi.spyOn(api, 'post').mockImplementation((route, payload) => payload);
+vi.spyOn(api, 'patch').mockImplementation(() => []);
+vi.spyOn(api, 'delete').mockImplementation(() => []);
+vi.spyOn(api, 'get').mockImplementation(() => []);
 
-jest.mock('@/components/RecordAutocomplete', () => (({
-  value, onChange, name, label,
-}) => {
-  const mockValues = {
-    conditions: ['11:11'],
-    evidence: ['12:23'],
-    subject: '20:20',
-    relevance: '90:32',
-  };
+vi.mock('@/components/RecordAutocomplete', () => ({
+  default: ({
+    value, onChange, name, label,
+  }) => {
+    const mockValues = {
+      conditions: ['11:11'],
+      evidence: ['12:23'],
+      subject: '20:20',
+      relevance: '90:32',
+    };
 
-  const handleChange = (event) => {
-    onChange({ target: { name, value: mockValues[event.currentTarget.value] } });
-  };
+    const handleChange = (event) => {
+      onChange({ target: { name, value: mockValues[event.currentTarget.value] } });
+    };
 
-  return (
-    <select data-testid={`${name}-select`} id={`${name}-id`} onChange={handleChange} value={value}>
-      <option key="test" value={value}>
-        {label}
-      </option>
-    </select>
-  );
+    return (
+      <select data-testid={`${name}-select`} id={`${name}-id`} onChange={handleChange} value={value}>
+        <option key="test" value={value}>
+          {label}
+        </option>
+      </select>
+    );
+  },
 }));
 
 const originalError = console.error;
@@ -53,13 +60,13 @@ console.error = (msg) => {
 
 describe('RecordForm', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  const onSubmitSpy = jest.fn();
-  const onErrorSpy = jest.fn();
-  const onToggleStateSpy = jest.fn();
-  const snackbarSpy = jest.fn();
+  const onSubmitSpy = vi.fn();
+  const onErrorSpy = vi.fn();
+  const onToggleStateSpy = vi.fn();
+  const snackbarSpy = vi.fn();
 
   describe('view variant', () => {
     beforeEach(() => {

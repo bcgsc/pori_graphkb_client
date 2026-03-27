@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import React from 'react';
 
 const chunkSentence = (sentence: string, words: string[]) => {

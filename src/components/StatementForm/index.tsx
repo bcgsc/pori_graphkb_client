@@ -1,13 +1,12 @@
 import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import {
-  Button, CircularProgress,
+  Alert, Button, CircularProgress,
   Paper, Typography,
-} from '@material-ui/core';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
-import { Alert } from '@material-ui/lab';
+} from '@mui/material';
 import isempty from 'lodash.isempty';
 import { useSnackbar } from 'notistack';
 import React, {
@@ -384,7 +383,6 @@ const StatementForm = ({
           />
         )}
       </div>
-
       <FormContext.Provider value={form}>
         <FormLayout
           {...rest}

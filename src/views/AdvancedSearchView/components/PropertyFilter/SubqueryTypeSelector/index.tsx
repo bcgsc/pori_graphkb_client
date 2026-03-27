@@ -1,10 +1,9 @@
 import './index.scss';
 
-import { IconButton } from '@material-ui/core';
-import TreeIcon from '@material-ui/icons/AccountTree';
-import HelpIcon from '@material-ui/icons/HelpOutline';
-import ShareIcon from '@material-ui/icons/Share';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import TreeIcon from '@mui/icons-material/AccountTree';
+import HelpIcon from '@mui/icons-material/HelpOutline';
+import ShareIcon from '@mui/icons-material/Share';
+import { IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import HelpDialog from './HelpDialog';
@@ -76,7 +75,7 @@ function RecordFormStateToggle({
           <TreeIcon /><span className="toggle-option__text">Subclass Tree</span>
         </ToggleButton>
       </ToggleButtonGroup>
-      <IconButton onClick={toggleHelp}><HelpIcon /></IconButton>
+      <IconButton onClick={toggleHelp} size="large"><HelpIcon /></IconButton>
       <HelpDialog isOpen={helpIsOpen} onClose={() => setHelpIsOpen(false)} />
     </div>
   );

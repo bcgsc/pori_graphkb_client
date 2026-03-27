@@ -1,4 +1,4 @@
-@import '../../../globals';
+@use '../../../globals';
 
 .text-array-field {
   display: flex;
@@ -22,10 +22,10 @@
     margin-right: 2px;
 
     &--deleted {
-      background-color: $palette__error--main;
+      background-color: globals.$palette__error--main;
 
       :focus {
-        background-color: $palette__error--light;
+        background-color: globals.$palette__error--light;
       }
     }
   }

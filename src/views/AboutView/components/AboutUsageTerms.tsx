@@ -2,7 +2,7 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';

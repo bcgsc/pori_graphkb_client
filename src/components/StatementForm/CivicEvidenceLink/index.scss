@@ -1,9 +1,8 @@
-@import '../../../globals';
-@import '../../../theme';
+@use '../../../globals';
 
 .civic-evidence-link {
   align-items: center;
-  border: 1px solid $palette__grey--A100;
+  border: 1px solid globals.$palette__grey--A100;
   border-radius: 4px;
   display: flex;
   justify-content: center;

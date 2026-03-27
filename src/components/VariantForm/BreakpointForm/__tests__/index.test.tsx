@@ -4,6 +4,9 @@ import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  describe, expect, test, vi,
+} from 'vitest';
 
 import FormContext from '@/components/FormContext';
 import api from '@/services/api';
@@ -12,7 +15,7 @@ import BreakpointForm from '..';
 
 describe('BreakpointForm', () => {
   test('displays start when given', () => {
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
         <BreakpointForm
           coordinateType="GenomicPosition"
@@ -23,13 +26,13 @@ describe('BreakpointForm', () => {
         />
       </QueryClientProvider>,
     );
-    expect(getByText(/\breference\b/)).toBeInTheDocument();
+    expect(getByLabelText(/reference/)).toBeInTheDocument();
     expect(getByText('position (GenomicPosition)')).toBeInTheDocument();
     expect(queryByText('end (GenomicPosition)')).not.toBeInTheDocument();
   });
 
   test('defaults to uncertain if end is filled in form', () => {
-    const { getByText } = render(
+    const { getByText, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={{ formContent: { break1End: {} } }}>
           <BreakpointForm
@@ -42,14 +45,14 @@ describe('BreakpointForm', () => {
         </FormContext.Provider>
       </QueryClientProvider>,
     );
-    expect(getByText(/\breference\b/)).toBeInTheDocument();
+    expect(getByLabelText(/reference/)).toBeInTheDocument();
     expect(getByText('start (GenomicPosition)')).toBeInTheDocument();
     expect(getByText('end (GenomicPosition)')).toBeInTheDocument();
   });
 
   test('clears end from form when uncertain is unset', () => {
-    const form = { formContent: { break1End: {} }, updateField: jest.fn() };
-    const { getByText, getByTestId } = render(
+    const form = { formContent: { break1End: {} }, updateField: vi.fn() };
+    const { getByText, getByTestId, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={form}>
           <BreakpointForm
@@ -62,7 +65,7 @@ describe('BreakpointForm', () => {
         </FormContext.Provider>
       </QueryClientProvider>,
     );
-    expect(getByText(/\breference\b/)).toBeInTheDocument();
+    expect(getByLabelText(/reference/)).toBeInTheDocument();
     expect(getByText('start (GenomicPosition)')).toBeInTheDocument();
     expect(getByText('end (GenomicPosition)')).toBeInTheDocument();
 
@@ -71,7 +74,7 @@ describe('BreakpointForm', () => {
   });
 
   test('displays only gene when start not given', () => {
-    const { getByText, queryByText } = render(
+    const { getByLabelText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
         <BreakpointForm
           coordinateType="GenomicPosition"
@@ -80,7 +83,7 @@ describe('BreakpointForm', () => {
         />
       </QueryClientProvider>,
     );
-    expect(getByText(/\breference\b/)).toBeInTheDocument();
+    expect(getByLabelText(/reference/)).toBeInTheDocument();
     expect(queryByText('position (GenomicPosition)')).not.toBeInTheDocument();
     expect(queryByText('end (GenomicPosition)')).not.toBeInTheDocument();
   });

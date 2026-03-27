@@ -1,30 +1,25 @@
-@import '../../globals';
-@import '../../theme';
-
-$user-menu-width: 124px;
-$drawer-width: 240px;
-$closed-drawer-width: 56px;
+@use '../../globals';
 
 .main-view {
   height: 100vh;
-  min-width: $readable-min;
+  min-width: globals.$readable-min;
   overflow: hidden; // TODO: det what is causing the height overflow
 
   .appbar {
-    color: $palette__common--white;
+    color: globals.$palette__common--white;
     flex-direction: row;
     float: right;
-    height: $banner-height;
+    height: globals.$banner-height;
     justify-content: center;
     left: 0;
     right: 0;
-    transition-duration: $transitions__duration--standard;
+    transition-duration: globals.$transitions__duration--standard;
     transition-property: left;
     width: auto;
-    z-index: calc(#{$drawer-z-index} + 3);
+    z-index: calc(#{globals.$drawer-z-index} + 3);
 
     &--drawer-open {
-      left: $drawer-width;
+      left: globals.$drawer-width;
     }
 
     &__title {
@@ -36,7 +31,7 @@ $closed-drawer-width: 56px;
       white-space: nowrap;
 
       * {
-        color: $palette__common--white;
+        color: globals.$palette__common--white;
         display: inline-block;
       }
 
@@ -46,7 +41,7 @@ $closed-drawer-width: 56px;
     }
 
     &__btn {
-      animation: fade-in(0.2s);
+      animation: globals.fade-in(0.2s);
       margin: auto 4px;
 
       &--drawer-open {
@@ -55,7 +50,7 @@ $closed-drawer-width: 56px;
     }
 
     &__btn:disabled {
-      color: $palette__common--white;
+      color: globals.$palette__common--white;
     }
   }
 
@@ -71,11 +66,11 @@ $closed-drawer-width: 56px;
   }
 
   &__content {
-    height: calc(100% - #{$banner-height});
+    height: calc(100% - #{globals.$banner-height});
     margin-left: 0;
-    margin-top: $banner-height;
+    margin-top: globals.$banner-height;
     overflow-y: auto;
-    transition-duration: $transitions__duration--standard;
+    transition-duration: globals.$transitions__duration--standard;
     transition-property: width, margin-left;
     width: 100%;
 
@@ -83,14 +78,14 @@ $closed-drawer-width: 56px;
       margin-top: 8px;
     }
 
-    @media (min-width: $breakpoint-med) {
-      margin-left: $closed-drawer-width;
-      width: calc(100% - #{$closed-drawer-width});
+    @media (min-width: globals.$breakpoint-med) {
+      margin-left: globals.$closed-drawer-width;
+      width: calc(100% - #{globals.$closed-drawer-width});
     }
 
     &--drawer-open {
-      margin-left: $drawer-width;
-      width: calc(100% - #{$drawer-width});
+      margin-left: globals.$drawer-width;
+      width: calc(100% - #{globals.$drawer-width});
     }
   }
 }
@@ -101,13 +96,13 @@ $closed-drawer-width: 56px;
 }
 
 .user-menu {
-  width: $user-menu-width;
+  width: globals.$user-menu-width;
 }
 
 ::selection {
-  -webkit-text-fill-color: $palette__common--white;
-  background: $palette__primary--light;
-  color: $palette__common--white;
+  -webkit-text-fill-color: globals.$palette__common--white;
+  background: globals.$palette__primary--light;
+  color: globals.$palette__common--white;
 }
 
 .user-dropdown {
@@ -118,18 +113,18 @@ $closed-drawer-width: 56px;
   justify-content: center;
   margin: auto;
   margin-right: 2%;
-  min-width: $user-menu-width;
+  min-width: globals.$user-menu-width;
 
   .user-dropdown__icon * {
-    color: $palette__primary--contrast-text;
+    color: globals.$palette__primary--contrast-text;
   }
 
   &__content {
-    width: $user-menu-width;
+    width: globals.$user-menu-width;
   }
 
   &__icon {
-    color: $palette__common--white;
+    color: globals.$palette__common--white;
 
     svg {
       font-size: 32px;
@@ -137,7 +132,7 @@ $closed-drawer-width: 56px;
     }
 
     span aside {
-      color: $palette__common--white;
+      color: globals.$palette__common--white;
     }
   }
 }
@@ -147,13 +142,19 @@ $closed-drawer-width: 56px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition-duration: $transitions__duration--standard;
+  transition-duration: globals.$transitions__duration--standard;
   transition-property: width;
-  width: $drawer-width;
-  z-index: calc(#{$drawer-z-index} + 4);
+  width: globals.$drawer-width;
+  z-index: calc(#{globals.$drawer-z-index} + 4);
+  overflow: hidden;
 
-  @media (max-width: $breakpoint-sm) {
-    width: calc(100vw - #{$banner-height});
+  @media (max-width: globals.$breakpoint-sm) {
+    width: calc(100vw - #{globals.$banner-height});
+  }
+
+  // otherwise label are visible when drawer is closed
+  .MuiListItemIcon-root {
+    min-width: globals.$closed-drawer-width;
   }
 
   .footer__label {
@@ -163,10 +164,10 @@ $closed-drawer-width: 56px;
 
   &--closed {
     width: 0;
-    z-index: calc(#{$drawer-z-index} + 2);
+    z-index: calc(#{globals.$drawer-z-index} + 2);
 
-    @media (min-width: $breakpoint-med) {
-      width: $closed-drawer-width;
+    @media (min-width: globals.$breakpoint-med) {
+      width: globals.$closed-drawer-width;
     }
 
     .footer__label {
@@ -175,22 +176,26 @@ $closed-drawer-width: 56px;
   }
 
   &__links {
-    bottom: $banner-height;
+    bottom: globals.$banner-height;
     flex-grow: 1;
     position: relative;
     top: 0;
-  }
 
-  &__link {
-    color: $palette__text--primary;
-
-    &--selected.MuiTypography-body1 {
-      color: $palette__secondary--main;
+    .active {
+      color: globals.$palette__secondary--main;
     }
   }
 
+  // &__link {
+  //   color: globals.$palette__text--primary;
+
+  //   &--selected.MuiTypography-body1 {
+  //     color: globals.$palette__secondary--main;
+  //   }
+  // }
+
   &__footer {
-    background: $palette__background--default;
+    background: globals.$palette__background--default;
     bottom: 0;
     flex-shrink: 0;
     height: 57px;
@@ -201,7 +206,7 @@ $closed-drawer-width: 56px;
 
     li {
       box-sizing: border-box;
-      height: $banner-height;
+      height: globals.$banner-height;
       overflow: hidden;
       padding: 12px 16px;
       white-space: nowrap;
@@ -211,7 +216,7 @@ $closed-drawer-width: 56px;
   // top bar of the side bar menu when it is open
   &__banner {
     display: flex;
-    height: $banner-height;
+    height: globals.$banner-height;
     overflow: hidden;
     white-space: nowrap;
 

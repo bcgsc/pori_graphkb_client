@@ -1,5 +1,6 @@
 import './index.scss';
 
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
   FilledInput,
   FormControl,
@@ -10,8 +11,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-} from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+} from '@mui/material';
 import React, { ReactNode } from 'react';
 
 import { GeneralRecordType } from '@/components/types';

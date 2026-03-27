@@ -1,13 +1,13 @@
 import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import CancelIcon from '@mui/icons-material/Cancel';
 import {
   FormControl,
   FormHelperText,
   FormLabel,
   IconButton,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+} from '@mui/material';
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -89,6 +89,7 @@ const PositionForm = ({
             onChange({ target: { name, value: null } });
             setVariant('');
           }}
+          size="large"
         >
           <CancelIcon />
         </IconButton>

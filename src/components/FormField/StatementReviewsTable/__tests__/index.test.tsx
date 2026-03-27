@@ -1,6 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  afterEach, describe, expect,
+  test, vi,
+} from 'vitest';
 
 import api from '@/services/api';
 
@@ -8,7 +12,7 @@ import StatementReviewsTable from '..';
 
 describe('StatementReviewsTable', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const reviews = [
@@ -44,7 +48,7 @@ describe('StatementReviewsTable', () => {
       <QueryClientProvider client={api.queryClient}>
         <StatementReviewsTable
           name="reviews"
-          onChange={jest.fn()}
+          onChange={vi.fn()}
           reviewProps={mockReviewProps}
           values={[]}
         />
@@ -59,7 +63,7 @@ describe('StatementReviewsTable', () => {
       <QueryClientProvider client={api.queryClient}>
         <StatementReviewsTable
           name="reviews"
-          onChange={jest.fn()}
+          onChange={vi.fn()}
           reviewProps={mockReviewProps}
           values={reviews}
         />

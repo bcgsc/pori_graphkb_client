@@ -1,11 +1,11 @@
 import './index.scss';
 
+import InputIcon from '@mui/icons-material/Input';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Button, Card, CardActions, CardContent, IconButton,
   Typography,
-} from '@material-ui/core';
-import InputIcon from '@material-ui/icons/Input';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+} from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -53,7 +53,7 @@ const PubmedCard = ({
             target="_blank"
             to={schema.getLink({ '@rid': recordId, '@class': 'Publication' })}
           >
-            <IconButton>
+            <IconButton size="large">
               <OpenInNewIcon />
             </IconButton>
           </Link>

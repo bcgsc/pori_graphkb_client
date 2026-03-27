@@ -1,5 +1,5 @@
-@import '../../../../../globals';
-@import '../../../dataview';
+@use '../../../../../globals';
+@use '../../../dataview';
 
 .legend-wrapper {
   display: grid;
@@ -7,7 +7,7 @@
   grid-template-rows: auto;
   height: auto;
   left: 16px;
-  max-height: calc(100vh - 32px - #{$banner-height} - #{$toolbar-height});
+  max-height: calc(100vh - 32px - #{globals.$banner-height} - #{dataview.$toolbar-height});
   min-width: 164px;
   overflow: auto;
   padding: 2px;
@@ -48,14 +48,14 @@
   }
 }
 
-@media (max-width: $breakpoint-med) {
+@media (max-width: globals.$breakpoint-med) {
   .legend-wrapper {
     max-width: unset;
   }
 }
 
 .color-chip {
-  border: 1px solid $palette__text--secondary;
+  border: 1px solid globals.$palette__text--secondary;
   border-radius: 4px;
   cursor: pointer;
   height: 20px;

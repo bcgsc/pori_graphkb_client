@@ -1,5 +1,7 @@
 import '../index.scss';
 
+import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
 import {
   AppBar,
   Button,
@@ -8,9 +10,7 @@ import {
   MenuItem,
   Popover,
   Typography,
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import PersonIcon from '@material-ui/icons/Person';
+} from '@mui/material';
 import React, {
   useRef,
   useState,
@@ -59,6 +59,7 @@ const MainAppBar = ({
         className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
         color="inherit"
         onClick={() => handleDrawerChange({ isOpen: true })}
+        size="large"
       >
         <MenuIcon />
       </IconButton>

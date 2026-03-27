@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import api from '..';
 
 describe('api methods test', () => {

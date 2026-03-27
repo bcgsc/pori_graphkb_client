@@ -1,12 +1,12 @@
 import './index.scss';
 
 import {
+  MailOutline,
+} from '@mui/icons-material';
+import {
   Button,
   Typography,
-} from '@material-ui/core';
-import {
-  MailOutline,
-} from '@material-ui/icons';
+} from '@mui/material';
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-query';
 

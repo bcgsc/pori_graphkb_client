@@ -1,11 +1,11 @@
 import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import CancelIcon from '@mui/icons-material/Cancel';
 import {
   Checkbox,
   Dialog, DialogContent, FormControlLabel, IconButton, Typography,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+} from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
 
@@ -70,9 +70,7 @@ const AddReviewDialog = ({
       <div className="review-dialog">
         <div className="review-dialog__header">
           <Typography variant="h2">Add a new Statement Review</Typography>
-          <IconButton
-            onClick={onClose}
-          >
+          <IconButton onClick={onClose} size="large">
             <CancelIcon />
           </IconButton>
         </div>

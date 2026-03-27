@@ -1,4 +1,4 @@
-@import '../../../../../globals';
+@use '../../../../../globals';
 
 .expand-links-types {
   display: grid;
@@ -29,7 +29,7 @@
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: $breakpoint-mobile) {
+@media (max-width: globals.$breakpoint-mobile) {
   .expansion-root {
     .expansion-dialog {
       border-radius: 0;

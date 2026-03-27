@@ -3,6 +3,10 @@ import '@testing-library/jest-dom/extend-expect';
 import { render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
+import {
+  afterEach,
+  describe, expect, test, vi,
+} from 'vitest';
 
 import api from '@/services/api';
 
@@ -16,9 +20,9 @@ describe('RecordAutocomplete', () => {
     const { getByPlaceholderText } = render(
       <QueryClientProvider client={api.queryClient}>
         <RecordAutocomplete
-          getQueryBody={jest.fn()}
+          getQueryBody={vi.fn()}
           name="test"
-          onChange={jest.fn()}
+          onChange={vi.fn()}
           placeholder={placeholder}
         />
       </QueryClientProvider>,
@@ -32,9 +36,9 @@ describe('RecordAutocomplete', () => {
 
       <QueryClientProvider client={api.queryClient}>
         <RecordAutocomplete
-          getQueryBody={jest.fn()}
+          getQueryBody={vi.fn()}
           name="test"
-          onChange={jest.fn()}
+          onChange={vi.fn()}
           value={record}
         />
       </QueryClientProvider>,
@@ -47,10 +51,10 @@ describe('RecordAutocomplete', () => {
     const { getByText } = render(
       <QueryClientProvider client={api.queryClient}>
         <RecordAutocomplete
-          getQueryBody={jest.fn()}
+          getQueryBody={vi.fn()}
           isMulti
           name="test"
-          onChange={jest.fn()}
+          onChange={vi.fn()}
           value={record}
         />
       </QueryClientProvider>,
@@ -60,6 +64,6 @@ describe('RecordAutocomplete', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 });

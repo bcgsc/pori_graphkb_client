@@ -1,0 +1,31 @@
+name: Create JIRA ticket on release PR creation
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - master
+
+jobs:
+  create_ticket:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Run script
+        run: node .github/scripts/create-jira-ticket.js
+        env:
+          JIRA_PROJECT_NAME: ${{ vars.JIRA_PROJECT_NAME }}
+          JIRA_ISSUE_TYPE: ${{ vars.JIRA_ISSUE_TYPE }}
+          JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}
+          JIRA_PORT: ${{ vars.JIRA_PORT }}
+          JIRA_API_TOKEN: ${{ secrets.JACLI_JIRA_TOKEN }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_DESCRIPTION: ${{ github.event.pull_request.body }}

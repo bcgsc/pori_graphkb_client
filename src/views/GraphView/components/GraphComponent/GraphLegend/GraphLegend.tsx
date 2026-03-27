@@ -1,5 +1,6 @@
 import './GraphLegend.scss';
 
+import CloseIcon from '@mui/icons-material/Close';
 import {
   IconButton,
   List,
@@ -8,8 +9,7 @@ import {
   ListItemText,
   Paper,
   Typography,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
 import React from 'react';
 
 import util from '@/services/util';
@@ -66,6 +66,7 @@ function GraphLegend(props: GraphLegendProps) {
                     name: 'nodesLegend',
                   },
                 })}
+                size="large"
               >
                 <CloseIcon />
               </IconButton>
@@ -122,6 +123,7 @@ function GraphLegend(props: GraphLegendProps) {
                       name: 'linksLegend',
                     },
                   })}
+                  size="large"
                 >
                   <CloseIcon />
                 </IconButton>

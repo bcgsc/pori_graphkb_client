@@ -1191,7 +1191,6 @@ function GraphComponent(props: GraphComponentProps) {
             color="primary"
             id="graph-options-btn"
             onClick={openGraphOptions}
-            size="large"
           >
             <SettingsIcon />
           </IconButton>
@@ -1201,7 +1200,6 @@ function GraphComponent(props: GraphComponentProps) {
             color="primary"
             id="clipboard-copy-btn"
             onClick={() => copyURLToClipBoard(snackbar)}
-            size="large"
           >
             <SaveStateIcon />
           </IconButton>
@@ -1209,7 +1207,7 @@ function GraphComponent(props: GraphComponentProps) {
 
         <Tooltip placement="top" title="Rerun Layout">
           <div className="refresh-wrapper">
-            <IconButton color="primary" onClick={() => refresh()} size="large">
+            <IconButton color="primary" onClick={() => refresh()}>
               <RefreshIcon />
             </IconButton>
           </div>

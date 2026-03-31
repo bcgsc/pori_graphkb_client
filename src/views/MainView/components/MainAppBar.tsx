@@ -5,10 +5,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import {
   AppBar,
   Button,
-  Card,
   IconButton,
+  Menu,
   MenuItem,
-  Popover,
   Typography,
 } from '@mui/material';
 import React, {
@@ -16,21 +15,18 @@ import React, {
   useState,
 } from 'react';
 import {
-  Link,
+  Link, NavLink,
 } from 'react-router-dom';
 
 import { useAuth } from '@/components/Auth';
 
-import MenuLink from './MenuLink';
-
 interface MainAppBarProps {
   onDrawerChange: (isOpen: boolean) => void;
-  onLinkChange: (arg: { isOpen: boolean, activeLink: unknown }) => void;
   drawerOpen?: boolean;
 }
 
 const MainAppBar = ({
-  onDrawerChange, drawerOpen = false, onLinkChange,
+  onDrawerChange, drawerOpen = false,
 }: MainAppBarProps) => {
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState<HTMLDivElement | null>(null);
   const auth = useAuth();
@@ -45,11 +41,6 @@ const MainAppBar = ({
     setDropdownAnchorEl(null);
   };
 
-  const handleClickLink = (link) => {
-    handleClose();
-    onLinkChange({ isOpen: drawerOpen, activeLink: link });
-  };
-
   return (
     <AppBar
       className={`appbar ${drawerOpen ? 'appbar--drawer-open' : ''}`}
@@ -59,7 +50,6 @@ const MainAppBar = ({
         className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
         color="inherit"
         onClick={() => handleDrawerChange({ isOpen: true })}
-        size="large"
       >
         <MenuIcon />
       </IconButton>
@@ -81,50 +71,37 @@ const MainAppBar = ({
               {auth.isAuthenticated ? auth.username : 'Logged Out'}
             </Typography>
           </Button>
-          <Popover
+          <Menu
             anchorEl={dropdownAnchorEl}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
+            classes={{ paper: 'user-dropdown__content' }}
+            id="user-menu"
+            onClick={handleClose}
             onClose={handleClose}
             open={Boolean(dropdownAnchorEl)}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
           >
-            <Card className="user-dropdown__content">
-              <MenuLink
-                label="Feedback"
-                onClick={handleClickLink}
-                route="/feedback"
-              />
-              {auth.isAdmin && (
-                <MenuLink
-                  label="Admin"
-                  onClick={handleClickLink}
-                  route="/admin"
-                />
-              )}
-              {auth.isAuthenticated && (
-                <MenuLink
-                  label="Profile"
-                  onClick={handleClickLink}
-                  route="/user-profile"
-                />
-              )}
-              {auth.isAuthenticated ? (
-                <MenuItem onClick={() => auth.logout()}>
-                  Logout
-                </MenuItem>
-              ) : (
-                <MenuItem onClick={() => auth.login()}>
-                  Login
-                </MenuItem>
-              )}
-            </Card>
-          </Popover>
+            <MenuItem component={NavLink} to="/feedback">
+              Feedback
+            </MenuItem>
+            {auth.isAdmin && (
+              <MenuItem component={NavLink} to="/admin">
+                Admin
+              </MenuItem>
+            )}
+            {auth.isAuthenticated && (
+              <MenuItem component={NavLink} to="/user-profile">
+                Profile
+              </MenuItem>
+            )}
+            {auth.isAuthenticated ? (
+              <MenuItem onClick={() => auth.logout()}>
+                Logout
+              </MenuItem>
+            ) : (
+              <MenuItem onClick={() => auth.login()}>
+                Login
+              </MenuItem>
+            )}
+          </Menu>
         </div>
       </div>
     </AppBar>

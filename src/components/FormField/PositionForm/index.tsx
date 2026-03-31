@@ -89,7 +89,6 @@ const PositionForm = ({
             onChange({ target: { name, value: null } });
             setVariant('');
           }}
-          size="large"
         >
           <CancelIcon />
         </IconButton>

@@ -70,7 +70,7 @@ const AddReviewDialog = ({
       <div className="review-dialog">
         <div className="review-dialog__header">
           <Typography variant="h2">Add a new Statement Review</Typography>
-          <IconButton onClick={onClose} size="large">
+          <IconButton onClick={onClose}>
             <CancelIcon />
           </IconButton>
         </div>
@@ -102,7 +102,6 @@ const AddReviewDialog = ({
             disabled={formHasErrors && formIsDirty}
             onClick={handleSubmit}
             requireConfirm={false}
-            size="large"
             variant="contained"
           >
             ADD REVIEW

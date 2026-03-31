@@ -59,21 +59,21 @@ $typography__font-size--h6: 0.875rem;
 
 
 // main navbar and menu
-$banner-height: 56px;
+$banner-height: 48px;
 $default-spacing: 20px;
 
 // login/logout menu
 $user-menu-width: 124px;
 
 // left-side-bar
-$closed-drawer-width: 56px;
+$closed-drawer-width: 48px;
 $drawer-breakpoint: 1024px;
 $drawer-width: 240px;
 $drawer-z-index: 1200;
 
 // right-side-bars
 $secondary-drawer-width: 540px;
-$secondary-drawer-max-width: calc(100vw - 56px);
+$secondary-drawer-max-width: calc(100vw - $closed-drawer-width);
 
 // tabs
 $tab-bar-height: 48px;

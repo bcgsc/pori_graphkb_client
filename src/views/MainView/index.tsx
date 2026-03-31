@@ -76,9 +76,6 @@ const Main = () => {
       <MainAppBar
         drawerOpen={drawerOpen}
         onDrawerChange={setDrawerOpen}
-        onLinkChange={({ isOpen }) => {
-          setDrawerOpen(isOpen);
-        }}
       />
       <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
         <Suspense fallback={(<CircularProgress color="secondary" />)}>

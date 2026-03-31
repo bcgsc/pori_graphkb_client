@@ -53,7 +53,7 @@ const PubmedCard = ({
             target="_blank"
             to={schema.getLink({ '@rid': recordId, '@class': 'Publication' })}
           >
-            <IconButton size="large">
+            <IconButton>
               <OpenInNewIcon />
             </IconButton>
           </Link>

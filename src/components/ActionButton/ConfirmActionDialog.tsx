@@ -47,14 +47,12 @@ const ConfirmActionDialog = (props: ConfirmActionDialogProps) => {
             className="confirm-action-dialog__cancel"
             color="primary"
             onClick={onCancel}
-            size="large"
           >
             Cancel
           </Button>
           <Button
             className="confirm-action-dialog__confirm"
             onClick={onConfirm}
-            size="large"
           >
             Confirm
           </Button>

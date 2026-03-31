@@ -141,14 +141,14 @@
       z-index: 1;
     }
   }
-}
-
-.about-page__content {
-  white-space: pre-line;
-}
-
 .MuiListItem-gutters {
   &:nth-child(even) {
     padding-top: 0;
   }
+}
+
+}
+
+.about-page__content {
+  white-space: pre-line;
 }

@@ -22,7 +22,7 @@ interface StatementReviewsTableProps {
   /** parent change handler function */
   onChange: FormContextState['updateFieldEvent'];
   /** linked records to be displayed in table */
-  values?: GeneralRecordType[];
+  values?: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType })[];
   /** mode that dialog is in. One of ['view','edit']. */
   variant?: FORM_VARIANT | '';
 }

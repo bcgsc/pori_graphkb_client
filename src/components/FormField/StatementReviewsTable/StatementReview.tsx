@@ -26,7 +26,7 @@ interface StatementReviewProps {
   label?: string;
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
-  value: GeneralRecordType;
+  value: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType });
   /** one of ['view', 'edit'] mode */
   variant?: FORM_VARIANT | '';
 }
@@ -59,7 +59,7 @@ const StatementReview = ({
     tuple('/query', { target: [createdByRid!] }),
     ({ queryKey: [, body] }) => api.query(body),
     {
-      enabled: !createdByRid,
+      enabled: typeof createdBy === 'string',
       select: (response) => response[0],
     },
   );

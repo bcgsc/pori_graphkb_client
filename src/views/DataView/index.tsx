@@ -1,5 +1,3 @@
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';

@@ -131,10 +131,10 @@ const ActivityView = () => {
               sortable: true,
             },
           ]}
-          deltaRowDataMode
+          components={{ JumpToRecord }}
           enableCellTextSelection
-          frameworkComponents={{ JumpToRecord }}
           getRowNodeId={(data) => data['@rid']}
+          immutableData
           pagination
           paginationAutoPageSize
           rowData={recentRecords}

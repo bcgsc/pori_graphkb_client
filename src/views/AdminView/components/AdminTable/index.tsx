@@ -157,13 +157,13 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
       >
         <AgGridReact
           columnDefs={colDefs}
+          components={{ EmailLink, Actions }}
           defaultColDef={{
             sortable: true,
             resizable: true,
             width: 150,
           }}
           enableCellTextSelection
-          frameworkComponents={{ EmailLink, Actions }}
           pagination
           paginationAutoPageSize
           rowData={records}

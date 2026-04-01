@@ -120,9 +120,9 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
               maxWidth: 150,
             },
           ]}
+          components={{ renderCellRenderer }}
           defaultColDef={{ resizable: true, sortable: true }}
           enableCellTextSelection
-          frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={(data) => data['@rid']}
           pagination
           paginationAutoPageSize

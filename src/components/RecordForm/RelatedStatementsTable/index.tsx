@@ -116,11 +116,11 @@ const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
               pinned: 'right',
             },
           ]}
+          components={{ renderCellRenderer }}
           defaultColDef={{ resizable: true, sortable: true }}
-          deltaRowDataMode
           enableCellTextSelection
-          frameworkComponents={{ renderCellRenderer }}
           getRowNodeId={(data) => data['@rid']}
+          immutableData
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll

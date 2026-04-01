@@ -92,7 +92,7 @@ const pickInputType = (record) => {
 
 interface VariantFormProps {
   /** the handler to be called when the submission throws an error */
-  onError: (arg: { error: unknown; content: unknown }) => void;
+  onError: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   /** the handler to be called when the form is submitted */
   onSubmit: (record?: GeneralRecordType | null) => void;
   formVariant?: FORM_VARIANT;
@@ -163,8 +163,8 @@ const VariantForm = ({
   /**
    * Mutation for submitting (creating or updating) a variant record
    */
-  const submitMutation = useMutation(
-    async (content) => {
+  const submitMutation = useMutation({
+    mutationFn: async (content) => {
       const payload = cleanPayload(content);
 
       /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
@@ -182,60 +182,56 @@ const VariantForm = ({
       const { displayName, ...rest } = payload;
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, rest);
     },
-    {
-      onSuccess: (result) => {
-        const actionType = formVariant === FORM_VARIANT.NEW ? 'created' : 'edited';
+    onSuccess: (result) => {
+      const actionType = formVariant === FORM_VARIANT.NEW ? 'created' : 'edited';
 
-        if (result['@rid']) {
-          const { routeName } = schemaDefn.get(result);
-          const cleanRid = result['@rid'].replace(/^#/, '');
+      if (result['@rid']) {
+        const { routeName } = schemaDefn.get(result);
+        const cleanRid = result['@rid'].replace(/^#/, '');
 
-          queryClient.invalidateQueries({
-            predicate: (query) => {
-              const queryString = String(query.queryKey[0]);
-              return queryString.includes(routeName) && queryString.includes(cleanRid);
-            },
-          });
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const queryString = String(query.queryKey[0]);
+            return queryString.includes(routeName) && queryString.includes(cleanRid);
+          },
+        });
 
-          queryClient.refetchQueries({
-            predicate: (query) => {
-              const queryString = String(query.queryKey[0]);
-              return queryString.includes(routeName) && queryString.includes(cleanRid);
-            },
-          });
-        }
+        queryClient.refetchQueries({
+          predicate: (query) => {
+            const queryString = String(query.queryKey[0]);
+            return queryString.includes(routeName) && queryString.includes(cleanRid);
+          },
+        });
+      }
 
-        snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(result);
-      },
-      onError: (error: any, content) => {
-        const actionType = formVariant === FORM_VARIANT.NEW ? 'creating' : 'editing';
-        console.error(error);
-        snackbar.enqueueSnackbar(`Error (${error.name}) in ${actionType} the record`, { variant: 'error' });
-        onError({ error, content });
-      },
+      snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
+      onSubmit(result);
     },
-  );
+    onError: (error: any, content) => {
+      const actionType = formVariant === FORM_VARIANT.NEW ? 'creating' : 'editing';
+      console.error(error);
+      snackbar.enqueueSnackbar(`Error (${error.name}) in ${actionType} the record`, { variant: 'error' });
+      onError({ error, content });
+    },
+  });
 
-  const deleteMutation = useMutation(
-    async (content) => {
+  const deleteMutation = useMutation({
+    mutationFn: async (content) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
-    {
-      onSuccess: (result) => {
-        queryClient.invalidateQueries();
-        snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit(null);
-      },
-      onError: (error: any, content) => {
-        console.error(error);
-        snackbar.enqueueSnackbar(`Error (${error.name}) in deleting the record`, { variant: 'error' });
-        onError({ error, content });
-      },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries();
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
+      onSubmit(null);
     },
-  );
+    onError: (error: any, content) => {
+      console.error(error);
+      snackbar.enqueueSnackbar(`Error (${error.name}) in deleting the record`, { variant: 'error' });
+      onError({ error, content });
+    },
+  });
 
   const handleSubmitAction = useCallback((content) => {
     submitMutation.mutate(content);
@@ -249,7 +245,7 @@ const VariantForm = ({
     <SteppedForm
       className="new-variant"
       formVariant={formVariant}
-      isLoading={submitMutation.isLoading || deleteMutation.isLoading}
+      isLoading={submitMutation.isPending || deleteMutation.isPending}
       modelName={model.name}
       onDelete={handleDeleteAction}
       onSubmit={handleSubmitAction}

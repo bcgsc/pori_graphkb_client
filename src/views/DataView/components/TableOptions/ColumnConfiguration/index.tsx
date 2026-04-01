@@ -42,13 +42,13 @@ const ColumnConfiguration = ({
   const [openCols, setOpenCols] = useState({});
 
   useEffect(() => {
-    const columnApi = gridRef?.current?.columnApi;
+    const columnApi = gridRef?.current?.api;
 
     if (!isOpen || !columnApi) { return; }
     const cols: Col[] = [];
     let current;
     const nextOpenCols = {};
-    columnApi.getAllColumns()?.forEach((column) => {
+    columnApi.getColumns()?.forEach((column) => {
       if (column.getColId().endsWith('.preview')) { return; }
       nextOpenCols[column.getColId()] = column.isVisible();
       const parent = column.getOriginalParent();
@@ -87,10 +87,10 @@ const ColumnConfiguration = ({
 
   const handleToggleColumn = useCallback((colId, show) => {
     setOpenCols((prev) => ({ ...prev, [colId]: show }));
-    const columnApi = gridRef?.current?.columnApi;
+    const columnApi = gridRef?.current?.api;
 
     if (columnApi) {
-      columnApi.setColumnVisible(colId, show);
+      columnApi.setColumnsVisible([colId], show);
     }
   }, [gridRef]);
 

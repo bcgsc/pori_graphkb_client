@@ -81,7 +81,7 @@ const SteppedForm = ({
           if (!child) {
             return child;
           }
-          const { fields, label } = (child as any).props;
+          const { fields = [], label } = (child as any).props;
           const errors = fields.some((f) => formErrors[f]);
           return (
             <Step>

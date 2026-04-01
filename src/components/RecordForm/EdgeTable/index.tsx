@@ -2,12 +2,14 @@ import './index.scss';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { Typography } from '@mui/material';
+import { themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import useGrid from '@/components/hooks/useGrid';
 import RecordIdLink from '@/components/RecordIdLink';
+import { EdgeType } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 
@@ -33,48 +35,46 @@ interface EdgeTableProps {
 const EdgeTable = ({ recordId }: EdgeTableProps) => {
   const grid = useGrid();
 
-  const { data: edges, isFetching } = useQuery(
-    tuple(
+  const { data: edges, isFetching } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         target: [recordId],
         neighbors: 3,
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      select: (response) => {
-        const [record] = response;
-        const newEdges: unknown[] = [];
-        Object.entries(record).forEach(([propName, value]) => {
-          if ((propName.startsWith('out_') || propName.startsWith('in_')) && Array.isArray(value)) {
-            value.forEach((edge) => {
-              const model = schemaDefn.get(edge);
-              const reversed = isReversed(recordId, edge);
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    select: (response) => {
+      const [record] = response;
+      const newEdges: unknown[] = [];
+      Object.entries(record).forEach(([propName, value]) => {
+        if ((propName.startsWith('out_') || propName.startsWith('in_')) && Array.isArray(value)) {
+          (value as EdgeType[]).forEach((edge) => {
+            const model = schemaDefn.get(edge);
+            const reversed = isReversed(recordId, edge);
 
-              newEdges.push({
-                ...edge,
-                reversed,
-                relationshipType: reversed
-                  ? model.reverseName
-                  : model.name,
-                target: reversed
-                  ? edge.out
-                  : edge.in,
-              });
+            newEdges.push({
+              ...edge,
+              reversed,
+              relationshipType: reversed
+                ? model.reverseName
+                : model.name,
+              target: reversed
+                ? edge.out
+                : edge.in,
             });
-          }
-        });
-        return newEdges;
-      },
+          });
+        }
+      });
+      return newEdges;
     },
-  );
+  });
 
   useEffect(() => {
     const gridApi = grid.ref?.current?.api;
 
     if (edges && gridApi && !isFetching) {
-      gridApi.setRowData(edges);
+      gridApi.setGridOption('rowData', edges);
       gridApi.sizeColumnsToFit();
     }
   }, [edges, grid.ref, isFetching]);
@@ -123,10 +123,11 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
           components={{ renderCellRenderer }}
           defaultColDef={{ resizable: true, sortable: true }}
           enableCellTextSelection
-          getRowNodeId={(data) => data['@rid']}
+          getRowId={(params) => params.data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
+          theme={themeMaterial}
         />
       </div>
     </div>

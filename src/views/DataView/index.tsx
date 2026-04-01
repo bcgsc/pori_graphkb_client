@@ -5,6 +5,7 @@ import {
   IconButton,
 } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import { themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useCallback,
@@ -103,10 +104,10 @@ const getRowsFromBlocks = async ({
       search, skip: block, limit: blockSize, sortModel,
     });
 
-    blockRequests.push(api.queryClient.fetchQuery(
-      tuple('/query', payload),
-      async ({ queryKey: [, body] }) => api.query(body),
-    ));
+    blockRequests.push(api.queryClient.fetchQuery({
+      queryKey: tuple('/query', payload),
+      queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    }));
   }
   const data: GeneralRecordType[] = [];
   (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
@@ -123,7 +124,7 @@ const getRowsFromBlocks = async ({
 /**
  * Shows the search result filters and an edit button
  */
-const DataView = (): JSX.Element => {
+const DataView = (): React.JSX.Element => {
   const {
     search: initialSearch,
   } = useLocation();
@@ -132,7 +133,7 @@ const DataView = (): JSX.Element => {
   const isLoading = useIsFetching();
   const [search, setSearch] = useState(initialSearch);
   const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
-  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState(null);
+  const [optionsMenuAnchor, setOptionsMenuAnchor] = useState<HTMLButtonElement | null>(null);
   const [detailsRowId, setDetailsRowId] = useState(null);
   const grid = useGrid();
 
@@ -140,24 +141,22 @@ const DataView = (): JSX.Element => {
     search, count: true,
   }), [search]);
 
-  const { data: totalRows } = useQuery(
-    tuple('/query', payload),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      select: (response) => response[0]?.count,
-    },
-  );
+  const { data: totalRows } = useQuery({
+    queryKey: tuple('/query', payload),
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    select: (response) => response[0]?.count,
+  });
 
   const initializeGrid = useCallback(() => {
     const gridApi = grid.ref?.current?.api;
 
     if (!gridApi) { return; }
 
-    gridApi.setColumnDefs([
+    gridApi.setGridOption('columnDefs', [
       ...schema.defineGridColumns(search),
     ]);
 
-    gridApi.setDatasource({
+    gridApi.setGridOption('datasource', {
       rowCount: undefined,
       getRows: ({
         successCallback, failCallback, ...params
@@ -207,15 +206,18 @@ const DataView = (): JSX.Element => {
     util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
   }, [navigate, search]);
 
-  const { data: detailPanelRow } = useQuery(
-    tuple('/query', { target: [detailsRowId!], neighbors: DEFAULT_NEIGHBORS }),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      enabled: Boolean(detailsRowId),
-      onError: (err) => handleError(err),
-      select: (response) => response[0],
-    },
-  );
+  const { data: detailPanelRow, error } = useQuery({
+    queryKey: tuple('/query', { target: [detailsRowId!], neighbors: DEFAULT_NEIGHBORS }),
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    enabled: Boolean(detailsRowId),
+    select: (response) => response[0],
+  });
+
+  useEffect(() => {
+    if (error) {
+      handleError(error);
+    }
+  }, [error, handleError]);
 
   const handleToggleDetailPanel = useCallback(async (params) => {
     // no data or clicked link is a link property without a class model
@@ -230,8 +232,8 @@ const DataView = (): JSX.Element => {
    * Opens the options menu. The trigger is defined on this component but
    * the menu contents are handled by the data element (ex DataTable)
    */
-  const handleOpenOptionsMenu = useCallback(({ currentTarget = null } = {}) => {
-    setOptionsMenuAnchor(currentTarget);
+  const handleOpenOptionsMenu = useCallback((e?: React.MouseEvent<HTMLButtonElement>) => {
+    setOptionsMenuAnchor(e?.currentTarget ?? null);
   }, []);
 
   const handleClickExport = useCallback(async () => {
@@ -301,7 +303,7 @@ const DataView = (): JSX.Element => {
         },
       };
 
-      gridApi.setDatasource(tempDataSource);
+      gridApi.setGridOption('datasource', tempDataSource);
     }
   }, [grid.ref, initializeGrid, isExportingData, search, totalRows]);
 
@@ -373,10 +375,11 @@ const DataView = (): JSX.Element => {
             }}
             paginationPageSize={25}
             rowModelType="infinite"
-            // allow the user to select using the arrow keys and shift
             rowSelection="multiple"
+            // allow the user to select using the arrow keys and shift
             suppressHorizontalScroll={false}
             suppressMultiSort
+            theme={themeMaterial}
           />
         </div>
         <DetailDrawer

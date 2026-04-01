@@ -1,10 +1,8 @@
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
-
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -14,6 +12,8 @@ import { AuthProvider } from '@/components/Auth';
 import api from '@/services/api';
 
 import MainView from './views/MainView';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 const cache = createCache({
   key: 'css',

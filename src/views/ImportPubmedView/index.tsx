@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
@@ -28,22 +28,17 @@ const ImportPubmedView = () => {
   const [pmid] = useDebounce(text, 1000);
 
   // fetch the pubmed source record
-  const { data: source } = useQuery(
-    tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      onError: (err) => util.handleErrorSaveLocation(err, {
-        navigate,
-        pathname,
-        search: searchParams.toString(),
-      }),
-      select: (response) => response[0]?.['@rid'],
-    },
-  );
+  const { data: source, error: sourceError } = useQuery({
+    queryKey: tuple('/query', { target: 'Source', filters: { name: 'pubmed' } }),
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    select: (response) => response[0]?.['@rid'],
+  });
 
   // fetch records that already exist in GraphKB
-  const { data: currentRecords, isLoading, refetch: refetchCurrentRecords } = useQuery(
-    tuple(
+  const {
+    data: currentRecords, isLoading, refetch: refetchCurrentRecords, error,
+  } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         target: 'Publication',
@@ -60,28 +55,29 @@ const ImportPubmedView = () => {
         },
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      enabled: Boolean(text),
-      onError: (err) => util.handleErrorSaveLocation(err, {
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    enabled: Boolean(text),
+  });
+
+  useEffect(() => {
+    if (error || sourceError) {
+      util.handleErrorSaveLocation(error || sourceError, {
         navigate,
         pathname,
         search: searchParams.toString(),
-      }),
-    },
-  );
+      });
+    }
+  }, [error, navigate, pathname, searchParams, sourceError]);
 
   // fetch details from PUBMED
-  const { data: externalRecord = null } = useQuery(
-    `/extensions/pubmed/${pmid}`,
-    ({ queryKey: [route] }) => api.get(route),
-    {
-      enabled: Boolean(pmid),
-    },
-  );
+  const { data: externalRecord = null } = useQuery({
+    queryKey: [`/extensions/pubmed/${pmid}`],
+    queryFn: ({ queryKey: [route] }) => api.get(route),
+    enabled: Boolean(pmid),
+  });
 
-  const { mutate: importRecord, isLoading: isImporting } = useMutation(
-    async () => {
+  const { mutate: importRecord, isPending: isImporting } = useMutation({
+    mutationFn: async () => {
       if (externalRecord) {
         try {
           const result = await api.post('/publications', { ...externalRecord, source });
@@ -96,7 +92,7 @@ const ImportPubmedView = () => {
         }
       }
     },
-  );
+  });
 
   // fetch records that do not already exist in GraphKB
   const handleImport = useCallback(async () => importRecord(), [importRecord]);

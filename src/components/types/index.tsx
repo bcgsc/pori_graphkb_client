@@ -15,8 +15,8 @@ interface TGeneralRecordType {
   [key: `out_${string}` | `in_${string}`]: unknown[] | undefined;
 
   // add other properties that exist on any record type
-  comment: unknown;
-  status: unknown;
+  comment: string;
+  status: string | number | boolean;
   break1Start: Partial<TGeneralRecordType>;
   break1End: Partial<TGeneralRecordType>;
   source: Partial<TGeneralRecordType>;

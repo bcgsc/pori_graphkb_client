@@ -108,9 +108,9 @@ const MatchView = () => {
   const [rootTerm] = useDebounce(rootText, DEBOUNCE_MS);
   const queryClient = useQueryClient();
 
-  const { data: { hasTooManyRecords, matches = [] } = {}, isLoading } = useQuery(
-    ['queries', rootTerm, term, termType],
-    async () => {
+  const { data: { hasTooManyRecords, matches = [] } = {}, isLoading, error } = useQuery({
+    queryKey: ['queries', rootTerm, term, termType],
+    queryFn: async () => {
       const queries = [
         termTreeQuery(termType, term),
         equivalentTermsQuery(termType, term),
@@ -121,11 +121,11 @@ const MatchView = () => {
       }
 
       const [treeTerms, parentTerms, excludedParentTerms] = await Promise.all(
-        queries.map(async (query) => queryClient.fetchQuery(
-          tuple('/query', query),
-          async ({ queryKey: [, body] }) => api.query(body),
-          { staleTime: Infinity },
-        )),
+        queries.map(async (query) => queryClient.fetchQuery({
+          queryKey: tuple('/query', query),
+          queryFn: async ({ queryKey: [, body] }) => api.query(body),
+          staleTime: Infinity,
+        })),
       );
 
       const terms: Record<string, GeneralRecordType> = {};
@@ -146,10 +146,13 @@ const MatchView = () => {
         matches: Object.values(terms),
       };
     },
-    {
-      onError: (err) => util.handleErrorSaveLocation(err, { navigate, search, pathname }),
-    },
-  );
+  });
+
+  useEffect(() => {
+    if (error) {
+      util.handleErrorSaveLocation(error, { navigate, search, pathname });
+    }
+  }, [error, navigate, pathname, search]);
 
   useEffect(() => {
     const normalizedTerm = text.toLowerCase().trim();

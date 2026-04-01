@@ -1,10 +1,11 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/vitest';
 
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import {
-  afterEach, beforeEach, describe, test, vi,
+  afterEach, beforeEach, describe, expect,
+  test, vi,
 } from 'vitest';
 
 import DetailChip from '..';

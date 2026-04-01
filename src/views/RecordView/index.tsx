@@ -18,6 +18,7 @@ import {
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
+import { GeneralRecordType } from '@/components/types';
 import {
   cleanLinkedRecords, FORM_VARIANT, navigateToGraph, tuple,
 } from '@/components/util';
@@ -100,7 +101,7 @@ const RecordView = ({
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
-  const handleSubmit = useCallback((result = null) => {
+  const handleSubmit = useCallback((result: GeneralRecordType | null = null) => {
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
       navigate(schema.getLink(result));
     } else if (result && variant === FORM_VARIANT.SEARCH) {
@@ -118,7 +119,7 @@ const RecordView = ({
   /**
    * Handles the redirect if an error occurs in the child component
    */
-  const handleError = useCallback(({ error = {} }) => {
+  const handleError = useCallback(({ error = {} }: { error?: { name?: string; message?: string } }) => {
     const { name } = error;
     const massagedMsg = util.massageRecordExistsError(error);
     util.handleErrorSaveLocation(
@@ -129,9 +130,9 @@ const RecordView = ({
 
   const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
-  const { data: recordContent } = useQuery(
-    tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
-    async ({ queryKey: [route, options] }) => {
+  const { data: recordContent, error } = useQuery({
+    queryKey: tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
+    queryFn: async ({ queryKey: [route, options] }) => {
       if (!model) {
         handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });
         return undefined;
@@ -144,13 +145,21 @@ const RecordView = ({
       handleError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${model.routeName}/${rid}` } });
       return undefined;
     },
-    {
-      enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
-      refetchOnMount: 'always',
-      onError: (err) => handleError({ error: err }),
-      onSuccess: (result) => result && setModelName(result['@class']),
-    },
-  );
+    enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
+    refetchOnMount: 'always',
+  });
+
+  useEffect(() => {
+    if (recordContent) {
+      setModelName(recordContent['@class']);
+    }
+  }, [recordContent]);
+
+  useEffect(() => {
+    if (error) {
+      handleError({ error });
+    }
+  }, [error, handleError]);
 
   // redirect when the user clicks the top right button
   const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {

@@ -22,8 +22,8 @@
     "@types/lodash.omit": "^4.5.9",
     "@types/lodash.uniq": "^4.5.7",
     "@types/lodash.without": "^4.4.7",
-    "ag-grid-community": "~27.0.0",
-    "ag-grid-react": "~27.0.0",
+    "ag-grid-community": "^35.2.0",
+    "ag-grid-react": "^35.2.0",
     "buffer": "^6.0.3",
     "change-case": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
@@ -44,11 +44,10 @@
     "lodash.without": "^4.4.0",
     "notistack": "^3.0.2",
     "qs": "^6.9.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-google-charts": "^3.0.15",
-    "react-is": "^17.0.2",
-    "react-query": "^3.39.3",
+    "react-query": "npm:@tanstack/react-query@^5.96.1",
     "react-router-dom": "^6.22.2",
     "slugify": "^1.4.0",
     "typescript": "5.1",
@@ -57,16 +56,15 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^12.1.5",
-    "@testing-library/react-hooks": "^7.0.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/d3-drag": "^3.0.7",
     "@types/d3-force": "^3.0.9",
     "@types/d3-selection": "^3.0.10",
     "@types/d3-zoom": "^3.0.8",
     "@types/lodash.isobject": "^3.0.6",
-    "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.11",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-react": "^5.1.4",
@@ -82,7 +80,7 @@
     "eslint-plugin-react-hooks": "~4.3.0",
     "eslint-plugin-simple-import-sort": "~7.0.0",
     "jsdom": "^28.1.0",
-    "react-test-renderer": "^17.0.2",
+    "react-test-renderer": "^19.2.4",
     "sass-embedded": "^1.97.3",
     "serve": "^14.2.1",
     "vite": "^7.3.1",
@@ -108,8 +106,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "overrides": {
-    "react-is": "^17.0.2"
   }
 }

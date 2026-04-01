@@ -19,8 +19,8 @@ import AdminTable from './components/AdminTable';
  * View for editing or adding database users.
  */
 const AdminView = () => {
-  const { data: users = [], refetch: refetchUsers } = useQuery(
-    tuple(
+  const { data: users = [], refetch: refetchUsers } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         target: 'User',
@@ -38,13 +38,13 @@ const AdminView = () => {
         ],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-  );
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+  });
 
-  const { data: groups = [], refetch: refetchGroups } = useQuery(
-    tuple('/query', { target: 'UserGroup', neighbors: 2 }),
-    async ({ queryKey: [, body] }) => api.query(body),
-  );
+  const { data: groups = [], refetch: refetchGroups } = useQuery({
+    queryKey: tuple('/query', { target: 'UserGroup', neighbors: 2 }),
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+  });
 
   const handleUserChange = useCallback(() => {
     refetchUsers();

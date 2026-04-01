@@ -11,6 +11,7 @@ import {
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
+import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
@@ -28,7 +29,7 @@ const NewRecordView = ({ modelName: propsModelName }) => {
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
-  const handleSubmit = useCallback((result = null) => {
+  const handleSubmit = useCallback((result: GeneralRecordType | null = null) => {
     if (result) {
       navigate(schema.getLink(result));
     } else {
@@ -39,7 +40,7 @@ const NewRecordView = ({ modelName: propsModelName }) => {
   /**
    * Handles the redirect if an error occurs in the child component
    */
-  const handleError = useCallback(({ error = {} }) => {
+  const handleError = useCallback(({ error = {} }: { error: { name?: string; message?: string } }) => {
     const { name } = error;
     const massagedMsg = util.massageRecordExistsError(error);
     util.handleErrorSaveLocation({ name, message: massagedMsg }, { navigate, pathname, search: searchParams.toString() });

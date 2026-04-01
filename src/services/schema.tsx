@@ -378,7 +378,6 @@ const defineGridColumns = (search) => {
           colId: `${prop.name}.displayName`,
           headerName: titleCase('displayName'),
           valueGetter: valueGetter(prop.name, 'displayName'),
-          columnGroupShow: '',
           sortable: true,
           width: skinnyLinks.includes(prop.name)
             ? 150

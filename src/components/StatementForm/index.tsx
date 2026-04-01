@@ -33,7 +33,7 @@ const FIELD_EXCLUSIONS = ['groupRestrictions'];
 interface StatementFormProps {
   /** the title for this form */
   title: string;
-  onError?: (arg: { error: unknown; content: unknown }) => void;
+  onError?: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
   /** the record id of the current record for the form */
@@ -59,8 +59,8 @@ const StatementForm = ({
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data: diagnosticData } = useQuery(
-    tuple(
+  const { data: diagnosticData } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         queryType: 'similarTo',
@@ -72,11 +72,11 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-  );
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+  });
 
-  const { data: therapeuticData } = useQuery(
-    tuple(
+  const { data: therapeuticData } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         queryType: 'similarTo',
@@ -88,11 +88,11 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-  );
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+  });
 
-  const { data: prognosticData } = useQuery(
-    tuple(
+  const { data: prognosticData } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         queryType: 'similarTo',
@@ -104,32 +104,15 @@ const StatementForm = ({
         returnProperties: ['name'],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-  );
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+  });
 
   // Fetch and populate the fields for quick copy of record
-  useQuery(
-    `/statements/${params.rid}?neighbors=1`,
-    async ({ queryKey: [route] }) => api.get(route),
-    {
-      enabled: (isempty(initialValue) && Boolean(params.rid)),
-      onSuccess: (data) => {
-        navigate('/new/statement', { replace: true });
-        const keysToIgnore = [
-          '@rid', '@class',
-          'createdAt', 'createdBy',
-          'updatedAt', 'updatedBy',
-          'deletedAt', 'deletedBy',
-          'uuid', 'reviews',
-        ];
-        Object.entries(data).forEach(([key, value]) => {
-          if (!keysToIgnore.includes(key)) {
-            updateField(key, value);
-          }
-        });
-      },
-    },
-  );
+  const statementQuery = useQuery({
+    queryKey: [`/statements/${params.rid}?neighbors=1`],
+    queryFn: async ({ queryKey: [route] }) => api.get(route),
+    enabled: (isempty(initialValue) && Boolean(params.rid)),
+  });
 
   const snackbar = useSnackbar();
   const auth = useAuth();
@@ -182,6 +165,24 @@ const StatementForm = ({
   } = form;
 
   useEffect(() => {
+    if (statementQuery.data) {
+      navigate('/new/statement', { replace: true });
+      const keysToIgnore = [
+        '@rid', '@class',
+        'createdAt', 'createdBy',
+        'updatedAt', 'updatedBy',
+        'deletedAt', 'deletedBy',
+        'uuid', 'reviews',
+      ];
+      Object.entries(statementQuery.data).forEach(([key, value]) => {
+        if (!keysToIgnore.includes(key)) {
+          updateField(key, value);
+        }
+      });
+    }
+  }, [navigate, statementQuery.data, updateField]);
+
+  useEffect(() => {
     try {
       if (variant === FORM_VARIANT.VIEW && formContent.source?.name === 'civic' && formContent.sourceId) {
         setCivicEvidenceId(formContent.sourceId);
@@ -212,24 +213,22 @@ const StatementForm = ({
     return updatedContent;
   }, [auth]);
 
-  const { mutate: addNewAction, isLoading: isAdding } = useMutation(
-    async (content: GeneralRecordType) => {
+  const { mutate: addNewAction, isPending: isAdding } = useMutation({
+    mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
     },
-    {
-      onSuccess: (result) => {
-        snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit?.(result);
-      },
-      onError: (err: Error, content) => {
-        console.error(err);
-        snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-        onError?.({ error: err, content });
-      },
+    onSuccess: (result) => {
+      snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
+      onSubmit?.(result);
     },
-  );
+    onError: (err: Error, content) => {
+      console.error(err);
+      snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
+      onError?.({ error: err, content });
+    },
+  });
 
   /**
    * Handler for submission of a new record
@@ -248,22 +247,20 @@ const StatementForm = ({
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
 
-  const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
-    async (content: GeneralRecordType) => {
+  const { mutate: deleteAction, isPending: isDeleting } = useMutation({
+    mutationFn: async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
     },
-    {
-      onSuccess: (_, content) => {
-        snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
-        onSubmit?.();
-      },
-      onError: (err: Error, content) => {
-        snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-        onError?.({ error: err, content });
-      },
+    onSuccess: (_, content) => {
+      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
+      onSubmit?.();
     },
-  );
+    onError: (err: Error, content) => {
+      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
+      onError?.({ error: err, content });
+    },
+  });
 
   /**
    * Handler for deleting an existing record
@@ -273,23 +270,21 @@ const StatementForm = ({
     deleteAction(content);
   }, [deleteAction, formContent, model.name]);
 
-  const { mutate: updateAction, isLoading: isUpdating } = useMutation(
-    async (content: GeneralRecordType) => {
+  const { mutate: updateAction, isPending: isUpdating } = useMutation({
+    mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, payload);
     },
-    {
-      onSuccess: (result) => {
-        snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
-        onSubmit?.(result);
-      },
-      onError: (err: Error, content) => {
-        snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-        onError?.({ error: err, content });
-      },
+    onSuccess: (result) => {
+      snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
+      onSubmit?.(result);
     },
-  );
+    onError: (err: Error, content) => {
+      snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
+      onError?.({ error: err, content });
+    },
+  });
 
   /**
    * Handler for edits to an existing record

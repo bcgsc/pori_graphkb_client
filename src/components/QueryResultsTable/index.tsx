@@ -2,6 +2,7 @@ import './index.scss';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Typography } from '@mui/material';
+import { ColDef, themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useEffect,
@@ -30,7 +31,7 @@ const JumpToRecord = ({ data }: JumpToRecordProps) => (
 );
 
 interface QueryResultsTableProps {
-  columnDefs: NonNullable<React.ComponentProps<typeof AgGridReact>['columnDefs']>;
+  columnDefs: ColDef[];
   /** the body of the query request */
   queryBody: QueryBody;
   /** the title to put above the table */
@@ -47,7 +48,7 @@ const QueryResultsTable = ({
 }: QueryResultsTableProps) => {
   const grid = useGrid();
 
-  const { data, isFetching } = useQuery(tuple('/query', queryBody), async ({ queryKey: [, body] }) => api.query(body));
+  const { data, isFetching } = useQuery({ queryKey: tuple('/query', queryBody), queryFn: async ({ queryKey: [, body] }) => api.query(body) });
 
   // resize the columns to fit once the data and grid are ready
   useEffect(() => {
@@ -57,7 +58,7 @@ const QueryResultsTable = ({
       gridApi.sizeColumnsToFit();
 
       if (gridApi && data) {
-        gridApi.setRowData(data);
+        gridApi.setGridOption('rowData', data);
       }
     }
   }, [grid.ref, data]);
@@ -77,12 +78,12 @@ const QueryResultsTable = ({
           columnDefs={columnDefs}
           components={{ JumpToRecord }}
           enableCellTextSelection
-          getRowNodeId={(rowData) => rowData['@rid']}
-          immutableData
+          getRowId={(params) => params.data['@rid']}
           pagination
           paginationAutoPageSize
           rowData={data}
           suppressHorizontalScroll
+          theme={themeMaterial}
         />
       </div>
     </div>

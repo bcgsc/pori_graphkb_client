@@ -50,30 +50,28 @@ const ActiveFilters = ({ search }: { search: string; }) => {
   const { payload, routeName } = useMemo(() => api.getQueryFromSearch(search), [search]);
   const recordIds = useMemo(() => extractRids(payload), [payload]);
 
-  const { data: recordHash } = useQuery(
-    tuple(
+  const { data: recordHash } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         target: recordIds,
         returnProperties: ['@class', '@rid', 'name', 'displayName'],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      enabled: Boolean(recordIds.length),
-      select: (response) => {
-        const hash = {};
-        response.forEach((rec) => {
-          if (rec['@class'] === 'Statement') {
-            hash[rec['@rid']] = 'Statement';
-          } else {
-            hash[rec['@rid']] = schemaDefn.getPreview(rec as GraphRecord);
-          }
-        });
-        return hash;
-      },
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    enabled: Boolean(recordIds.length),
+    select: (response) => {
+      const hash = {};
+      response.forEach((rec) => {
+        if (rec['@class'] === 'Statement') {
+          hash[rec['@rid']] = 'Statement';
+        } else {
+          hash[rec['@rid']] = schemaDefn.getPreview(rec as GraphRecord);
+        }
+      });
+      return hash;
     },
-  );
+  });
 
   const handleToggleOpen = useCallback((event) => {
     if (!anchorEl) {

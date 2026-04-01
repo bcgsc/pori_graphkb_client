@@ -65,9 +65,9 @@ const AuthProvider = (props: { children: ReactNode }) => {
   const { children } = props;
 
   const {
-    mutate: logInOrOut, isLoading: isAuthenticating, data, error,
-  } = useMutation(
-    async ({ loggingIn }: { loggingIn: boolean }) => {
+    mutate: logInOrOut, isPending: isAuthenticating, data, error,
+  } = useMutation({
+    mutationFn: async ({ loggingIn }: { loggingIn: boolean }) => {
       if (loggingIn) {
         const loggedIn = await keycloak.init({
           checkLoginIframe: false,
@@ -100,7 +100,7 @@ const AuthProvider = (props: { children: ReactNode }) => {
       await keycloak.logout();
       return undefined;
     },
-  );
+  });
 
   const { authorizationToken } = data ?? {};
 

@@ -13,17 +13,19 @@
       "strict": true,
       "noImplicitAny": false,
       "noEmitOnError": false,
+      "esModuleInterop": true,
       "experimentalDecorators": true,
       "allowSyntheticDefaultImports": true,
       "downlevelIteration": true,
       "module": "esnext",
-      "moduleResolution": "node",
+      "moduleResolution": "bundler",
       "isolatedModules": true,
       "paths": {
         "@/*": ["./src/*"],
       }
   },
   "include": [
-      "src/"
+      "src/",
+      "src/*.d.ts"
   ]
 }

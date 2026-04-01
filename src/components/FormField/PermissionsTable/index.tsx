@@ -11,14 +11,21 @@ import {
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
+import { FormContextState } from '@/components/FormContext';
+
 /* eslint-disable no-bitwise */
 
 /**
  * For a mapping of class names to the single permissions value, split these by operation types
  * for display as checkboxes
  */
-const splitPermissionsByOperation = (permissions) => {
-  const permByModelName = {};
+const splitPermissionsByOperation = (permissions: Record<string, number>) => {
+  const permByModelName: Record<string, {
+    READ: number | null;
+    CREATE: number | null;
+    UPDATE: number | null;
+    DELETE: number | null;
+  }> = {};
 
   Object.keys(schemaDefn.models).forEach((modelName) => {
     const model = schemaDefn.get(modelName);
@@ -52,20 +59,20 @@ interface PermissionsTableProps {
   /** field name to use in simulating events */
   name: string;
   /** handler to propogate changes to the parent form */
-  onChange: (arg: { target: { name: string; value: unnknown } }) => void;
+  onChange: FormContextState['updateFieldEvent'];
   /** flag to indicate this field cannot be edited */
   disabled?: boolean;
   /** the current permissions set */
-  value?:Record<string, unknown>;
+  value?: Record<string, number>;
 }
 
 /**
  * Table to display permissions state for a certain user group.
  */
 const PermissionsTable = ({
-  value, disabled, onChange, name,
+  value = {}, disabled = false, onChange, name,
 }: PermissionsTableProps) => {
-  const [content, setContent] = useState(value || {});
+  const [content, setContent] = useState<Record<string, number>>(value || {});
   const [topBoxes, setTopboxes] = useState({});
 
   /**
@@ -164,11 +171,6 @@ const PermissionsTable = ({
       </Table>
     </div>
   );
-};
-
-PermissionsTable.defaultProps = {
-  value: {},
-  disabled: false,
 };
 
 export default PermissionsTable;

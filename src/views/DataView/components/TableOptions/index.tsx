@@ -14,7 +14,7 @@ import ColumnConfiguration from './ColumnConfiguration';
 const { MAX_EXPORT_SIZE } = config;
 
 interface TableOptionsProps {
-  anchorEl?: Element;
+  anchorEl?: Element | null;
   gridRef?: ReturnType<typeof useGrid>['ref'];
   onClose?: (...args: unknown[]) => void;
   onExportToTsv?: (arg: false) => void;
@@ -29,7 +29,7 @@ const TableOptions = ({
   const [columnControlIsOpen, setColumnControlIsOpen] = useState(false);
 
   const handleExportAllToTsv = useCallback(() => {
-    onExportToTsv(false);
+    onExportToTsv?.(false);
   }, [onExportToTsv]);
 
   const menuContents = [
@@ -49,7 +49,7 @@ const TableOptions = ({
 
   const handleCloseColumnControl = useCallback(() => {
     setColumnControlIsOpen(false);
-    onClose();
+    onClose?.();
   }, [onClose]);
 
   const result = (
@@ -76,12 +76,6 @@ const TableOptions = ({
     </>
   );
   return result;
-};
-
-TableOptions.defaultProps = {
-  onExportToTsv: () => { },
-  anchorEl: null,
-  onClose: () => {},
 };
 
 export default TableOptions;

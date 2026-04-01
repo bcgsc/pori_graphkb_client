@@ -1,4 +1,6 @@
 class ErrorMixin extends Error {
+  content: any;
+
   constructor(content) {
     let message;
 
@@ -13,7 +15,7 @@ class ErrorMixin extends Error {
     this.content = content;
     this.name = this.constructor.name;
 
-    if (Error.captureStackTraceError) {
+    if (Error.captureStackTrace) {
       Error.captureStackTrace(this);
     }
   }

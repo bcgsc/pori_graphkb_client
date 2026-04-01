@@ -45,7 +45,7 @@ interface QueryResultsTableProps {
  * and the node they are related to
  */
 const QueryResultsTable = ({
-  columnDefs, queryBody, title, description,
+  columnDefs, queryBody, title, description = '',
 }: QueryResultsTableProps) => {
   const grid = useGrid();
 
@@ -89,10 +89,6 @@ const QueryResultsTable = ({
       </div>
     </div>
   );
-};
-
-QueryResultsTable.defaultProps = {
-  description: '',
 };
 
 export default QueryResultsTable;

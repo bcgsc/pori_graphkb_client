@@ -108,8 +108,4 @@ const MainAppBar = ({
   );
 };
 
-MainAppBar.defaultProps = {
-  drawerOpen: false,
-};
-
 export default MainAppBar;

@@ -20,7 +20,7 @@ interface Value {
 
 interface ProteinPositionProps {
   /** change handler */
-  onChange: (arg: { target: { name?: string; value: Value } }) => unknown;
+  onChange?: (arg: { target: { name?: string; value: Value } }) => unknown;
   /** the initial value */
   value: Value;
   /** flag to indicate this field is disabled */
@@ -37,9 +37,9 @@ interface ProteinPositionProps {
 const ProteinPosition = ({
   onChange,
   value,
-  name,
-  required,
-  disabled,
+  name = '',
+  required = true,
+  disabled = false,
 }: ProteinPositionProps) => {
   const { pos: initialPos, refAA: initialRefAA } = value || {};
   const [position, setPosition] = useState(initialPos);
@@ -61,7 +61,7 @@ const ProteinPosition = ({
         validateProperty(posProperty, position || null);
         setPositionError('');
       } catch (err) {
-        setPositionError(err.toString());
+        setPositionError((err as Error).toString());
       }
     }
   }, [position, required]);
@@ -75,19 +75,19 @@ const ProteinPosition = ({
         validateProperty(refAAProperty, refAA || null);
         setRefAAError('');
       } catch (err) {
-        setRefAAError(err.toString());
+        setRefAAError((err as Error).toString());
       }
     }
   }, [refAA, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
     setPosition(newValue);
-    onChange({ target: { name, value: { '@class': VARIANT, pos: newValue, refAA } } });
+    onChange?.({ target: { name, value: { '@class': VARIANT, pos: newValue, refAA } } });
   }, [onChange, name, refAA]);
 
   const handleRefAAChange = useCallback(({ target: { value: newValue } }) => {
     setRefAA(newValue);
-    onChange({ target: { name, value: { '@class': VARIANT, refAA: newValue, pos: position } } });
+    onChange?.({ target: { name, value: { '@class': VARIANT, refAA: newValue, pos: position } } });
   }, [onChange, name, position]);
 
   return (
@@ -124,12 +124,6 @@ const ProteinPosition = ({
       </FieldWrapper>
     </>
   );
-};
-
-ProteinPosition.defaultProps = {
-  required: true,
-  name: '',
-  disabled: false,
 };
 
 export default ProteinPosition;

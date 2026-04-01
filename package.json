@@ -19,6 +19,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/x-tree-view": "^8.27.2",
+    "@types/lodash.omit": "^4.5.9",
     "@types/lodash.uniq": "^4.5.7",
     "@types/lodash.without": "^4.4.7",
     "ag-grid-community": "~27.0.0",
@@ -50,7 +51,7 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.22.2",
     "slugify": "^1.4.0",
-    "typescript": "4.9",
+    "typescript": "5.1",
     "use-debounce": "^3.4.2",
     "use-deep-compare-effect": "^1.3.1",
     "whatwg-fetch": "2.0.3"
@@ -99,6 +100,7 @@
     "test": "vitest",
     "test:ci": "vitest",
     "lint": "eslint src --config .eslintrc.json --quiet",
+    "check-types": "tsc --noEmit --project ./tsconfig.check.json",
     "serve": "NODE_ENV=development serve dist/development -s",
     "commit": "git-cz"
   },

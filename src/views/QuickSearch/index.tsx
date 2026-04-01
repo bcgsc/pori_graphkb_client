@@ -111,7 +111,7 @@ const QuickSearch = () => {
         const parsed = parseVariant(value);
         setErrorMessage('');
         setVariant(parsed);
-      } catch (err) {
+      } catch (err: any) {
       // if it was partially parsed use that result
         if (err.content && err.content.parsed) {
           const { content: { parsed: { variantString, ...parsed } } } = err;
@@ -152,7 +152,7 @@ const QuickSearch = () => {
             helperText={errorMessage}
             InputProps={{
               endAdornment: (
-                <InputAdornment>
+                <InputAdornment position="end">
                   <IconButton color="primary" onClick={handleSubmit}>
                     <SearchIcon />
                   </IconButton>

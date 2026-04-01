@@ -38,7 +38,7 @@ interface DecodedKBToken {
 interface AuthContextState {
   login: () => void;
   logout: () => void;
-  error: unknown | undefined;
+  error: Error | undefined;
   isAuthenticating: boolean;
   authenticationToken?: string;
   authorizationToken?: string;
@@ -84,7 +84,7 @@ const AuthProvider = (props: { children: ReactNode }) => {
 
         await keycloak.loadUserInfo();
         // eslint-disable-next-line camelcase
-        const username = keycloak.userInfo?.preferred_username || user?.name;
+        const username = (keycloak.userInfo as { preferred_username?: string } | undefined)?.preferred_username || user?.name;
 
         return {
           authenticationToken: keycloak.token,
@@ -134,7 +134,7 @@ const AuthProvider = (props: { children: ReactNode }) => {
       }
     },
     isAuthenticating,
-    error,
+    error: error as Error,
     ...(data || {}),
   }), [data, isAuthenticating, logInOrOut, error]);
 
@@ -162,8 +162,8 @@ interface AuthenticatedRouteProps {
 
 const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const {
-    admin,
-    signedLicenseRequired,
+    admin = false,
+    signedLicenseRequired = false,
     component: Comp,
     componentProps = {},
   } = props;
@@ -221,12 +221,6 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const cp = componentProps || {};
 
   return <Comp {...cp} />;
-};
-
-AuthenticatedRoute.defaultProps = {
-  admin: false,
-  signedLicenseRequired: false,
-  componentProps: {},
 };
 
 export {

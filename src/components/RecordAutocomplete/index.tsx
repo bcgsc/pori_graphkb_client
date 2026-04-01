@@ -80,7 +80,7 @@ interface RecordAutocompleteProps {
   /** load the initial options and do not requery */
   singleLoad?: boolean;
   /** the initial selected value(s) */
-  value?: Record<string, unknown>[] | Record<string, unknown>;
+  value?: unknown[] | unknown;
 }
 
 /**
@@ -88,19 +88,19 @@ interface RecordAutocompleteProps {
  */
 const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   const {
-    className,
-    disabled,
-    errorText,
-    isMulti,
-    label,
+    className = '',
+    disabled = false,
+    errorText = '',
+    isMulti = false,
+    label = '',
     minSearchLength = 1,
     name,
     onChange,
-    placeholder,
-    required,
+    placeholder = 'Search Records by Name or ID',
+    required = false,
     getQueryBody,
-    singleLoad,
-    helperText: initialHelperText,
+    singleLoad = false,
+    helperText: initialHelperText = '',
     value,
   } = props;
 
@@ -172,12 +172,12 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
       if (actionType === 'select-option' && !isMulti) {
         setSelectedValues(isMulti ? newValue : [option]);
-        onChange({ target: { name, value: option } });
+        onChange?.({ target: { name, value: option } });
       } else {
         setSelectedValues(newValue);
 
         if (actionType !== 'blur') {
-          onChange({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
+          onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
         }
       }
     },
@@ -234,9 +234,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       getOptionLabel={(option) => schema.getLabel(option)}
       groupBy={getGroup}
       isOptionEqualToValue={(option, value_) => option['@rid'] === value_['@rid']}
-      ListboxProps={{
-        dense: true,
-      }}
       loading={isLoading}
       multiple
       onBlur={handleOnBlur}
@@ -296,21 +293,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       value={selectedValues}
     />
   );
-};
-
-RecordAutocomplete.defaultProps = {
-  className: '',
-  disabled: false,
-  errorText: '',
-  isMulti: false,
-  label: '',
-  minSearchLength: 1,
-  onChange: () => {},
-  placeholder: 'Search Records by Name or ID',
-  required: false,
-  singleLoad: false,
-  value: null,
-  helperText: '',
 };
 
 export default RecordAutocomplete;

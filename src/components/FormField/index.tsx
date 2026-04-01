@@ -39,6 +39,9 @@ interface FormFieldProps {
   helperText?: string;
   /** props to pass to the inner form field element */
   innerProps?: {
+    multiline?: boolean;
+    rows?: number;
+    variant?: 'outlined'
     inputProps?: {
       'data-test-id'?: string;
     },
@@ -55,10 +58,10 @@ const FormField = ({
   className = '',
   model,
   disabled = false,
-  label = null,
+  label,
   innerProps,
   helperText: defaultHelperText,
-  baseModel,
+  baseModel = '',
 }: FormFieldProps) => {
   const {
     formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
@@ -90,13 +93,13 @@ const FormField = ({
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && formVariant !== FORM_VARIANT.SEARCH);
 
-  const errorFlag = formErrors[name] && !generated && formIsDirty;
+  const errorFlag = Boolean(formErrors[name] && !generated && formIsDirty);
 
   let helperText = defaultHelperText;
 
   if (!helperText) {
     if (errorFlag) {
-      helperText = formErrors[name].message;
+      helperText = formErrors[name]!.message;
     } else if (formVariant === FORM_VARIANT.EDIT && example !== undefined) {
       if (!description) {
         helperText = `ex. ${example}`;
@@ -108,7 +111,7 @@ const FormField = ({
     }
   }
 
-  let value = inputValue;
+  let value = inputValue as any;
 
   if (formVariant !== FORM_VARIANT.SEARCH) {
     if (value === undefined || (!nullable && value === null)) {
@@ -144,9 +147,7 @@ const FormField = ({
       <TextArrayField
         disabled={disabled || generated}
         error={errorFlag}
-        helperText={helperText}
         label={label || name}
-        model={model}
         name={name}
         onChange={updateFieldEvent}
         value={value}
@@ -156,7 +157,6 @@ const FormField = ({
     if (iterable && linkedClass.name === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
-          label={name}
           name={name}
           onChange={updateFieldEvent}
           values={value || []}
@@ -168,8 +168,6 @@ const FormField = ({
       propComponent = (
         <PermissionsTable
           disabled={disabled || generated}
-          label={label || name}
-          model={model}
           name={name}
           onChange={updateFieldEvent}
           value={value}
@@ -221,45 +219,50 @@ const FormField = ({
     };
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
-      autoProps.linkedClassName = linkedClass.name;
+      const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
+        ...autoProps,
+        linkedClassName: linkedClass.name,
+      };
 
       // special case (KBDEV-790) to improve user inputs
       if (name === 'conditions' && linkedClass.name === 'Biomarker') {
-        autoProps.filterOptions = [
+        filteredAutoProps.filterOptions = [
           ...schemaDefn.descendants('Variant', { excludeAbstract: false, includeSelf: true }),
           'Disease',
           'CatalogueVariant',
         ];
-        autoProps.defaultFilterClassName = 'Variant';
+        filteredAutoProps.defaultFilterClassName = 'Variant';
       } if (name === 'reference1') {
-        autoProps.filterOptions = [
+        filteredAutoProps.filterOptions = [
           'Signature',
           'Feature',
         ];
-        autoProps.defaultFilterClassName = 'Feature';
+        filteredAutoProps.defaultFilterClassName = 'Feature';
       }
       propComponent = (
         <FilteredRecordAutocomplete
-          {...autoProps}
+          {...filteredAutoProps}
         />
       );
-    } else {
-      if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
-        autoProps.getQueryBody = () => ({
-          target: `${linkedClass.name}`,
-          orderBy: linkedClass.name === 'EvidenceLevel'
-            ? ['source.sort', 'sourceId']
-            : ['name'],
-          neighbors: 1,
-        });
-        autoProps.singleLoad = true;
-      } else {
-        autoProps.getQueryBody = api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'));
-      }
-
+    } else if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
       propComponent = (
         <RecordAutocomplete
           {...autoProps}
+          getQueryBody={() => ({
+            target: `${linkedClass.name}`,
+            orderBy: linkedClass.name === 'EvidenceLevel'
+              ? ['source.sort', 'sourceId']
+              : ['name'],
+            neighbors: 1,
+          })}
+          singleLoad
+        />
+      );
+    } else {
+      propComponent = (
+        <RecordAutocomplete
+          {...autoProps}
+          getQueryBody={api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'))}
         />
       );
     }
@@ -273,7 +276,7 @@ const FormField = ({
         error={errorFlag}
         helperText={helperText || ' '}
         InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
+        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
         label={name}
         name={label || name}
         onChange={updateFieldEvent}
@@ -294,7 +297,7 @@ const FormField = ({
         error={errorFlag}
         helperText={helperText || ' '}
         InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
+        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
         label={name}
         name={label || name}
         onChange={updateFieldEvent}
@@ -309,15 +312,6 @@ const FormField = ({
       {propComponent}
     </FieldWrapper>
   );
-};
-
-FormField.defaultProps = {
-  className: '',
-  disabled: false,
-  label: null,
-  innerProps: {},
-  helperText: '',
-  baseModel: '',
 };
 
 export default FormField;

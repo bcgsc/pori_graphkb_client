@@ -62,8 +62,8 @@ const UserProfileView = () => {
           filters: [
             {
               OR: [
-                { createdBy: user['@rid'] },
-                { updatedBy: user['@rid'] },
+                { createdBy: user?.['@rid'] },
+                { updatedBy: user?.['@rid'] },
               ],
             },
           ],
@@ -129,8 +129,8 @@ const UserProfileView = () => {
           filters: [
             {
               OR: [
-                { createdBy: user['@rid'] },
-                { updatedBy: user['@rid'] },
+                { createdBy: user?.['@rid'] },
+                { updatedBy: user?.['@rid'] },
               ],
             },
           ],
@@ -195,8 +195,8 @@ const UserProfileView = () => {
           filters: [
             {
               OR: [
-                { createdBy: user['@rid'] },
-                { updatedBy: user['@rid'] },
+                { createdBy: user?.['@rid'] },
+                { updatedBy: user?.['@rid'] },
               ],
             },
           ],

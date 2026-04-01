@@ -11,6 +11,7 @@ import {
 import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
+import { FormContextState } from '@/components/FormContext';
 
 import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';
@@ -22,7 +23,7 @@ interface PositionFormProps {
   /** the form field name to pass up to the change handler */
   name: string;
   /** change handler */
-  onChange: (...args: unknown[]) => unknown;
+  onChange: FormContextState['updateFieldEvent'];
   baseVariant?: string;
   /** can this position be removed/deleted/set to null */
   clearable?: boolean;
@@ -43,17 +44,17 @@ interface PositionFormProps {
 }
 
 const PositionForm = ({
-  baseVariant,
-  clearable,
-  disabled,
-  error,
-  helperText,
-  label,
+  baseVariant = DEFAULT_BASE_VARIANT,
+  clearable = true,
+  disabled = false,
+  error = false,
+  helperText = '',
+  label = '',
   name,
   onChange,
-  required,
+  required = false,
   value,
-  variant: initialVariant,
+  variant: initialVariant = '',
   ...props
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
@@ -114,18 +115,6 @@ const PositionForm = ({
       <FormHelperText error={error}>{helperText}</FormHelperText>
     </FormControl>
   );
-};
-
-PositionForm.defaultProps = {
-  baseVariant: DEFAULT_BASE_VARIANT,
-  clearable: true,
-  disabled: false,
-  error: false,
-  helperText: '',
-  label: '',
-  required: false,
-  value: null,
-  variant: '',
 };
 
 export default PositionForm;

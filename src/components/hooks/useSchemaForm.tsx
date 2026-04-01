@@ -10,13 +10,15 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import schema from '@/services/schema';
 
+import { GeneralRecordType } from '../types';
+import { FORM_VARIANT } from '../util';
 import useObject from './useObject';
 
 interface UseSchemaFormOptions {
   /** do not throw errors when required fields are missing */
   ignoreMandatoryErrors?: boolean;
   /** the form type/variant (ex. view) */
-  variant?: string;
+  variant?: FORM_VARIANT | '';
   /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
   additionalValidationFn?: ((content: unknown) => string) | null;
 }
@@ -24,16 +26,16 @@ interface UseSchemaFormOptions {
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
- * @param {Object.<string,PropertyModel>} initialFieldDefs field definitions to use in validating the form
- * @param {Object} initialValue the start value of the form content
- * @param {Object} props extra options
+ * @param initialFieldDefs field definitions to use in validating the form
+ * @param initialValue the start value of the form content
+ * @param props extra options
  *
  * @returns {FormContext} the form context values
  */
 const useSchemaForm = (
   /** @todo get type from schema package */
   initialFieldDefs: Record<string, any>,
-  initialValue: Record<string, unknown> = {},
+  initialValue: GeneralRecordType = {},
   err: Record<string, any> = {},
   { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ) => {

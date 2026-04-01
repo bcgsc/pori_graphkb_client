@@ -11,7 +11,7 @@ interface LetterIconProps {
 }
 
 const LetterIcon = ({
-  value, variant, color, onClick,
+  value, variant = 'contained', color = 'secondary', onClick,
 }: LetterIconProps) => (
   <Button
     className={`letter-icon letter-icon--${variant} letter-icon--${color}`}
@@ -21,11 +21,5 @@ const LetterIcon = ({
     {value}
   </Button>
 );
-
-LetterIcon.defaultProps = {
-  variant: 'contained',
-  color: 'secondary',
-  onClick: null,
-};
 
 export default LetterIcon;

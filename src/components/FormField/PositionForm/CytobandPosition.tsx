@@ -34,10 +34,10 @@ interface CytobandPositionProps {
  */
 const CytobandPosition = ({
   onChange,
-  value,
-  name,
-  required,
-  disabled,
+  value = {},
+  name = '',
+  required = true,
+  disabled = false,
 }: CytobandPositionProps) => {
   const { formContent, formErrors, updateField } = useSchemaForm(
     properties,
@@ -72,13 +72,6 @@ const CytobandPosition = ({
       ))}
     </>
   );
-};
-
-CytobandPosition.defaultProps = {
-  required: true,
-  value: {},
-  name: '',
-  disabled: false,
 };
 
 export default CytobandPosition;

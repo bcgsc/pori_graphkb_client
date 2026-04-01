@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 
 const chunkSentence = (sentence: string, words: string[]) => {
-  const chunksMap = new Map();
+  const chunksMap = new Map<number, number>();
 
   words.forEach((word) => {
     const currentIdxs: number[] = [];
@@ -26,7 +26,7 @@ const chunkSentence = (sentence: string, words: string[]) => {
       if (chunksMap.get(index) === undefined) {
         chunksMap.set(index, index + word.length); // New chunk
       } else {
-        const currLength = chunksMap.get(index);
+        const currLength = chunksMap.get(index)!;
         const newLength = index + word.length;
         chunksMap.set(index, currLength < newLength ? newLength : currLength); // Take longest chunk
       }
@@ -34,8 +34,8 @@ const chunkSentence = (sentence: string, words: string[]) => {
   });
 
   const ranges = [...chunksMap.entries()].sort((a, b) => a[0] - b[0]);
-  let lastPos;
-  let chunkPositions = [];
+  let lastPos: [number, number] | undefined;
+  const chunkPositions: [number, number][] = [];
   ranges.forEach((r) => {
     if (!lastPos || r[0] > lastPos[1]) {
       chunkPositions.push(lastPos = r);
@@ -44,18 +44,14 @@ const chunkSentence = (sentence: string, words: string[]) => {
     }
   });
 
-  // Add first and last index if not there
-  if (!chunkPositions.includes(0)) { chunkPositions.unshift(0); }
-  if (!chunkPositions.includes(sentence.length)) { chunkPositions.push([sentence.length]); }
-
   // Flatten 2d array
-  chunkPositions = [].concat(...chunkPositions);
+  const positions = [0, ...chunkPositions.flat(), sentence.length];
 
   const chunks: string[] = [];
 
-  for (let index = 1; index < chunkPositions.length; index++) {
-    const prev = chunkPositions[index - 1];
-    const curr = chunkPositions[index];
+  for (let index = 1; index < positions.length; index++) {
+    const prev = positions[index - 1];
+    const curr = positions[index];
 
     if (prev === curr) { continue; }
 
@@ -91,10 +87,6 @@ const SentencePreview = ({ content, highlighted = [] }:SentencePreviewProps) => 
       {sentence}
     </Typography>
   );
-};
-
-SentencePreview.defaultProps = {
-  highlighted: [],
 };
 
 export { chunkSentence };

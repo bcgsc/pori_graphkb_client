@@ -15,7 +15,6 @@ describe('ActionButton', () => {
       <ActionButton
         onClick={onClick}
         requireConfirm={false}
-        title="action"
       >
         action
       </ActionButton>,
@@ -33,7 +32,6 @@ describe('ActionButton', () => {
       <ActionButton
         onClick={onClick}
         requireConfirm
-        title="action"
       >
         action
       </ActionButton>,

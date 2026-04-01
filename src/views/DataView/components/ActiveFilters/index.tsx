@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
+import { GraphRecord, schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
 import CopyIcon from '@mui/icons-material/FileCopyOutlined';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
@@ -27,7 +27,7 @@ import api from '@/services/api';
 import JSONView from './JSONView';
 
 const extractRids = (obj) => {
-  const recordIds = [];
+  const recordIds: string[] = [];
 
   const queue = [obj];
 
@@ -67,7 +67,7 @@ const ActiveFilters = ({ search }: { search: string; }) => {
           if (rec['@class'] === 'Statement') {
             hash[rec['@rid']] = 'Statement';
           } else {
-            hash[rec['@rid']] = schemaDefn.getPreview(rec);
+            hash[rec['@rid']] = schemaDefn.getPreview(rec as GraphRecord);
           }
         });
         return hash;

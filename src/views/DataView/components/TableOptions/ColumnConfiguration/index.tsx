@@ -19,6 +19,12 @@ interface ColumnConfigurationProps {
   isOpen?: boolean;
   onClose?: (...args: unknown[]) => void;
 }
+interface Col {
+  title: string;
+  id: string;
+  parentId?: string;
+  children?: Col[];
+}
 
 /**
  * shows list of checkboxes where each checkbox is a column.
@@ -29,31 +35,30 @@ interface ColumnConfigurationProps {
  */
 const ColumnConfiguration = ({
   onClose,
-  isOpen,
+  isOpen = false,
   gridRef,
 }: ColumnConfigurationProps) => {
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState<Col[]>([]);
   const [openCols, setOpenCols] = useState({});
 
   useEffect(() => {
     const columnApi = gridRef?.current?.columnApi;
 
     if (!isOpen || !columnApi) { return; }
-
-    const cols = [];
+    const cols: Col[] = [];
     let current;
     const nextOpenCols = {};
-    columnApi.getAllColumns().forEach((column) => {
-      if (column.colId.endsWith('.preview')) { return; }
-      nextOpenCols[column.colId] = column.visible;
-      const parent = column.originalParent;
-      const parentTitle = parent ? parent.colGroupDef?.headerName : '';
+    columnApi.getAllColumns()?.forEach((column) => {
+      if (column.getColId().endsWith('.preview')) { return; }
+      nextOpenCols[column.getColId()] = column.isVisible();
+      const parent = column.getOriginalParent();
+      const parentTitle = parent ? parent.getColGroupDef()?.headerName : '';
 
-      if (parentTitle && current?.id !== parent?.groupId) {
+      if (parentTitle && current?.id !== parent?.getGroupId()) {
         //  add group
         current = {
           title: parentTitle,
-          id: parent.groupId,
+          id: parent!.getGroupId(),
           children: [],
         };
         cols.push(current);
@@ -62,16 +67,16 @@ const ColumnConfiguration = ({
       if (parentTitle) {
         // add to current group
         current.children.push({
-          title: columnApi.getDisplayNameForColumn(column),
-          id: column.colId,
-          parentId: parent?.groupId,
+          title: columnApi.getDisplayNameForColumn(column, null),
+          id: column.getColId(),
+          parentId: parent?.getGroupId(),
         });
       } else {
         current = null;
         cols.push({
-          title: columnApi.getDisplayNameForColumn(column),
-          id: column.colId,
-          parentId: parent?.groupId,
+          title: columnApi.getDisplayNameForColumn(column, null),
+          id: column.getColId(),
+          parentId: parent?.getGroupId(),
         });
       }
     });
@@ -97,10 +102,12 @@ const ColumnConfiguration = ({
     >
       <DialogContent className="column-configuration__content">
         <SimpleTreeView
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-          onNodeSelect={(_, [childId]) => {
-            handleToggleColumn(childId, !openCols[childId]);
+          onItemExpansionToggle={(_, childId, isExpanded) => {
+            handleToggleColumn(childId, isExpanded);
+          }}
+          slots={{
+            collapseIcon: ExpandMoreIcon,
+            expandIcon: ChevronRightIcon,
           }}
         >
           {columns.map((column) => {
@@ -110,18 +117,20 @@ const ColumnConfiguration = ({
                 <TreeItem
                   key={column.id}
                   className="column-configuration__item"
+                  itemId={column.id}
                   label={column.title}
-                  nodeId={column.id}
                 >
                   {column.children.map((child) => (
                     <TreeItem
                       key={child.id}
                       className="column-configuration__item"
-                      icon={openCols[child.id]
-                        ? (<CheckBoxIcon color="secondary" />)
-                        : (<CheckBoxOutlineBlankIcon />)}
+                      itemId={child.id}
                       label={child.title}
-                      nodeId={child.id}
+                      slots={{
+                        icon: openCols[child.id]
+                          ? (() => <CheckBoxIcon color="secondary" />)
+                          : CheckBoxOutlineBlankIcon,
+                      }}
                     />
                   ))}
                 </TreeItem>
@@ -132,11 +141,13 @@ const ColumnConfiguration = ({
               <TreeItem
                 key={column.id}
                 className="column-configuration__item"
-                icon={openCols[column.id]
-                  ? (<CheckBoxIcon color="secondary" />)
-                  : (<CheckBoxOutlineBlankIcon />)}
+                itemId={column.id}
                 label={column.title}
-                nodeId={column.id}
+                slots={{
+                  icon: openCols[column.id]
+                    ? (() => <CheckBoxIcon color="secondary" />)
+                    : CheckBoxOutlineBlankIcon,
+                }}
               />
             );
           })}
@@ -145,11 +156,6 @@ const ColumnConfiguration = ({
     </Dialog>
   );
   return result;
-};
-
-ColumnConfiguration.defaultProps = {
-  onClose: () => {},
-  isOpen: false,
 };
 
 export default ColumnConfiguration;

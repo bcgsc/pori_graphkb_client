@@ -62,8 +62,4 @@ const ConfirmActionDialog = (props: ConfirmActionDialogProps) => {
   );
 };
 
-ConfirmActionDialog.defaultProps = {
-  children: null,
-};
-
 export default ConfirmActionDialog;

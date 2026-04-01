@@ -170,10 +170,4 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
   );
 }
 
-GraphExpansionDialog.defaultProps = {
-  node: null,
-  links: [],
-  expandExclusions: [],
-};
-
 export default GraphExpansionDialog;

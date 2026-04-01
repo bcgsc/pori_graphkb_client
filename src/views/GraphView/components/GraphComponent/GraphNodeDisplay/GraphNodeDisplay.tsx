@@ -45,12 +45,12 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   const {
     applyDrag,
     handleClick,
-    color,
-    labelKey,
+    color = '#26328C',
+    labelKey = 'name',
     node = null,
     actionsNode,
     detail,
-    filter,
+    filter = '',
   } = props;
 
   const nodeSVG = useRef<SVGGElement>(null);
@@ -134,15 +134,5 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     </g>
   );
 }
-
-GraphNodeDisplay.defaultProps = {
-  handleClick: null,
-  color: '#26328C',
-  labelKey: 'name',
-  actionsNode: null,
-  applyDrag: null,
-  detail: null,
-  filter: '',
-};
 
 export default GraphNodeDisplay;

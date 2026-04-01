@@ -17,17 +17,18 @@ import { useQuery } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
+import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 
 interface StatementReviewProps {
   index: number;
-  label: string;
+  label?: string;
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
-  value: Record<string, unknown>;
+  value: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType });
   /** one of ['view', 'edit'] mode */
-  variant?: FORM_VARIANT.EDIT | FORM_VARIANT.VIEW;
+  variant?: FORM_VARIANT | '';
 }
 
 /**
@@ -36,7 +37,7 @@ interface StatementReviewProps {
 const StatementReview = ({
   value,
   index,
-  variant,
+  variant = FORM_VARIANT.VIEW,
   onDelete,
   label,
 }: StatementReviewProps) => {
@@ -44,16 +45,26 @@ const StatementReview = ({
     status, createdBy, comment,
   } = value;
 
-  const { data: author = createdBy } = useQuery(
-    tuple('/query', { target: [createdBy] }),
+  let createdByRecord: GeneralRecordType | undefined;
+  let createdByRid: string | undefined;
+
+  if (typeof createdBy === 'string') {
+    createdByRid = createdBy;
+  } else if (createdBy) {
+    createdByRid = createdBy['@rid'];
+    createdByRecord = createdBy;
+  }
+
+  const { data: author = createdByRecord } = useQuery(
+    tuple('/query', { target: [createdByRid!] }),
     ({ queryKey: [, body] }) => api.query(body),
     {
-      enabled: !createdBy['@rid'],
+      enabled: typeof createdBy === 'string',
       select: (response) => response[0],
     },
   );
 
-  const previewStr = `${author.name} (${author['@rid']})`;
+  const previewStr = `${author?.name} (${author?.['@rid']})`;
 
   const ReviewComponent = () => (
     <div className="review-card">
@@ -68,7 +79,7 @@ const StatementReview = ({
                 SR
               </Avatar>
           )}
-            subheader={`created by ${author.name}`}
+            subheader={`created by ${author?.name}`}
             title="Statement Review"
           />
         </div>
@@ -99,7 +110,7 @@ const StatementReview = ({
     </div>
   );
 
-  const details = {};
+  const details = {} as Omit<typeof value, '@rid'>;
   Object.keys(value).forEach((prop) => {
     if (prop !== '@rid') {
       details[prop] = value[prop];
@@ -118,11 +129,11 @@ const StatementReview = ({
               variant: 'outlined',
               color: 'secondary',
             }}
+            details={details}
             label={previewStr}
             PopUpComponent={ReviewComponent}
             PopUpProps={{ onDelete }}
             title={label}
-            value={details}
             valueToString={(record) => {
               if (record && record.name) {
                 return record.name;
@@ -138,10 +149,6 @@ const StatementReview = ({
       </TableRow>
     </React.Fragment>
   );
-};
-
-StatementReview.defaultProps = {
-  variant: FORM_VARIANT.VIEW,
 };
 
 export default StatementReview;

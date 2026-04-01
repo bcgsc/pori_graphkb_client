@@ -176,9 +176,4 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
   );
 };
 
-AdminTable.defaultProps = {
-  records: null,
-  variant: 'User',
-};
-
 export default AdminTable;

@@ -4,20 +4,21 @@ import TreeIcon from '@mui/icons-material/AccountTree';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ShareIcon from '@mui/icons-material/Share';
 import {
-  Chip, IconButton,
+  Chip, ChipProps, IconButton,
   Paper,
   Typography,
 } from '@mui/material';
 import { format } from 'date-fns';
-import React, { ReactNode, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import LetterIcon from '@/components/LetterIcon';
 import schema from '@/services/schema';
 
 import { DATE_FIELDS } from '../constants';
+import { VerboseFilterType } from '../useFilterGroups';
 
 interface FilterGroupProps {
-  filters: { value: unknown; attr: string; operator: string; subqueryType?: string }[];
+  filters: VerboseFilterType[];
   name: string;
   isSelected?: boolean;
   onDelete?: (name: string) => void;
@@ -29,10 +30,10 @@ interface FilterGroupProps {
  * Displays Filter Groups and filter chips.
  */
 function FilterGroup({
-  name, filters = [], onDelete, onSelect, isSelected, onDeleteFilter,
+  name, filters = [], onDelete, onSelect, isSelected = false, onDeleteFilter,
 }: FilterGroupProps) {
   const handleDeleteFilter = useCallback((filterIndex) => {
-    onDeleteFilter(filterIndex, name);
+    onDeleteFilter?.(filterIndex, name);
   }, [name, onDeleteFilter]);
   return (
     <Paper className="filter-group">
@@ -56,11 +57,11 @@ function FilterGroup({
             const filterValueArr = [...filterValue];
             filterValue = (filterValueArr.map((val) => schema.getLabel(val))).join(' ');
           } else if (filterValue && DATE_FIELDS.includes(filter.attr)) {
-            filterValue = format(new Date(filterValue), 'yyyy-MM-dd\'T\'HH:mm');
+            filterValue = format(new Date(filterValue as any), 'yyyy-MM-dd\'T\'HH:mm');
           } else if (typeof filterValue === 'string') {
             filterValue = `'${filterValue}'`;
           }
-          let icon: ReactNode = null;
+          let icon: ChipProps['icon'];
 
           if (filter.subqueryType === 'keyword') {
             icon = (<ShareIcon />);
@@ -74,13 +75,12 @@ function FilterGroup({
               data-testid={`filter-chip${index}`}
             >
               <Chip
-                default="outlined"
                 icon={icon}
                 label={`${filter.attr} ${filter.operator} ${filterValue}`}
                 onDelete={
                     onDeleteFilter
                       ? () => handleDeleteFilter(index)
-                      : null
+                      : undefined
                   }
               />
             </div>
@@ -89,7 +89,6 @@ function FilterGroup({
       </div>
       {onDelete && (
         <IconButton
-          classes={{ label: 'cancel-btn-label' }}
           className="filter-group__cancel-btn"
           data-testid="cancel-btn"
           onClick={() => { onDelete(name); }}
@@ -100,12 +99,5 @@ function FilterGroup({
     </Paper>
   );
 }
-
-FilterGroup.defaultProps = {
-  isSelected: false,
-  onDelete: null,
-  onDeleteFilter: null,
-  onSelect: () => {},
-};
 
 export default FilterGroup;

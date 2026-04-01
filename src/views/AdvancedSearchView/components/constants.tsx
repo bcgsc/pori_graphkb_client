@@ -1,10 +1,22 @@
 const OPERATORS_OPTS = ['=', 'CONTAINS', 'CONTAINSALL', 'CONTAINSTEXT', 'CONTAINSANY', 'IN', '>=', '>', '<=', '<'];
 
+interface Operator {
+  label: string;
+  value: string;
+  key: string;
+  iterable?: boolean;
+  isNumOperator?: boolean;
+  caption?: string;
+}
+
 const generateOperatorOptions = () => {
-  const OPERATORS = [];
+  const OPERATORS: Operator[] = [];
   OPERATORS_OPTS.forEach((op) => {
-    const operatorOpt = {};
-    ['label', 'value', 'key'].forEach((val) => { operatorOpt[val] = op; });
+    const operatorOpt: Operator = {
+      label: op,
+      value: op,
+      key: op,
+    };
 
     if (['CONTAINS', 'CONTAINSALL', 'CONTAINSANY'].includes(op)) {
       operatorOpt.iterable = true;

@@ -1,6 +1,7 @@
 import './index.scss';
 
 import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { StatementRecord } from '@bcgsc-pori/graphkb-schema/dist/types';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
@@ -20,8 +21,17 @@ import {
   sortAndGroupFields,
 } from '@/components/util';
 
+import { EdgeType, GeneralRecordType, StatementType } from '../types';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
+
+function getIsStatement(model: ClassDefinition, record: GeneralRecordType | undefined): record is StatementType {
+  return Boolean(model) && model.name === 'Statement';
+}
+
+function getIsEdge(model: ClassDefinition, record: GeneralRecordType | undefined): record is EdgeType {
+  return Boolean(model) && model.isEdge;
+}
 
 interface FormLayoutProps {
   /** the property names which should be put above the collapse */
@@ -43,7 +53,43 @@ interface FormLayoutProps {
 }
 
 const FormLayout = ({
-  exclusions, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
+  exclusions = [],
+  modelName,
+  disabled = false,
+  className = '',
+  aboveFold = [
+    CLASS_MODEL_PROP,
+    'displayName',
+    'name',
+    'groups',
+    'journalName',
+    'out',
+    'in',
+    'permissions',
+    'evidenceLevel',
+    'reviewStatus',
+    'reviews',
+    'refSeq',
+    'recruitmentStatus',
+    'email',
+    'source',
+    'sourceId',
+    'description',
+  ],
+  belowFold = ['deprecated', 'history'],
+  collapseExtra = false,
+  groups = [
+    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
+    ['relevance', 'subject'],
+    ['refSeq', 'untemplatedSeq'],
+    ['reviewStatus', 'reviews'],
+    ['reference1', 'break1Repr', 'break1Start', 'break1End'],
+    ['reference2', 'break2Repr', 'break2Start', 'break2End'],
+    ['source', 'sourceId', 'sourceIdVersion'],
+    ['startYear', 'completionYear'],
+    ['city', 'country'],
+    ['out', 'in'],
+  ],
 }: FormLayoutProps) => {
   const {
     formContent = {}, formVariant,
@@ -56,7 +102,7 @@ const FormLayout = ({
     setModel(schemaDefn.get(modelName));
   }, [modelName]);
 
-  if (!model) {
+  if (!model || !formVariant) {
     return null;
   }
 
@@ -64,9 +110,9 @@ const FormLayout = ({
     aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 
-  const isEdge = model && model.isEdge;
+  const isEdge = getIsEdge(model, formContent);
 
-  const isStatement = model && model.name === 'Statement';
+  const isStatement = getIsStatement(model, formContent);
 
   return (
     <div className={`form-layout ${className}`}>
@@ -97,7 +143,7 @@ const FormLayout = ({
           </List>
           {extraFields.length > 0 && (
             <>
-              <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+              <ListItem onClick={() => setIsExpanded(!isExpanded)}>
                 <ListItemText
                   primary={
                     isExpanded
@@ -123,46 +169,6 @@ const FormLayout = ({
       )}
     </div>
   );
-};
-
-FormLayout.defaultProps = {
-  aboveFold: [
-    CLASS_MODEL_PROP,
-    'displayName',
-    'name',
-    'groups',
-    'journalName',
-    'out',
-    'in',
-    'permissions',
-    'evidenceLevel',
-    'reviewStatus',
-    'reviews',
-    'refSeq',
-    'recruitmentStatus',
-    'email',
-    'source',
-    'sourceId',
-    'description',
-  ],
-  disabled: false,
-  belowFold: ['deprecated', 'history'],
-  className: '',
-  collapseExtra: false,
-  groups: [
-    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-    ['relevance', 'subject'],
-    ['refSeq', 'untemplatedSeq'],
-    ['reviewStatus', 'reviews'],
-    ['reference1', 'break1Repr', 'break1Start', 'break1End'],
-    ['reference2', 'break2Repr', 'break2Start', 'break2End'],
-    ['source', 'sourceId', 'sourceIdVersion'],
-    ['startYear', 'completionYear'],
-    ['city', 'country'],
-    ['out', 'in'],
-  ],
-  modelName: null,
-  exclusions: [],
 };
 
 export default FormLayout;

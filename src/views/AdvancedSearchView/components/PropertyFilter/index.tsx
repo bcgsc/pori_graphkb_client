@@ -37,7 +37,7 @@ const propertySort = ({ label: prop1 }, { label: prop2 }) => {
   return prop1.localeCompare(prop2);
 };
 
-const constructOperatorOptions = ({ iterable, type, name } = {}, currentVal, subqueryType = '') => {
+const constructOperatorOptions = ({ iterable, type, name }: Partial<PropertyDefinition> | undefined = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {
     return OPERATORS.filter((op) => ['CONTAINSTEXT', '='].includes(op.label));
   }
@@ -78,16 +78,25 @@ interface PropertyFilterProps {
  * Form to choose a filter to add (property, value, operator)
  */
 const PropertyFilter = ({
-  modelName, onSubmit, className,
+  modelName, onSubmit, className = '',
 }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
-  const [propertyChoices, setPropertyChoices] = useState([]);
+  const [propertyChoices, setPropertyChoices] = useState<{
+    label: string;
+    value: string;
+    key: string;
+    caption?: string;
+  }[]>([]);
   const [propertyModel, setPropertyModel] = useState<any>({
     type: 'string', name: 'value', mandatory: true, generated: false,
   });
-  const [operatorChoices, setOperatorChoices] = useState(['=']);
-  const [operator, setOperator] = useState(operatorChoices[0]);
-  const [subqueryType, setSubqueryType] = useState('');
+  const [operatorChoices, setOperatorChoices] = useState<ReturnType<typeof constructOperatorOptions>>([{
+    key: '=',
+    value: '=',
+    label: '=',
+  }]);
+  const [operator, setOperator] = useState('=');
+  const [subqueryType, setSubqueryType] = useState<'' | 'keyword' | 'tree'>('');
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
   const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
@@ -101,7 +110,7 @@ const PropertyFilter = ({
 
   // set the property options
   useEffect(() => {
-    const choices = [];
+    const choices: typeof propertyChoices = [];
     schema.getQueryProperties(modelName)
       .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
       .forEach((prop) => {
@@ -235,11 +244,12 @@ const PropertyFilter = ({
         : formContent[property],
       operator,
       subqueryType,
+      query: undefined as any,
     };
 
     if (subqueryType === 'keyword') {
       result.query = {
-        operator: originalPropertyModel.iterable
+        operator: originalPropertyModel?.iterable
           ? 'CONTAINSANY'
           : 'IN',
         [property]: {
@@ -248,7 +258,7 @@ const PropertyFilter = ({
             ? ['ElementOf']
             : [],
           target: {
-            target: keywordTarget || originalPropertyModel.linkedClass || 'V',
+            target: keywordTarget || originalPropertyModel?.linkedClass || 'V',
             operator,
             keyword: formContent[property],
             queryType: 'keyword',
@@ -257,7 +267,7 @@ const PropertyFilter = ({
       };
     } else if (subqueryType === 'tree') {
       result.query = {
-        operator: originalPropertyModel.iterable
+        operator: originalPropertyModel?.iterable
           ? 'CONTAINSANY'
           : 'IN',
         [property]: {
@@ -340,9 +350,7 @@ const PropertyFilter = ({
             <FormField
               className="property-filter__value"
               disabled={!property}
-              innerProps={{ 'data-testid': 'value-select' }}
               model={{ type: 'string', ...propertyModel, format }}
-              variant="edit"
             />
           </FormContext.Provider>
 
@@ -360,10 +368,6 @@ const PropertyFilter = ({
       </div>
     </>
   );
-};
-
-PropertyFilter.defaultProps = {
-  className: '',
 };
 
 export default PropertyFilter;

@@ -26,7 +26,7 @@ const AboutMain = () => {
       select: (response) => {
         const { Statement: result } = response;
         const data = [['source', 'count']];
-        Object.entries(result).forEach(([label, value]) => {
+        Object.entries(result as Record<string, string>).forEach(([label, value]) => {
           data.push([
             label === 'null'
               ? 'other'

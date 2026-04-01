@@ -25,6 +25,7 @@ describe('SteppedForm', () => {
     ({ getByText, getByTestId, queryByText } = render(
       <SteppedForm
         modelName="stuff"
+        onDelete={vi.fn()}
         onSubmit={submissionSpy}
         properties={{}}
       >

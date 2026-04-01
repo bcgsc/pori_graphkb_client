@@ -11,6 +11,7 @@ import {
 import React from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
@@ -29,24 +30,24 @@ const sortProps = (value) => {
   return sortedValues;
 };
 
-interface SetPropsListProps {
-  handleExpand?: (arg: unknown) => void;
+interface SetPropsListProps<V extends GeneralRecordType | string> {
+  handleExpand?: (arg: V) => void;
   /** props to be displayed for submenu */
   identifiers?: unknown[];
   /** opened dropdowns in drawer */
-  opened?: string[];
+  opened?: V[];
   /** link/embedded property model */
-  prop?: Record<string, unknown>;
+  prop?: { name?: string; type?: string };
   /** contains link/embedded records */
-  value?: Record<string, unknown>;
+  value?: V[];
 }
 
 /**
  * Renders properties that are set types. i.e Embedded set and link set.
  */
-function SetPropsList(props: SetPropsListProps) {
+function SetPropsList<V extends GeneralRecordType | string>(props: SetPropsListProps<V>) {
   const {
-    prop, value, identifiers = [], opened = [], handleExpand,
+    prop = {}, value = [], identifiers = [], opened = [], handleExpand,
   } = props;
   const { type, name } = prop;
   if (value.length === 0) return null;
@@ -65,9 +66,9 @@ function SetPropsList(props: SetPropsListProps) {
         </ListItemText>
       </ListItem>
       <List dense disablePadding>
-        {type === 'linkset' && values.map((item) => (
+        {type === 'linkset' && (values as GeneralRecordType<'@rid' | '@class'>[]).map((item) => (
           <>
-            <ListItem key={item['@rid']} button dense onClick={() => handleExpand(item)}>
+            <ListItem key={item['@rid']} dense onClick={() => handleExpand?.(item as V)}>
               <div className="nested-spacer" />
               <ListItemText className="detail-li-text">
                 <div className="detail-identifiers-linkset">
@@ -79,9 +80,9 @@ function SetPropsList(props: SetPropsListProps) {
                   </Typography>
                 </div>
               </ListItemText>
-              {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              {!opened.includes(item as V) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
-            <Collapse in={!!opened.includes(item)} unmountOnExit>
+            <Collapse in={!!opened.includes(item as V)} unmountOnExit>
               {identifiers.map((propName) => (
                 <List dense disablePadding>
                   <ListItem>
@@ -93,7 +94,7 @@ function SetPropsList(props: SetPropsListProps) {
                         <Typography variant="h6">
                           {propName === '@rid'
                             ? <RecordIdLink recordClass={item['@class']} recordId={item[propName]} />
-                            : item[propName]}
+                            : item[String(propName)]}
                         </Typography>
                       </div>
                     </ListItemText>
@@ -103,7 +104,7 @@ function SetPropsList(props: SetPropsListProps) {
             </Collapse>
           </>
         ))}
-        { type === 'embeddedset' && values.map((item) => (
+        { type === 'embeddedset' && (values as string[]).map((item) => (
           <ListItem key={item} dense>
             <div className="nested-spacer" />
             <ListItemText
@@ -118,13 +119,5 @@ function SetPropsList(props: SetPropsListProps) {
     </React.Fragment>
   );
 }
-
-SetPropsList.defaultProps = {
-  handleExpand: () => {},
-  identifiers: [],
-  opened: [],
-  prop: {},
-  value: {},
-};
 
 export default SetPropsList;

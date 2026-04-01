@@ -23,7 +23,7 @@ interface DataViewFooterProps {
 }
 
 const DataViewFooter = ({
-  selectedRecords = [], onError, navigate, statusMessage, totalRows,
+  selectedRecords = [], onError, navigate, statusMessage = '', totalRows,
 }: DataViewFooterProps) => {
   const handleSwapToGraph = useCallback(() => {
     const nodeRIDs = selectedRecords.map((node) => node['@rid']);
@@ -62,13 +62,6 @@ const DataViewFooter = ({
       </Typography>
     </div>
   );
-};
-
-DataViewFooter.defaultProps = {
-  onError: () => {},
-  selectedRecords: [],
-  statusMessage: '',
-  totalRows: null,
 };
 
 export default DataViewFooter;

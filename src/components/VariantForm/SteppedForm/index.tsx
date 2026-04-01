@@ -33,7 +33,7 @@ interface SteppedFormProps {
 }
 
 const SteppedForm = ({
-  children, modelName, properties, onSubmit, className, value, formVariant, onDelete, isLoading,
+  children, modelName, properties, onSubmit, className = '', value = {}, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false,
 }: SteppedFormProps) => {
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
@@ -81,12 +81,11 @@ const SteppedForm = ({
           if (!child) {
             return child;
           }
-          const { fields, label } = child.props;
+          const { fields, label } = (child as any).props;
           const errors = fields.some((f) => formErrors[f]);
           return (
             <Step>
               <StepButton
-                completed={visited[index] && !errors}
                 data-testid={`stepped-form__step-button-${index}`}
                 onClick={() => handleOnClick(index)}
               >
@@ -127,13 +126,6 @@ const SteppedForm = ({
       </Stepper>
     </FormContext.Provider>
   );
-};
-
-SteppedForm.defaultProps = {
-  className: '',
-  isLoading: false,
-  value: {},
-  formVariant: FORM_VARIANT.NEW,
 };
 
 export default SteppedForm;

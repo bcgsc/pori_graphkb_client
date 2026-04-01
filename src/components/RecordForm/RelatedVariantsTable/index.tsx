@@ -51,7 +51,7 @@ const RelatedVariantsTable = ({ recordId }: RelatedVariantsTableProps) => {
     const gridApi = grid.ref?.current?.api;
 
     if (gridApi && !isFetching) {
-      gridApi.setRowData(variants);
+      gridApi.setRowData(variants ?? []);
       gridApi.sizeColumnsToFit();
     }
   }, [grid.ref, isFetching, variants]);

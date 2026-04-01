@@ -48,13 +48,13 @@ interface RecordFormProps {
  * Form/View that displays the contents of a single node
  */
 const RecordForm = ({
-  value: initialValue,
-  modelName,
+  value: initialValue = {},
+  modelName = '',
   title,
   onToggleState,
   onSubmit,
   onError,
-  variant,
+  variant = FORM_VARIANT.VIEW,
   ...rest
 }: RecordFormProps) => {
   const snackbar = useSnackbar();
@@ -78,7 +78,7 @@ const RecordForm = ({
   } = form;
 
   const { mutate: addNewAction, isLoading: isAdding } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
       return api.post(routeName, payload);
@@ -88,7 +88,7 @@ const RecordForm = ({
         snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         console.error(err);
         snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
         onError?.({ error: err, content });
@@ -118,16 +118,16 @@ const RecordForm = ({
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
 
   const { mutate: deleteAction, isLoading: isDeleting } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
-      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
+      return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
     },
     {
       onSuccess: (_, content) => {
         snackbar.enqueueSnackbar(`Successfully deleted the record ${content['@rid']}`, { variant: 'success' });
         onSubmit?.();
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },
@@ -147,17 +147,17 @@ const RecordForm = ({
   }, [deleteAction, formContent, modelName]);
 
   const { mutate: updateAction, isLoading: isUpdating } = useMutation(
-    async (content) => {
+    async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
-      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+      return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, payload);
     },
     {
       onSuccess: (result) => {
         snackbar.enqueueSnackbar(`Successfully edited the record ${result['@rid']}`, { variant: 'success' });
         onSubmit?.(result);
       },
-      onError: (err, content) => {
+      onError: (err: Error, content) => {
         snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
         onError?.({ error: err, content });
       },
@@ -225,10 +225,9 @@ const RecordForm = ({
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && isEdge)}
           exclusions={FIELD_EXCLUSIONS}
           modelName={modelName}
-          variant={variant}
         />
       </FormContext.Provider>
-      {variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (
+      {modelName && variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (
         <>
           <EdgeTable recordId={String(form.formContent['@rid'])} />
           <RelatedStatementsTable recordId={String(form.formContent['@rid'])} />
@@ -275,16 +274,6 @@ const RecordForm = ({
       </div>
     </Paper>
   );
-};
-
-RecordForm.defaultProps = {
-  modelName: '',
-  onError: () => {},
-  onSubmit: () => {},
-  onToggleState: undefined,
-  rid: null,
-  variant: FORM_VARIANT.VIEW,
-  value: {},
 };
 
 export default RecordForm;

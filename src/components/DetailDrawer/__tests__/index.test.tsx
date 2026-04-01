@@ -85,10 +85,13 @@ const statementNode = {
   subsets: ['one', 'two', 'three'],
   '@rid': '#12:0',
 };
+const auth = {
+  user: { '@rid': '23:9', name: 'name', groups: [] }, hasWriteAccess: true, login: () => {}, logout: () => {}, isAuthenticated: true, error: undefined, isAuthenticating: false,
+};
 
-const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
+const ProvideSchema = ({ children }) => (  // eslint-disable-line
   <BrowserRouter>
-    <AuthContext.Provider value={{}}>
+    <AuthContext.Provider value={auth}>
       {children}
     </AuthContext.Provider>
   </BrowserRouter>
@@ -115,7 +118,7 @@ describe('DetailDrawer', () => {
       dom = render(
         <ProvideSchema>
           <DetailDrawer
-            edge={false}
+            isEdge={false}
             node={ontologyNode}
             onClose={onCloseSpy}
           />
@@ -188,7 +191,7 @@ describe('DetailDrawer', () => {
       dom = render(
         <ProvideSchema>
           <DetailDrawer
-            edge={false}
+            isEdge={false}
             node={statementNode}
             onClose={onCloseSpy}
           />

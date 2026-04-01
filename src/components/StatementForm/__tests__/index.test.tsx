@@ -18,7 +18,9 @@ import api from '@/services/api';
 
 import StatementForm from '..';
 
-const auth = { user: { '@rid': '23:9' }, hasWriteAccess: true };
+const auth = {
+  user: { '@rid': '23:9', name: 'name', groups: [] }, hasWriteAccess: true, login: () => {}, logout: () => {}, isAuthenticated: true, error: undefined, isAuthenticating: false,
+};
 
 vi.spyOn(api, 'query').mockImplementation(async (payload) => {
   // to prevent other records causing validation error when running `checkLogicalStatement`

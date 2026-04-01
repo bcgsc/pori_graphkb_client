@@ -16,7 +16,7 @@ interface BreakpointFormProps {
    */
   model: any;
   /** the field name of the reference element (ex. reference1) */
-  reference: string;
+  reference: string | undefined;
   /** the field name of the end position (ex. break1End) */
   end?: string;
   /** flag to indicate this field is required */
@@ -32,7 +32,7 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, required, model,
+  coordinateType, reference, start = '', end = '', required = true, model,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useContext(FormContext);
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -49,7 +49,6 @@ const BreakpointForm = ({
     <div className="breakpoint-form">
       {reference && (
         <FormField
-          initialFilterClass="Feature"
           label="reference"
           model={{ ...schemaDefn.getProperty(model.name, 'reference1'), required, name: reference }}
         />
@@ -69,7 +68,6 @@ const BreakpointForm = ({
           />
           <FormField
             baseModel={coordinateType}
-            clearable={false}
             label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
             model={{
               ...schemaDefn.getProperty(model.name, 'break1Start'),
@@ -82,7 +80,6 @@ const BreakpointForm = ({
           {uncertain && (
             <FormField
               baseModel={coordinateType}
-              clearable={false}
               label={`end (${coordinateType})`}
               model={{
                 ...schemaDefn.getProperty(model.name, 'break1End'),
@@ -97,12 +94,6 @@ const BreakpointForm = ({
       )}
     </div>
   );
-};
-
-BreakpointForm.defaultProps = {
-  required: true,
-  start: '',
-  end: '',
 };
 
 export default BreakpointForm;

@@ -2,7 +2,7 @@ import './index.scss';
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { Button, Tooltip, Typography } from '@mui/material';
-import { copy } from 'copy-to-clipboard';
+import copy from 'copy-to-clipboard';
 import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 

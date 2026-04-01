@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import useObject from '@/components/hooks/useObject';
+import { FilterType } from '@/components/types';
 
 const START_GROUP = '1';
 
@@ -28,13 +29,21 @@ const cleanFilterLinks = (content) => {
   return content;
 };
 
+export interface VerboseFilterType {
+  query: FilterType;
+  value: unknown;
+  attr: string;
+  operator: string;
+  subqueryType?: string;
+}
+
 const useFilterGroups = () => {
   const {
     content: groups,
     updateField: updateGroup,
     removeField,
     replace: replaceGroups,
-  } = useObject({ [START_GROUP]: [] });
+  } = useObject<Record<string, VerboseFilterType[]>>({ [START_GROUP]: [] });
   const [selectedGroup, setSelectedGroup] = useState(START_GROUP);
 
   const reset = useCallback(() => {
@@ -83,9 +92,9 @@ const useFilterGroups = () => {
   }, [removeField, selectedGroup]);
 
   const getQuery = useCallback((target) => {
-    const cleanedContent = [];
+    const cleanedContent: FilterType[] = [];
     Object.values(groups).forEach((group) => {
-      const filters = [];
+      const filters: FilterType[] = [];
       group.forEach((filter) => {
         filters.push(cleanFilterLinks(filter.query));
       });
@@ -97,7 +106,10 @@ const useFilterGroups = () => {
       }
     });
 
-    const content = {
+    const content: {
+      target: unknown;
+      filters?: unknown;
+    } = {
       target,
     };
 

@@ -55,7 +55,7 @@ describe('schema service', () => {
       const label = testSchema.getLabel(mockRID);
       expect(label).toEqual(mockRID);
 
-      const preview = SCHEMA_DEFN.getPreview(mockRID);
+      const preview = SCHEMA_DEFN.getPreview(mockRID as any);
       expect(preview).toEqual(mockRID);
     });
 

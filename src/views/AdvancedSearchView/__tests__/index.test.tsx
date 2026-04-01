@@ -47,7 +47,7 @@ vi.mock('@/components/DropDownSelect', () => ({
     options = [], value, onChange, name, innerProps: { 'data-testid': testId = 'select' } = {},
   }) => {
     const handleChange = (event) => {
-      const option = options.find(
+      const option = (options as any[]).find(
         (opt) => (opt.value === undefined ? opt : opt.value) === event.currentTarget.value,
       );
 
@@ -55,7 +55,7 @@ vi.mock('@/components/DropDownSelect', () => ({
     };
     return (
       <select data-testid={testId} onChange={handleChange} value={value}>
-        {options.map((opt) => (
+        {(options as any[]).map((opt) => (
           <option key={opt.key || opt} value={opt.value === undefined ? opt : opt.value}>
             {opt.label || opt}
           </option>

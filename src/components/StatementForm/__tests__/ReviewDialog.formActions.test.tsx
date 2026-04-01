@@ -31,7 +31,7 @@ vi.mock('../../DropDownSelect', () => ({
       <select data-testid="select" onChange={handleChange} value={value}>
         {options.map((opt) => (
           <option key={opt} value={opt}>
-            {opt.label || opt}
+            {(opt as { label: string }).label || opt}
           </option>
         ))}
       </select>
@@ -49,7 +49,9 @@ describe('ReviewDialog formActions', () => {
   });
 
   beforeEach(() => {
-    const auth = { user: { '@rid': '#20:0' } };
+    const auth = {
+      user: { '@rid': '#20:0', name: 'name', groups: [] }, hasWriteAccess: true, login: () => {}, logout: () => {}, isAuthenticated: true, error: undefined, isAuthenticating: false,
+    };
     render(
       <AuthContext.Provider value={auth}>
         <SnackbarProvider onEnter={snackbarSpy}>
@@ -73,7 +75,7 @@ describe('ReviewDialog formActions', () => {
   test('calls submit when status is given', async () => {
     fireEvent.change(screen.getByTestId('select'), { target: { name: 'status', value: 'passed' } });
     expect(screen.getByText('ADD REVIEW').closest('button')).not.toBeDisabled();
-    fireEvent.click(screen.getByText('ADD REVIEW').closest('button'));
+    fireEvent.click(screen.getByText('ADD REVIEW').closest('button')!);
     await waitFor(() => {
       expect(snackbarSpy).not.toHaveBeenCalled();
       expect(onSubmitSpy).toHaveBeenCalled();

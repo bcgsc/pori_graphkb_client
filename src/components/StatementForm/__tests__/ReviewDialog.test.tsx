@@ -27,7 +27,9 @@ describe('ReviewDialog', () => {
   });
 
   beforeEach(() => {
-    const auth = { user: { '@rid': '#20:0' } };
+    const auth = {
+      user: { '@rid': '#20:0', name: 'name', groups: [] }, hasWriteAccess: true, login: () => {}, logout: () => {}, isAuthenticated: true, error: undefined, isAuthenticating: false,
+    };
     ({ getByText, queryByText, getAllByText } = render(
       <AuthContext.Provider value={auth}>
         <SnackbarProvider onEnter={snackbarSpy}>

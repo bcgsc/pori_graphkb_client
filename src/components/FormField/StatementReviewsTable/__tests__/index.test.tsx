@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom/extend-expect';
+
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -9,6 +11,8 @@ import {
 import api from '@/services/api';
 
 import StatementReviewsTable from '..';
+
+vi.spyOn(api, 'query').mockImplementation(async () => [{ '@rid': '#19:0', name: 'bob' }]);
 
 describe('StatementReviewsTable', () => {
   afterEach(() => {
@@ -38,18 +42,12 @@ describe('StatementReviewsTable', () => {
     },
   ];
 
-  const mockReviewProps = {
-    content: { reviews },
-    updateContent: () => {},
-  };
-
   test('does not crash with empty reviews array', () => {
     render(
       <QueryClientProvider client={api.queryClient}>
         <StatementReviewsTable
           name="reviews"
           onChange={vi.fn()}
-          reviewProps={mockReviewProps}
           values={[]}
         />
       </QueryClientProvider>,
@@ -64,7 +62,6 @@ describe('StatementReviewsTable', () => {
         <StatementReviewsTable
           name="reviews"
           onChange={vi.fn()}
-          reviewProps={mockReviewProps}
           values={reviews}
         />
       </QueryClientProvider>,
@@ -72,5 +69,27 @@ describe('StatementReviewsTable', () => {
 
     expect(screen.getByText('Reviews')).toBeTruthy();
     expect(screen.getAllByRole('row')).toHaveLength(1 + reviews.length);
+  });
+
+  test.each([{ '@rid': '#19:0', name: 'bob' }, '#19:0'])('displays who created review', async (user) => {
+    render(
+      <QueryClientProvider client={api.queryClient}>
+        <StatementReviewsTable
+          name="reviews"
+          onChange={vi.fn()}
+          values={[{
+            '@class': 'StatementReview',
+            createdBy: user,
+            status: 'initial',
+            createdAt: 1565376648434,
+            comment: 'second',
+          }]}
+        />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText('Reviews')).toBeTruthy();
+    expect(screen.getAllByRole('row')).toHaveLength(2);
+    await expect(screen.findByText('bob (#19:0)')).resolves.toBeInTheDocument();
   });
 });

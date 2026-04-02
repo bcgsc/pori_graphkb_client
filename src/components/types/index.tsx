@@ -24,6 +24,11 @@ interface TGeneralRecordType {
   reviews: unknown[];
   email: string;
   journalName: string;
+  description: string;
+  germline: boolean;
+  subsets: unknown;
+  evidence: Partial<TGeneralRecordType>[];
+  zygosity: string;
 
   count: number;
 }

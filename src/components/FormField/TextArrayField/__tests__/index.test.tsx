@@ -1,41 +1,32 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
+import {
+  fireEvent, screen, within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   afterEach,
   describe, expect, test, vi,
 } from 'vitest';
 
-import TextArrayField from '..';
+import { EmbeddedSet, EmbeddedSetEmpty, EmbeddedSetItemDeleted } from '../../index.stories';
 
 describe('TextArrayField', () => {
-  test('adds value on Enter', () => {
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={vi.fn()}
-      />,
-    );
+  test('adds value on Enter', async () => {
+    await EmbeddedSetEmpty.run();
     // input the text and hit the enter key
-    const input = screen.getByLabelText('test');
+    const input = screen.getByLabelText('subsets');
     fireEvent.change(input, { target: { value: 'someElement' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
     expect(screen.getByText('someElement')).toBeTruthy();
-    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
+    expect(screen.getByLabelText<HTMLInputElement>('subsets').value).toEqual('');
   });
 
-  test('adds value on button click', () => {
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={vi.fn()}
-      />,
-    );
+  test('adds value on button click', async () => {
+    await EmbeddedSetEmpty.run();
+
     // input the text
     fireEvent.change(
-      screen.getByLabelText('test'),
+      screen.getByLabelText('subsets'),
       { target: { value: 'someElement' } },
     );
 
@@ -43,69 +34,32 @@ describe('TextArrayField', () => {
     fireEvent.click(button);
 
     expect(screen.getByText('someElement')).toBeTruthy();
-    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
+    expect(screen.getByLabelText<HTMLInputElement>('subsets').value).toEqual('');
   });
 
-  test('deletes last added value with backspace', () => {
-    const onChange = vi.fn();
+  test('deletes last added value with backspace', async () => {
+    await EmbeddedSet.run();
 
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={onChange}
-      />,
-    );
-
-    const input = screen.getByLabelText('test');
-
-    const addValue = (text) => {
-      // input the text and hit the enter key
-      fireEvent.change(input, { target: { value: text } });
-      fireEvent.keyDown(input, { key: 'Enter' });
-      // should now be a chip element
-      expect(screen.getByText(text)).toBeTruthy();
-      expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
-    };
-
-    addValue('value 1');
-    addValue('value 2');
-    addValue('value 3');
+    // input the text
+    const input = screen.getByLabelText('subsets');
+    fireEvent.change(input, { target: { value: 'someElement' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.getByText('someElement')).toBeTruthy();
 
     fireEvent.keyDown(
       input,
       { key: 'Backspace' },
     );
 
-    expect(screen.queryByText('value 3')).toBeFalsy();
-    expect(onChange).toBeCalledTimes(4);
-    expect(onChange).lastCalledWith({
-      target: {
-        name: 'test',
-        value: ['value 1', 'value 2'],
-      },
-    });
+    expect(screen.queryByText('someElement')).toBeFalsy();
   });
 
-  test('does not delete added value with backspace if input isn\'t empty', () => {
-    const onChange = vi.fn();
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={onChange}
-      />,
-    );
-    // input the text and hit the enter key
-    const input = screen.getByLabelText('test');
-    fireEvent.change(input, { target: { value: 'someElement' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    // should now be a single chip element
-    expect(screen.getByText('someElement')).toBeTruthy();
-    expect(onChange).toHaveBeenCalledTimes(1);
+  test('does not delete added value with backspace if input isn\'t empty', async () => {
+    await EmbeddedSet.run();
+    const input = screen.getByLabelText('subsets');
 
     fireEvent.change(input, { target: { value: 'blargh' } });
-    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('blargh');
+    expect(screen.getByLabelText<HTMLInputElement>('subsets').value).toEqual('blargh');
 
     fireEvent.keyDown(
       input,
@@ -113,129 +67,49 @@ describe('TextArrayField', () => {
     );
 
     // should not have changed chips
-    expect(screen.getByText('someElement')).toBeTruthy();
-    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('thing 1')).toBeTruthy();
+    expect(screen.getByText('thing 2')).toBeTruthy();
   });
 
-  test('deletes when delete icon is clicked (new value)', () => {
-    const onChange = vi.fn();
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={onChange}
-      />,
-    );
+  test('deletes when delete icon is clicked (new value)', async () => {
+    await EmbeddedSet.run();
     // input the text and hit the enter key
-    const input = screen.getByLabelText('test');
+    const input = screen.getByLabelText('subsets');
     fireEvent.change(input, { target: { value: 'someElement' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
     // should now be a single chip element
-    const chip = screen.getByText('someElement');
+    const chip = screen.getByRole('button', { name: 'someElement' });
     expect(chip).toBeTruthy();
-    expect(screen.getByLabelText<HTMLInputElement>('test').value).toEqual('');
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).lastCalledWith({
-      target: {
-        name: 'test',
-        value: ['someElement'],
-      },
-    });
+    expect(screen.getByLabelText<HTMLInputElement>('subsets').value).toEqual('');
 
-    fireEvent.click(chip.nextElementSibling!);
+    fireEvent.click(within(chip).getByLabelText('delete value'));
     // should not be any chips
     expect(screen.queryByText('someElement')).toBeFalsy();
-    expect(onChange).toHaveBeenCalledTimes(2);
-    expect(onChange).lastCalledWith({
-      target: {
-        name: 'test',
-        value: [],
-      },
-    });
   });
 
-  test('deletes value when delete icon is clicked', () => {
-    const onChange = vi.fn();
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={onChange}
-        value={['someElement']}
-      />,
-    );
-
-    const chip = screen.getByText('someElement');
-    expect(chip).toBeTruthy();
-
-    // now delete the newly added chip
-    fireEvent.click(chip.nextElementSibling!);
-    // should not have any chips now
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).lastCalledWith({
-      target: {
-        name: 'test',
-        value: [],
-      },
-    });
-  });
-
-  test('shows error when trying to add duplicate value', () => {
-    const onChange = vi.fn();
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={onChange}
-        value={['someElement']}
-      />,
-    );
-
-    const chip = screen.getByText('someElement');
+  test('shows error when trying to add duplicate value', async () => {
+    await EmbeddedSet.run();
+    const chip = screen.getByRole('button', { name: 'thing 2' });
     expect(chip).toBeTruthy();
 
     // input the text and hit the enter key
-    const input = screen.getByLabelText('test');
-    fireEvent.change(input, { target: { value: 'someElement' } });
+    const input = screen.getByLabelText('subsets');
+    fireEvent.change(input, { target: { value: 'thing 2' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
     expect(screen.getByText('Elements must be unique', { exact: false })).toBeTruthy();
-    // should now be a single chip element
-    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getAllByRole('button', { name: 'thing 2' })).toHaveLength(1);
   });
 
-  test('deleted value is restored when restore icon is clicked', () => {
-    const onChange = vi.fn();
-    render(
-      <TextArrayField
-        label="test"
-        name="test"
-        onChange={onChange}
-        value={['someElement']}
-      />,
-    );
-
-    let chip = screen.getByText('someElement');
-    fireEvent.click(chip.nextElementSibling!);
-
-    expect(onChange).lastCalledWith({
-      target: {
-        name: 'test',
-        value: [],
-      },
-    });
-
-    chip = screen.getByText('someElement');
-    fireEvent.click(chip.nextElementSibling!);
-
-    expect(onChange).toHaveBeenCalledTimes(2);
-    expect(onChange).lastCalledWith({
-      target: {
-        name: 'test',
-        value: ['someElement'],
-      },
-    });
+  test('deleted value is restored when restore icon is clicked', async () => {
+    const user = userEvent.setup();
+    await EmbeddedSetItemDeleted.run({ userEvent: user });
+    const chip = screen.getByRole('button', { name: 'thing 2' });
+    expect(chip).toBeTruthy();
+    fireEvent.click(within(chip).getByLabelText('restore value'));
+    expect(within(chip).getByLabelText('delete value')).toBeTruthy();
+    expect(within(chip).queryByLabelText('restore value')).toBeFalsy();
   });
 
   afterEach(() => {

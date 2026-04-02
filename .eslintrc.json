@@ -25,6 +25,16 @@
         "import/no-cycle": "warn",
         "import/order": "off",
         "import/prefer-default-export": "warn",
+        "import/no-extraneous-dependencies": ["error", {
+            "devDependencies": [
+                // these globs cannot be combined
+                ".storybook/**",
+                "**/*.stories.*",
+                "**/*.test.*",
+                "**/test.*",
+                "vite.config.*"
+            ]
+        }],
         "max-len": [
             "off",
             {

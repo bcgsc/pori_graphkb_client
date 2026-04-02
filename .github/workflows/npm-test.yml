@@ -13,6 +13,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run check-types
+      - run: npx playwright install chromium
       - run: npm run test -- --reporter=default --reporter=junit --outputFile=coverage/junit.xml --coverage
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.6

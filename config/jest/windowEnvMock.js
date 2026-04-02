@@ -1,7 +1,14 @@
-import { expect, afterEach } from 'vitest';
+import { expect, afterEach, beforeAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { setProjectAnnotations } from '@storybook/react-vite';
+import * as previewAnnotations from '../../.storybook/preview';
+
+const annotations = setProjectAnnotations([previewAnnotations]);
+
+// Run Storybook's beforeAll hook
+beforeAll(annotations.beforeAll);
+
 // necessary for extend-expect to work until upgrade to v6
-global.expect = expect;
 window.expect = expect;
 
 // Automatically clean up the DOM after each test run

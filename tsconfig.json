@@ -22,10 +22,12 @@
       "isolatedModules": true,
       "paths": {
         "@/*": ["./src/*"],
+        "#.storybook/*": ["./.storybook/*"],
       }
   },
   "include": [
       "src/",
-      "src/*.d.ts"
+      "src/*.d.ts",
+      ".storybook",
   ]
 }

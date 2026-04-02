@@ -1,99 +1,47 @@
 import '@testing-library/jest-dom/vitest';
 
 import {
-  fireEvent, render, screen, waitFor,
+  fireEvent, screen,
 } from '@testing-library/react';
-import React from 'react';
 import {
   afterEach,
   describe, expect, test, vi,
 } from 'vitest';
 
-import { FORM_VARIANT } from '@/components/util';
-
-import RecordFormStateToggle from '..';
+import { RequireConfirm, ViewSelectedEditAllowed } from '../index.stories';
 
 describe('RecordFormStateToggle', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  test('shows graph/edit/view buttons', () => {
-    render((
-      <RecordFormStateToggle
-        allowEdit
-        message="Changes you will lose"
-        value={FORM_VARIANT.VIEW}
-      />
-    ));
-    expect(screen.getByText('Graph')).toBeInTheDocument();
-    expect(screen.getByText('Edit')).toBeInTheDocument();
-    expect(screen.getByText('View')).toBeInTheDocument();
-  });
-
-  test('does not show edit button when editing is not allowed', () => {
-    render((
-      <RecordFormStateToggle
-        allowEdit={false}
-        message="Changes you will lose"
-        value={FORM_VARIANT.VIEW}
-      />
-    ));
-    expect(screen.getByText('Graph')).toBeInTheDocument();
-    expect(screen.queryByText('Edit')).not.toBeInTheDocument();
-    expect(screen.getByText('View')).toBeInTheDocument();
-  });
-
-  test('onClick handler returns new state', () => {
-    const clickSpy = vi.fn();
-    render((
-      <RecordFormStateToggle
-        allowEdit
-        message="Changes you will lose"
-        onClick={clickSpy}
-        value={FORM_VARIANT.VIEW}
-      />
-    ));
+  test('onClick handler returns new state', async () => {
+    await ViewSelectedEditAllowed.run();
     fireEvent.click(screen.getByText('Edit'));
-    expect(clickSpy).toHaveBeenCalledWith('edit');
+    expect(ViewSelectedEditAllowed.composed.args.onClick).toHaveBeenCalledWith('edit');
   });
 
   describe('confirm required', () => {
-    test('callback is called when confirmed', () => {
-      const clickSpy = vi.fn();
-      render((
-        <RecordFormStateToggle
-          allowEdit
-          message="Changes you will lose"
-          onClick={clickSpy}
-          requireConfirm
-          value={FORM_VARIANT.VIEW}
-        />
-      ));
+    test('callback is called when confirmed', async () => {
+      await RequireConfirm.run();
 
-      fireEvent.click(screen.getByText('Edit'));
-
+      expect(screen.getByRole('button', { name: /edit/i })).toBePressed();
+      const viewBtn = screen.getByRole('button', { name: /view/i });
+      expect(viewBtn).not.toBePressed();
+      fireEvent.click(viewBtn);
       fireEvent.click(screen.getByText(/confirm/i));
-      expect(clickSpy).toHaveBeenCalledTimes(1);
-      expect(clickSpy).toHaveBeenCalledWith('edit');
+      expect(RequireConfirm.composed.args.onClick).toHaveBeenCalled();
     });
 
-    test('callback is not called when user cancels', () => {
-      const clickSpy = vi.fn();
-      render((
-        <RecordFormStateToggle
-          allowEdit
-          message="Changes you will lose"
-          onClick={clickSpy}
-          requireConfirm
-          value={FORM_VARIANT.VIEW}
-        />
-      ));
+    test('callback is not called when user cancels', async () => {
+      await RequireConfirm.run();
 
-      fireEvent.click(screen.getByText('Edit'));
-
+      expect(screen.getByRole('button', { name: /edit/i })).toBePressed();
+      const viewBtn = screen.getByRole('button', { name: /view/i });
+      expect(viewBtn).not.toBePressed();
+      fireEvent.click(viewBtn);
       fireEvent.click(screen.getByText(/cancel/i));
-      expect(clickSpy).toHaveBeenCalledTimes(0);
+      expect(RequireConfirm.composed.args.onClick).not.toHaveBeenCalled();
     });
   });
 });

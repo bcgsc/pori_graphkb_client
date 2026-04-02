@@ -55,7 +55,7 @@ function DefaultPopupComponent<D extends object>(props: DefaultPopupComponentPro
           </Typography>
           {getLink && getLink(retrievedDetails) && (
             <Link target="_blank" to={getLink(retrievedDetails)}>
-              <IconButton>
+              <IconButton aria-label="open in new tab">
                 <OpenInNewIcon />
               </IconButton>
             </Link>

@@ -153,8 +153,8 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         const isDeleted = deleted.includes(text);
         const props = {
           deleteIcon: isDeleted
-            ? <RefreshIcon />
-            : <CancelIcon />,
+            ? <RefreshIcon aria-label="restore value" />
+            : <CancelIcon aria-label="delete value" />,
           onDelete: isDeleted
             ? () => handleRestore(text)
             : () => handleDelete(text),

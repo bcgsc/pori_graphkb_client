@@ -1,5 +1,4 @@
 import './static/graphkb-env-config';
-import './index.scss';
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';

@@ -11,7 +11,7 @@ import {
   Radio,
 } from '@mui/material';
 import isObject from 'lodash.isobject';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useId } from 'react';
 
 interface Option<V = unknown> {
   label: string;
@@ -56,15 +56,17 @@ interface RadioSelectProps<V = unknown> {
 function RadioSelect<V>({
   options, onChange, className, label, value, optionToKey = (o) => asOption(o).key, name,
 }: RadioSelectProps<V>) {
+  const id = useId();
   return (
     <MenuList className={`radio-select ${className}`}>
       {label && (<FormLabel>{label}</FormLabel>)}
       {options.map((optionOrValue) => {
         const option = asOption(optionOrValue);
         const checked = Boolean(value === option.value);
+        const key = optionToKey(option);
         return (
           <MenuItem
-            key={optionToKey(option)}
+            key={key}
             className="radio-option"
             onClick={() => {
               onChange?.({ target: { name, value: option.value } });
@@ -74,12 +76,13 @@ function RadioSelect<V>({
             <Radio
               checked={checked}
               inputProps={{
+                'aria-labelledby': `${id}-${key}-label`,
                 [('data-testid' as any)]: `radio-option__${optionToKey(option)}`,
               }}
             />
             <ListItemText
               primary={option.label}
-              primaryTypographyProps={{ className: 'radio-option__title' }}
+              primaryTypographyProps={{ className: 'radio-option__title', id: `${id}-${key}-label` }}
               secondary={option.caption || ''}
               secondaryTypographyProps={{ className: 'radio-option__caption' }}
             />

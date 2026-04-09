@@ -1,0 +1,98 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Empty snapshot 1`] = `
+<div>
+  <p
+    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+  >
+    <span
+      class="sentence-preview__chunk"
+    >
+      Given {conditions}, {relevance} applies to {subject} ({evidence})
+    </span>
+  </p>
+</div>
+`;
+
+exports[`FullValue snapshot 1`] = `
+<div>
+  <p
+    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+  >
+    <mark
+      class="sentence-preview__chunk--highlighted"
+    >
+      KRAS mutation
+    </mark>
+    <span
+      class="sentence-preview__chunk"
+    >
+       is associated with
+    </span>
+    <mark
+      class="sentence-preview__chunk--highlighted"
+    >
+      sensitivity
+    </mark>
+    <span
+      class="sentence-preview__chunk"
+    >
+       to
+    </span>
+    <mark
+      class="sentence-preview__chunk--highlighted"
+    >
+      drugName
+    </mark>
+    <span
+      class="sentence-preview__chunk"
+    >
+       (
+    </span>
+    <mark
+      class="sentence-preview__chunk--highlighted"
+    >
+      PMID:1234
+    </mark>
+    <span
+      class="sentence-preview__chunk"
+    >
+      )
+    </span>
+  </p>
+</div>
+`;
+
+exports[`PartialValue snapshot 1`] = `
+<div>
+  <p
+    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+  >
+    <span
+      class="sentence-preview__chunk"
+    >
+      Given
+    </span>
+    <mark
+      class="sentence-preview__chunk--highlighted"
+    >
+      condition1
+    </mark>
+    <span
+      class="sentence-preview__chunk"
+    >
+       and
+    </span>
+    <mark
+      class="sentence-preview__chunk--highlighted"
+    >
+      condition2
+    </mark>
+    <span
+      class="sentence-preview__chunk"
+    >
+      , {relevance} applies to {subject} ({evidence})
+    </span>
+  </p>
+</div>
+`;

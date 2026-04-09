@@ -1,0 +1,212 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Disabled snapshot 1`] = `
+<div>
+  <div
+    class="action-button"
+  >
+    <button
+      class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+      disabled=""
+      tabindex="-1"
+      type="button"
+    >
+      Action
+    </button>
+  </div>
+</div>
+`;
+
+exports[`NoConfirmRequired snapshot 1`] = `
+<div>
+  <div
+    class="action-button"
+  >
+    <button
+      class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
+    >
+      Action
+    </button>
+  </div>
+</div>
+`;
+
+exports[`WithConfirmRequired snapshot 1`] = `
+<div>
+  <div
+    class="action-button"
+  >
+    <button
+      class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
+    >
+      Action
+    </button>
+  </div>
+</div>
+`;
+
+exports[`WithConfirmRequiredOpen snapshot 1`] = `
+[
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        Action
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>,
+  <div
+    class="MuiDialog-root MuiModal-root confirm-action-dialog css-XXXX-MuiModal-root-MuiDialog-root"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-root MuiDialog-backdrop MuiModal-backdrop css-XXXX-MuiBackdrop-root-MuiDialog-backdrop"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      class="MuiDialog-container MuiDialog-scrollPaper css-XXXX-MuiDialog-container"
+      role="presentation"
+      tabindex="-1"
+    >
+      <div
+        aria-labelledby="_r_XXXX_"
+        aria-modal="true"
+        class="MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiPaper-elevation MuiPaper-elevation24 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiDialog-paper"
+        role="dialog"
+      >
+        <h2
+          class="MuiDialogTitle-root MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root-MuiDialogTitle-root"
+          id="_r_XXXX_"
+        >
+          Are you sure?
+        </h2>
+        <div
+          class="MuiDialogContent-root css-XXXX-MuiDialogContent-root"
+        >
+          <div
+            class="MuiDialogActions-root MuiDialogActions-spacing css-XXXX-MuiDialogActions-root"
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root confirm-action-dialog__cancel css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root confirm-action-dialog__confirm css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>,
+]
+`;
+
+exports[`WithCustomMessageOpen snapshot 1`] = `
+[
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        Action
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>,
+  <div
+    class="MuiDialog-root MuiModal-root confirm-action-dialog css-XXXX-MuiModal-root-MuiDialog-root"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-root MuiDialog-backdrop MuiModal-backdrop css-XXXX-MuiBackdrop-root-MuiDialog-backdrop"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      class="MuiDialog-container MuiDialog-scrollPaper css-XXXX-MuiDialog-container"
+      role="presentation"
+      tabindex="-1"
+    >
+      <div
+        aria-labelledby="_r_XXXX_"
+        aria-modal="true"
+        class="MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiPaper-elevation MuiPaper-elevation24 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiDialog-paper"
+        role="dialog"
+      >
+        <h2
+          class="MuiDialogTitle-root MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root-MuiDialogTitle-root"
+          id="_r_XXXX_"
+        >
+          Are you sure you want to delete this record?
+        </h2>
+        <div
+          class="MuiDialogContent-root css-XXXX-MuiDialogContent-root"
+        >
+          <div
+            class="MuiDialogActions-root MuiDialogActions-spacing css-XXXX-MuiDialogActions-root"
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root confirm-action-dialog__cancel css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root confirm-action-dialog__confirm css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>,
+]
+`;

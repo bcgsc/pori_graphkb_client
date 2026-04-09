@@ -1,0 +1,369 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ComplexOptionsWithValueSelect snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="option-select-"
+    >
+      Fruit
+    </label>
+    <div
+      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <div
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+        >
+          <span
+            class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            apple
+          </span>
+          <p
+            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+          />
+        </div>
+      </div>
+      <input
+        aria-hidden="true"
+        aria-invalid="false"
+        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+        id="option-select-"
+        name=""
+        tabindex="-1"
+        value="apple"
+      />
+      <svg
+        aria-hidden="true"
+        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+        data-testid="ArrowDropDownIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m7 10 5 5 5-5z"
+        />
+      </svg>
+    </div>
+    <p
+      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+    />
+  </div>
+</div>
+`;
+
+exports[`Disabled snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+  >
+    <label
+      class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="option-select-"
+    >
+      Fruit
+    </label>
+    <div
+      class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <div
+        aria-disabled="true"
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        role="combobox"
+      >
+        <div
+          class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+        >
+          <span
+            class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+          >
+            apple
+          </span>
+          <p
+            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+          />
+        </div>
+      </div>
+      <input
+        aria-hidden="true"
+        aria-invalid="false"
+        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+        disabled=""
+        id="option-select-"
+        name=""
+        tabindex="-1"
+        value="apple"
+      />
+      <span
+        class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard css-XXXX-MuiNativeSelect-root-MuiSelect-icon"
+      />
+    </div>
+    <p
+      class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+    />
+  </div>
+</div>
+`;
+
+exports[`Empty snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="false"
+      for="option-select-"
+    >
+      Fruit
+    </label>
+    <div
+      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <div
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        role="combobox"
+        tabindex="0"
+      >
+        <span
+          aria-hidden="true"
+          class="notranslate"
+        >
+          ​
+        </span>
+      </div>
+      <input
+        aria-hidden="true"
+        aria-invalid="false"
+        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+        id="option-select-"
+        name=""
+        tabindex="-1"
+        value=""
+      />
+      <svg
+        aria-hidden="true"
+        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+        data-testid="ArrowDropDownIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m7 10 5 5 5-5z"
+        />
+      </svg>
+    </div>
+    <p
+      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+    />
+  </div>
+</div>
+`;
+
+exports[`WithCustomIcon snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="option-select-"
+    >
+      Fruit
+    </label>
+    <div
+      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <div
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+        >
+          <span
+            class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            apple
+          </span>
+          <p
+            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+          />
+        </div>
+      </div>
+      <input
+        aria-hidden="true"
+        aria-invalid="false"
+        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+        id="option-select-"
+        name=""
+        tabindex="-1"
+        value="apple"
+      />
+      <svg
+        aria-hidden="true"
+        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+        data-testid="PersonIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"
+        />
+      </svg>
+    </div>
+    <p
+      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+    />
+  </div>
+</div>
+`;
+
+exports[`WithError snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+  >
+    <label
+      class="Mui-error MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="option-select-"
+    >
+      Fruit
+    </label>
+    <div
+      class="Mui-error MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <div
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        aria-invalid="true"
+        class="Mui-error MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+        >
+          <span
+            class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            apple
+          </span>
+          <p
+            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+          />
+        </div>
+      </div>
+      <input
+        aria-hidden="true"
+        aria-invalid="true"
+        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+        id="option-select-"
+        name=""
+        tabindex="-1"
+        value="apple"
+      />
+      <svg
+        aria-hidden="true"
+        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+        data-testid="ArrowDropDownIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m7 10 5 5 5-5z"
+        />
+      </svg>
+    </div>
+    <p
+      class="Mui-error MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+    >
+      bad value
+    </p>
+  </div>
+</div>
+`;
+
+exports[`WithValue snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="option-select-"
+    >
+      Fruit
+    </label>
+    <div
+      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <div
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+        >
+          <span
+            class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            apple
+          </span>
+          <p
+            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+          />
+        </div>
+      </div>
+      <input
+        aria-hidden="true"
+        aria-invalid="false"
+        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+        id="option-select-"
+        name=""
+        tabindex="-1"
+        value="apple"
+      />
+      <svg
+        aria-hidden="true"
+        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+        data-testid="ArrowDropDownIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m7 10 5 5 5-5z"
+        />
+      </svg>
+    </div>
+    <p
+      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+    />
+  </div>
+</div>
+`;

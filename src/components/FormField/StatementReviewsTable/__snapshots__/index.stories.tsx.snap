@@ -1,0 +1,691 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Empty snapshot 1`] = `
+<div>
+  <div
+    class="embedded-list-table"
+  >
+    <h6
+      class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+    >
+      Reviews
+    </h6>
+    <table
+      class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
+    >
+      <thead
+        class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
+      >
+        <tr
+          class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <th
+            class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            scope="col"
+          >
+            Review Status
+          </th>
+          <th
+            class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            scope="col"
+          >
+            Reviewer
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+      />
+    </table>
+  </div>
+</div>
+`;
+
+exports[`WithCreatedByAsObject snapshot 1`] = `
+<div>
+  <div
+    class="embedded-list-table"
+  >
+    <h6
+      class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+    >
+      Reviews
+    </h6>
+    <table
+      class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
+    >
+      <thead
+        class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
+      >
+        <tr
+          class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <th
+            class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            scope="col"
+          >
+            Review Status
+          </th>
+          <th
+            class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            scope="col"
+          >
+            Reviewer
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+      >
+        <tr
+          class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            initial
+          </td>
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            <div
+              class="detail-chip"
+            >
+              <div
+                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                role="button"
+                tabindex="0"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  bob (#19:0)
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+exports[`WithDetails snapshot 1`] = `
+[
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="embedded-list-table"
+    >
+      <h6
+        class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+      >
+        Reviews
+      </h6>
+      <table
+        class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
+      >
+        <thead
+          class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
+        >
+          <tr
+            class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <th
+              class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+              scope="col"
+            >
+              Review Status
+            </th>
+            <th
+              class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+              scope="col"
+            >
+              Reviewer
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+        >
+          <tr
+            class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              initial
+            </td>
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    bob (#19:1)
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              initial
+            </td>
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    bob (#19:0)
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              initial
+            </td>
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    bob (#19:0)
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>,
+  <div
+    class="MuiModal-root MuiPopover-root css-XXXX-MuiModal-root-MuiPopover-root detail-chip__popover detail-popover"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-invisible MuiBackdrop-root MuiModal-backdrop css-XXXX-MuiBackdrop-root-MuiModal-backdrop"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      class="MuiPaper-elevation MuiPaper-elevation8 MuiPaper-root MuiPaper-rounded MuiPopover-paper css-XXXX-MuiPaper-root-MuiPopover-paper"
+      tabindex="-1"
+    >
+      <div
+        class="review-card"
+      >
+        <div
+          class="MuiCard-root MuiPaper-elevation MuiPaper-elevation1 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root"
+        >
+          <div
+            class="review-card__header"
+          >
+            <div
+              class="MuiCardHeader-root css-XXXX-MuiCardHeader-root"
+            >
+              <div
+                class="MuiCardHeader-avatar css-XXXX-MuiCardHeader-avatar"
+              >
+                <div
+                  aria-label="Statement Review"
+                  class="MuiAvatar-circular MuiAvatar-colorDefault MuiAvatar-root css-XXXX-MuiAvatar-root review-card__avatar"
+                >
+                  SR
+                </div>
+              </div>
+              <div
+                class="MuiCardHeader-content css-XXXX-MuiCardHeader-content"
+              >
+                <span
+                  class="MuiCardHeader-title MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Statement Review
+                </span>
+                <span
+                  class="MuiCardHeader-subheader MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  created by bob
+                </span>
+              </div>
+            </div>
+          </div>
+          <hr
+            class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+          />
+          <div
+            class="MuiCardContent-root css-XXXX-MuiCardContent-root"
+          >
+            <h5
+              class="MuiTypography-alignCenter MuiTypography-gutterBottom MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Status: initial
+            </h5>
+            <p
+              class="MuiTypography-alignCenter MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              first
+            </p>
+            <div
+              class="review-card__action-button"
+            >
+              <div
+                class="action-button"
+              >
+                <button
+                  class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  Delete
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="DeleteIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>,
+]
+`;
+
+exports[`WithDetailsAsViewVariant snapshot 1`] = `
+[
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="embedded-list-table"
+    >
+      <h6
+        class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+      >
+        Reviews
+      </h6>
+      <table
+        class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
+      >
+        <thead
+          class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
+        >
+          <tr
+            class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <th
+              class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+              scope="col"
+            >
+              Review Status
+            </th>
+            <th
+              class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+              scope="col"
+            >
+              Reviewer
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+        >
+          <tr
+            class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              initial
+            </td>
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    bob (#19:1)
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              initial
+            </td>
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    bob (#19:0)
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+          >
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              initial
+            </td>
+            <td
+              class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                  role="button"
+                  tabindex="0"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    bob (#19:0)
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>,
+  <div
+    class="MuiModal-root MuiPopover-root css-XXXX-MuiModal-root-MuiPopover-root detail-chip__popover detail-popover"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-invisible MuiBackdrop-root MuiModal-backdrop css-XXXX-MuiBackdrop-root-MuiModal-backdrop"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      class="MuiPaper-elevation MuiPaper-elevation8 MuiPaper-root MuiPaper-rounded MuiPopover-paper css-XXXX-MuiPaper-root-MuiPopover-paper"
+      tabindex="-1"
+    >
+      <div
+        class="review-card"
+      >
+        <div
+          class="MuiCard-root MuiPaper-elevation MuiPaper-elevation1 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root"
+        >
+          <div
+            class="review-card__header"
+          >
+            <div
+              class="MuiCardHeader-root css-XXXX-MuiCardHeader-root"
+            >
+              <div
+                class="MuiCardHeader-avatar css-XXXX-MuiCardHeader-avatar"
+              >
+                <div
+                  aria-label="Statement Review"
+                  class="MuiAvatar-circular MuiAvatar-colorDefault MuiAvatar-root css-XXXX-MuiAvatar-root review-card__avatar"
+                >
+                  SR
+                </div>
+              </div>
+              <div
+                class="MuiCardHeader-content css-XXXX-MuiCardHeader-content"
+              >
+                <span
+                  class="MuiCardHeader-title MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Statement Review
+                </span>
+                <span
+                  class="MuiCardHeader-subheader MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  created by bob
+                </span>
+              </div>
+            </div>
+          </div>
+          <hr
+            class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+          />
+          <div
+            class="MuiCardContent-root css-XXXX-MuiCardContent-root"
+          >
+            <h5
+              class="MuiTypography-alignCenter MuiTypography-gutterBottom MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Status: initial
+            </h5>
+            <p
+              class="MuiTypography-alignCenter MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              first
+            </p>
+            <div
+              class="review-card__action-button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>,
+]
+`;
+
+exports[`WithValue snapshot 1`] = `
+<div>
+  <div
+    class="embedded-list-table"
+  >
+    <h6
+      class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+    >
+      Reviews
+    </h6>
+    <table
+      class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
+    >
+      <thead
+        class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
+      >
+        <tr
+          class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <th
+            class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            scope="col"
+          >
+            Review Status
+          </th>
+          <th
+            class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+            scope="col"
+          >
+            Reviewer
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+      >
+        <tr
+          class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            initial
+          </td>
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            <div
+              class="detail-chip"
+            >
+              <div
+                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                role="button"
+                tabindex="0"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  bob (#19:1)
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr
+          class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            initial
+          </td>
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            <div
+              class="detail-chip"
+            >
+              <div
+                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                role="button"
+                tabindex="0"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  bob (#19:0)
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr
+          class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+        >
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            initial
+          </td>
+          <td
+            class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+          >
+            <div
+              class="detail-chip"
+            >
+              <div
+                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorSecondary MuiChip-colorSecondary MuiChip-outlined MuiChip-outlinedSecondary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+                role="button"
+                tabindex="0"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  bob (#19:0)
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;

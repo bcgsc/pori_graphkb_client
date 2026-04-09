@@ -29,13 +29,13 @@ const keycloak = new Keycloak({
 interface DecodedKBToken {
   user: GeneralRecordType & {
     '@rid': string;
-    signedLicenseAt?: string | null;
+    signedLicenseAt?: number | null;
     name: string;
     groups: { name: string }[];
   };
 }
 
-interface AuthContextState {
+export interface AuthContextState {
   login: () => void;
   logout: () => void;
   error: Error | undefined;

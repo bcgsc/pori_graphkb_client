@@ -1,10 +1,13 @@
-import path from "path";
-import { defineConfig, loadEnv } from 'vite';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import react from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser-playwright';
+import path from 'path';
+import { defineConfig, loadEnv } from 'vite';
+import insert from 'rollup-plugin-insert';
 
 export default defineConfig(({ mode }) => {
   const envPrefix = ['KEYCLOAK', 'PUBLIC_PATH', 'CONTACT_EMAIL', 'CONTACT_TICKET_URL', 'IS_DEMO', 'API_BASE_URL'];
-  const envDir = path.resolve(__dirname, "./config");
+  const envDir = path.resolve(__dirname, './config');
   const env = loadEnv(mode, envDir, envPrefix);
   return {
     base: env.PUBLIC_PATH,
@@ -22,26 +25,78 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         // can't seem to get just @/ to work
-        "@/components": path.resolve(__dirname, "./src/components"),
-        "@/services": path.resolve(__dirname, "./src/services"),
-        "@/views": path.resolve(__dirname, "./src/views"),
-        "@/static": path.resolve(__dirname, "./src/static"),
-      }
+        '@/components': path.resolve(__dirname, './src/components'),
+        '@/services': path.resolve(__dirname, './src/services'),
+        '@/views': path.resolve(__dirname, './src/views'),
+        '@/static': path.resolve(__dirname, './src/static'),
+        '#.storybook': path.resolve(__dirname, './.storybook'),
+      },
     },
     server: {
       port: 3000,
       open: true,
     },
     test: {
-      environment: "jsdom",
+      environment: 'jsdom',
       watch: false,
       setupFiles: ['config/jest/windowEnvMock.js'],
       globals: false, // necessary for now for jest-dom extend-expect to work
       coverage: {
         include: ['src/**/*.{js,jsx,ts,tsx}'],
         reportOnFailure: true,
-        exclude: ['**/__tests__/*', '**/test.tsx', '**/*.test.tsx', '*.d.ts']
+        exclude: ['**/__tests__/*', '**/test.tsx', '**/*.test.tsx', '*.d.ts'],
       },
+      projects: [
+        {
+          extends: true,
+          test: {
+            include: ['src/**/*.test.tsx', 'src/**/*.test.ts', 'src/**/test.tsx'],
+            name: 'unit',
+          },
+        },
+        {
+          extends: true,
+          plugins: [
+          // adds snapshot test for stories
+          insert.transform(
+            (_, code) => {
+              const storyNames = Array.from(code.matchAll(/export const ([^\s]+) =/g)).map((match) => match[1]);
+
+              const lines = [
+                `import { createSnapshotTest } from '#.storybook/tests';`,
+                code,
+              ];
+
+              for (const storyName of storyNames) {
+                lines.push(
+                  `createSnapshotTest('${storyName} snapshot', ${storyName}, meta);`,
+                  '\n',
+                );
+              }
+
+              return lines.join('\n');
+            },
+            {
+              include: '**/*.stories.tsx',
+            },
+          ),
+            storybookTest({
+              configDir: path.join(__dirname, '.storybook'),
+              storybookScript: 'npm run storybook --no-open',
+            }),
+          ],
+          test: {
+            name: 'storybook',
+            browser: {
+              enabled: true,
+              provider: playwright({}),
+              headless: true,
+              instances: [{ browser: 'chromium' }],
+              viewport: { width: 1280, height: 768 },
+            },
+          },
+        },
+      ],
     },
-  }
+  };
 });

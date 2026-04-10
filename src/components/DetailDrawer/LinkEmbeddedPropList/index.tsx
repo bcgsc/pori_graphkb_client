@@ -42,12 +42,10 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   } = props;
   const { name, type } = prop;
   let previewStr;
-  let listItemProps = {};
 
   if (isNested) {
     previewStr = schema.getLabel(value);
   } else {
-    listItemProps = { button: true, onClick: () => handleExpand?.(name) };
     previewStr = value?.displayName;
 
     if (type === 'embedded') {
@@ -56,7 +54,7 @@ function LinkEmbeddedPropList(props: LinkEmbeddedPropListProps) {
   }
   return (
     <React.Fragment key={name}>
-      <ListItem {...listItemProps} dense>
+      <ListItem dense onClick={isNested ? undefined : () => handleExpand?.(name)}>
         {isNested && (
           <div className="nested-spacer" />
         )}

@@ -36,8 +36,6 @@ interface StatementFormProps {
   onError?: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** the record id of the current record for the form */
-  rid?: string;
   /** values of individual properties of passed class model */
   value?: GeneralRecordType;
   /** the type of NodeForm to create */
@@ -54,7 +52,6 @@ const StatementForm = ({
   onSubmit,
   onError,
   variant = FORM_VARIANT.VIEW,
-  ...rest
 }: StatementFormProps) => {
   const params = useParams();
   const navigate = useNavigate();
@@ -380,7 +377,6 @@ const StatementForm = ({
       </div>
       <FormContext.Provider value={form}>
         <FormLayout
-          {...rest}
           collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}

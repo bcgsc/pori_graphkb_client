@@ -39,7 +39,6 @@ const BooleanField = (props: BooleanFieldProps) => {
     required = false,
     helperText = '',
     value: initialValue,
-    ...rest
   } = props;
   const value = initialValue === undefined || initialValue === null
     ? null
@@ -48,7 +47,6 @@ const BooleanField = (props: BooleanFieldProps) => {
   return (
     <div
       className="form-templater-radio-wrapper"
-      {...rest}
     >
       <FormControl
         component="fieldset"

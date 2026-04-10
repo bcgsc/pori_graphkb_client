@@ -49,6 +49,7 @@ const meta = preview.type<{ args: CustomArgs }>().meta({
         name={model.name ?? ''}
         value={value}
       >
+        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Component {...rest} model={model} />
       </MockProvider>
     );

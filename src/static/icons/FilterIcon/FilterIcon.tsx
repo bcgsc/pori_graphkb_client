@@ -3,6 +3,7 @@ import React from 'react';
 
 function FilterIcon(props) {
   return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <SVGIcon {...props}>
       <g>
         <path

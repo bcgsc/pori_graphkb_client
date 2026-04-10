@@ -151,23 +151,20 @@ const TextArrayField = (props: TextArrayFieldProps) => {
     .map(
       (text) => {
         const isDeleted = deleted.includes(text);
-        const props = {
-          deleteIcon: isDeleted
-            ? <RefreshIcon aria-label="restore value" />
-            : <CancelIcon aria-label="delete value" />,
-          onDelete: isDeleted
-            ? () => handleRestore(text)
-            : () => handleDelete(text),
-          className: `text-array-field__chip${isDeleted
-            ? ' text-array-field__chip--deleted'
-            : ''
-          }`,
-        };
         return (
           <Chip
             key={text}
+            className={`text-array-field__chip${isDeleted
+              ? ' text-array-field__chip--deleted'
+              : ''
+            }`}
+            deleteIcon={isDeleted
+              ? <RefreshIcon aria-label="restore value" />
+              : <CancelIcon aria-label="delete value" />}
             label={text}
-            {...props}
+            onDelete={isDeleted
+              ? () => handleRestore(text)
+              : () => handleDelete(text)}
           />
         );
       },

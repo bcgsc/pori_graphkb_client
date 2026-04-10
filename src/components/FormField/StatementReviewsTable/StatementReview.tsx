@@ -127,23 +127,8 @@ const StatementReview = ({
               variant: 'outlined',
               color: 'secondary',
             }}
-            details={details}
             label={previewStr}
             PopUpComponent={ReviewComponent}
-            PopUpProps={{ onDelete }}
-            title={label}
-            valueToString={(value) => {
-              const record = value as GeneralRecordType | undefined;
-
-              if (record && record.name) {
-                return record.name;
-              }
-              if (record && record['@rid']) {
-                return record['@rid'];
-              }
-
-              return `${record}`;
-            }}
           />
         </TableCell>
       </TableRow>

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import './index.scss';
 
 import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
@@ -40,9 +41,6 @@ interface FormFieldProps {
     multiline?: boolean;
     rows?: number;
     variant?: 'outlined'
-    inputProps?: {
-      'data-test-id'?: string;
-    },
   },
   /** the label to use for the form field (defaults to the property model name) */
   label?: string;
@@ -209,7 +207,7 @@ const FormField = ({
       required: mandatory,
       value,
       helperText,
-    };
+    } satisfies (Pick<React.ComponentProps<typeof FilteredRecordAutocomplete>, Extract<keyof React.ComponentProps<typeof FilteredRecordAutocomplete>, keyof React.ComponentProps<typeof RecordAutocomplete>>>);
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
       const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
@@ -263,13 +261,9 @@ const FormField = ({
     // timestamp type compoennt
     propComponent = (
       <Timestamp
-        {...innerProps}
-        className="text-field"
         disabled={generated || disabled}
         error={errorFlag}
         helperText={helperText || ' '}
-        InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
         label={name}
         name={label || name}
         onChange={updateFieldEvent}
@@ -283,19 +277,20 @@ const FormField = ({
     // for lack of better option default to text field as catch all
     propComponent = (
       <TextField
-        multiline
-        {...innerProps}
         className="text-field"
         disabled={generated || disabled}
         error={errorFlag}
         helperText={helperText || ' '}
         InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
+        inputProps={{ 'data-testid': name }}
         label={name}
+        multiline={innerProps?.multiline ?? true}
         name={label || name}
         onChange={updateFieldEvent}
         required={mandatory}
+        rows={innerProps?.rows}
         value={value || ''}
+        variant={innerProps?.variant}
       />
     );
   }

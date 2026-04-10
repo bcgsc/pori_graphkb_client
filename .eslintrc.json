@@ -112,7 +112,7 @@
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "error",
         "react/sort-comp": "error",
-        "react/jsx-props-no-spreading": "off",
+        "react/jsx-props-no-spreading": ["error",{ "exceptions": ["AgGridReact"] }],
         "sort-imports": "off",
         "simple-import-sort/exports": "error",
         "simple-import-sort/imports": "error",

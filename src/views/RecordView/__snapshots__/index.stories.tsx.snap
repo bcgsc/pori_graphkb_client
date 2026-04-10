@@ -164,14 +164,13 @@ exports[`EditAliasOf snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -271,14 +270,13 @@ exports[`EditAliasOf snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -371,14 +369,13 @@ exports[`EditAliasOf snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -1406,13 +1403,12 @@ exports[`EditStatement snapshot 1`] = `
                     >
                       <div
                         class="detail-chip"
-                        data-tag-index="0"
-                        tabindex="-1"
                       >
                         <div
                           class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          data-tag-index="0"
                           role="button"
-                          tabindex="0"
+                          tabindex="-1"
                         >
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -1434,13 +1430,12 @@ exports[`EditStatement snapshot 1`] = `
                       </div>
                       <div
                         class="detail-chip"
-                        data-tag-index="1"
-                        tabindex="-1"
                       >
                         <div
                           class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          data-tag-index="1"
                           role="button"
-                          tabindex="0"
+                          tabindex="-1"
                         >
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -1462,13 +1457,12 @@ exports[`EditStatement snapshot 1`] = `
                       </div>
                       <div
                         class="detail-chip"
-                        data-tag-index="2"
-                        tabindex="-1"
                       >
                         <div
                           class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          data-tag-index="2"
                           role="button"
-                          tabindex="0"
+                          tabindex="-1"
                         >
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -1651,13 +1645,12 @@ exports[`EditStatement snapshot 1`] = `
                     >
                       <div
                         class="detail-chip"
-                        data-tag-index="0"
-                        tabindex="-1"
                       >
                         <div
                           class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          data-tag-index="0"
                           role="button"
-                          tabindex="0"
+                          tabindex="-1"
                         >
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -1777,13 +1770,12 @@ exports[`EditStatement snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      tabindex="-1"
                     >
                       <div
                         class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -1984,13 +1976,12 @@ exports[`EditStatement snapshot 1`] = `
                       >
                         <div
                           class="detail-chip"
-                          data-tag-index="0"
-                          tabindex="-1"
                         >
                           <div
                             class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                            data-tag-index="0"
                             role="button"
-                            tabindex="0"
+                            tabindex="-1"
                           >
                             <span
                               class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -2146,13 +2137,12 @@ exports[`EditStatement snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    tabindex="-1"
                   >
                     <div
                       class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -2752,14 +2742,13 @@ exports[`ViewAliasOf snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -2859,14 +2848,13 @@ exports[`ViewAliasOf snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -2969,14 +2957,13 @@ exports[`ViewAliasOf snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3076,14 +3063,13 @@ exports[`ViewAliasOf snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3177,14 +3163,13 @@ exports[`ViewAliasOf snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3453,14 +3438,13 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3560,14 +3544,13 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3670,14 +3653,13 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3777,14 +3759,13 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -3878,14 +3859,13 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -4060,14 +4040,13 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -4392,14 +4371,13 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -4499,14 +4477,13 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -4806,14 +4783,13 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -4913,14 +4889,13 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -5103,14 +5078,13 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -5255,14 +5229,13 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -5547,14 +5520,13 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -5971,14 +5943,13 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -6238,14 +6209,13 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -6662,14 +6632,13 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -6852,14 +6821,13 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7004,14 +6972,13 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7377,14 +7344,13 @@ exports[`ViewStatement snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7406,14 +7372,13 @@ exports[`ViewStatement snapshot 1`] = `
                   </div>
                   <div
                     class="detail-chip"
-                    data-tag-index="1"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="1"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7435,14 +7400,13 @@ exports[`ViewStatement snapshot 1`] = `
                   </div>
                   <div
                     class="detail-chip"
-                    data-tag-index="2"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="2"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7542,14 +7506,13 @@ exports[`ViewStatement snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7642,14 +7605,13 @@ exports[`ViewStatement snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7751,14 +7713,13 @@ exports[`ViewStatement snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -7858,14 +7819,13 @@ exports[`ViewStatement snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8339,14 +8299,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8368,14 +8327,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   </div>
                   <div
                     class="detail-chip"
-                    data-tag-index="1"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="1"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8397,14 +8355,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   </div>
                   <div
                     class="detail-chip"
-                    data-tag-index="2"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="2"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8504,14 +8461,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8604,14 +8560,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                 >
                   <div
                     class="detail-chip"
-                    data-tag-index="0"
-                    disabled=""
-                    tabindex="-1"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      aria-disabled="true"
+                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-tag-index="0"
                       role="button"
-                      tabindex="0"
+                      tabindex="-1"
                     >
                       <span
                         class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8713,14 +8668,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -8820,14 +8774,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   >
                     <div
                       class="detail-chip"
-                      data-tag-index="0"
-                      disabled=""
-                      tabindex="-1"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        aria-disabled="true"
+                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        data-tag-index="0"
                         role="button"
-                        tabindex="0"
+                        tabindex="-1"
                       >
                         <span
                           class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -9143,14 +9096,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -9295,14 +9247,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -9440,14 +9391,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                         >
                           <div
                             class="detail-chip"
-                            data-tag-index="0"
-                            disabled=""
-                            tabindex="-1"
                           >
                             <div
-                              class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              aria-disabled="true"
+                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              data-tag-index="0"
                               role="button"
-                              tabindex="0"
+                              tabindex="-1"
                             >
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"

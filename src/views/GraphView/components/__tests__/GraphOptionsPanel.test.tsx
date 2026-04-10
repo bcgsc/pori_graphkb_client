@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import '@testing-library/jest-dom/vitest';
 
 import { fireEvent, render, screen } from '@testing-library/react';

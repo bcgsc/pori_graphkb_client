@@ -2958,7 +2958,7 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                     class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                   >
                     <label
-                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      class="Mui-error Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
@@ -2966,20 +2966,20 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                       relevance
                       <span
                         aria-hidden="true"
-                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                        class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                       >
                          
                         *
                       </span>
                     </label>
                     <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                      class="Mui-error MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                     >
                       <input
                         aria-autocomplete="list"
                         aria-describedby="_r_XXXX_-helper-text"
                         aria-expanded="false"
-                        aria-invalid="false"
+                        aria-invalid="true"
                         autocapitalize="none"
                         autocomplete="off"
                         class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
@@ -3016,7 +3016,7 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                       </div>
                     </div>
                     <p
-                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      class="Mui-error Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                       id="_r_XXXX_-helper-text"
                     >
                       Adds meaning to a statement and applies to the "subject" element

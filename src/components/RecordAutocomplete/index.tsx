@@ -64,7 +64,7 @@ interface RecordAutocompleteProps {
   /** flag to indicate this input is disabled */
   disabled?: boolean;
   /** Error message */
-  errorText?: string;
+  error?: boolean;
   helperText?: string;
   /** flag to indicate this field accepts multiple records */
   isMulti?: boolean;
@@ -91,7 +91,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   const {
     className = '',
     disabled = false,
-    errorText = '',
+    error,
     isMulti = false,
     label = '',
     minSearchLength = 1,
@@ -200,11 +200,11 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
   const handleOnBlur = useCallback(
     () => {
-      if (!errorText && isMulti && !disabled) {
+      if (!error && isMulti && !disabled) {
         setHelperText('May take more than one value');
       }
     },
-    [disabled, errorText, isMulti],
+    [disabled, error, isMulti],
   );
 
   const filterOptions = useCallback((opts, { inputValue }) => {
@@ -250,10 +250,11 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       ]}
       renderInput={(params) => (
         <TextField
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
           disabled={disabled || (!isMulti && Boolean(selectedValues.length))}
-          error={Boolean(errorText)}
-          helperText={helperText || errorText}
+          error={error}
+          helperText={helperText}
           InputLabelProps={{
             shrink: !(disabled && !selectedValues.length),
           }}
@@ -278,6 +279,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       )}
       renderTags={(values, getTagProps) => values.map((option, index) => (
         <DetailChip
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...getTagProps({ index })}
           className="record-autocomplete__chip record-autocomplete__chip--multi"
           details={option}

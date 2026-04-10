@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react';
 
 import { FormContextState } from '@/components/FormContext';
 
-interface TimestampProps extends Omit<TextFieldProps, 'onChange'> {
+interface TimestampProps extends Pick<TextFieldProps, 'disabled' | 'error' | 'helperText' | 'label' | 'required'> {
   name: string;
   onChange: FormContextState['updateFieldEvent'];
   value?: any;
 }
 
 const Timestamp = ({
-  value = '', name, onChange, ...rest
+  value = '', name, onChange, disabled, helperText, error, label, required,
 }: TimestampProps) => {
   const [displayValue, setDisplayValue] = useState('');
 
@@ -25,12 +25,16 @@ const Timestamp = ({
 
   return (
     <TextField
-      {...rest}
       className="text-field"
+      disabled={disabled}
+      error={error}
+      helperText={helperText}
       InputLabelProps={{ shrink: true }}
-      inputProps={{ ...(rest.inputProps || {}), 'data-testid': name }}
+      inputProps={{ 'data-testid': name }}
+      label={label}
       name={name}
       onChange={onDatePicked}
+      required={required}
       type="datetime-local"
       value={displayValue}
     />

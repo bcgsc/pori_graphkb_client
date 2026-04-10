@@ -220,6 +220,7 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   }
   const cp = componentProps || {};
 
+  // eslint-disable-next-line react/jsx-props-no-spreading
   return <Comp {...cp} />;
 };
 

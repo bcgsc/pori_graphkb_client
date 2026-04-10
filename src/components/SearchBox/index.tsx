@@ -20,8 +20,7 @@ interface SearchBoxProps {
   onSubmit?: (...args: unknown[]) => unknown;
   /** the initial value in the serach box */
   value?: string;
-  /** Rest of props for TextField */
-  [key: string]: unknown;
+  placeholder?: string;
 }
 
 const SearchBox = ({
@@ -31,7 +30,7 @@ const SearchBox = ({
   helperText,
   onChange = () => {},
   className = '',
-  ...props
+  placeholder,
 }: SearchBoxProps) => {
   const [searchText, setSearchText] = useState(value);
   const [debouncedSearchText] = useDebounce(searchText, 300);
@@ -57,9 +56,8 @@ const SearchBox = ({
       tabIndex={0}
     >
       <TextField
-        fullWidth
-        {...props}
         error={error}
+        fullWidth
         helperText={helperText}
         InputProps={{
           endAdornment: (
@@ -78,6 +76,7 @@ const SearchBox = ({
           'data-testid': 'search-box__input',
         }}
         onChange={handleTextChange}
+        placeholder={placeholder}
         value={searchText}
       />
     </div>

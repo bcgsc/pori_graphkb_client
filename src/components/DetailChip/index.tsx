@@ -87,16 +87,18 @@ interface DetailChipProps<D extends object = Record<string, unknown>> extends De
   /** label for the record */
   label: string;
   /** properties passed to the chip element */
-  ChipProps?: Partial<React.ComponentProps<typeof Chip>>;
+  ChipProps?: Pick<React.ComponentProps<typeof Chip>, 'variant' | 'color'>;
   /** function component constructor */
   PopUpComponent?: (props: Record<string, unknown>) => React.JSX.Element;
-  /** props for PopUpComponent so that it mounts correctly */
-  PopUpProps?: Record<string, unknown>;
-  className?: string;
   /** function handler for the user clicking the X on the chip */
   onDelete?: (...args: unknown[]) => unknown;
   /** the title for the pop-up card (defaults to the chip label) */
   title?: string;
+  // passed from getTagProps
+  className?: string;
+  disabled?: boolean;
+  'data-tag-index'?: number;
+  tabIndex?: -1;
 }
 
 /**
@@ -118,8 +120,9 @@ function DetailChip<D extends object>(props: DetailChipProps<D>) {
     getLink,
     title,
     PopUpComponent = DefaultPopupComponent,
-    PopUpProps,
-    ...rest
+    tabIndex,
+    'data-tag-index': dataTagIndex,
+    disabled,
   } = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -139,7 +142,7 @@ function DetailChip<D extends object>(props: DetailChipProps<D>) {
   }, []);
 
   return (
-    <div className="detail-chip" {...rest}>
+    <div className="detail-chip">
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -150,7 +153,14 @@ function DetailChip<D extends object>(props: DetailChipProps<D>) {
         open={!!anchorEl}
         transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <PopUpComponent {...props} {...PopUpProps} />
+        <PopUpComponent
+          details={details}
+          getDetails={getDetails}
+          getLink={getLink}
+          label={label}
+          title={title}
+          valueToString={valueToString}
+        />
       </Popover>
       <Chip
         classes={{
@@ -159,10 +169,14 @@ function DetailChip<D extends object>(props: DetailChipProps<D>) {
         }}
         className={`detail-chip__root ${className || ''}`}
         clickable
+        color={ChipProps.color}
+        data-tag-index={dataTagIndex}
+        disabled={disabled}
         label={label}
         onClick={handlePopoverOpen}
         onDelete={onDelete}
-        {...ChipProps}
+        tabIndex={tabIndex}
+        variant={ChipProps.variant}
       />
     </div>
   );

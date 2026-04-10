@@ -49,7 +49,6 @@ const PositionForm = ({
   onChange,
   value,
   variant: initialVariant = '',
-  ...props
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
   const [variant, setVariant] = useState(initialVariant);
@@ -103,7 +102,6 @@ const PositionForm = ({
           onChange={onChange}
           value={value}
           variant={variant || positionVariants[0]}
-          {...props}
         />
       )}
       <FormHelperText error={error}>{helperText}</FormHelperText>

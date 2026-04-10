@@ -69,7 +69,7 @@ export const Disabled = WithValue.extend({
 });
 
 export const WithError = WithValue.extend({
-  args: { errorText: 'bad value' },
+  args: { error: true, helperText: 'bad value' },
 });
 
 export const MultiWithValue = WithValue.extend({

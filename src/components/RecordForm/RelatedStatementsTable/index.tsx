@@ -73,7 +73,7 @@ const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
     }
   }, [grid.ref, isFetching, statements]);
 
-  const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>);
+  const renderCellRenderer = ({ value }) => (<><RecordIdLink recordClass={value?.recordClass} recordId={value?.recordId} /></>);
 
   if (!isFetching && (!statements || statements.length === 0)) {
     return null;

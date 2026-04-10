@@ -41,12 +41,6 @@ function TextRow(props: TextRowProps) {
   } = props;
 
   const LongValue = () => {
-    const listItemProps = isStatic
-      ? {}
-      : { button: true, onClick: () => handleExpand?.(name) };
-    const collapseProps = isStatic
-      ? { in: true }
-      : { in: !!opened.includes(name) };
     let itemIcon: ReactNode = null;
 
     if (isStatic !== true) {
@@ -56,7 +50,7 @@ function TextRow(props: TextRowProps) {
     }
     return (
       <React.Fragment key={name}>
-        <ListItem {...listItemProps} dense>
+        <ListItem dense onClick={isStatic ? undefined : () => handleExpand?.(name)}>
           {isNested && <div className="nested-spacer" />}
           <ListItemText className="detail-li-text">
             <Typography color={isNested ? 'textSecondary' : 'default'}>
@@ -65,7 +59,7 @@ function TextRow(props: TextRowProps) {
           </ListItemText>
           {itemIcon}
         </ListItem>
-        <Collapse {...collapseProps} unmountOnExit>
+        <Collapse in={isStatic || !!opened.includes(name)} unmountOnExit>
           <ListItem dense>
             {isNested && <div className="nested-spacer" />}
             <ListItemText className="detail-li-text">

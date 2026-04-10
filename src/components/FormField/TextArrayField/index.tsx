@@ -5,6 +5,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   Chip,
+  ChipProps,
   IconButton,
   TextField,
 } from '@mui/material';
@@ -25,6 +26,8 @@ interface TextArrayFieldProps {
   label?: string;
   /** Embedded set property as array. */
   value?: string[];
+  helperText?: string;
+  required?: boolean;
 }
 
 /**
@@ -36,6 +39,7 @@ interface TextArrayFieldProps {
 const TextArrayField = (props: TextArrayFieldProps) => {
   const {
     value: valueProp = [], name, onChange, label = '', disabled = false, error = false,
+    helperText, required,
   } = props;
   /** the current list of values (including deleted) */
   const [value, setValue] = useState((valueProp || []).slice());
@@ -150,21 +154,28 @@ const TextArrayField = (props: TextArrayFieldProps) => {
   const chips = value
     .map(
       (text) => {
-        const isDeleted = deleted.includes(text);
+        let deleteIcon: ChipProps['deleteIcon'] | undefined;
+        let onDelete: ChipProps['onDelete'];
+        let className = 'text-array-field__chip';
+
+        if (!disabled) {
+          if (deleted.includes(text)) {
+            className += ' text-array-field__chip--deleted';
+            deleteIcon = <RefreshIcon aria-label="restore value" />;
+            onDelete = () => handleRestore(text);
+          } else {
+            deleteIcon = <CancelIcon aria-label="delete value" />;
+            onDelete = () => handleDelete(text);
+          }
+        }
+
         return (
           <Chip
             key={text}
-            className={`text-array-field__chip${isDeleted
-              ? ' text-array-field__chip--deleted'
-              : ''
-            }`}
-            deleteIcon={isDeleted
-              ? <RefreshIcon aria-label="restore value" />
-              : <CancelIcon aria-label="delete value" />}
+            className={className}
+            deleteIcon={deleteIcon}
             label={text}
-            onDelete={isDeleted
-              ? () => handleRestore(text)
-              : () => handleDelete(text)}
+            onDelete={onDelete}
           />
         );
       },
@@ -176,7 +187,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         className="text-array-field__text-field"
         disabled={disabled}
         error={Boolean(textInputError || error)}
-        helperText={textInputError}
+        helperText={textInputError || helperText}
         id={`${label.toLowerCase()}-temp`}
         InputProps={{
           classes: {
@@ -193,6 +204,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         name={label.toLowerCase()}
         onChange={handleInputChange}
         onKeyDown={handleInputKeyPress}
+        required={required}
         value={textInputValue}
       />
       <div className="text-array-field__btns">

@@ -216,7 +216,7 @@ exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
         for="_r_XXXX_"
         id="_r_XXXX_-label"
       >
-        comment
+        User Comments
       </label>
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -227,7 +227,7 @@ exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
           class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
           data-testid="comment"
           id="_r_XXXX_"
-          name="User Comments"
+          name="comment"
         >
           hello world
         </textarea>

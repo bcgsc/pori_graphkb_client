@@ -37,6 +37,7 @@ interface PositionFormProps {
   value?: Record<string, unknown>;
   /** the position class model name */
   variant?: string;
+  required?: boolean;
 }
 
 const PositionForm = ({
@@ -49,6 +50,7 @@ const PositionForm = ({
   onChange,
   value,
   variant: initialVariant = '',
+  required,
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
   const [variant, setVariant] = useState(initialVariant);
@@ -100,6 +102,7 @@ const PositionForm = ({
           disabled={disabled}
           name={name}
           onChange={onChange}
+          required={required}
           value={value}
           variant={variant || positionVariants[0]}
         />

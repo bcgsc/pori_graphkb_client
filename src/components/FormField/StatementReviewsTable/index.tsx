@@ -12,7 +12,6 @@ import React from 'react';
 
 import { FormContextState } from '@/components/FormContext';
 import { GeneralRecordType } from '@/components/types';
-import { FORM_VARIANT } from '@/components/util';
 
 import StatementReviewRow from './StatementReview';
 
@@ -22,9 +21,8 @@ interface StatementReviewsTableProps {
   /** parent change handler function */
   onChange: FormContextState['updateFieldEvent'];
   /** linked records to be displayed in table */
-  values?: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType })[];
-  /** mode that dialog is in. One of ['view','edit']. */
-  variant?: FORM_VARIANT | '';
+  value?: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType })[];
+  disabled?: boolean;
 }
 
 /**
@@ -32,8 +30,8 @@ interface StatementReviewsTableProps {
  */
 const StatementReviewsTable = (props: StatementReviewsTableProps) => {
   const {
-    values = [],
-    variant = FORM_VARIANT.VIEW,
+    value: values = [],
+    disabled,
     onChange,
     name,
   } = props;
@@ -62,10 +60,10 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
         <TableBody>
           {values.map((value, index) => (
             <StatementReviewRow
+              disabled={disabled}
               index={index}
               onDelete={handleDeleteReview}
               value={value}
-              variant={variant}
             />
           ))}
         </TableBody>

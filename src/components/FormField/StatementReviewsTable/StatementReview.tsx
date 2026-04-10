@@ -17,16 +17,15 @@ import { useQuery } from 'react-query';
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
 import { GeneralRecordType } from '@/components/types';
-import { FORM_VARIANT, tuple } from '@/components/util';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 interface StatementReviewProps {
   index: number;
+  disabled?: boolean;
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
   value: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType });
-  /** one of ['view', 'edit'] mode */
-  variant?: FORM_VARIANT | '';
 }
 
 /**
@@ -35,8 +34,8 @@ interface StatementReviewProps {
 const StatementReview = ({
   value,
   index,
-  variant = FORM_VARIANT.VIEW,
   onDelete,
+  disabled = true,
 }: StatementReviewProps) => {
   const {
     status, createdBy, comment,
@@ -87,7 +86,7 @@ const StatementReview = ({
             {comment}
           </Typography>
           <div className="review-card__action-button">
-            {variant === 'edit' && (
+            {!disabled && (
               <ActionButton
                 color="primary"
                 onClick={() => onDelete({ index })}

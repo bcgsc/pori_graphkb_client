@@ -118,96 +118,88 @@ const FormField = ({
     updateFieldEvent({ target: { name, value } });
   }
 
+  // ensure all components both get and support
+  // the following props
+  const sharedTableProps = {
+    disabled: generated || disabled,
+    name,
+    onChange: updateFieldEvent,
+    value,
+  } satisfies SharedProps<[
+    React.ComponentProps<typeof StatementReviewsTable>,
+    React.ComponentProps<typeof PermissionsTable>,
+  ]>;
+  const sharedProps = {
+    disabled: generated || disabled,
+    error: errorFlag,
+    helperText,
+    label: label || name,
+    name,
+    required: mandatory,
+    onChange: updateFieldEvent,
+    value,
+  } satisfies SharedProps<[
+    React.ComponentProps<typeof BooleanField>,
+    React.ComponentProps<typeof TextField>,
+    React.ComponentProps<typeof TextArrayField>,
+    React.ComponentProps<typeof PositionForm>,
+    React.ComponentProps<typeof DropDownSelect>,
+    React.ComponentProps<typeof FilteredRecordAutocomplete>,
+    React.ComponentProps<typeof RecordAutocomplete>,
+  ]>;
+
   let propComponent;
 
   if (type === 'boolean') {
     propComponent = (
       <BooleanField
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value}
+        {...sharedProps}
       />
     );
   } else if (type.includes('embedded') && linkedType === 'string' && iterable) {
     propComponent = (
       <TextArrayField
-        disabled={disabled || generated}
-        error={errorFlag}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        value={value}
+        {...sharedProps}
       />
     );
   } else if (type.includes('embedded') && linkedClass) {
     if (iterable && linkedClass.name === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
-          name={name}
-          onChange={updateFieldEvent}
-          values={value || []}
-          variant={formVariant}
+          {...sharedTableProps}
+          value={sharedProps.value || []}
         />
       );
     } else if (linkedClass.name === 'Permissions') {
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
-          disabled={disabled || generated}
-          name={name}
-          onChange={updateFieldEvent}
-          value={value}
+          {...sharedTableProps}
         />
       );
     } else if (POSITION_CLASSES.includes(linkedClass.name)) {
       propComponent = (
         <PositionForm
+          {...sharedProps}
           baseVariant={baseModel}
-          disabled={disabled}
-          error={errorFlag}
-          helperText={helperText}
-          label={label || name}
-          name={name}
-          onChange={updateFieldEvent}
-          value={value}
-          variant={value && value['@class']}
+          variant={sharedProps.value && sharedProps.value['@class']}
         />
       );
     }
   } else if (choices) {
     propComponent = (
       <DropDownSelect
-        className={className}
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText}
-        innerProps={innerProps}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
+        {...sharedProps}
         options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices as string[]]}
-        required={mandatory}
-        value={value || ''}
+        value={sharedProps.value || ''}
       />
     );
   } else if (type === 'link' || type === 'linkset') {
     const autoProps = {
-      disabled: generated || disabled,
-      error: errorFlag,
+      ...sharedProps,
       isMulti: type === 'linkset',
-      label: label || name,
       className,
-      name,
-      onChange: updateFieldEvent,
-      required: mandatory,
-      value,
-      helperText,
-    } satisfies (Pick<React.ComponentProps<typeof FilteredRecordAutocomplete>, Extract<keyof React.ComponentProps<typeof FilteredRecordAutocomplete>, keyof React.ComponentProps<typeof RecordAutocomplete>>>);
+    } satisfies SharedProps<[React.ComponentProps<typeof FilteredRecordAutocomplete>, React.ComponentProps<typeof RecordAutocomplete>]>;
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
       const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
@@ -261,14 +253,8 @@ const FormField = ({
     // timestamp type compoennt
     propComponent = (
       <Timestamp
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText || ' '}
-        label={name}
-        name={label || name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value || ''}
+        {...sharedProps}
+        value={sharedProps.value || ''}
       />
     );
   }
@@ -277,19 +263,14 @@ const FormField = ({
     // for lack of better option default to text field as catch all
     propComponent = (
       <TextField
+        {...sharedProps}
         className="text-field"
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText || ' '}
-        InputLabelProps={{ shrink: !!value }}
+        helperText={sharedProps.helperText || ' '}
+        InputLabelProps={{ shrink: !!sharedProps.value }}
         inputProps={{ 'data-testid': name }}
-        label={name}
         multiline={innerProps?.multiline ?? true}
-        name={label || name}
-        onChange={updateFieldEvent}
-        required={mandatory}
         rows={innerProps?.rows}
-        value={value || ''}
+        value={sharedProps.value || ''}
         variant={innerProps?.variant}
       />
     );

@@ -277,17 +277,23 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
           required={required}
         />
       )}
-      renderTags={(values, getTagProps) => values.map((option, index) => (
-        <DetailChip
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...getTagProps({ index })}
-          className="record-autocomplete__chip record-autocomplete__chip--multi"
-          details={option}
-          getLink={schema.getLink}
-          label={schema.getLabel(option)}
-          valueToString={valueToString}
-        />
-      ))}
+      renderTags={(values, getTagProps) => values.map((option, index) => {
+        const tagProps = getTagProps({ index });
+        return (
+          <DetailChip
+            key={tagProps.key}
+            className={`${tagProps.className ?? ''} record-autocomplete__chip record-autocomplete__chip--multi`}
+            data-tag-index={tagProps['data-tag-index']}
+            details={option}
+            disabled={false}
+            getLink={schema.getLink}
+            label={schema.getLabel(option)}
+            onDelete={tagProps.disabled ? undefined : tagProps.onDelete}
+            tabIndex={tagProps.tabIndex}
+            valueToString={valueToString}
+          />
+        );
+      })}
       value={selectedValues}
     />
   );

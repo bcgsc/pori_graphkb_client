@@ -166,8 +166,7 @@ exports[`EditAliasOf snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -177,17 +176,6 @@ exports[`EditAliasOf snapshot 1`] = `
                       >
                         amsa/dac [c10098] (#121:23)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -272,8 +260,7 @@ exports[`EditAliasOf snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -283,17 +270,6 @@ exports[`EditAliasOf snapshot 1`] = `
                       >
                         amsa/5-aza-dcyd [c10098] (#124:31764)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -371,8 +347,7 @@ exports[`EditAliasOf snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -382,17 +357,6 @@ exports[`EditAliasOf snapshot 1`] = `
                       >
                         NCIt (#40:3)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -1405,7 +1369,7 @@ exports[`EditStatement snapshot 1`] = `
                         class="detail-chip"
                       >
                         <div
-                          class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                           data-tag-index="0"
                           role="button"
                           tabindex="-1"
@@ -1432,7 +1396,7 @@ exports[`EditStatement snapshot 1`] = `
                         class="detail-chip"
                       >
                         <div
-                          class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                           data-tag-index="1"
                           role="button"
                           tabindex="-1"
@@ -1459,7 +1423,7 @@ exports[`EditStatement snapshot 1`] = `
                         class="detail-chip"
                       >
                         <div
-                          class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                           data-tag-index="2"
                           role="button"
                           tabindex="-1"
@@ -1647,7 +1611,7 @@ exports[`EditStatement snapshot 1`] = `
                         class="detail-chip"
                       >
                         <div
-                          class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                           data-tag-index="0"
                           role="button"
                           tabindex="-1"
@@ -1772,7 +1736,7 @@ exports[`EditStatement snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -1978,7 +1942,7 @@ exports[`EditStatement snapshot 1`] = `
                           class="detail-chip"
                         >
                           <div
-                            class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                            class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                             data-tag-index="0"
                             role="button"
                             tabindex="-1"
@@ -2139,7 +2103,7 @@ exports[`EditStatement snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -2744,8 +2708,7 @@ exports[`ViewAliasOf snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -2755,17 +2718,6 @@ exports[`ViewAliasOf snapshot 1`] = `
                       >
                         amsa/dac [c10098] (#121:23)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -2850,8 +2802,7 @@ exports[`ViewAliasOf snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -2861,17 +2812,6 @@ exports[`ViewAliasOf snapshot 1`] = `
                       >
                         amsa/5-aza-dcyd [c10098] (#124:31764)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -2959,8 +2899,7 @@ exports[`ViewAliasOf snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -2970,17 +2909,6 @@ exports[`ViewAliasOf snapshot 1`] = `
                         >
                           amsa/dac [c10098] (#121:23)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -3065,8 +2993,7 @@ exports[`ViewAliasOf snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -3076,17 +3003,6 @@ exports[`ViewAliasOf snapshot 1`] = `
                         >
                           amsa/5-aza-dcyd [c10098] (#124:31764)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -3165,8 +3081,7 @@ exports[`ViewAliasOf snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -3176,17 +3091,6 @@ exports[`ViewAliasOf snapshot 1`] = `
                       >
                         NCIt (#40:3)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -3440,8 +3344,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -3451,17 +3354,6 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                       >
                         amsa/dac [c10098] (#121:23)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -3546,8 +3438,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -3557,17 +3448,6 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                       >
                         amsa/5-aza-dcyd [c10098] (#124:31764)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -3655,8 +3535,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -3666,17 +3545,6 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                         >
                           amsa/dac [c10098] (#121:23)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -3761,8 +3629,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -3772,17 +3639,6 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                         >
                           amsa/5-aza-dcyd [c10098] (#124:31764)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -3861,8 +3717,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -3872,17 +3727,6 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                       >
                         NCIt (#40:3)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -4042,8 +3886,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -4053,17 +3896,6 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -4373,8 +4205,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -4384,17 +4215,6 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                       >
                         NOTCH4 (#128:91665)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -4479,8 +4299,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -4490,17 +4309,6 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                       >
                         increased RNA expression (#148:16)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -4785,8 +4593,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -4796,17 +4603,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                       >
                         NOTCH4 (#128:91665)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -4891,8 +4687,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -4902,17 +4697,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                       >
                         increased RNA expression (#148:16)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -5080,8 +4864,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -5091,17 +4874,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -5231,8 +5003,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -5242,17 +5013,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -5522,8 +5282,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -5533,17 +5292,6 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                         >
                           PPP2R2A (#128:89338)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -5945,8 +5693,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -5956,17 +5703,6 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                       >
                         missense (#145:31)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -6211,8 +5947,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -6222,17 +5957,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                         >
                           PPP2R2A (#128:89338)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -6634,8 +6358,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -6645,17 +6368,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                       >
                         missense (#145:31)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -6823,8 +6535,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -6834,17 +6545,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -6974,8 +6674,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -6985,17 +6684,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -7346,8 +7034,7 @@ exports[`ViewStatement snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -7357,25 +7044,13 @@ exports[`ViewStatement snapshot 1`] = `
                       >
                         pembrolizumab [DB09037] (#122:30774)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <div
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="1"
                       role="button"
                       tabindex="-1"
@@ -7385,25 +7060,13 @@ exports[`ViewStatement snapshot 1`] = `
                       >
                         all solid tumors (#133:21363)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <div
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="2"
                       role="button"
                       tabindex="-1"
@@ -7413,17 +7076,6 @@ exports[`ViewStatement snapshot 1`] = `
                       >
                         high mutation burden high signature (#161:920)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -7508,8 +7160,7 @@ exports[`ViewStatement snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -7519,17 +7170,6 @@ exports[`ViewStatement snapshot 1`] = `
                       >
                         FDA approves pembrolizumab for adults and child...
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -7607,8 +7247,7 @@ exports[`ViewStatement snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -7618,17 +7257,6 @@ exports[`ViewStatement snapshot 1`] = `
                       >
                         IPR-A (#108:30)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -7715,8 +7343,7 @@ exports[`ViewStatement snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -7726,17 +7353,6 @@ exports[`ViewStatement snapshot 1`] = `
                         >
                           sensitivity (#148:34)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -7821,8 +7437,7 @@ exports[`ViewStatement snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -7832,17 +7447,6 @@ exports[`ViewStatement snapshot 1`] = `
                         >
                           pembrolizumab [DB09037] (#122:30774)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -8301,8 +7905,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -8312,25 +7915,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       >
                         pembrolizumab [DB09037] (#122:30774)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <div
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="1"
                       role="button"
                       tabindex="-1"
@@ -8340,25 +7931,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       >
                         all solid tumors (#133:21363)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <div
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="2"
                       role="button"
                       tabindex="-1"
@@ -8368,17 +7947,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       >
                         high mutation burden high signature (#161:920)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -8463,8 +8031,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -8474,17 +8041,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       >
                         FDA approves pembrolizumab for adults and child...
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -8562,8 +8118,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                     class="detail-chip"
                   >
                     <div
-                      aria-disabled="true"
-                      class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                       data-tag-index="0"
                       role="button"
                       tabindex="-1"
@@ -8573,17 +8128,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       >
                         IPR-A (#108:30)
                       </span>
-                      <svg
-                        aria-hidden="true"
-                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                        data-testid="CancelIcon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                        />
-                      </svg>
                     </div>
                   </div>
                   <input
@@ -8670,8 +8214,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -8681,17 +8224,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                         >
                           sensitivity (#148:34)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -8776,8 +8308,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       class="detail-chip"
                     >
                       <div
-                        aria-disabled="true"
-                        class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                         data-tag-index="0"
                         role="button"
                         tabindex="-1"
@@ -8787,17 +8318,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                         >
                           pembrolizumab [DB09037] (#122:30774)
                         </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
                       </div>
                     </div>
                     <input
@@ -9098,8 +8618,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -9109,17 +8628,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -9249,8 +8757,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -9260,17 +8767,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 jsmith (#1:1)
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input
@@ -9393,8 +8889,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                             class="detail-chip"
                           >
                             <div
-                              aria-disabled="true"
-                              class="Mui-disabled MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                              class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
                               data-tag-index="0"
                               role="button"
                               tabindex="-1"
@@ -9404,17 +8899,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                               >
                                 #153:14996
                               </span>
-                              <svg
-                                aria-hidden="true"
-                                class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                                data-testid="CancelIcon"
-                                focusable="false"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                                />
-                              </svg>
                             </div>
                           </div>
                           <input

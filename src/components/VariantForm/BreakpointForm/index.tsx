@@ -1,4 +1,4 @@
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,
@@ -11,10 +11,7 @@ import FormField from '@/components/FormField';
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
-  /**
-   * @todo get type from schema package
-   */
-  model: any;
+  model: ClassDefinition;
   /** the field name of the reference element (ex. reference1) */
   reference: string | undefined;
   /** the field name of the end position (ex. break1End) */

@@ -33,8 +33,11 @@ interface UseSchemaFormOptions {
  * @returns {FormContext} the form context values
  */
 const useSchemaForm = (
-  /** @todo get type from schema package */
-  initialFieldDefs: Record<string, any>,
+  initialFieldDefs: Record<string, Partial<PropertyDefinition> & {
+    name: string;
+    // missing from types
+    generateDefault?: (record: Record<string, unknown>) => unknown;
+  }>,
   initialValue: GeneralRecordType = {},
   err: Record<string, any> = {},
   { ignoreMandatoryErrors = false, variant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
@@ -97,7 +100,7 @@ const useSchemaForm = (
       const propValue = (initialValue || {})[prop.name];
 
       const { error, value } = formValidator(prop.name, propValue);
-      setFormFieldContent(prop.name, value);
+      setFormFieldContent(prop.name as keyof GeneralRecordType, value);
       setFormFieldError(prop.name, error);
     });
 

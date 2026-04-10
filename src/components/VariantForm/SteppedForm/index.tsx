@@ -25,7 +25,7 @@ interface SteppedFormProps {
   /** handler to call on form submission */
   onSubmit: (formContent: unknown) => void;
   /** property definitions for the form fields */
-  properties: Record<string, unknown>;
+  properties: Parameters<typeof useSchemaForm>[0];
   className?: string;
   formVariant?: FORM_VARIANT;
   isLoading?: boolean;

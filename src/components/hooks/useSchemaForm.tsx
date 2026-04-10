@@ -122,7 +122,7 @@ const useSchemaForm = (
       && fieldDefs.displayNameTemplate.generateDefault
       && formContent.displayNameTemplate
     ) {
-      const { displayNameTemplate, ...rest } = formContent;
+      const { displayNameTemplate: _, ...rest } = formContent;
       const newTemplate = fieldDefs.displayNameTemplate.generateDefault({ ...rest, [propName]: value });
       setFormFieldContent('displayNameTemplate', newTemplate);
     }

@@ -1,4 +1,4 @@
-import { ClassDefinition, PropertyDefinition as PropDefinition } from '@bcgsc-pori/graphkb-schema';
+import { PropertyDefinition as PropDefinition } from '@bcgsc-pori/graphkb-schema';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {

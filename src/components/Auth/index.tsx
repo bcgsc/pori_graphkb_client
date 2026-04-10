@@ -83,7 +83,7 @@ const AuthProvider = (props: { children: ReactNode }) => {
         const { user } = jwtDecode<DecodedKBToken>(authorizationToken);
 
         await keycloak.loadUserInfo();
-        // eslint-disable-next-line camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         const username = (keycloak.userInfo as { preferred_username?: string } | undefined)?.preferred_username || user?.name;
 
         return {

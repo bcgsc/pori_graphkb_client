@@ -1,7 +1,6 @@
 import '../index.scss';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import EmbeddedIcon from '@mui/icons-material/SelectAll';
 import {
   Avatar,
   Card,
@@ -23,7 +22,6 @@ import api from '@/services/api';
 
 interface StatementReviewProps {
   index: number;
-  label?: string;
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
   value: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType });
@@ -39,7 +37,6 @@ const StatementReview = ({
   index,
   variant = FORM_VARIANT.VIEW,
   onDelete,
-  label,
 }: StatementReviewProps) => {
   const {
     status, createdBy, comment,

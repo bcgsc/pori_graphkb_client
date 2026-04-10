@@ -50,7 +50,7 @@ function useObject<T extends object>(initialValue: T): {
   }, [setContent]);
 
   const removeField = useCallback((name: keyof T) => {
-    const { [name]: removed, ...rest } = content;
+    const { [name]: _, ...rest } = content;
     setContent({ type: 'replace', payload: rest as T });
   }, [content, setContent]);
 

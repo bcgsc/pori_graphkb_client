@@ -179,7 +179,7 @@ const VariantForm = ({
       if (formVariant === FORM_VARIANT.NEW) {
         return api.post(routeName, payload);
       }
-      const { displayName, ...rest } = payload;
+      const { displayName: _, ...rest } = payload;
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, rest);
     },
     onSuccess: (result) => {

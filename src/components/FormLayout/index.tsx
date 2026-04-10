@@ -1,7 +1,6 @@
 import './index.scss';
 
 import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
-import { StatementRecord } from '@bcgsc-pori/graphkb-schema/dist/types';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {

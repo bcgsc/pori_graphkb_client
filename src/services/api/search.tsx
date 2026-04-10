@@ -17,7 +17,7 @@ const {
  */
 const getQueryFromSearch = (search: string): { payload: QueryBody, modelName: string; routeName: string } => {
   const {
-    keyword,
+    keyword: _,
     complex,
     ...params
   } = qs.parse(search.replace(/^\?/, ''));

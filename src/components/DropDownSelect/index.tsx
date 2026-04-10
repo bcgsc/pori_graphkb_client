@@ -14,11 +14,9 @@ import {
 } from '@mui/material';
 import React, { ReactNode } from 'react';
 
-import { GeneralRecordType } from '@/components/types';
-
 interface SelectOption {
   key?: string;
-  value?: string;
+  value?: string | null;
   label?: string;
   caption?: string;
 }

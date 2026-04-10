@@ -737,7 +737,7 @@ exports[`Editing snapshot 1`] = `
               <p
                 class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
               >
-                The review status of the overall statement. The amalgemated status of all (or no) reviews
+                The review status of the overall statement. The amalgemated status of all (or no) reviews (ex. pending)
               </p>
             </div>
           </li>

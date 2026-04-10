@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
@@ -11,7 +11,6 @@ import FormContext from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 import BooleanField from './BooleanField';
 import FieldWrapper from './FieldWrapper';
@@ -30,9 +29,8 @@ const POSITION_CLASSES = [
 interface FormFieldProps {
   /**
    * the property model which defines the property type and other requirements
-   * @todo replace with type from schema
    */
-  model: any;
+  model: Partial<PropertyDefinition> & Pick<PropertyDefinition, 'name' | 'type'>;
   baseModel?: string;
   className?: string;
   disabled?: boolean;
@@ -71,7 +69,7 @@ const FormField = ({
     choices,
     default: defaultValue,
     description,
-    example,
+    examples,
     generateDefault,
     linkedClass: linkedClassName,
     linkedType,
@@ -81,13 +79,8 @@ const FormField = ({
     iterable,
     format,
   } = model;
-  let linkedClass;
-
-  if (typeof linkedClassName === 'string') {
-    linkedClass = schemaDefn.get(linkedClassName);
-  } else {
-    linkedClass = linkedClassName;
-  }
+  const example = examples?.[0];
+  const linkedClass = schemaDefn.get(linkedClassName, false);
 
   const inputValue = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
@@ -199,7 +192,7 @@ const FormField = ({
         label={label || name}
         name={name}
         onChange={updateFieldEvent}
-        options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices]}
+        options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices as string[]]}
         required={mandatory}
         value={value || ''}
       />

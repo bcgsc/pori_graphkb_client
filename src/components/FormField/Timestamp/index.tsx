@@ -29,12 +29,14 @@ const Timestamp = ({
       disabled={disabled}
       error={error}
       helperText={helperText}
-      InputLabelProps={{ shrink: true }}
-      inputProps={{ 'data-testid': name }}
       label={label}
       name={name}
       onChange={onDatePicked}
       required={required}
+      slotProps={{
+        inputLabel: { shrink: true },
+        htmlInput: { 'data-testid': name },
+      }}
       type="datetime-local"
       value={displayValue}
     />

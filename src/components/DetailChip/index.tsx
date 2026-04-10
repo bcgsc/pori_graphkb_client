@@ -97,7 +97,7 @@ interface DetailChipProps<D extends object = Record<string, unknown>> extends De
   // passed from getTagProps
   className?: string;
   disabled?: boolean;
-  'data-tag-index'?: number;
+  'data-item-index'?: number;
   tabIndex?: -1;
 }
 
@@ -121,7 +121,7 @@ function DetailChip<D extends object>(props: DetailChipProps<D>) {
     title,
     PopUpComponent = DefaultPopupComponent,
     tabIndex,
-    'data-tag-index': dataTagIndex,
+    'data-item-index': dataTagIndex,
     disabled,
   } = props;
   const [anchorEl, setAnchorEl] = useState(null);
@@ -170,7 +170,7 @@ function DetailChip<D extends object>(props: DetailChipProps<D>) {
         className={`detail-chip__root ${className || ''}`}
         clickable
         color={ChipProps.color}
-        data-tag-index={dataTagIndex}
+        data-item-index={dataTagIndex}
         disabled={disabled}
         label={label}
         onClick={handlePopoverOpen}

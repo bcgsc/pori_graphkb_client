@@ -24,7 +24,7 @@ exports[`Disabled snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >
@@ -166,7 +166,7 @@ exports[`MultiWithMultipleValues snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >
@@ -193,7 +193,7 @@ exports[`MultiWithMultipleValues snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="1"
+            data-item-index="1"
             role="button"
             tabindex="-1"
           >
@@ -301,7 +301,7 @@ exports[`MultiWithValue snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >
@@ -409,7 +409,7 @@ exports[`MultiWithValueAfterFocus snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >
@@ -524,7 +524,7 @@ exports[`MultiWithValueFocused snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >
@@ -709,7 +709,7 @@ exports[`WithError snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >
@@ -886,7 +886,7 @@ exports[`WithValue snapshot 1`] = `
         >
           <div
             class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-            data-tag-index="0"
+            data-item-index="0"
             role="button"
             tabindex="-1"
           >

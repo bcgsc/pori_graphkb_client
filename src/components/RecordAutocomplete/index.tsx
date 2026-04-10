@@ -255,19 +255,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
           disabled={disabled || (!isMulti && Boolean(selectedValues.length))}
           error={error}
           helperText={helperText}
-          InputLabelProps={{
-            shrink: !(disabled && !selectedValues.length),
-          }}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-            disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
-          }}
           label={label}
           placeholder={
                 (disabled || selectedValues.length)
@@ -275,15 +262,30 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
                   : placeholder
               }
           required={required}
+          slotProps={{
+            inputLabel: {
+              shrink: !(disabled && !selectedValues.length),
+            },
+            input: {
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+              disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
+            },
+          }}
         />
       )}
-      renderTags={(values, getTagProps) => values.map((option, index) => {
+      renderValue={(values, getTagProps) => values.map((option, index) => {
         const tagProps = getTagProps({ index });
         return (
           <DetailChip
             key={tagProps.key}
             className={`${tagProps.className ?? ''} record-autocomplete__chip record-autocomplete__chip--multi`}
-            data-tag-index={tagProps['data-tag-index']}
+            data-item-index={tagProps['data-item-index']}
             details={option}
             disabled={false}
             getLink={schema.getLink}

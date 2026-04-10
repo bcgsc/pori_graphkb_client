@@ -49,7 +49,9 @@ const DefaultOptionComponent = (option, disabled) => {
         }}
         primary={label}
         secondary={option.caption || ''}
-        secondaryTypographyProps={{ className: 'option-select__option-description' }}
+        slotProps={{
+          secondary: { className: 'option-select__option-description' },
+        }}
       />
     </MenuItem>
   );

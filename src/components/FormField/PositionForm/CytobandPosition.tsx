@@ -60,12 +60,14 @@ const CytobandPosition = ({
             disabled={disabled}
             error={Boolean(formErrors[model.name])}
             helperText={(formErrors[model.name] && formErrors[model.name].message) || ''}
-            InputLabelProps={{ shrink: Boolean(formContent[model.name]) }}
-            inputProps={{ 'data-testid': `${name}.${model.name}` }}
             label={model.name}
             name={model.name}
             onChange={handleUpdate}
             required={required && model.mandatory}
+            slotProps={{
+              inputLabel: { shrink: Boolean(formContent[model.name]) },
+              htmlInput: { 'data-testid': `${name}.${model.name}` },
+            }}
             value={formContent[model.name]}
           />
         </FieldWrapper>

@@ -103,12 +103,14 @@ const BasicPositionForm = ({
           disabled={disabled}
           error={Boolean(positionError)}
           helperText={positionError || ''}
-          InputLabelProps={{ shrink: !!position }}
-          inputProps={{ 'data-testid': `${name}.pos` }}
           label="position"
           name="pos"
           onChange={handlePositionChange}
           required={required}
+          slotProps={{
+            inputLabel: { shrink: !!position },
+            htmlInput: { 'data-testid': `${name}.pos` },
+          }}
           value={position}
         />
       </FieldWrapper>
@@ -119,12 +121,14 @@ const BasicPositionForm = ({
             disabled={disabled}
             error={Boolean(offsetError)}
             helperText={offsetError || ''}
-            InputLabelProps={{ shrink: offset !== '' }}
-            inputProps={{ 'data-testid': `${name}.offset` }}
             label="offset"
             name="offset"
             onChange={handleOffsetChange}
             required={required}
+            slotProps={{
+              inputLabel: { shrink: offset !== '' },
+              htmlInput: { 'data-testid': `${name}.offset` },
+            }}
             value={offset}
           />
         </FieldWrapper>

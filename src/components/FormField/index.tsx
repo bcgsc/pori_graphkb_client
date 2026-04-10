@@ -266,10 +266,12 @@ const FormField = ({
         {...sharedProps}
         className="text-field"
         helperText={sharedProps.helperText || ' '}
-        InputLabelProps={{ shrink: !!sharedProps.value }}
-        inputProps={{ 'data-testid': name }}
         multiline={innerProps?.multiline ?? true}
         rows={innerProps?.rows}
+        slotProps={{
+          inputLabel: { shrink: !!sharedProps.value },
+          htmlInput: { 'data-testid': name },
+        }}
         value={sharedProps.value || ''}
         variant={innerProps?.variant}
       />

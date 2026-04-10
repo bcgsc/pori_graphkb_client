@@ -98,12 +98,14 @@ const ProteinPosition = ({
           disabled={disabled}
           error={Boolean(refAAError)}
           helperText={refAAError || ''}
-          InputLabelProps={{ shrink: Boolean(refAA) }}
-          inputProps={{ 'data-testid': `${name}.refAA` }}
           label="refAA"
           name="refAA"
           onChange={handleRefAAChange}
           required={required && refAAProperty.mandatory}
+          slotProps={{
+            inputLabel: { shrink: Boolean(refAA) },
+            htmlInput: { 'data-testid': `${name}.refAA` },
+          }}
           value={refAA}
         />
       </FieldWrapper>
@@ -113,12 +115,14 @@ const ProteinPosition = ({
           disabled={disabled}
           error={Boolean(positionError)}
           helperText={positionError || ''}
-          InputLabelProps={{ shrink: Boolean(position) }}
-          inputProps={{ 'data-testid': `${name}.pos` }}
           label="position"
           name="pos"
           onChange={handlePositionChange}
           required={required && posProperty.mandatory}
+          slotProps={{
+            inputLabel: { shrink: Boolean(position) },
+            htmlInput: { 'data-testid': `${name}.pos` },
+          }}
           value={position}
         />
       </FieldWrapper>

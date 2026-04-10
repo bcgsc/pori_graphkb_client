@@ -189,22 +189,24 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         error={Boolean(textInputError || error)}
         helperText={textInputError || helperText}
         id={`${label.toLowerCase()}-temp`}
-        InputProps={{
-          classes: {
-            root: 'text-array-field__field',
-          },
-          inputProps: {
-            className: 'text-array-field__input',
-          },
-          startAdornment: chips.length > 0
-            ? chips
-            : undefined,
-        }}
         label={label}
         name={label.toLowerCase()}
         onChange={handleInputChange}
         onKeyDown={handleInputKeyPress}
         required={required}
+        slotProps={{
+          input: {
+            classes: {
+              root: 'text-array-field__field',
+            },
+            startAdornment: chips.length > 0
+              ? chips
+              : undefined,
+          },
+          htmlInput: {
+            className: 'text-array-field__input',
+          },
+        }}
         value={textInputValue}
       />
       <div className="text-array-field__btns">

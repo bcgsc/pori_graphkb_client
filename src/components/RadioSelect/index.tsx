@@ -75,16 +75,20 @@ function RadioSelect<V>({
           >
             <Radio
               checked={checked}
-              inputProps={{
-                'aria-labelledby': `${id}-${key}-label`,
-                [('data-testid' as any)]: `radio-option__${optionToKey(option)}`,
+              slotProps={{
+                input: {
+                  'aria-labelledby': `${id}-${key}-label`,
+                  [('data-testid' as any)]: `radio-option__${optionToKey(option)}`,
+                },
               }}
             />
             <ListItemText
               primary={option.label}
-              primaryTypographyProps={{ className: 'radio-option__title', id: `${id}-${key}-label` }}
               secondary={option.caption || ''}
-              secondaryTypographyProps={{ className: 'radio-option__caption' }}
+              slotProps={{
+                primary: { className: 'radio-option__title', id: `${id}-${key}-label` },
+                secondary: { className: 'radio-option__caption' },
+              }}
             />
           </MenuItem>
         );

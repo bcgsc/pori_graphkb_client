@@ -25,6 +25,10 @@ export const WithValue = meta.story({
   },
 });
 
+export const ReadOnly = WithValue.extend({
+  args: { readOnly: true },
+});
+
 export const WithError = meta.story({
   args: {
     value: new Date(2020, 0, 1).getTime(),

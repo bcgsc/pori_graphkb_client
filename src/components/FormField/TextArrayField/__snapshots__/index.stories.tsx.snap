@@ -20,22 +20,50 @@ exports[`Disabled snapshot 1`] = `
         class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root text-array-field__field"
       >
         <div
-          class="MuiChip-colorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root text-array-field__chip"
+          class="Mui-disabled MuiButtonBase-root MuiChip-colorDefault MuiChip-deletable MuiChip-deletableColorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root text-array-field__chip"
+          role="button"
+          tabindex="0"
         >
           <span
             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
           >
             thing 1
           </span>
+          <svg
+            aria-hidden="true"
+            aria-label="delete value"
+            class="MuiChip-deleteIcon MuiChip-deleteIconColorDefault MuiChip-deleteIconFilledColorDefault MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="CancelIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z"
+            />
+          </svg>
         </div>
         <div
-          class="MuiChip-colorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root text-array-field__chip"
+          class="Mui-disabled MuiButtonBase-root MuiChip-colorDefault MuiChip-deletable MuiChip-deletableColorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root text-array-field__chip"
+          role="button"
+          tabindex="0"
         >
           <span
             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
           >
             thing 2
           </span>
+          <svg
+            aria-hidden="true"
+            aria-label="delete value"
+            class="MuiChip-deleteIcon MuiChip-deleteIconColorDefault MuiChip-deleteIconFilledColorDefault MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="CancelIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z"
+            />
+          </svg>
         </div>
         <input
           aria-invalid="false"
@@ -125,6 +153,58 @@ exports[`Empty snapshot 1`] = `
           />
         </svg>
       </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ReadOnly snapshot 1`] = `
+<div>
+  <div
+    class="text-array-field"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-array-field__text-field"
+    >
+      <label
+        class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="text array field-temp"
+        id="text array field-temp-label"
+      >
+        Text array field
+      </label>
+      <div
+        class="Mui-readOnly MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root text-array-field__field"
+      >
+        <div
+          class="MuiChip-colorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root text-array-field__chip"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 1
+          </span>
+        </div>
+        <div
+          class="MuiChip-colorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root text-array-field__chip"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 2
+          </span>
+        </div>
+        <input
+          aria-invalid="false"
+          class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
+          id="text array field-temp"
+          name="text array field"
+          readonly=""
+          type="text"
+          value=""
+        />
+      </div>
     </div>
   </div>
 </div>

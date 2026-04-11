@@ -103,6 +103,10 @@ export const Disabled = WithValues.extend({
   args: { disabled: true },
 });
 
+export const ReadOnly = WithValues.extend({
+  args: { readOnly: true },
+});
+
 export const Required = WithValues.extend({
   args: { required: true },
 });

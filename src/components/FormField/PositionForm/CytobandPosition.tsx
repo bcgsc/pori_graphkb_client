@@ -27,6 +27,7 @@ interface CytobandPositionProps {
   required?: boolean;
   /** the initial value */
   value?: Record<string, unknown>;
+  readOnly?: boolean;
 }
 
 /**
@@ -38,6 +39,7 @@ const CytobandPosition = ({
   name = '',
   required = true,
   disabled = false,
+  readOnly,
 }: CytobandPositionProps) => {
   const { formContent, formErrors, updateField } = useSchemaForm(
     properties,
@@ -45,12 +47,14 @@ const CytobandPosition = ({
   );
 
   useDeepCompareEffect(() => {
+    if (readOnly) return;
     onChange({ target: { name, value: formContent } });
-  }, [formContent]);
+  }, [formContent, readOnly]);
 
   const handleUpdate = useCallback(({ target: { name: eventName, value: eventValue } }) => {
+    if (readOnly) return;
     updateField(eventName, eventValue);
-  }, [updateField]);
+  }, [updateField, readOnly]);
 
   return (
     <>
@@ -67,6 +71,7 @@ const CytobandPosition = ({
             slotProps={{
               inputLabel: { shrink: Boolean(formContent[model.name]) },
               htmlInput: { 'data-testid': `${name}.${model.name}` },
+              input: { readOnly, disableUnderline: readOnly },
             }}
             value={formContent[model.name]}
           />

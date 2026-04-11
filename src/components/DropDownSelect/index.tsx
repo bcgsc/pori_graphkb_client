@@ -87,6 +87,7 @@ interface DropDownSelectProps {
   value?: string;
   /** Material UI Select variant (outlined, filled, standard) */
   variant?: React.ComponentProps<typeof FormControl>['variant'];
+  readOnly?: boolean;
 }
 
 /**
@@ -110,6 +111,7 @@ function DropDownSelect(props: DropDownSelectProps) {
     className = '',
     disabled = false,
     IconComponent = ArrowDropDownIcon,
+    readOnly,
   } = props;
 
   const optionsDisplay = options.map((option) => children(option, disabled));
@@ -140,12 +142,14 @@ function DropDownSelect(props: DropDownSelectProps) {
         {label}
       </InputLabel>
       <Select
-        IconComponent={disabled
+        disableUnderline={readOnly}
+        IconComponent={readOnly
           ? 'span'
           : IconComponent}
         input={<InputComponent id={`option-select-${name}`} name={name} />}
         inputProps={innerProps}
-        onChange={onChange}
+        onChange={!readOnly ? onChange : undefined}
+        readOnly={readOnly}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}

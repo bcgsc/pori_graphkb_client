@@ -27,6 +27,7 @@ interface BasicPositionFormProps {
     pos?: number;
     offset?: number | '';
   },
+  readOnly?: boolean;
 }
 
 /**
@@ -39,6 +40,7 @@ const BasicPositionForm = ({
   name = '',
   required = true,
   disabled = false,
+  readOnly,
 }: BasicPositionFormProps) => {
   const { pos: initialPos, offset: initialOffset } = value || {};
   const [position, setPosition] = useState(initialPos);
@@ -84,14 +86,16 @@ const BasicPositionForm = ({
   }, [offset, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': variant, pos: newValue, offset } } });
-  }, [onChange, name, variant, offset]);
+  }, [readOnly, onChange, name, variant, offset]);
 
   const handleOffsetChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setOffset(newValue);
     onChange?.({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
-  }, [onChange, name, variant, position]);
+  }, [onChange, name, variant, position, readOnly]);
 
   const isOffsetVariant = Boolean(schemaDefn.getProperty(variant, 'offset'));
 
@@ -110,6 +114,7 @@ const BasicPositionForm = ({
           slotProps={{
             inputLabel: { shrink: !!position },
             htmlInput: { 'data-testid': `${name}.pos` },
+            input: { readOnly, disableUnderline: readOnly },
           }}
           value={position}
         />
@@ -128,6 +133,7 @@ const BasicPositionForm = ({
             slotProps={{
               inputLabel: { shrink: offset !== '' },
               htmlInput: { 'data-testid': `${name}.offset` },
+              input: { readOnly, disableUnderline: readOnly },
             }}
             value={offset}
           />

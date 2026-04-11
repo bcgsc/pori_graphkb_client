@@ -26,6 +26,10 @@ export const Disabled = False.extend({
   args: { disabled: true },
 });
 
+export const ReadOnly = False.extend({
+  args: { readOnly: true },
+});
+
 export const WithError = False.extend({
   args: { error: true, helperText: 'bad value' },
 });

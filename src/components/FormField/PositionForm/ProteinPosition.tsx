@@ -29,6 +29,7 @@ interface ProteinPositionProps {
   name?: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
+  readOnly?: boolean;
 }
 
 /**
@@ -40,6 +41,7 @@ const ProteinPosition = ({
   name = '',
   required = true,
   disabled = false,
+  readOnly,
 }: ProteinPositionProps) => {
   const { pos: initialPos, refAA: initialRefAA } = value || {};
   const [position, setPosition] = useState(initialPos);
@@ -81,14 +83,16 @@ const ProteinPosition = ({
   }, [refAA, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, pos: newValue, refAA } } });
-  }, [onChange, name, refAA]);
+  }, [readOnly, onChange, name, refAA]);
 
   const handleRefAAChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setRefAA(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, refAA: newValue, pos: position } } });
-  }, [onChange, name, position]);
+  }, [readOnly, onChange, name, position]);
 
   return (
     <>
@@ -100,13 +104,14 @@ const ProteinPosition = ({
           helperText={refAAError || ''}
           label="refAA"
           name="refAA"
-          onChange={handleRefAAChange}
+          onChange={!readOnly ? handleRefAAChange : undefined}
           required={required && refAAProperty.mandatory}
           slotProps={{
             inputLabel: { shrink: Boolean(refAA) },
             htmlInput: { 'data-testid': `${name}.refAA` },
+            input: { readOnly, disableUnderline: readOnly },
           }}
-          value={refAA}
+          value={refAA ?? ''}
         />
       </FieldWrapper>
       <FieldWrapper>
@@ -117,13 +122,14 @@ const ProteinPosition = ({
           helperText={positionError || ''}
           label="position"
           name="pos"
-          onChange={handlePositionChange}
+          onChange={!readOnly ? handlePositionChange : undefined}
           required={required && posProperty.mandatory}
           slotProps={{
             inputLabel: { shrink: Boolean(position) },
             htmlInput: { 'data-testid': `${name}.pos` },
+            input: { readOnly, disableUnderline: readOnly },
           }}
-          value={position}
+          value={position ?? ''}
         />
       </FieldWrapper>
     </>

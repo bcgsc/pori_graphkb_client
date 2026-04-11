@@ -20,6 +20,7 @@ interface TextArrayFieldProps {
   onChange: (arg: { target: { name: string; value: string[] } }) => unknown;
   /** Disabled flag. */
   disabled?: boolean;
+  readOnly?: boolean;
   /** TextField error flag or message. */
   error?: boolean;
   /** TextField label. */
@@ -39,7 +40,7 @@ interface TextArrayFieldProps {
 const TextArrayField = (props: TextArrayFieldProps) => {
   const {
     value: valueProp = [], name, onChange, label = '', disabled = false, error = false,
-    helperText, required,
+    helperText, required, readOnly,
   } = props;
   /** the current list of values (including deleted) */
   const [value, setValue] = useState((valueProp || []).slice());
@@ -118,6 +119,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
    * @param {Event} event - User change event.
    */
   const handleInputChange = (event) => {
+    if (readOnly) return;
     const { target: { value: text } } = event;
     setTextInputValue(text);
 
@@ -136,6 +138,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
    * term or backspace to remove the one
    */
   const handleInputKeyPress = (event) => {
+    if (readOnly) return;
     const { key, target: { value: text } } = event;
 
     if (text) {
@@ -158,7 +161,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         let onDelete: ChipProps['onDelete'];
         let className = 'text-array-field__chip';
 
-        if (!disabled) {
+        if (!readOnly) {
           if (deleted.includes(text)) {
             className += ' text-array-field__chip--deleted';
             deleteIcon = <RefreshIcon aria-label="restore value" />;
@@ -174,6 +177,7 @@ const TextArrayField = (props: TextArrayFieldProps) => {
             key={text}
             className={className}
             deleteIcon={deleteIcon}
+            disabled={disabled}
             label={text}
             onDelete={onDelete}
           />
@@ -202,6 +206,8 @@ const TextArrayField = (props: TextArrayFieldProps) => {
             startAdornment: chips.length > 0
               ? chips
               : undefined,
+            readOnly,
+            disableUnderline: readOnly,
           },
           htmlInput: {
             className: 'text-array-field__input',
@@ -209,16 +215,18 @@ const TextArrayField = (props: TextArrayFieldProps) => {
         }}
         value={textInputValue}
       />
-      <div className="text-array-field__btns">
-        <IconButton
-          aria-label="add"
-          color="primary"
-          disabled={disabled}
-          onClick={handleAddCurrent}
-        >
-          <AddIcon />
-        </IconButton>
-      </div>
+      {!readOnly && (
+        <div className="text-array-field__btns">
+          <IconButton
+            aria-label="add"
+            color="primary"
+            disabled={disabled}
+            onClick={handleAddCurrent}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 };

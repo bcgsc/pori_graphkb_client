@@ -5,6 +5,7 @@ import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-sc
 import {
   TextField,
 } from '@mui/material';
+import omit from 'lodash.omit';
 import React, { useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -130,7 +131,7 @@ const FormField = ({
     React.ComponentProps<typeof PermissionsTable>,
   ]>;
   const sharedProps = {
-    disabled: generated || disabled,
+    disabled: (generated || disabled) && formVariant !== FORM_VARIANT.VIEW,
     error: errorFlag,
     helperText,
     label: label || name,
@@ -138,9 +139,11 @@ const FormField = ({
     required: mandatory,
     onChange: updateFieldEvent,
     value,
+    readOnly: generated || formVariant === FORM_VARIANT.VIEW,
   } satisfies SharedProps<[
     React.ComponentProps<typeof BooleanField>,
-    React.ComponentProps<typeof TextField>,
+    React.ComponentProps<typeof Timestamp>,
+    React.ComponentProps<typeof TextField> & { readOnly?: boolean },
     React.ComponentProps<typeof TextArrayField>,
     React.ComponentProps<typeof PositionForm>,
     React.ComponentProps<typeof DropDownSelect>,
@@ -263,7 +266,7 @@ const FormField = ({
     // for lack of better option default to text field as catch all
     propComponent = (
       <TextField
-        {...sharedProps}
+        {...omit(sharedProps, 'readOnly')}
         className="text-field"
         helperText={sharedProps.helperText || ' '}
         multiline={innerProps?.multiline ?? true}
@@ -271,6 +274,7 @@ const FormField = ({
         slotProps={{
           inputLabel: { shrink: !!sharedProps.value },
           htmlInput: { 'data-testid': name },
+          input: { readOnly: sharedProps.readOnly, disableUnderline: sharedProps.readOnly },
         }}
         value={sharedProps.value || ''}
         variant={innerProps?.variant}

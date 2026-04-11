@@ -31,6 +31,10 @@ export const GenomicPositionVariantDisabled = GenomicPositionVariantWithValue.ex
   args: { disabled: true },
 });
 
+export const GenomicPositionVariantReadOnly = GenomicPositionVariantWithValue.extend({
+  args: { readOnly: true },
+});
+
 export const ProteinPositionVariant = meta.story({
   args: {
     value: { '@class': 'ProteinPosition' },
@@ -51,6 +55,10 @@ export const ProteinPositionVariantWithValue = ProteinPositionVariant.extend({
 
 export const ProteinPositionVariantDisabled = ProteinPositionVariantWithValue.extend({
   args: { disabled: true },
+});
+
+export const ProteinPositionVariantReadOnly = ProteinPositionVariantWithValue.extend({
+  args: { readOnly: true },
 });
 
 export const CytobandPositionVariant = meta.story({
@@ -93,6 +101,10 @@ export const CytobandPositionVariantDisabled = CytobandPositionVariantWithValue.
   args: { disabled: true },
 });
 
+export const CytobandPositionVariantReadOnly = CytobandPositionVariantWithValue.extend({
+  args: { readOnly: true },
+});
+
 export const CdsPositionVariant = meta.story({
   args: {
     value: { '@class': 'CdsPosition' },
@@ -110,6 +122,10 @@ export const CdsPositionVariantWithValue = CdsPositionVariant.extend({
       '@class': 'CdsPosition', pos: 49, offset: 0,
     },
   },
+});
+
+export const CdsPositionVariantReadOnly = CdsPositionVariantWithValue.extend({
+  args: { readOnly: true },
 });
 
 export const GenomicPositionBaseVariant = meta.story({

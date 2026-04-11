@@ -82,6 +82,7 @@ interface RecordAutocompleteProps {
   singleLoad?: boolean;
   /** the initial selected value(s) */
   value?: unknown[] | unknown;
+  readOnly?: boolean;
 }
 
 /**
@@ -103,6 +104,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     singleLoad = false,
     helperText: initialHelperText = '',
     value,
+    readOnly,
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -148,7 +150,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     [debouncedSearchTerm, getQueryBody, singleLoad],
   );
 
-  let enabled = !disabled;
+  let enabled = !disabled && !readOnly;
 
   if (!singleLoad) {
     enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength);
@@ -163,6 +165,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
   const handleChange = useCallback<NonNullable<AutocompleteProps<GeneralRecordType, true, false, false, any>['onChange']>>(
     (e, newValue, actionType, details) => {
+      if (readOnly) return;
       const { option } = details ?? {};
       setSelectedValues(newValue);
 
@@ -177,34 +180,35 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
         }
       }
     },
-    [isMulti, name, onChange],
+    [isMulti, name, onChange, readOnly],
   );
 
   const handleInputChange = useCallback((e, newSearchTerm) => {
+    if (readOnly) return;
     const newHelperText = (newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0 && !singleLoad)
       ? `Requires ${minSearchLength} or more characters to search`
       : '';
 
     setHelperText(newHelperText);
     setSearchTerm(newSearchTerm);
-  }, [minSearchLength, singleLoad]);
+  }, [minSearchLength, singleLoad, readOnly]);
 
   const handleOnFocus = useCallback(
     () => {
-      if (isMulti && !disabled) {
+      if (isMulti && !disabled && !readOnly) {
         setHelperText(`Requires ${minSearchLength} or more characters to search`);
       }
     },
-    [disabled, isMulti, minSearchLength],
+    [disabled, isMulti, minSearchLength, readOnly],
   );
 
   const handleOnBlur = useCallback(
     () => {
-      if (!error && isMulti && !disabled) {
+      if (!error && isMulti && !disabled && !readOnly) {
         setHelperText('May take more than one value');
       }
     },
-    [disabled, error, isMulti],
+    [disabled, error, isMulti, readOnly],
   );
 
   const filterOptions = useCallback((opts, { inputValue }) => {
@@ -238,6 +242,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
       onInputChange={handleInputChange}
       options={options ?? []}
       popupIcon={<SearchIcon />}
+      readOnly={readOnly}
       renderGroup={(params) => [
         <ListSubheader
           key={params.key}
@@ -252,7 +257,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
-          disabled={disabled || (!isMulti && Boolean(selectedValues.length))}
           error={error}
           helperText={helperText}
           label={label}
@@ -268,13 +272,13 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
             },
             input: {
               ...params.InputProps,
-              endAdornment: (
+              endAdornment: readOnly ? undefined : (
                 <>
                   {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
                   {params.InputProps.endAdornment}
                 </>
               ),
-              disableUnderline: disabled || (Boolean(selectedValues.length) && !isMulti),
+              disableUnderline: readOnly || (Boolean(selectedValues.length) && !isMulti),
             },
           }}
         />
@@ -287,10 +291,10 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
             className={`${tagProps.className ?? ''} record-autocomplete__chip record-autocomplete__chip--multi`}
             data-item-index={tagProps['data-item-index']}
             details={option}
-            disabled={false}
+            disabled={tagProps.disabled}
             getLink={schema.getLink}
             label={schema.getLabel(option)}
-            onDelete={tagProps.disabled ? undefined : tagProps.onDelete}
+            onDelete={readOnly ? undefined : tagProps.onDelete}
             tabIndex={tagProps.tabIndex}
             valueToString={valueToString}
           />

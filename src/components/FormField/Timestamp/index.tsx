@@ -8,10 +8,12 @@ interface TimestampProps extends Pick<TextFieldProps, 'disabled' | 'error' | 'he
   name: string;
   onChange: FormContextState['updateFieldEvent'];
   value?: any;
+  readOnly?: boolean;
 }
 
 const Timestamp = ({
-  value = '', name, onChange, disabled, helperText, error, label, required,
+  value = '', name, onChange, disabled,
+  helperText, error, label, required, readOnly,
 }: TimestampProps) => {
   const [displayValue, setDisplayValue] = useState('');
 
@@ -31,11 +33,12 @@ const Timestamp = ({
       helperText={helperText}
       label={label}
       name={name}
-      onChange={onDatePicked}
+      onChange={!readOnly ? onDatePicked : undefined}
       required={required}
       slotProps={{
         inputLabel: { shrink: true },
         htmlInput: { 'data-testid': name },
+        input: { readOnly, disableUnderline: readOnly },
       }}
       type="datetime-local"
       value={displayValue}

@@ -1,8 +1,7 @@
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import { Typography } from '@mui/material';
+import { themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
@@ -23,8 +22,8 @@ interface RelatedStatementsTableProps {
 const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
   const grid = useGrid();
 
-  const { data: statements, isFetching } = useQuery(
-    tuple(
+  const { data: statements, isFetching } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         target: 'Statement',
@@ -60,15 +59,16 @@ const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
         ],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-    { staleTime: 5000, refetchOnWindowFocus: false },
-  );
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    staleTime: 5000,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     const gridApi = grid.ref?.current?.api;
 
     if (gridApi && statements && !isFetching) {
-      gridApi.setRowData(statements);
+      gridApi.setGridOption('rowData', statements);
       gridApi.sizeColumnsToFit();
     }
   }, [grid.ref, isFetching, statements]);
@@ -118,14 +118,14 @@ const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
               pinned: 'right',
             },
           ]}
+          components={{ renderCellRenderer }}
           defaultColDef={{ resizable: true, sortable: true }}
-          deltaRowDataMode
           enableCellTextSelection
-          frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={(data) => data['@rid']}
+          getRowId={(params) => params.data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
+          theme={themeMaterial}
         />
       </div>
     </div>

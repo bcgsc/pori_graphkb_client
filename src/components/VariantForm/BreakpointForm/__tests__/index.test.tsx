@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/vitest';
 
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { fireEvent, render } from '@testing-library/react';

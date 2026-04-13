@@ -79,7 +79,7 @@ const PermissionsTable = ({
    * Handle the user clicking a checkbox to either clear or check it
    * when the modelName is not given and is null, assumes a checkAll event
    */
-  const handleClick = useCallback((operation, currModelName = null) => {
+  const handleClick = useCallback((operation, currModelName: string | null = null) => {
     const newContent = { ...content };
     const newTopBoxes = { ...topBoxes };
 

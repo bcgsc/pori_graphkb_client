@@ -42,12 +42,6 @@ export default defineConfig(({ mode }) => {
         reportOnFailure: true,
         exclude: ['**/__tests__/*', '**/test.tsx', '**/*.test.tsx', '*.d.ts']
       },
-      server: {
-        deps: {
-          // necessary until move to newer react version
-          inline: [/@mui/]
-        },
-      }
     },
   }
 });

@@ -12,16 +12,16 @@ import {
   ListSubheader,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 
 interface RelationshipListProps {
   /** formats metadata properties */
-  formatMetadata: (arg: unknown, arg2: boolean) => void;
+  formatMetadata: (arg: unknown, arg2: boolean) => ReactNode[];
   /** formats non-metadata properties */
-  formatOtherProps: (arg: unknown, arg2: boolean) => void;
+  formatOtherProps: (arg: unknown, arg2: boolean) => ReactNode[];
   /** adds link to opened list */
   handleLinkExpand: (rid: string) => void;
   /** edge record opened */

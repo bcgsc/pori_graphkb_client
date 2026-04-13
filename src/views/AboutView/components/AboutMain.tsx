@@ -17,33 +17,31 @@ const AboutMain = () => {
 
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
 
-  const { data: chartData } = useQuery(
-    '/stats?classList=Statement&groupBy=source',
-    async ({ queryKey: [route] }) => api.get(route),
-    {
-      staleTime: Infinity,
-      enabled: hasSignedLicense,
-      select: (response) => {
-        const { Statement: result } = response;
-        const data = [['source', 'count']];
-        Object.entries(result as Record<string, string>).forEach(([label, value]) => {
-          data.push([
-            label === 'null'
-              ? 'other'
-              : label,
-            value,
-          ]);
-        });
-        return data;
-      },
+  const { data: chartData } = useQuery({
+    queryKey: ['/stats?classList=Statement&groupBy=source'],
+    queryFn: async ({ queryKey: [route] }) => api.get(route),
+    staleTime: Infinity,
+    enabled: hasSignedLicense,
+    select: (response) => {
+      const { Statement: result } = response;
+      const data = [['source', 'count']];
+      Object.entries(result as Record<string, string>).forEach(([label, value]) => {
+        data.push([
+          label === 'null'
+            ? 'other'
+            : label,
+          value,
+        ]);
+      });
+      return data;
     },
-  );
+  });
 
-  const { data: versions } = useQuery(
-    '/version',
-    async ({ queryKey: [route] }) => api.get(route),
-    { staleTime: Infinity },
-  );
+  const { data: versions } = useQuery({
+    queryKey: ['/version'],
+    queryFn: async ({ queryKey: [route] }) => api.get(route),
+    staleTime: Infinity,
+  });
 
   return (
     <div className="about-page__content">

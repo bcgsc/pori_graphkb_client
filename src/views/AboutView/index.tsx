@@ -27,7 +27,7 @@ import AboutNotation from './components/Notation';
 
 type TabsList = {
   label: string;
-  component: (props?: { [key: string]: unknown }) => JSX.Element;
+  component: (props?: { [key: string]: unknown }) => React.JSX.Element;
   slug?: string;
   uri?: string;
 }[];

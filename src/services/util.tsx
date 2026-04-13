@@ -283,7 +283,7 @@ const hashRecordsByRID = (data) => {
       newData[obj['@rid']] = obj;
     }
   });
-  return newData as GeneralRecordType<string>[];
+  return newData as Record<string, GeneralRecordType<string>>;
 };
 
 export default {

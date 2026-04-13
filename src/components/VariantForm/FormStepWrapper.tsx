@@ -11,10 +11,6 @@ interface FormStepWrapperProps {
  */
 const FormStepWrapper = ({
   children,
-}: FormStepWrapperProps) => children as JSX.Element;
-
-FormStepWrapper.defaultProps = {
-  fields: [],
-};
+}: FormStepWrapperProps) => children as React.JSX.Element;
 
 export default FormStepWrapper;

@@ -55,14 +55,12 @@ const StatementReview = ({
     createdByRecord = createdBy;
   }
 
-  const { data: author = createdByRecord } = useQuery(
-    tuple('/query', { target: [createdByRid!] }),
-    ({ queryKey: [, body] }) => api.query(body),
-    {
-      enabled: typeof createdBy === 'string',
-      select: (response) => response[0],
-    },
-  );
+  const { data: author = createdByRecord } = useQuery({
+    queryKey: tuple('/query', { target: [createdByRid!] }),
+    queryFn: ({ queryKey: [, body] }) => api.query(body),
+    enabled: typeof createdBy === 'string',
+    select: (response) => response[0],
+  });
 
   const previewStr = `${author?.name} (${author?.['@rid']})`;
 
@@ -134,7 +132,9 @@ const StatementReview = ({
             PopUpComponent={ReviewComponent}
             PopUpProps={{ onDelete }}
             title={label}
-            valueToString={(record) => {
+            valueToString={(value) => {
+              const record = value as GeneralRecordType | undefined;
+
               if (record && record.name) {
                 return record.name;
               }

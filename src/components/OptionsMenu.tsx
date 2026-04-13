@@ -4,12 +4,14 @@ import {
   Collapse, ListItemIcon, ListItemText,
   MenuItem, MenuList,
 } from '@mui/material';
-import React, { ForwardedRef, forwardRef, useState } from 'react';
+import React, {
+  ForwardedRef, forwardRef, ReactNode, useState,
+} from 'react';
 
 interface OptionsMenuProps {
   options: {
     label: string;
-    content?: Record<string, unknown>;
+    content?: ReactNode;
     handler?: (...args: unknown[]) => unknown;
   }[];
   // eslint-disable-next-line react/require-default-props

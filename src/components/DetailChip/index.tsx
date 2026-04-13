@@ -17,24 +17,24 @@ import {
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-interface DefaultPopupComponentProps<D> {
+interface DefaultPopupComponentProps<D extends object> {
   /** description of object. Defaults to title of card if title is not present */
   label: string;
   /** record object. properties will be extracted to be displayed */
   details?: D;
-  getDetails?: (...args: unknown[]) => unknown;
+  getDetails?: (arg: Partial<D> | undefined) => Record<string, unknown> | undefined;
   /** finds routeName for displayed record */
   getLink?: (...args: unknown[]) => string;
   /** title of card. Will usually be record displayName */
   title?: string;
   /** converts objs to string value for display */
-  valueToString?: (details: D | undefined) => string;
+  valueToString?: (details: unknown | undefined) => string;
 }
 
 /**
  * Default card pop up component displayed outlining details of record.
  */
-function DefaultPopupComponent<D>(props: DefaultPopupComponentProps<D>) {
+function DefaultPopupComponent<D extends object>(props: DefaultPopupComponentProps<D>) {
   const {
     details = {},
     getDetails = (d) => d,
@@ -64,14 +64,14 @@ function DefaultPopupComponent<D>(props: DefaultPopupComponentProps<D>) {
         <Divider />
         <Table>
           <TableBody>
-            {retrievedDetails && Object.keys(retrievedDetails).sort().map(
+            {Boolean(retrievedDetails) && Object.keys(retrievedDetails!).sort().map(
               (name) => (
                 <TableRow key={name} className="detail-popover__row">
                   <TableCell>
                     <Typography variant="h6">{name}</Typography>
                   </TableCell>
                   <TableCell>
-                    {valueToString(retrievedDetails[name])}
+                    {valueToString(retrievedDetails?.[name])}
                   </TableCell>
                 </TableRow>
               ),
@@ -83,34 +83,27 @@ function DefaultPopupComponent<D>(props: DefaultPopupComponentProps<D>) {
   );
 }
 
-interface DetailChipProps<D = Record<string, unknown>> {
+interface DetailChipProps<D extends object = Record<string, unknown>> extends DefaultPopupComponentProps<D> {
   /** label for the record */
   label: string;
   /** properties passed to the chip element */
   ChipProps?: Partial<React.ComponentProps<typeof Chip>>;
   /** function component constructor */
-  PopUpComponent?: (props: Record<string, unknown>) => JSX.Element;
+  PopUpComponent?: (props: Record<string, unknown>) => React.JSX.Element;
   /** props for PopUpComponent so that it mounts correctly */
   PopUpProps?: Record<string, unknown>;
   className?: string;
-  /** record to be displayed in chip. */
-  details?: D;
-  /** function to retrieve the details from the details object */
-  getDetails?: (...args: unknown[]) => unknown;
-  getLink?: (...args: unknown[]) => string;
   /** function handler for the user clicking the X on the chip */
   onDelete?: (...args: unknown[]) => unknown;
   /** the title for the pop-up card (defaults to the chip label) */
   title?: string;
-  /** function to call on details values */
-  valueToString?: (details: D | undefined) => string;
 }
 
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
  */
-function DetailChip<D>(props: DetailChipProps<D>) {
+function DetailChip<D extends object>(props: DetailChipProps<D>) {
   const {
     details,
     onDelete,

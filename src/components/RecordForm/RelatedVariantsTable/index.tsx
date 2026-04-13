@@ -1,8 +1,7 @@
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import { Typography } from '@mui/material';
+import { themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
@@ -23,8 +22,8 @@ interface RelatedVariantsTableProps {
 const RelatedVariantsTable = ({ recordId }: RelatedVariantsTableProps) => {
   const grid = useGrid();
 
-  const { data: variants, isFetching } = useQuery(
-    tuple(
+  const { data: variants, isFetching } = useQuery({
+    queryKey: tuple(
       '/query',
       {
         target: 'Variant',
@@ -44,14 +43,14 @@ const RelatedVariantsTable = ({ recordId }: RelatedVariantsTableProps) => {
         returnProperties: ['@rid', '@class', 'displayName'],
       },
     ),
-    async ({ queryKey: [, body] }) => api.query(body),
-  );
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+  });
 
   useEffect(() => {
     const gridApi = grid.ref?.current?.api;
 
     if (gridApi && !isFetching) {
-      gridApi.setRowData(variants ?? []);
+      gridApi.setGridOption('rowData', variants ?? []);
       gridApi.sizeColumnsToFit();
     }
   }, [grid.ref, isFetching, variants]);
@@ -93,14 +92,14 @@ const RelatedVariantsTable = ({ recordId }: RelatedVariantsTableProps) => {
               maxWidth: 150,
             },
           ]}
+          components={{ renderCellRenderer }}
           defaultColDef={{ resizable: true, sortable: true }}
-          deltaRowDataMode
           enableCellTextSelection
-          frameworkComponents={{ renderCellRenderer }}
-          getRowNodeId={(data) => data['@rid']}
+          getRowId={(params) => params.data['@rid']}
           pagination
           paginationAutoPageSize
           suppressHorizontalScroll
+          theme={themeMaterial}
         />
       </div>
     </div>

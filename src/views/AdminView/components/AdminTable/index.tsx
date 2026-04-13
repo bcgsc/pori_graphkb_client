@@ -1,5 +1,3 @@
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import './index.scss';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -9,7 +7,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { Buffer } from 'buffer';
 import React, {
@@ -100,7 +98,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
       },
     ] as ColDef[]);
   }
-  colDefs.push(...[
+  colDefs.push(
     {
       headerName: 'Created At',
       field: 'createdAt',
@@ -114,7 +112,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
       sortable: false,
       width: 100,
     },
-  ]);
+  );
 
   const Actions = ({ data: record }: { data: Record<string, unknown> }) => (
     <IconButton onClick={() => handleOpenEditDialog(record)}>
@@ -159,17 +157,18 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
       >
         <AgGridReact
           columnDefs={colDefs}
+          components={{ EmailLink, Actions }}
           defaultColDef={{
             sortable: true,
             resizable: true,
             width: 150,
           }}
           enableCellTextSelection
-          frameworkComponents={{ EmailLink, Actions }}
           pagination
           paginationAutoPageSize
           rowData={records}
           suppressHorizontalScroll={false}
+          theme={themeMaterial}
         />
       </div>
     </div>

@@ -20,35 +20,33 @@ interface ClassDescriptionProps {
 }
 
 const ClassDescription = ({ name, description }: ClassDescriptionProps) => {
-  const { isFetching: exampleIsFetching, data: example } = useQuery(
-    tuple('/query', { target: name, neighbors: 1, limit: 1 }),
-    async ({ queryKey: [, body] }) => {
+  const { isFetching: exampleIsFetching, data: example } = useQuery({
+    queryKey: tuple('/query', { target: name, neighbors: 1, limit: 1 }),
+    queryFn: async ({ queryKey: [, body] }) => {
       const [result] = await api.query(body);
       return result;
     },
-    { staleTime: Infinity },
-  );
+    staleTime: Infinity,
+  });
 
-  const { isFetching: countIsFetching, data: count } = useQuery(
-    `/stats?classList=${name}`,
-    async ({ queryKey: [route] }) => api.get(route),
-    {
-      staleTime: Infinity,
-      select: (response) => {
-        const { [name]: value } = response;
-        let newCount = value;
+  const { isFetching: countIsFetching, data: count } = useQuery({
+    queryKey: [`/stats?classList=${name}`],
+    queryFn: async ({ queryKey: [route] }) => api.get(route),
+    staleTime: Infinity,
+    select: (response) => {
+      const { [name]: value } = response;
+      let newCount = value;
 
-        if (value / 1000000 > 1) {
-          newCount = `${Math.round(value / 1000000)}M`;
-        } else if (value / 1000 > 1) {
-          newCount = `${Math.round(value / 1000)}K`;
-        } else {
-          newCount = `${value}`;
-        }
-        return newCount;
-      },
+      if (value / 1000000 > 1) {
+        newCount = `${Math.round(value / 1000000)}M`;
+      } else if (value / 1000 > 1) {
+        newCount = `${Math.round(value / 1000)}K`;
+      } else {
+        newCount = `${value}`;
+      }
+      return newCount;
     },
-  );
+  });
 
   return (
     <React.Fragment key={name}>

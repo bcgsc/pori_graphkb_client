@@ -4,7 +4,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import React, {
-  useCallback, useMemo, useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -36,22 +36,23 @@ const GraphView = () => {
     util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
   }, [navigate, search]);
 
-  const { data: graphData } = useQuery(
-    tuple('/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }),
-    async ({ queryKey: [, body] }) => api.query(body),
-    {
-      enabled: Boolean(recordIds.length),
-      onSuccess: (recordHash) => {
-        Object.keys(recordHash).forEach((recordId) => {
-          queryClient.setQueryData(
-            [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-            [recordHash[recordId]],
-          );
-        });
-      },
-      select: (response) => util.hashRecordsByRID(response),
-    },
-  );
+  const { data: graphData } = useQuery({
+    queryKey: tuple('/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }),
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    enabled: Boolean(recordIds.length),
+    select: (response) => util.hashRecordsByRID(response),
+  });
+
+  useEffect(() => {
+    if (graphData) {
+      Object.keys(graphData).forEach((recordId) => {
+        queryClient.setQueryData(
+          [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
+          [graphData[recordId]],
+        );
+      });
+    }
+  }, [graphData, queryClient]);
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -64,10 +65,10 @@ const GraphView = () => {
       setDetailPanelRow(null);
     } else {
       try {
-        const [fullRecord] = await queryClient.fetchQuery(
-          tuple('/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }),
-          async ({ queryKey: [, body] }) => api.query(body),
-        );
+        const [fullRecord] = await queryClient.fetchQuery({
+          queryKey: tuple('/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }),
+          queryFn: async ({ queryKey: [, body] }) => api.query(body),
+        });
 
         if (!fullRecord) {
           setDetailPanelRow(null);
@@ -95,10 +96,10 @@ const GraphView = () => {
     let fullRecord = queryClient.getQueryData(key);
 
     if (!fullRecord) {
-      [fullRecord] = await queryClient.fetchQuery(
-        key,
-        async ({ queryKey: [, body] }) => api.query(body),
-      );
+      [fullRecord] = await queryClient.fetchQuery({
+        queryKey: key,
+        queryFn: async ({ queryKey: [, body] }) => api.query(body),
+      });
     }
     return fullRecord;
   };

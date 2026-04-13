@@ -9,7 +9,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
 import { GeneralRecordType } from '@/components/types';
@@ -18,7 +18,7 @@ import util from '@/services/util';
 
 interface LinkEmbeddedPropListProps {
   /** property formatting function */
-  formatOtherProps: (arg: unknown, arg2: boolean) => unknown;
+  formatOtherProps: (arg: unknown, arg2: boolean) => (ReactNode[] | undefined);
   /** adds prop to opened object and handles expansion */
   handleExpand?: (name: string) => unknown;
   /** props to be displayed for submenu */

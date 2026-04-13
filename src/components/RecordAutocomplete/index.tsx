@@ -2,7 +2,8 @@ import './index.scss';
 
 import { Search as SearchIcon } from '@mui/icons-material';
 import {
-  Autocomplete, CircularProgress, ListSubheader, TextField,
+  Autocomplete, AutocompleteProps,
+  CircularProgress, ListSubheader, TextField,
 } from '@mui/material';
 import React, {
   useCallback, useEffect, useMemo, useState,
@@ -14,7 +15,7 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import DetailChip from '../DetailChip';
-import { QueryBody } from '../types';
+import { GeneralRecordType, QueryBody } from '../types';
 import { tuple } from '../util';
 
 const MIN_TERM_LENGTH = 3;
@@ -153,24 +154,19 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength);
   }
 
-  const { data: options, isLoading } = useQuery(
-    tuple('/query', searchBody, { forceListReturn: true }),
-    ({ queryKey: [, body] }) => api.query(body),
-    {
-      enabled,
-      onError: (err) => {
-        console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
-        console.error(err);
-      },
-      select: (response) => response.sort(sortByGroup),
-    },
-  );
+  const { data: options, isLoading } = useQuery({
+    queryKey: tuple('/query', searchBody, { forceListReturn: true }),
+    queryFn: ({ queryKey: [, body] }) => api.query(body),
+    enabled,
+    select: (response) => response.sort(sortByGroup),
+  });
 
-  const handleChange = useCallback(
-    (e, newValue, actionType, { option } = {}) => {
+  const handleChange = useCallback<NonNullable<AutocompleteProps<GeneralRecordType, true, false, false, any>['onChange']>>(
+    (e, newValue, actionType, details) => {
+      const { option } = details ?? {};
       setSelectedValues(newValue);
 
-      if (actionType === 'select-option' && !isMulti) {
+      if (actionType === 'selectOption' && !isMulti) {
         setSelectedValues(isMulti ? newValue : [option]);
         onChange?.({ target: { name, value: option } });
       } else {

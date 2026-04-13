@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
 import useObject from '../useObject';

@@ -20,10 +20,10 @@ const AboutUsageTerms = () => {
   const [hasAcknowledgedTerms, setHasAcknowledgedTerms] = useState(false);
   const [hasSigned, setHasSigned] = useState(false);
 
-  const { data } = useQuery(
-    ['/license', user?.signedLicenseAt],
-    () => api.get('/license'),
-  );
+  const { data } = useQuery({
+    queryKey: ['/license', user?.signedLicenseAt],
+    queryFn: () => api.get('/license'),
+  });
 
   const requiresSigning = Boolean(!data || !user || !user.signedLicenseAt || user.signedLicenseAt < data.enactedAt);
   const isSigned = !requiresSigning || hasSigned;

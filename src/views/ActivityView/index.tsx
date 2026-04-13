@@ -1,9 +1,8 @@
 import './index.scss';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Typography } from '@mui/material';
+import { themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { formatDistanceToNow } from 'date-fns';
 import React, {
@@ -41,38 +40,41 @@ const ActivityView = () => {
   const cutOff = useRef(currentTime - TWO_WEEK_MILLISECONDS);
 
   // fetch recent records data
-  const { data: recentRecords } = useQuery('recent', async () => {
-    const [records, edges] = await Promise.all([
-      api.query({
-        target: 'V',
-        filters: [
-          {
-            updatedAt: cutOff.current,
-            operator: '>=',
-          },
-        ],
-        orderBy: ['createdAt'],
-        orderByDirection: 'DESC',
-        returnProperties: ['@rid', '@class', 'updatedBy.name', 'updatedAt', 'displayName'],
-      }),
+  const { data: recentRecords } = useQuery({
+    queryKey: ['recent'],
+    queryFn: async () => {
+      const [records, edges] = await Promise.all([
+        api.query({
+          target: 'V',
+          filters: [
+            {
+              updatedAt: cutOff.current,
+              operator: '>=',
+            },
+          ],
+          orderBy: ['createdAt'],
+          orderByDirection: 'DESC',
+          returnProperties: ['@rid', '@class', 'updatedBy.name', 'updatedAt', 'displayName'],
+        }),
 
-      // get recent Edge records
-      api.query({
-        target: 'E',
-        filters: [
-          {
-            createdAt: cutOff.current,
-            operator: '>=',
-          },
-        ],
-        orderBy: ['createdAt'],
-        orderByDirection: 'DESC',
-        returnProperties: ['@rid', '@class', 'createdBy.name', 'createdAt'],
-      }),
-    ]);
-    const result = [...records, ...edges]
-      .sort((rec1: any, rec2: any) => (rec2.updatedAt || rec2.createdAt) - (rec1.updatedAt || rec1.createdAt));
-    return result;
+        // get recent Edge records
+        api.query({
+          target: 'E',
+          filters: [
+            {
+              createdAt: cutOff.current,
+              operator: '>=',
+            },
+          ],
+          orderBy: ['createdAt'],
+          orderByDirection: 'DESC',
+          returnProperties: ['@rid', '@class', 'createdBy.name', 'createdAt'],
+        }),
+      ]);
+      const result = [...records, ...edges]
+        .sort((rec1: any, rec2: any) => (rec2.updatedAt || rec2.createdAt) - (rec1.updatedAt || rec1.createdAt));
+      return result;
+    },
   });
 
   // resize the columns to fit once the data and grid are ready
@@ -83,7 +85,7 @@ const ActivityView = () => {
       gridApi.sizeColumnsToFit();
 
       if (recentRecords) {
-        gridApi.setRowData(recentRecords);
+        gridApi.setGridOption('rowData', recentRecords);
       }
     }
   }, [recentRecords, grid.ref]);
@@ -133,14 +135,14 @@ const ActivityView = () => {
               sortable: true,
             },
           ]}
-          deltaRowDataMode
+          components={{ JumpToRecord }}
           enableCellTextSelection
-          frameworkComponents={{ JumpToRecord }}
-          getRowNodeId={(data) => data['@rid']}
+          getRowId={(params) => params.data['@rid']}
           pagination
           paginationAutoPageSize
           rowData={recentRecords}
           suppressHorizontalScroll
+          theme={themeMaterial}
         />
       </div>
     </div>

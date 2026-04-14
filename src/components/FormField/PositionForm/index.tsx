@@ -25,8 +25,6 @@ interface PositionFormProps {
   /** change handler */
   onChange: FormContextState['updateFieldEvent'];
   baseVariant?: string;
-  /** can this position be removed/deleted/set to null */
-  clearable?: boolean;
   /** flag to indicate this field is disabled */
   disabled?: boolean;
   /** indicates there is an outstanding error */
@@ -35,8 +33,6 @@ interface PositionFormProps {
   helperText?: string;
   /**  label to display above the field */
   label?: string;
-  /** flag to indicate this field must be filled */
-  required?: boolean;
   /** the initial value */
   value?: Record<string, unknown>;
   /** the position class model name */
@@ -45,14 +41,12 @@ interface PositionFormProps {
 
 const PositionForm = ({
   baseVariant = DEFAULT_BASE_VARIANT,
-  clearable = true,
   disabled = false,
   error = false,
   helperText = '',
   label = '',
   name,
   onChange,
-  required = false,
   value,
   variant: initialVariant = '',
   ...props
@@ -81,9 +75,9 @@ const PositionForm = ({
   return (
     <FormControl className="position-form" component="ul">
       {label && (
-        <FormLabel disabled={disabled} error={error} required={required}>{label}</FormLabel>
+        <FormLabel disabled={disabled} error={error}>{label}</FormLabel>
       )}
-      {!disabled && clearable && variant && (
+      {!disabled && variant && (
         <IconButton
           className="position-form__cancel"
           onClick={() => {

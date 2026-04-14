@@ -1,0 +1,129 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Disabled snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+  >
+    <label
+      class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
+    >
+      Created
+    </label>
+    <div
+      class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-invalid="false"
+        class="Mui-disabled MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+        data-testid="created"
+        disabled=""
+        id="_r_XXXX_"
+        name="created"
+        type="datetime-local"
+        value=""
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Empty snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
+    >
+      Created
+    </label>
+    <div
+      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-invalid="false"
+        class="MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+        data-testid="created"
+        id="_r_XXXX_"
+        name="created"
+        type="datetime-local"
+        value=""
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`WithError snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+  >
+    <label
+      class="Mui-error MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
+    >
+      Created
+    </label>
+    <div
+      class="Mui-error MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-describedby="_r_XXXX_-helper-text"
+        aria-invalid="true"
+        class="MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+        data-testid="created"
+        id="_r_XXXX_"
+        name="created"
+        type="datetime-local"
+        value="2020-01-01T00:00"
+      />
+    </div>
+    <p
+      class="Mui-error MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+      id="_r_XXXX_-helper-text"
+    >
+      this is an error message
+    </p>
+  </div>
+</div>
+`;
+
+exports[`WithValue snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
+    >
+      Created
+    </label>
+    <div
+      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-invalid="false"
+        class="MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+        data-testid="created"
+        id="_r_XXXX_"
+        name="created"
+        type="datetime-local"
+        value="2020-01-01T00:00"
+      />
+    </div>
+  </div>
+</div>
+`;

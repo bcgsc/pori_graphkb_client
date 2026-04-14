@@ -9,7 +9,7 @@ import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 
-interface FilteredRecordAutocompleteProps {
+interface FilteredRecordAutocompleteProps extends Omit<React.ComponentProps<typeof RecordAutocomplete>, 'getQueryBody' | 'placeholder'> {
   /** the base class for creating the class filter for the paired autocomplete component */
   linkedClassName: string;
   /** the field name used in passing to parent handlers */

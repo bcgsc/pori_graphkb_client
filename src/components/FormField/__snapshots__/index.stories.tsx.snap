@@ -1,0 +1,250 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FreeText snapshot 1`] = `
+<div>
+  <li
+    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+    >
+      <label
+        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="_r_XXXX_"
+        id="_r_XXXX_-label"
+      >
+        comment
+      </label>
+      <div
+        class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+      >
+        <textarea
+          aria-describedby="_r_XXXX_-helper-text"
+          aria-invalid="false"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          data-testid="comment"
+          id="_r_XXXX_"
+          name="comment"
+        >
+          hello world
+        </textarea>
+        <textarea
+          aria-hidden="true"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          readonly=""
+          tabindex="-1"
+        />
+      </div>
+      <p
+        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="_r_XXXX_-helper-text"
+      >
+        <span
+          aria-hidden="true"
+          class="notranslate"
+        >
+          ​
+        </span>
+      </p>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`FreeTextDisabled snapshot 1`] = `
+<div>
+  <li
+    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+    >
+      <label
+        class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="_r_XXXX_"
+        id="_r_XXXX_-label"
+      >
+        comment
+      </label>
+      <div
+        class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+      >
+        <textarea
+          aria-describedby="_r_XXXX_-helper-text"
+          aria-invalid="false"
+          class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          data-testid="comment"
+          disabled=""
+          id="_r_XXXX_"
+          name="comment"
+        >
+          hello world
+        </textarea>
+        <textarea
+          aria-hidden="true"
+          class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          readonly=""
+          tabindex="-1"
+        />
+      </div>
+      <p
+        class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="_r_XXXX_-helper-text"
+      >
+        <span
+          aria-hidden="true"
+          class="notranslate"
+        >
+          ​
+        </span>
+      </p>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`FreeTextEmpty snapshot 1`] = `
+<div>
+  <li
+    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+    >
+      <label
+        class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="false"
+        for="_r_XXXX_"
+        id="_r_XXXX_-label"
+      >
+        comment
+      </label>
+      <div
+        class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+      >
+        <textarea
+          aria-describedby="_r_XXXX_-helper-text"
+          aria-invalid="false"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          data-testid="comment"
+          id="_r_XXXX_"
+          name="comment"
+        />
+        <textarea
+          aria-hidden="true"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          readonly=""
+          tabindex="-1"
+        />
+      </div>
+      <p
+        class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="_r_XXXX_-helper-text"
+      >
+        <span
+          aria-hidden="true"
+          class="notranslate"
+        >
+          ​
+        </span>
+      </p>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`FreeTextWithError snapshot 1`] = `
+<div>
+  <li
+    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+    >
+      <label
+        class="Mui-error MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="_r_XXXX_"
+        id="_r_XXXX_-label"
+      >
+        comment
+      </label>
+      <div
+        class="Mui-error MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+      >
+        <textarea
+          aria-describedby="_r_XXXX_-helper-text"
+          aria-invalid="true"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          data-testid="comment"
+          id="_r_XXXX_"
+          name="comment"
+        >
+          hello world
+        </textarea>
+        <textarea
+          aria-hidden="true"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          readonly=""
+          tabindex="-1"
+        />
+      </div>
+      <p
+        class="Mui-error MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="_r_XXXX_-helper-text"
+      >
+        bad value
+      </p>
+    </div>
+  </li>
+</div>
+`;
+
+exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
+<div>
+  <li
+    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+    >
+      <label
+        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="_r_XXXX_"
+        id="_r_XXXX_-label"
+      >
+        comment
+      </label>
+      <div
+        class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+      >
+        <textarea
+          aria-describedby="_r_XXXX_-helper-text"
+          aria-invalid="false"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          data-testid="comment"
+          id="_r_XXXX_"
+          name="User Comments"
+        >
+          hello world
+        </textarea>
+        <textarea
+          aria-hidden="true"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+          readonly=""
+          tabindex="-1"
+        />
+      </div>
+      <p
+        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="_r_XXXX_-helper-text"
+      >
+        this field is useful
+      </p>
+    </div>
+  </li>
+</div>
+`;

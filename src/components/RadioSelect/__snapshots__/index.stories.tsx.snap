@@ -1,0 +1,615 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ComplexOptions snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root radio-select undefined"
+    role="menu"
+    tabindex="-1"
+  >
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="0"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-apple-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__apple"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-apple-label"
+        >
+          apple
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        >
+          this the most basic fruit
+        </p>
+      </div>
+    </li>
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-orange-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__orange"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-orange-label"
+        >
+          orange
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        >
+          contensious, rhymes with nothing
+        </p>
+      </div>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`ComplexOptionsWithValueSelected snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root radio-select undefined"
+    role="menu"
+    tabindex="-1"
+  >
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-apple-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__apple"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-apple-label"
+        >
+          apple
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        >
+          this the most basic fruit
+        </p>
+      </div>
+    </li>
+    <li
+      class="Mui-selected MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="0"
+    >
+      <span
+        class="Mui-checked MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-orange-label"
+          checked=""
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__orange"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-orange-label"
+        >
+          orange
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        >
+          contensious, rhymes with nothing
+        </p>
+      </div>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`NoOptions snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root radio-select undefined"
+    role="menu"
+    tabindex="-1"
+  />
+</div>
+`;
+
+exports[`StringOptions snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root radio-select undefined"
+    role="menu"
+    tabindex="-1"
+  >
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="0"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-apple-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__apple"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-apple-label"
+        >
+          apple
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        />
+      </div>
+    </li>
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-banana-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__banana"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-banana-label"
+        >
+          banana
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        />
+      </div>
+    </li>
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-orange-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__orange"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-orange-label"
+        >
+          orange
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        />
+      </div>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`StringOptionsWithValueSelected snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root radio-select undefined"
+    role="menu"
+    tabindex="-1"
+  >
+    <li
+      class="Mui-selected MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="0"
+    >
+      <span
+        class="Mui-checked MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-apple-label"
+          checked=""
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__apple"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-apple-label"
+        >
+          apple
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        />
+      </div>
+    </li>
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-banana-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__banana"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-banana-label"
+        >
+          banana
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        />
+      </div>
+    </li>
+    <li
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <span
+        class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+      >
+        <input
+          aria-labelledby="_r_XXXX_-orange-label"
+          class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+          data-testid="radio-option__orange"
+          type="radio"
+        />
+        <span
+          class="css-XXXX-MuiRadioButtonIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonUncheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+            data-testid="RadioButtonCheckedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+            />
+          </svg>
+        </span>
+      </span>
+      <div
+        class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+      >
+        <span
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          id="_r_XXXX_-orange-label"
+        >
+          orange
+        </span>
+        <p
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+        />
+      </div>
+    </li>
+  </ul>
+</div>
+`;

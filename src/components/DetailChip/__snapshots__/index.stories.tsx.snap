@@ -1,0 +1,609 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LabelOnly snapshot 1`] = `
+<div>
+  <div
+    class="detail-chip"
+  >
+    <div
+      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+      role="button"
+      tabindex="0"
+    >
+      <span
+        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+      >
+        hello world
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`WithDeleteHandler snapshot 1`] = `
+<div>
+  <div
+    class="detail-chip"
+  >
+    <div
+      class="Mui-focusVisible MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+      role="button"
+      tabindex="0"
+    >
+      <span
+        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+      >
+        bob (#19:0)
+      </span>
+      <svg
+        aria-hidden="true"
+        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+        data-testid="CancelIcon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`WithDetails snapshot 1`] = `
+<div>
+  <div
+    class="detail-chip"
+  >
+    <div
+      class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+      role="button"
+      tabindex="0"
+    >
+      <span
+        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+      >
+        bob (#19:0)
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`WithDetailsOpen snapshot 1`] = `
+[
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="detail-chip"
+    >
+      <div
+        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+        role="button"
+        tabindex="0"
+      >
+        <span
+          class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+        >
+          bob (#19:0)
+        </span>
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </div>
+    </div>
+  </div>,
+  <div
+    class="MuiModal-root MuiPopover-root css-XXXX-MuiModal-root-MuiPopover-root detail-chip__popover detail-popover"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-invisible MuiBackdrop-root MuiModal-backdrop css-XXXX-MuiBackdrop-root-MuiModal-backdrop"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      class="MuiPaper-elevation MuiPaper-elevation8 MuiPaper-root MuiPaper-rounded MuiPopover-paper css-XXXX-MuiPaper-root-MuiPopover-paper"
+      tabindex="-1"
+    >
+      <div
+        class="MuiCard-root MuiPaper-elevation MuiPaper-elevation1 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root"
+      >
+        <div
+          class="MuiCardContent-root css-XXXX-MuiCardContent-root detail-popover__panel"
+        >
+          <div
+            class="detail-popover__panel-header"
+          >
+            <h4
+              class="MuiTypography-gutterBottom MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              bob (#19:0)
+            </h4>
+          </div>
+          <hr
+            class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+          />
+          <table
+            class="MuiTable-root css-XXXX-MuiTable-root"
+          >
+            <tbody
+              class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+            >
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    @class
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  User
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    @rid
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  #19:0
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    createdAt
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  1587417608405
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    createdBy
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  #2:5
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    email
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  bob@bcgsc.ca
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    groups
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  #26:0
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    loginCount
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  17475
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    name
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  bob
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    signedLicenseAt
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  1587595458303
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    uuid
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  xxxx-xxxxx-xxxx-xxxx
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>,
+]
+`;
+
+exports[`WithGetLink snapshot 1`] = `
+[
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="detail-chip"
+    >
+      <div
+        class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root"
+        role="button"
+        tabindex="0"
+      >
+        <span
+          class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+        >
+          bob (#19:0)
+        </span>
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </div>
+    </div>
+  </div>,
+  <div
+    class="MuiModal-root MuiPopover-root css-XXXX-MuiModal-root-MuiPopover-root detail-chip__popover detail-popover"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-invisible MuiBackdrop-root MuiModal-backdrop css-XXXX-MuiBackdrop-root-MuiModal-backdrop"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      class="MuiPaper-elevation MuiPaper-elevation8 MuiPaper-root MuiPaper-rounded MuiPopover-paper css-XXXX-MuiPaper-root-MuiPopover-paper"
+      tabindex="-1"
+    >
+      <div
+        class="MuiCard-root MuiPaper-elevation MuiPaper-elevation1 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root"
+      >
+        <div
+          class="MuiCardContent-root css-XXXX-MuiCardContent-root detail-popover__panel"
+        >
+          <div
+            class="detail-popover__panel-header"
+          >
+            <h4
+              class="MuiTypography-gutterBottom MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              bob (#19:0)
+            </h4>
+            <a
+              href="/test"
+              target="_blank"
+            >
+              <button
+                aria-label="open in new tab"
+                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+                tabindex="0"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="OpenInNewIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                  />
+                </svg>
+              </button>
+            </a>
+          </div>
+          <hr
+            class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+          />
+          <table
+            class="MuiTable-root css-XXXX-MuiTable-root"
+          >
+            <tbody
+              class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+            >
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    @class
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  User
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    @rid
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  #19:0
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    createdAt
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  1587417608405
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    createdBy
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  #2:5
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    email
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  bob@bcgsc.ca
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    groups
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  #26:0
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    loginCount
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  17475
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    name
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  bob
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    signedLicenseAt
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  1587595458303
+                </td>
+              </tr>
+              <tr
+                class="MuiTableRow-root css-XXXX-MuiTableRow-root detail-popover__row"
+              >
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  <h6
+                    class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    uuid
+                  </h6>
+                </td>
+                <td
+                  class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                >
+                  xxxx-xxxxx-xxxx-xxxx
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>,
+]
+`;

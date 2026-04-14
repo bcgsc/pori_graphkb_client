@@ -3755,7 +3755,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2026-03-31T15:16"
+                          value="2026-03-31T22:16"
                         />
                       </div>
                       <p
@@ -4613,7 +4613,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2026-04-09T13:07"
+                          value="2026-04-09T20:07"
                         />
                       </div>
                       <p
@@ -4728,7 +4728,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2026-04-09T13:07"
+                          value="2026-04-09T20:07"
                         />
                       </div>
                       <p
@@ -6042,7 +6042,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2026-04-01T11:36"
+                          value="2026-04-01T18:36"
                         />
                       </div>
                       <p
@@ -6157,7 +6157,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2026-04-01T11:36"
+                          value="2026-04-01T18:36"
                         />
                       </div>
                       <p
@@ -7835,7 +7835,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2022-08-03T10:21"
+                          value="2022-08-03T17:21"
                         />
                       </div>
                       <p
@@ -7950,7 +7950,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                           readonly=""
                           required=""
                           type="datetime-local"
-                          value="2023-11-23T09:06"
+                          value="2023-11-23T17:06"
                         />
                       </div>
                       <p

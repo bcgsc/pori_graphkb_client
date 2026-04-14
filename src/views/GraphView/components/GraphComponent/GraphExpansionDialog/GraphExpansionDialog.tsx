@@ -1,6 +1,6 @@
 import './GraphExpansionDialog.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { GraphRecord, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Button,
   Checkbox,
@@ -115,7 +115,6 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
           Select Individual Links:
         </Typography>
         <ListItem
-          button
           className="expand-links-link"
           onClick={onStageAll}
         >
@@ -141,13 +140,12 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
             return (
               <ListItem
                 key={edge['@rid']}
-                button
                 className="expand-links-link"
                 onClick={() => onStage(edge['@rid'])}
               >
                 <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                 <ListItemText>
-                  <Typography variant="body1">{schemaDefn.getPreview(target)}</Typography>
+                  <Typography variant="body1">{schemaDefn.getPreview(target as GraphRecord)}</Typography>
                   <Typography variant="caption">{classLabel}</Typography>
                 </ListItemText>
               </ListItem>

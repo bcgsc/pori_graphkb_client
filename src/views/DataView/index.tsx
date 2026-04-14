@@ -5,7 +5,7 @@ import {
   IconButton,
 } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
-import { themeMaterial } from 'ag-grid-community';
+import { IRowNode, themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import React, {
   useCallback,
@@ -134,7 +134,7 @@ const DataView = (): React.JSX.Element => {
   const [search, setSearch] = useState(initialSearch);
   const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState<HTMLButtonElement | null>(null);
-  const [detailsRowId, setDetailsRowId] = useState(null);
+  const [detailsRowId, setDetailsRowId] = useState<string | null>(null);
   const grid = useGrid();
 
   const payload = useMemo(() => getQueryPayload({
@@ -219,7 +219,7 @@ const DataView = (): React.JSX.Element => {
     }
   }, [error, handleError]);
 
-  const handleToggleDetailPanel = useCallback(async (params) => {
+  const handleToggleDetailPanel = useCallback((params?: IRowNode | null) => {
     // no data or clicked link is a link property without a class model
     if (!params?.data || params.data.isLinkProp) {
       setDetailsRowId(null);

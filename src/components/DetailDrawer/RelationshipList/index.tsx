@@ -50,7 +50,7 @@ function RelationshipList(props: RelationshipListProps) {
         let isIn = false;
 
         if (edge.in !== undefined) {
-          isIn = edge.in && rid(edge.in) === rid(record);
+          isIn = Boolean(edge.in && rid(edge.in) === rid(record));
         }
         const targetNode = isIn ? edge.out : edge.in;
 

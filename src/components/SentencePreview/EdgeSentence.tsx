@@ -6,8 +6,8 @@ import SentencePreview from '.';
 
 interface EdgeSentenceProps {
   type: string;
-  srcRecord?: GeneralRecordType;
-  tgtRecord?: GeneralRecordType;
+  srcRecord?: GeneralRecordType | string;
+  tgtRecord?: GeneralRecordType | string;
 }
 
 const EdgeSentence = ({ srcRecord, tgtRecord, type }: EdgeSentenceProps) => {
@@ -17,22 +17,22 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }: EdgeSentenceProps) => {
     edgeType = `is a ${edgeType}`;
   }
   const words = [
-    srcRecord
+    srcRecord && typeof srcRecord !== 'string'
       ? srcRecord.displayName
       : '[source record]',
     edgeType,
-    tgtRecord
+    tgtRecord && typeof tgtRecord !== 'string'
       ? tgtRecord.displayName
       : '[target record]',
   ];
 
   const highlights: string[] = [];
 
-  if (srcRecord?.displayName) {
+  if (typeof srcRecord !== 'string' && srcRecord?.displayName) {
     highlights.push(srcRecord.displayName);
   }
 
-  if (tgtRecord?.displayName) {
+  if (typeof tgtRecord !== 'string' && tgtRecord?.displayName) {
     highlights.push(tgtRecord.displayName);
   }
 

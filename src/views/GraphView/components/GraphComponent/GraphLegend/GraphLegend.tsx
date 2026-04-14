@@ -80,7 +80,7 @@ function GraphLegend(props: GraphLegendProps) {
                     />
                   </ListItemIcon>
                   <ListItemText primary={typeof key === 'object'
-                    ? key.displayName || util.antiCamelCase(key.name)
+                    ? (key as any).displayName || util.antiCamelCase((key as any).name)
                     : key}
                   />
                 </ListItem>

@@ -53,7 +53,7 @@ interface DetailDrawerProps {
   isEdge?: boolean;
   /** Ontology to be displayed in drawer. */
   node?: GeneralRecordType;
-  onClose?: React.ComponentProps<typeof IconButton>['onClick'];
+  onClose?: () => void;
 }
 
 /**
@@ -245,7 +245,7 @@ function DetailDrawer(props: DetailDrawerProps) {
               <OpenInNewIcon />
             </IconButton>
           </Link>
-          <IconButton onClick={onClose}>
+          <IconButton onClick={() => onClose?.()}>
             <CloseIcon />
           </IconButton>
         </div>

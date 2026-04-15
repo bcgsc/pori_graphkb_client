@@ -32,13 +32,15 @@ describe('BreakpointForm', () => {
   test('displays start when given', () => {
     const { getByText, queryByText, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <BreakpointForm
-          coordinateType="GenomicPosition"
-          end="break1End"
-          model={schemaDefn.get('PositionalVariant')}
-          reference="reference1"
-          start="break1Start"
-        />
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: {} }}>
+          <BreakpointForm
+            coordinateType="GenomicPosition"
+            end="break1End"
+            model={schemaDefn.get('PositionalVariant')}
+            reference="reference1"
+            start="break1Start"
+          />
+        </FormContext.Provider>
       </QueryClientProvider>,
     );
     expect(getByLabelText(/reference/)).toBeInTheDocument();
@@ -91,11 +93,13 @@ describe('BreakpointForm', () => {
   test('displays only gene when start not given', () => {
     const { getByLabelText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <BreakpointForm
-          coordinateType="GenomicPosition"
-          model={schemaDefn.get('PositionalVariant')}
-          reference="reference1"
-        />
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: {} }}>
+          <BreakpointForm
+            coordinateType="GenomicPosition"
+            model={schemaDefn.get('PositionalVariant')}
+            reference="reference1"
+          />
+        </FormContext.Provider>
       </QueryClientProvider>,
     );
     expect(getByLabelText(/reference/)).toBeInTheDocument();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { GeneralRecordType } from '../types';
 import { FORM_VARIANT } from '../util';
@@ -27,18 +27,15 @@ export interface FormContextState {
   setFormIsDirty: (dirty: boolean) => void;
 }
 
-const FormContext = React.createContext<FormContextState>({
-  formContent: {},
-  formErrors: {},
-  formHasErrors: false,
-  formIsDirty: false,
-  formVariant: '',
-  additionalValidationError: '',
-  setFormIsDirty: () => {},
-  update: () => {},
-  updateField: () => {},
-  updateFieldEvent: () => {},
-  replaceContent: () => {},
-});
+const FormContext = React.createContext<FormContextState | null>(null);
+
+export const useFormContext = () => {
+  const value = useContext(FormContext);
+
+  if (!value) {
+    throw new Error('missing FormContext provider');
+  }
+  return value;
+};
 
 export default FormContext;

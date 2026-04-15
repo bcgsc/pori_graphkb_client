@@ -3,9 +3,9 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import FormContext from '@/components/FormContext';
+import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
 
 interface BreakpointFormProps {
@@ -31,7 +31,7 @@ interface BreakpointFormProps {
 const BreakpointForm = ({
   coordinateType, reference, start = '', end = '', required = true, model,
 }: BreakpointFormProps) => {
-  const { formContent, updateField } = useContext(FormContext);
+  const { formContent, updateField } = useFormContext();
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
 
   const handleCheckUncertain = useCallback((checked) => {

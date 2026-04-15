@@ -9,11 +9,9 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import React, {
-  useContext, useMemo, useState,
-} from 'react';
+import React, { useMemo, useState } from 'react';
 
-import FormContext from '@/components/FormContext';
+import { useFormContext } from '@/components/FormContext';
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
 import StatementSentence from '@/components/SentencePreview/StatementSentence';
 import { CLASS_MODEL_PROP, sortAndGroupFields } from '@/components/util';
@@ -90,7 +88,7 @@ const FormLayout = ({
 }: FormLayoutProps) => {
   const {
     formContent = {}, formVariant,
-  } = useContext(FormContext);
+  } = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const model = useMemo(() => schemaDefn.get(modelName), [modelName]);

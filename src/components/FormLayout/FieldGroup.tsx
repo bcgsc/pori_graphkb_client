@@ -2,9 +2,9 @@ import './index.scss';
 
 import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@mui/material';
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode } from 'react';
 
-import FormContext from '@/components/FormContext';
+import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
 
@@ -55,7 +55,7 @@ interface FieldGroupProps {
 const FieldGroup = ({
   model, ordering, exclusions = [], disabled = false,
 }: FieldGroupProps) => {
-  const { formVariant, formContent } = useContext(FormContext);
+  const { formVariant, formContent } = useFormContext();
   let properties;
 
   if (model.name) {

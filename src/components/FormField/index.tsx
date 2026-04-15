@@ -6,10 +6,10 @@ import {
   TextField,
 } from '@mui/material';
 import { omit } from 'lodash';
-import React, { useContext } from 'react';
+import React from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
-import FormContext from '@/components/FormContext';
+import { useFormContext } from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
@@ -62,7 +62,7 @@ const FormField = ({
 }: FormFieldProps) => {
   const {
     formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
-  } = useContext(FormContext);
+  } = useFormContext();
 
   const {
     choices,

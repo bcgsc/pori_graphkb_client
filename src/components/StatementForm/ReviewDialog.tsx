@@ -19,6 +19,11 @@ import {
 } from '@/components/util';
 
 const MODEL_NAME = 'StatementReview';
+const { comment, status } = schemaDefn.getProperties(MODEL_NAME);
+
+const model = {
+  properties: { comment, status },
+};
 
 interface AddReviewDialogProps {
   /** parent handler */
@@ -35,12 +40,11 @@ const AddReviewDialog = ({
 }: AddReviewDialogProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const { comment, status } = schemaDefn.getProperties(MODEL_NAME);
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
   // handle and store the form content
-  const form = useSchemaForm({ comment, status }, {}, {}, { variant: FORM_VARIANT.NEW });
+  const form = useSchemaForm(model, {}, {}, { variant: FORM_VARIANT.NEW });
   const {
     formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
   } = form;

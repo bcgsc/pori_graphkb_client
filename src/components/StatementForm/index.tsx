@@ -30,6 +30,7 @@ import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
+const model = schemaDefn.get('Statement');
 
 interface StatementFormProps {
   /** the title for this form */
@@ -113,8 +114,6 @@ const StatementForm = ({
 
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const model = schemaDefn.get('Statement');
-  const fieldDefs = schemaDefn.getProperties('Statement');
 
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
@@ -146,7 +145,7 @@ const StatementForm = ({
     return '';
   }, [diagnosticData, prognosticData, therapeuticData]);
 
-  const form = useSchemaForm(fieldDefs, initialValue, {}, {
+  const form = useSchemaForm(model, initialValue, {}, {
     variant,
     additionalValidationFn: checkLogicalStatement,
   });
@@ -235,7 +234,7 @@ const StatementForm = ({
       content = statementReviewCheck(formContent, content);
       addNewAction(content);
     }
-  }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
+  }, [addNewAction, formContent, formErrors, formHasErrors, setFormIsDirty, snackbar, statementReviewCheck]);
 
   const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -254,7 +253,7 @@ const StatementForm = ({
   const handleDeleteAction = useCallback(async () => {
     const content = { ...formContent, '@class': model.name };
     deleteAction(content);
-  }, [deleteAction, formContent, model.name]);
+  }, [deleteAction, formContent]);
 
   const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -285,7 +284,7 @@ const StatementForm = ({
     } else {
       updateAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, model.name, onSubmit, setFormIsDirty, snackbar, updateAction]);
+  }, [formContent, formErrors, formHasErrors, formIsDirty, onSubmit, setFormIsDirty, snackbar, updateAction]);
 
   const actionInProgress = isAdding || isDeleting || isUpdating;
 

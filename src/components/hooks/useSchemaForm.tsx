@@ -9,6 +9,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import schema from '@/services/schema';
 
+import { FormContextState } from '../FormContext';
 import { GeneralRecordType } from '../types';
 import { FORM_VARIANT } from '../util';
 import useObject from './useObject';
@@ -32,23 +33,19 @@ interface UseSchemaFormOptions {
  * @returns {FormContext} the form context values
  */
 const useSchemaForm = (
-  initialFieldDefs: Record<string, Partial<PropertyDefinition> & {
-    name: string;
-    // missing from types
-    generateDefault?: (record: Record<string, unknown>) => unknown;
-  }>,
+  initialModel: FormContextState['model'],
   initialValue: GeneralRecordType = {},
   err: Record<string, any> = {},
   { ignoreMandatoryErrors = false, variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
-) => {
+): FormContextState => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
-  const [fieldDefs, setFieldDefs] = useState(initialFieldDefs);
+  const [model, setModel] = useState(initialModel);
   const [additionalValidationError, setAdditionalValidationError] = useState('');
 
   useDeepCompareEffect(() => {
-    setFieldDefs(initialFieldDefs);
-  }, [initialFieldDefs || {}]);
+    setModel(initialModel);
+  }, [initialModel]);
 
   // handle and store the form content
   const {
@@ -65,14 +62,14 @@ const useSchemaForm = (
   } = useObject(err);
 
   const formValidator = useCallback((propName, propValue) => {
-    const prop = fieldDefs[propName];
+    const prop = model.properties[propName];
 
     if (prop) {
       return schema.validateValue(prop, propValue, { ignoreMandatory: ignoreMandatoryErrors });
     }
 
     return { value: propValue };
-  }, [fieldDefs, ignoreMandatoryErrors]);
+  }, [model, ignoreMandatoryErrors]);
 
   useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some((err) => err);
@@ -90,7 +87,7 @@ const useSchemaForm = (
     replaceContent(initialValue);
     replaceErrors({});
 
-    Object.values(fieldDefs).forEach((prop) => {
+    Object.values(model.properties).forEach((prop) => {
       const propValue = (initialValue || {})[prop.name];
 
       const { error, value } = formValidator(prop.name, propValue);
@@ -99,7 +96,7 @@ const useSchemaForm = (
     });
 
     setFormIsDirty(false);
-  }, [initialValue || {}, fieldDefs || {}]);
+  }, [initialValue || {}, model]);
 
   // provide an update callback which includes the validation step
   const updateField = useCallback((propName, propValue) => {
@@ -112,12 +109,12 @@ const useSchemaForm = (
     // TODO: add flag to property to auto regenerating defaults
     if (
       ['subject', 'conditions', 'relevance'].includes(propName)
-      && fieldDefs.displayNameTemplate
-      && fieldDefs.displayNameTemplate.generateDefault
+      && model.properties.displayNameTemplate
+      && model.properties.displayNameTemplate.generateDefault
       && formContent.displayNameTemplate
     ) {
       const { displayNameTemplate: _, ...rest } = formContent;
-      const newTemplate = fieldDefs.displayNameTemplate.generateDefault({ ...rest, [propName]: value });
+      const newTemplate = model.properties.displayNameTemplate.generateDefault({ ...rest, [propName]: value });
       setFormFieldContent('displayNameTemplate', newTemplate);
     }
 
@@ -125,7 +122,7 @@ const useSchemaForm = (
       setFormHasErrors(true);
     }
     setFormIsDirty(true);
-  }, [fieldDefs.displayNameTemplate, formContent, formValidator, setFormFieldContent, setFormFieldError]);
+  }, [model.properties.displayNameTemplate, formContent, formValidator, setFormFieldContent, setFormFieldError]);
 
   const updateFieldEvent = useCallback(({ target }) => {
     // add the new value to the field
@@ -146,6 +143,7 @@ const useSchemaForm = (
     updateField,
     updateFieldEvent,
     replaceContent,
+    model,
   };
 };
 

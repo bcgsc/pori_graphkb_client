@@ -240,10 +240,10 @@ const VariantForm = ({
       )}
       formVariant={formVariant}
       isLoading={submitMutation.isPending || deleteMutation.isPending}
+      model={model}
       modelName={model.name}
       onDelete={handleDeleteAction}
       onSubmit={handleSubmitAction}
-      properties={schemaDefn.getProperties(model.name)}
       value={value}
     >
       <FormStepWrapper

@@ -32,6 +32,11 @@ function MockProvider({
       [name]: value,
     },
     formVariant: formVariant ?? FORM_VARIANT.NEW,
+    model: {
+      properties: {
+        name: { name: 'comment', type: 'string' as const },
+      },
+    },
   }), [value, errorMessage, name, formVariant]);
 
   return <FormContext.Provider value={state}>{children}</FormContext.Provider>;

@@ -25,7 +25,7 @@ interface SteppedFormProps {
   /** handler to call on form submission */
   onSubmit: (formContent: unknown) => void;
   /** property definitions for the form fields */
-  properties: Parameters<typeof useSchemaForm>[0];
+  model: Parameters<typeof useSchemaForm>[0];
   className?: string;
   formVariant?: FORM_VARIANT;
   isLoading?: boolean;
@@ -34,12 +34,12 @@ interface SteppedFormProps {
 }
 
 const SteppedForm = ({
-  children, modelName, properties, onSubmit, className = '', value = {}, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false, errors,
+  children, modelName, model, onSubmit, className = '', value = {}, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false, errors,
 }: SteppedFormProps) => {
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
-  const form = useSchemaForm(properties, { '@class': modelName, ...value }, {}, { variant: formVariant });
+  const form = useSchemaForm(model, { '@class': modelName, ...value }, {}, { variant: formVariant });
   const {
     formContent, formErrors, formHasErrors, formIsDirty,
   } = form;

@@ -26,6 +26,7 @@ const CONTEXT_DEFAULTS: FormContextState = {
   formIsDirty: false,
   formErrors: {},
   additionalValidationError: '',
+  model: { properties: {} },
 };
 
 describe('BreakpointForm', () => {

@@ -18,7 +18,6 @@ import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
-import schema from '@/services/schema';
 
 import { useAuth } from '../Auth';
 import EdgeTable from './EdgeTable';
@@ -54,10 +53,9 @@ const RecordForm = ({
   const snackbar = useSnackbar();
   const auth = useAuth();
 
-  const fieldDefs = useMemo(() => (modelName ? schemaDefn.getProperties(modelName) : {}), [modelName]);
-  const isEdge = useMemo(() => (modelName ? schema.isEdge(modelName) : false), [modelName]);
+  const model = useMemo(() => schemaDefn.get(modelName, false) ?? { properties: {}, isEdge: undefined }, [modelName]);
 
-  const form = useSchemaForm(fieldDefs, initialValue, {}, { variant });
+  const form = useSchemaForm(model, initialValue, {}, { variant });
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
   } = form;
@@ -187,7 +185,7 @@ const RecordForm = ({
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && isEdge)}
+          disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && model.isEdge)}
           exclusions={FIELD_EXCLUSIONS}
           modelName={modelName}
         />
@@ -222,7 +220,7 @@ const RecordForm = ({
         {actionInProgress && (
         <CircularProgress size={50} />
         )}
-        {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
+        {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !model.isEdge)
           ? (
             <ActionButton
               color="primary"

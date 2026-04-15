@@ -22,12 +22,13 @@ describe('SteppedForm', () => {
   });
 
   beforeEach(() => {
+    const model = { properties: {} };
     ({ getByText, getByTestId, queryByText } = render(
       <SteppedForm
+        model={model}
         modelName="stuff"
         onDelete={vi.fn()}
         onSubmit={submissionSpy}
-        properties={{}}
       >
         <FormStepWrapper label="first thing">
           <div>inner first thing</div>

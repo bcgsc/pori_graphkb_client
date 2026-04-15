@@ -1,3 +1,4 @@
+import { PropertyDefinition } from '@bcgsc-pori/graphkb-schema';
 import React, { useContext } from 'react';
 
 import { GeneralRecordType } from '../types';
@@ -25,6 +26,15 @@ export interface FormContextState {
   formVariant: FORM_VARIANT | '';
   /** setter for setting the formIsDirty property */
   setFormIsDirty: (dirty: boolean) => void;
+  model: {
+    name?: string;
+    properties: Record<string, Partial<PropertyDefinition> & {
+      name: string;
+      // missing from types
+      generateDefault?: (record: Record<string, unknown>) => unknown;
+    }>;
+    isEdge?: boolean;
+  }
 }
 
 const FormContext = React.createContext<FormContextState | null>(null);

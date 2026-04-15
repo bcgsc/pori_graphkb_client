@@ -12,9 +12,9 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import FieldWrapper from '../FieldWrapper';
 
 const {
-  properties,
   properties: { arm, majorBand, minorBand }, name: VARIANT,
 } = schema.get('CytobandPosition');
+const model = schema.get('CytobandPosition');
 
 interface CytobandPositionProps {
   /** change handler */
@@ -42,7 +42,7 @@ const CytobandPosition = ({
   readOnly,
 }: CytobandPositionProps) => {
   const { formContent, formErrors, updateField } = useSchemaForm(
-    properties,
+    model,
     { ...(value || {}), '@class': VARIANT },
   );
 
@@ -63,7 +63,7 @@ const CytobandPosition = ({
           <TextField
             disabled={disabled}
             error={Boolean(formErrors[model.name])}
-            helperText={(formErrors[model.name] && formErrors[model.name].message) || ''}
+            helperText={(formErrors[model.name] && formErrors[model.name]?.message) || ''}
             label={model.name}
             name={model.name}
             onChange={handleUpdate}

@@ -7,6 +7,7 @@ import {
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -103,9 +104,10 @@ const PropertyFilter = ({
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
   const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
+  const model = useMemo(() => ({ properties: { [property]: propertyModel } }), [property, propertyModel]);
 
   // use a schema form so that validation runs on the value based on the property selected
-  const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
+  const form = useSchemaForm(model, {}, { variant: FORM_VARIANT.SEARCH });
   const {
     formContent,
     formHasErrors,

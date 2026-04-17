@@ -40,7 +40,7 @@ const filterNullFields = (orderingList: (string | string[])[], formContent) => {
 
 interface FieldGroupProps {
   /** ClassModel */
-  model: Partial<Pick<SchemaClassDefinition, 'properties' | 'isEdge' | 'name'>>;
+  model: Partial<Pick<SchemaClassDefinition, 'properties' | 'name'>>;
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
   /** if field should be disabled */
@@ -78,9 +78,7 @@ const FieldGroup = ({
           newOrder.push(subgroup);
         }
       } else if (!properties[item] || !properties[item].generated) {
-        if (!model.isEdge || !['out', 'in'].includes(item)) {
-          newOrder.push(item);
-        }
+        newOrder.push(item);
       }
     });
     return newOrder;

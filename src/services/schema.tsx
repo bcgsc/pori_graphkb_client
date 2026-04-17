@@ -425,8 +425,18 @@ function prepareModels() {
     };
 
     if (model.isEdge && model.name !== 'E') {
-      preparedModel.properties.in.label = 'Target Record (in)';
-      preparedModel.properties.out.label = 'Source Record (out)';
+      preparedModel.properties.in = {
+        ...preparedModel.properties.in,
+        description: 'The target record for the relationship',
+        label: 'Target Record (in)',
+        linkedClass: model.targetModel || 'V',
+      };
+      preparedModel.properties.out = {
+        ...preparedModel.properties.out,
+        description: 'The source record for the relationship',
+        label: 'Source Record (out)',
+        linkedClass: model.sourceModel || 'V',
+      };
     }
 
     prepared[model.name] = preparedModel;

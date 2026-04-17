@@ -55,7 +55,7 @@ const FormField = ({
   className = '',
   model,
   disabled = false,
-  label,
+  label: labelProp,
   innerProps,
   helperText: defaultHelperText,
   baseModel = '',
@@ -77,7 +77,9 @@ const FormField = ({
     nullable,
     iterable,
     format,
+    label: modelLabel,
   } = model;
+  const label = labelProp ?? modelLabel;
   const example = examples?.[0];
   const linkedClass = schemaDefn.get(linkedClassName, false);
 

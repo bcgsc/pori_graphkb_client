@@ -12,15 +12,9 @@ import React, { useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import { CLASS_MODEL_PROP, sortAndGroupFields } from '@/components/util';
-import schema, { SchemaClassDefinition } from '@/services/schema';
+import schema from '@/services/schema';
 
-import { EdgeType, GeneralRecordType } from '../types';
-import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
-
-function getIsEdge(model: SchemaClassDefinition, record: GeneralRecordType | undefined): record is EdgeType {
-  return Boolean(model) && model.isEdge;
-}
 
 interface FormLayoutProps {
   /** the property names which should be put above the collapse */
@@ -81,7 +75,7 @@ const FormLayout = ({
   ],
 }: FormLayoutProps) => {
   const {
-    formContent = {}, formVariant,
+    formVariant,
   } = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -95,14 +89,11 @@ const FormLayout = ({
     aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 
-  const isEdge = getIsEdge(model, formContent);
-
   return (
     <div className={`form-layout ${className}`}>
       {model && (
         <>
           <List className="form-layout__content">
-            {isEdge && <EdgeFields disabled={disabled} model={model} />}
             <FieldGroup
               disabled={disabled}
               exclusions={exclusions}

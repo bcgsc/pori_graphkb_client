@@ -31,7 +31,7 @@ const filterNullFields = (orderingList: (string | string[])[], formContent) => {
   orderingList.forEach((field) => {
     if (Array.isArray(field)) {
       newOrdering.push(filterNullFields(field, formContent) as string[]);
-    } else if (formContent[field] === 0 || formContent[field]) {
+    } else if (formContent[field] !== '' && formContent[field] !== null && formContent[field] !== undefined) {
       newOrdering.push(field);
     }
   });

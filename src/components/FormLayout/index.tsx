@@ -16,11 +16,7 @@ import React, {
 import FormContext from '@/components/FormContext';
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
 import StatementSentence from '@/components/SentencePreview/StatementSentence';
-import {
-  CLASS_MODEL_PROP,
-  FORM_VARIANT,
-  sortAndGroupFields,
-} from '@/components/util';
+import { CLASS_MODEL_PROP, sortAndGroupFields } from '@/components/util';
 
 import { EdgeType, GeneralRecordType, StatementType } from '../types';
 import EdgeFields from './EdgeFields';
@@ -116,12 +112,12 @@ const FormLayout = ({
       {model && (
         <>
           <div className="form-layout__content form-layout__content--long">
-            {isStatement && formVariant !== FORM_VARIANT.SEARCH && (
+            {isStatement && (
               <StatementSentence
                 content={formContent}
               />
             )}
-            {isEdge && formVariant !== FORM_VARIANT.SEARCH && (
+            {isEdge && (
               <EdgeSentence
                 srcRecord={formContent.out}
                 tgtRecord={formContent.in}

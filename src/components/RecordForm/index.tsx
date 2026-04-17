@@ -37,7 +37,7 @@ interface RecordFormProps {
   /** values of individual properties of passed class model */
   value?: GeneralRecordType;
   /** the type of NodeForm to create */
-  variant?: FORM_VARIANT;
+  variant?: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
 }
 
 /**

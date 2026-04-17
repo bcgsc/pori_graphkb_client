@@ -6,7 +6,6 @@ import {
 } from '@mui/material';
 import { Buffer } from 'buffer';
 import { useSnackbar } from 'notistack';
-import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
   useState,
@@ -19,9 +18,7 @@ import {
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
-import {
-  cleanLinkedRecords, FORM_VARIANT, navigateToGraph, tuple,
-} from '@/components/util';
+import { FORM_VARIANT, navigateToGraph, tuple } from '@/components/util';
 import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -53,11 +50,9 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   return schemaDefn.get(defaultModelName || 'V').name;
 };
 
-type ModelNamesType = 'Source' | 'source' | 'User' | 'user' | 'UserGroup' | 'usergroup';
-
 type RouteParams = {
-  variant: FORM_VARIANT;
-  modelName: ModelNamesType;
+  variant: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
+  modelName: string;
   rid: string;
 };
 
@@ -65,8 +60,8 @@ const RecordView = ({
   modelName: modelNameParamProp,
   variant,
 }: {
-  modelName?: ModelNamesType;
-  variant: FORM_VARIANT;
+  modelName?: string;
+  variant: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
 }) => {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
@@ -84,7 +79,7 @@ const RecordView = ({
   useEffect(() => {
     if (path) {
       const name = getModelFromName(path, modelNameParam, variant);
-      setModelName(name as ModelNamesType);
+      setModelName(name);
     }
   }, [path, modelNameParam, variant, navigate]);
 
@@ -94,13 +89,6 @@ const RecordView = ({
   const handleSubmit = useCallback((result: GeneralRecordType | null = null) => {
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
       navigate(schema.getLink(result));
-    } else if (result && variant === FORM_VARIANT.SEARCH) {
-      // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(result));
-      navigate({
-        pathname: '/data/table',
-        search,
-      }, { state: { content: result } });
     } else {
       navigate('/');
     }
@@ -115,7 +103,7 @@ const RecordView = ({
 
       return { ...result[0] };
     },
-    enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
+    enabled: Boolean(variant !== FORM_VARIANT.NEW && rid),
     refetchOnMount: 'always',
     throwOnError: true,
   });

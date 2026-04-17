@@ -10,7 +10,7 @@ import {
 import isempty from 'lodash.isempty';
 import { useSnackbar } from 'notistack';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -117,7 +117,6 @@ const StatementForm = ({
   const fieldDefs = schemaDefn.getProperties('Statement');
 
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
-  const [civicEvidenceId, setCivicEvidenceId] = useState('');
 
   const checkLogicalStatement = useCallback((formContent) => {
     try {
@@ -179,16 +178,15 @@ const StatementForm = ({
     }
   }, [navigate, statementQuery.data, updateField]);
 
-  useEffect(() => {
+  const civicEvidenceId = useMemo(() => {
     try {
       if (variant === FORM_VARIANT.VIEW && formContent.source?.name === 'civic' && formContent.sourceId) {
-        setCivicEvidenceId(formContent.sourceId);
-      } else {
-        setCivicEvidenceId('');
+        return formContent.sourceId;
       }
     } catch (err) {
-      setCivicEvidenceId('');
+      // pass
     }
+    return '';
   }, [variant, formContent]);
 
   const statementReviewCheck = useCallback((currContent, content) => {

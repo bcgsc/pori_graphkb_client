@@ -11,7 +11,7 @@ import FormField from '@/components/FormField';
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
-  model: ClassDefinition;
+  model: Pick<ClassDefinition, 'name'>;
   /** the field name of the reference element (ex. reference1) */
   reference: string | undefined;
   /** the field name of the end position (ex. break1End) */

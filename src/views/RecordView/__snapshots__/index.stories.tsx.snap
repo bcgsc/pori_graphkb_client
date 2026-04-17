@@ -1811,24 +1811,6 @@ exports[`EditStatement snapshot 1`] = `
                       type="text"
                       value=""
                     />
-                    <span
-                      class="MuiCircularProgress-colorInherit MuiCircularProgress-indeterminate MuiCircularProgress-root css-XXXX-MuiCircularProgress-root"
-                      role="progressbar"
-                    >
-                      <svg
-                        class="MuiCircularProgress-svg css-XXXX-MuiCircularProgress-svg"
-                        viewBox="22 22 44 44"
-                      >
-                        <circle
-                          class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-XXXX-MuiCircularProgress-circle"
-                          cx="44"
-                          cy="44"
-                          fill="none"
-                          r="20.2"
-                          stroke-width="3.6"
-                        />
-                      </svg>
-                    </span>
                     <div
                       class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                     >
@@ -2177,24 +2159,6 @@ exports[`EditStatement snapshot 1`] = `
                     type="text"
                     value=""
                   />
-                  <span
-                    class="MuiCircularProgress-colorInherit MuiCircularProgress-indeterminate MuiCircularProgress-root css-XXXX-MuiCircularProgress-root"
-                    role="progressbar"
-                  >
-                    <svg
-                      class="MuiCircularProgress-svg css-XXXX-MuiCircularProgress-svg"
-                      viewBox="22 22 44 44"
-                    >
-                      <circle
-                        class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-XXXX-MuiCircularProgress-circle"
-                        cx="44"
-                        cy="44"
-                        fill="none"
-                        r="20.2"
-                        stroke-width="3.6"
-                      />
-                    </svg>
-                  </span>
                   <div
                     class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                   >
@@ -2424,24 +2388,6 @@ exports[`EditStatement snapshot 1`] = `
                       type="text"
                       value=""
                     />
-                    <span
-                      class="MuiCircularProgress-colorInherit MuiCircularProgress-indeterminate MuiCircularProgress-root css-XXXX-MuiCircularProgress-root"
-                      role="progressbar"
-                    >
-                      <svg
-                        class="MuiCircularProgress-svg css-XXXX-MuiCircularProgress-svg"
-                        viewBox="22 22 44 44"
-                      >
-                        <circle
-                          class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-XXXX-MuiCircularProgress-circle"
-                          cx="44"
-                          cy="44"
-                          fill="none"
-                          r="20.2"
-                          stroke-width="3.6"
-                        />
-                      </svg>
-                    </span>
                     <div
                       class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                     >

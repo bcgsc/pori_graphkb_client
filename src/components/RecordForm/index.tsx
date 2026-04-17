@@ -13,18 +13,23 @@ import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { GeneralRecordType } from '@/components/types';
+import { EdgeType, GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 import schemaDefn from '@/services/schema';
 
 import { useAuth } from '../Auth';
+import EdgeSentence from '../SentencePreview/EdgeSentence';
 import EdgeTable from './EdgeTable';
 import RelatedStatementsTable from './RelatedStatementsTable';
 import RelatedVariantsTable from './RelatedVariantsTable';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
+
+function getIsEdge(model: { isEdge?: boolean }, record: GeneralRecordType | undefined): record is EdgeType {
+  return Boolean(model && model.isEdge);
+}
 
 interface RecordFormProps {
   /** the title for this form */
@@ -53,7 +58,7 @@ const RecordForm = ({
   const snackbar = useSnackbar();
   const auth = useAuth();
 
-  const model = useMemo(() => schemaDefn.get(modelName, false) ?? { properties: {}, isEdge: undefined }, [modelName]);
+  const model = useMemo(() => schemaDefn.get(modelName, false) ?? { properties: {}, isEdge: undefined, name: modelName }, [modelName]);
 
   const form = useSchemaForm(model, initialValue, {}, { variant });
   const {
@@ -163,6 +168,8 @@ const RecordForm = ({
     }
   }
 
+  const isEdge = getIsEdge(model, formContent);
+
   return (
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
@@ -182,6 +189,13 @@ const RecordForm = ({
           )}
         </div>
       </div>
+      {isEdge && (
+      <EdgeSentence
+        srcRecord={formContent.out}
+        tgtRecord={formContent.in}
+        type={model.name}
+      />
+      )}
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra

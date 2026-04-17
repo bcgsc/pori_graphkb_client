@@ -11,18 +11,12 @@ import {
 import React, { useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
-import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
-import StatementSentence from '@/components/SentencePreview/StatementSentence';
 import { CLASS_MODEL_PROP, sortAndGroupFields } from '@/components/util';
 import schema, { SchemaClassDefinition } from '@/services/schema';
 
-import { EdgeType, GeneralRecordType, StatementType } from '../types';
+import { EdgeType, GeneralRecordType } from '../types';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
-
-function getIsStatement(model: SchemaClassDefinition, record: GeneralRecordType | undefined): record is StatementType {
-  return Boolean(model) && model.name === 'Statement';
-}
 
 function getIsEdge(model: SchemaClassDefinition, record: GeneralRecordType | undefined): record is EdgeType {
   return Boolean(model) && model.isEdge;
@@ -103,26 +97,10 @@ const FormLayout = ({
 
   const isEdge = getIsEdge(model, formContent);
 
-  const isStatement = getIsStatement(model, formContent);
-
   return (
     <div className={`form-layout ${className}`}>
       {model && (
         <>
-          <div className="form-layout__content form-layout__content--long">
-            {isStatement && (
-              <StatementSentence
-                content={formContent}
-              />
-            )}
-            {isEdge && (
-              <EdgeSentence
-                srcRecord={formContent.out}
-                tgtRecord={formContent.in}
-                type={model.name}
-              />
-            )}
-          </div>
           <List className="form-layout__content">
             {isEdge && <EdgeFields disabled={disabled} model={model} />}
             <FieldGroup

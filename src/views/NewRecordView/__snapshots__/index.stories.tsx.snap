@@ -1259,22 +1259,18 @@ exports[`NewRelationshipAliasOf snapshot 1`] = `
             class="header__actions header__actions--new"
           />
         </div>
+        <p
+          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+        >
+          <span
+            class="sentence-preview__chunk"
+          >
+            [source record] is a Alias Of [target record]
+          </span>
+        </p>
         <div
           class="form-layout"
         >
-          <div
-            class="form-layout__content form-layout__content--long"
-          >
-            <p
-              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-            >
-              <span
-                class="sentence-preview__chunk"
-              >
-                [source record] is a Alias Of [target record]
-              </span>
-            </p>
-          </div>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
           >
@@ -1697,22 +1693,18 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
             class="header__actions header__actions--new"
           />
         </div>
+        <p
+          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+        >
+          <span
+            class="sentence-preview__chunk"
+          >
+             is a Alias Of
+          </span>
+        </p>
         <div
           class="form-layout"
         >
-          <div
-            class="form-layout__content form-layout__content--long"
-          >
-            <p
-              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-            >
-              <span
-                class="sentence-preview__chunk"
-              >
-                 is a Alias Of
-              </span>
-            </p>
-          </div>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
           >
@@ -2296,9 +2288,6 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
         <div
           class="form-layout"
         >
-          <div
-            class="form-layout__content form-layout__content--long"
-          />
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
           >
@@ -2510,22 +2499,18 @@ exports[`NewStatement snapshot 1`] = `
             class="header__actions header__actions--new"
           />
         </div>
+        <p
+          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+        >
+          <span
+            class="sentence-preview__chunk"
+          >
+            Given {conditions}, {relevance} applies to {subject} ({evidence})
+          </span>
+        </p>
         <div
           class="form-layout"
         >
-          <div
-            class="form-layout__content form-layout__content--long"
-          >
-            <p
-              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-            >
-              <span
-                class="sentence-preview__chunk"
-              >
-                Given {conditions}, {relevance} applies to {subject} ({evidence})
-              </span>
-            </p>
-          </div>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
           >
@@ -3438,22 +3423,18 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
             class="header__actions header__actions--new"
           />
         </div>
+        <p
+          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+        >
+          <span
+            class="sentence-preview__chunk"
+          >
+            Given {conditions}, {relevance} applies to {subject} ({evidence})
+          </span>
+        </p>
         <div
           class="form-layout"
         >
-          <div
-            class="form-layout__content form-layout__content--long"
-          >
-            <p
-              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-            >
-              <span
-                class="sentence-preview__chunk"
-              >
-                Given {conditions}, {relevance} applies to {subject} ({evidence})
-              </span>
-            </p>
-          </div>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
           >

@@ -106,32 +106,28 @@ exports[`EditAliasOf snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          amsa/dac [c10098]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is a Alias Of
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          amsa/5-aza-dcyd [c10098]
+        </mark>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              amsa/dac [c10098]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is a Alias Of
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              amsa/5-aza-dcyd [c10098]
-            </mark>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -1234,77 +1230,73 @@ exports[`EditStatement snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          high mutation burden high signature
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is associated with
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          sensitivity
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           to
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          pembrolizumab [DB09037]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           in
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          all solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          FDA approves pembrolizumab for adults and children with TMB-H solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          ) (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          IPR-A
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          )
+        </span>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              high mutation burden high signature
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is associated with
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              sensitivity
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               to
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              pembrolizumab [DB09037]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               in
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              all solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              FDA approves pembrolizumab for adults and children with TMB-H solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              ) (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              IPR-A
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              )
-            </span>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -2643,77 +2635,73 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          high mutation burden high signature
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is associated with
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          sensitivity
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           to
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          pembrolizumab [DB09037]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           in
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          all solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          FDA approves pembrolizumab for adults and children with TMB-H solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          ) (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          IPR-A
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          )
+        </span>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              high mutation burden high signature
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is associated with
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              sensitivity
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               to
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              pembrolizumab [DB09037]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               in
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              all solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              FDA approves pembrolizumab for adults and children with TMB-H solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              ) (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              IPR-A
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              )
-            </span>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -4083,32 +4071,28 @@ exports[`ViewAliasOf snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          amsa/dac [c10098]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is a Alias Of
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          amsa/5-aza-dcyd [c10098]
+        </mark>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              amsa/dac [c10098]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is a Alias Of
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              amsa/5-aza-dcyd [c10098]
-            </mark>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -4652,32 +4636,28 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          amsa/dac [c10098]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is a Alias Of
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          amsa/5-aza-dcyd [c10098]
+        </mark>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              amsa/dac [c10098]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is a Alias Of
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              amsa/5-aza-dcyd [c10098]
-            </mark>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -5349,9 +5329,6 @@ exports[`ViewCategoryVariant snapshot 1`] = `
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        />
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -5689,9 +5666,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        />
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -6322,9 +6296,6 @@ exports[`ViewPositionalVariant snapshot 1`] = `
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        />
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -6890,9 +6861,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        />
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -7768,77 +7736,73 @@ exports[`ViewStatement snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          high mutation burden high signature
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is associated with
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          sensitivity
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           to
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          pembrolizumab [DB09037]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           in
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          all solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          FDA approves pembrolizumab for adults and children with TMB-H solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          ) (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          IPR-A
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          )
+        </span>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              high mutation burden high signature
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is associated with
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              sensitivity
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               to
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              pembrolizumab [DB09037]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               in
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              all solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              FDA approves pembrolizumab for adults and children with TMB-H solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              ) (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              IPR-A
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              )
-            </span>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
@@ -8572,77 +8536,73 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
           </div>
         </div>
       </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          high mutation burden high signature
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is associated with
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          sensitivity
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           to
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          pembrolizumab [DB09037]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           in
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          all solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          FDA approves pembrolizumab for adults and children with TMB-H solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          ) (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          IPR-A
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          )
+        </span>
+      </p>
       <div
         class="form-layout"
       >
-        <div
-          class="form-layout__content form-layout__content--long"
-        >
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-          >
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              high mutation burden high signature
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               is associated with
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              sensitivity
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               to
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              pembrolizumab [DB09037]
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               in
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              all solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-               (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              FDA approves pembrolizumab for adults and children with TMB-H solid tumors
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              ) (
-            </span>
-            <mark
-              class="sentence-preview__chunk--highlighted"
-            >
-              IPR-A
-            </mark>
-            <span
-              class="sentence-preview__chunk"
-            >
-              )
-            </span>
-          </p>
-        </div>
         <ul
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >

@@ -26,6 +26,7 @@ import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
+import StatementSentence from '../SentencePreview/StatementSentence';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
@@ -359,6 +360,9 @@ const StatementForm = ({
           />
         )}
       </div>
+      <StatementSentence
+        content={form.formContent}
+      />
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra

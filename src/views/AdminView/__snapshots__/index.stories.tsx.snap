@@ -2659,9 +2659,6 @@ exports[`AddNewGroup snapshot 1`] = `
             <div
               class="form-layout"
             >
-              <div
-                class="form-layout__content form-layout__content--long"
-              />
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
               >
@@ -8840,9 +8837,6 @@ exports[`AddNewUser snapshot 1`] = `
             <div
               class="form-layout"
             >
-              <div
-                class="form-layout__content form-layout__content--long"
-              />
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
               >

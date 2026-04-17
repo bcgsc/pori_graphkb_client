@@ -40,22 +40,18 @@ exports[`Editing snapshot 1`] = `
         </button>
       </div>
     </div>
+    <p
+      class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+    >
+      <span
+        class="sentence-preview__chunk"
+      >
+        Given {conditions}, {relevance} applies to {subject} ({evidence})
+      </span>
+    </p>
     <div
       class="form-layout"
     >
-      <div
-        class="form-layout__content form-layout__content--long"
-      >
-        <p
-          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-        >
-          <span
-            class="sentence-preview__chunk"
-          >
-            Given {conditions}, {relevance} applies to {subject} ({evidence})
-          </span>
-        </p>
-      </div>
       <ul
         class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
       >
@@ -971,22 +967,18 @@ exports[`New snapshot 1`] = `
         class="header__actions header__actions--new"
       />
     </div>
+    <p
+      class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+    >
+      <span
+        class="sentence-preview__chunk"
+      >
+        Given {conditions}, {relevance} applies to {subject} ({evidence})
+      </span>
+    </p>
     <div
       class="form-layout"
     >
-      <div
-        class="form-layout__content form-layout__content--long"
-      >
-        <p
-          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
-        >
-          <span
-            class="sentence-preview__chunk"
-          >
-            Given {conditions}, {relevance} applies to {subject} ({evidence})
-          </span>
-        </p>
-      </div>
       <ul
         class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
       >

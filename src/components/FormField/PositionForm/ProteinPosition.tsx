@@ -1,12 +1,14 @@
 import './index.scss';
 
-import { schema, validateProperty } from '@bcgsc-pori/graphkb-schema';
+import { validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
+
+import schema from '@/services/schema';
 
 import FieldWrapper from '../FieldWrapper';
 

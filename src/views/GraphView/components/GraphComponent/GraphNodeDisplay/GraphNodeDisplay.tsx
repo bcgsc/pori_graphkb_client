@@ -1,6 +1,5 @@
 import './GraphNodeDisplay.scss';
 
-import { GraphRecord, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import * as d3Drag from 'd3-drag';
 import * as d3Select from 'd3-selection';
 import React, { useEffect, useRef } from 'react';
@@ -72,7 +71,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   let label;
 
   if (labelKey === 'preview') {
-    label = schemaDefn.getPreview(node.data as GraphRecord);
+    label = schema.getPreview(node.data);
   } else if (labelKey) {
     label = node.getLabel(labelKey);
 

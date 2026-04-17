@@ -20,14 +20,6 @@ describe('schema service', () => {
       });
     });
 
-    test('returns the right properties list', () => {
-      const ontology = SCHEMA_DEFN.get('Ontology');
-      const testProps = testSchema.getProperties('Ontology');
-      testProps.forEach((prop) => {
-        expect(ontology.properties[prop.name]).toBeDefined();
-      });
-    });
-
     test('Returns edges', () => {
       const edges = Object.values(SCHEMA_DEFN.models)
         .filter((model) => SCHEMA_DEFN.ancestors(model.name).includes('E'))

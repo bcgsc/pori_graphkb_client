@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@mui/material';
 import { omit } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -17,17 +16,18 @@ import RadioSelect from '@/components/RadioSelect';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
+import schema from '@/services/schema';
 
 import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 import FormStepWrapper from './FormStepWrapper';
 import SteppedForm from './SteppedForm';
 
-const PositionalVariant = schemaDefn.get('PositionalVariant');
-const CategoryVariant = schemaDefn.get('CategoryVariant');
+const PositionalVariant = schema.get('PositionalVariant');
+const CategoryVariant = schema.get('CategoryVariant');
 
 const leftoverPositionalProps = omit(
-  schemaDefn.getProperties('PositionalVariant'),
+  PositionalVariant.properties,
   [
     'break1Start',
     'break1End',
@@ -49,7 +49,7 @@ const { fields: positionalFields } = sortAndGroupFields(
 );
 
 const leftoverCategoryProps = omit(
-  schemaDefn.getProperties('CategoryVariant'),
+  CategoryVariant.properties,
   [
     'reference1',
     'reference2',
@@ -63,8 +63,8 @@ const { fields: categoryFields } = sortAndGroupFields(
   { collapseExtra: false, variant: FORM_VARIANT.NEW },
 );
 
-const coordinateOptions = schemaDefn.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
-  label: m, value: m, key: m, caption: schemaDefn.get(m).description,
+const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
+  label: m, value: m, key: m, caption: schema.get(m).description,
 }));
 
 const MAJOR_FORM_TYPES = {
@@ -139,12 +139,12 @@ const VariantForm = ({
       ? {
         name: PositionalVariant.name,
         properties: {
-          ...schemaDefn.getProperties('PositionalVariant'),
-          break2Start: { ...schemaDefn.getProperty('PositionalVariant', 'break2Start'), mandatory: !isSubstitution },
-          reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
-          refSeq: { ...schemaDefn.getProperty('PositionalVariant', 'refSeq'), mandatory: isSubstitution },
+          ...PositionalVariant.properties,
+          break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
+          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
+          refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
           untemplatedSeq: {
-            ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
+            ...PositionalVariant.properties.untemplatedSeq,
             mandatory: isSubstitution,
           },
         },
@@ -152,8 +152,8 @@ const VariantForm = ({
       : {
         name: CategoryVariant.name,
         properties: {
-          ...schemaDefn.getProperties('PositionalVariant'),
-          reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
+          ...PositionalVariant.properties,
+          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
         },
       };
     return newModel;
@@ -173,7 +173,7 @@ const VariantForm = ({
         payload.break1Start = { ...payload.break1Start, refAA };
       }
 
-      const { routeName } = schemaDefn.get(payload);
+      const { routeName } = schema.get(payload);
 
       if (formVariant === FORM_VARIANT.NEW) {
         return api.post(routeName, payload);
@@ -185,7 +185,7 @@ const VariantForm = ({
       const actionType = formVariant === FORM_VARIANT.NEW ? 'created' : 'edited';
 
       if (result['@rid']) {
-        const { routeName } = schemaDefn.get(result);
+        const { routeName } = schema.get(result);
         const cleanRid = result['@rid'].replace(/^#/, '');
 
         queryClient.invalidateQueries({
@@ -211,7 +211,7 @@ const VariantForm = ({
   const deleteMutation = useMutation({
     mutationFn: async (content) => {
       const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
+      const { routeName } = schema.get(payload);
       return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     },
     onSuccess: (result) => {
@@ -301,14 +301,14 @@ const VariantForm = ({
               model={{
                 properties: {
                   refSeq: {
-                    ...schemaDefn.getProperty('PositionalVariant', 'refSeq'),
+                    ...PositionalVariant.properties.refSeq,
                     mandatory: isSubstitution,
                   },
                   untemplatedSeq: {
-                    ...schemaDefn.getProperty('PositionalVariant', 'untemplatedSeq'),
+                    ...PositionalVariant.properties.untemplatedSeq,
                     mandatory: isSubstitution,
                   },
-                  untemplatedSeqSize: schemaDefn.getProperty('PositionalVariant', 'untemplatedSeqSize'),
+                  untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
                 },
               }}
               ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
@@ -321,8 +321,8 @@ const VariantForm = ({
           disabled={false}
           model={{
             properties: {
-              type: schemaDefn.getProperty('PositionalVariant', 'type'),
-              zygosity: schemaDefn.getProperty('PositionalVariant', 'zygosity'),
+              type: PositionalVariant.properties.type,
+              zygosity: PositionalVariant.properties.zygosity,
             },
           }}
           ordering={['type', 'zygosity']}

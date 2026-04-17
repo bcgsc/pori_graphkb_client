@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@mui/material';
@@ -30,16 +29,18 @@ const DEFAULT_TITLES = {
   [FORM_VARIANT.VIEW]: 'Record Contents',
 };
 
+const modelsByRoute = Object.fromEntries(Object.values(schema.models).map((model) => [model.routeName, model]));
+
 const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
   let defaultModelName = modelName;
 
   if (modelName) {
-    const model = schemaDefn.get(modelName) ?? schemaDefn.getFromRoute(modelName);
-    defaultModelName = model.name;
+    const model = schema.get(modelName) ?? modelsByRoute[modelName];
 
     if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
       throw new Error(`Page Not Found. '${modelName}' is not a valid model`);
     }
+    defaultModelName = model.name;
   } else if (path.includes('/user/')) {
     defaultModelName = 'User';
   } else if (path.includes('/usergroup/')) {
@@ -47,7 +48,7 @@ const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW
   } else if (path.includes('/e/')) {
     defaultModelName = 'E';
   }
-  return schemaDefn.get(defaultModelName || 'V').name;
+  return schema.get(defaultModelName || 'V').name;
 };
 
 type RouteParams = {
@@ -94,7 +95,7 @@ const RecordView = ({
     }
   }, [navigate, variant]);
 
-  const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
+  const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
 
   const { data: recordContent } = useQuery({
     queryKey: tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),

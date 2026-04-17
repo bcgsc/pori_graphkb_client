@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
   Paper, Typography,
@@ -18,6 +17,7 @@ import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
+import schemaDefn from '@/services/schema';
 
 import { useAuth } from '../Auth';
 import EdgeTable from './EdgeTable';

@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import './index.scss';
 
-import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
@@ -13,6 +12,7 @@ import { useFormContext } from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
+import schemaDefn, { SchemaPropertyDefinition } from '@/services/schema';
 
 import BooleanField from './BooleanField';
 import FieldWrapper from './FieldWrapper';
@@ -32,7 +32,7 @@ interface FormFieldProps {
   /**
    * the property model which defines the property type and other requirements
    */
-  model: Partial<PropertyDefinition> & Pick<PropertyDefinition, 'name' | 'type'>;
+  model: Partial<SchemaPropertyDefinition> & Pick<SchemaPropertyDefinition, 'name' | 'type'>;
   baseModel?: string;
   className?: string;
   disabled?: boolean;
@@ -73,7 +73,7 @@ const FormField = ({
     linkedClass: linkedClassName,
     linkedType,
     name,
-    type,
+    type = 'string',
     nullable,
     iterable,
     format,

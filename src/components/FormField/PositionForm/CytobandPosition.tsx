@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
@@ -8,6 +7,7 @@ import React, { useCallback } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import useSchemaForm from '@/components/hooks/useSchemaForm';
+import schema from '@/services/schema';
 
 import FieldWrapper from '../FieldWrapper';
 

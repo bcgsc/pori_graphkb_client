@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-schema';
+import { validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
@@ -8,10 +8,12 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 
+import schema from '@/services/schema';
+
 import FieldWrapper from '../FieldWrapper';
 
-const { pos: posProperty } = schemaDefn.getProperties('GenomicPosition');
-const { offset: offsetProperty } = schemaDefn.getProperties('CdsPosition');
+const { pos: posProperty } = schema.get('GenomicPosition').properties;
+const { offset: offsetProperty } = schema.get('CdsPosition').properties;
 
 interface BasicPositionFormProps {
   /** change handler */
@@ -96,7 +98,7 @@ const BasicPositionForm = ({
     onChange?.({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
   }, [onChange, name, variant, position, readOnly]);
 
-  const isOffsetVariant = Boolean(schemaDefn.getProperty(variant, 'offset'));
+  const isOffsetVariant = Boolean(schema.get(variant).properties.offset);
 
   return (
     <>

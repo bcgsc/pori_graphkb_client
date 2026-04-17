@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
   FormControl,
@@ -12,6 +11,7 @@ import React, { useState } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import { FormContextState } from '@/components/FormContext';
+import schema from '@/services/schema';
 
 import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';
@@ -54,7 +54,7 @@ const PositionForm = ({
   required,
   readOnly,
 }: PositionFormProps) => {
-  const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
+  const positionVariants = schema.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
   const [variant, setVariant] = useState(initialVariant);
 
   let PositionComponent;

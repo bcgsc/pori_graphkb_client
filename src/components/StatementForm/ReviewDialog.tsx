@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
   Checkbox,
@@ -17,9 +16,10 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import {
   FORM_VARIANT,
 } from '@/components/util';
+import schema from '@/services/schema';
 
 const MODEL_NAME = 'StatementReview';
-const { comment, status } = schemaDefn.getProperties(MODEL_NAME);
+const { comment, status } = schema.get(MODEL_NAME).properties;
 
 const model = {
   properties: { comment, status },

@@ -1,5 +1,6 @@
-import { PropertyDefinition } from '@bcgsc-pori/graphkb-schema';
 import React, { useContext } from 'react';
+
+import { SchemaPropertyDefinition } from '@/services/schema';
 
 import { GeneralRecordType } from '../types';
 import { FORM_VARIANT } from '../util';
@@ -28,10 +29,8 @@ export interface FormContextState {
   setFormIsDirty: (dirty: boolean) => void;
   model: {
     name?: string;
-    properties: Record<string, Partial<PropertyDefinition> & {
+    properties: Record<string, Partial<SchemaPropertyDefinition> & {
       name: string;
-      // missing from types
-      generateDefault?: (record: Record<string, unknown>) => unknown;
     }>;
     isEdge?: boolean;
   }

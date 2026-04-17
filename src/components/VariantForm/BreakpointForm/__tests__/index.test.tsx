@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom/vitest';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -11,6 +10,7 @@ import {
 import FormContext, { FormContextState } from '@/components/FormContext';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
+import schemaDefn from '@/services/schema';
 
 import BreakpointForm from '..';
 

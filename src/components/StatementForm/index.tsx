@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import {
@@ -25,12 +24,13 @@ import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
+import schema from '@/services/schema';
 
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
-const model = schemaDefn.get('Statement');
+const model = schema.get('Statement');
 
 interface StatementFormProps {
   /** the title for this form */
@@ -210,7 +210,7 @@ const StatementForm = ({
   const { mutate: addNewAction, isPending: isAdding, error: errorAdding } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
+      const { routeName } = schema.get(payload);
       return api.post(routeName, payload);
     },
     onSuccess: (result) => {
@@ -238,7 +238,7 @@ const StatementForm = ({
 
   const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
-      const { routeName } = schemaDefn.get(content);
+      const { routeName } = schema.get(content);
       return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
     },
     onSuccess: (_, content) => {
@@ -258,7 +258,7 @@ const StatementForm = ({
   const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
+      const { routeName } = schema.get(payload);
       return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, payload);
     },
     onSuccess: (result) => {

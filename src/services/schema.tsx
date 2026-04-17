@@ -1,5 +1,7 @@
 import {
-  PropertyDefinition, schema as schemaDefn, validateProperty,
+  ClassDefinition,
+  PropertyDefinition, schema as schemaDefn,
+  validateProperty,
 } from '@bcgsc-pori/graphkb-schema';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
@@ -47,25 +49,6 @@ const getLink = (obj) => {
 const getMetadata = () => Object.values(schemaDefn.getProperties('V'));
 
 /**
- * Returns route and properties of a certain knowledgebase class
- * (most useful data).
- * @param {Object|string} obj - Knowledgebase Record.
- * class properties list.
- */
-const getProperties = (obj) => {
-  const VPropKeys = schemaDefn.getProperties('V');
-  let objname;
-
-  if (typeof obj === 'string') {
-    objname = obj;
-  } else if (obj['@class']) {
-    objname = obj['@class'];
-  }
-  return Object.values(schemaDefn.getProperties(objname) ?? {})
-    .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
-};
-
-/**
  * Returns route and query properties of a certain knowledgebase class
  * (most useful data).
  * @param {string} className - requested class name.
@@ -107,9 +90,6 @@ function getEdges<R extends GeneralRecordType>(node: R | null = null) {
 
   return list;
 }
-
-const isEdge = (cls) => !!(schemaDefn.get(cls)
-  && schemaDefn.ancestors(cls).some((inherited) => inherited === 'E'));
 
 /**
  * Validates a value against some property model and returns the new property tracking object
@@ -418,16 +398,71 @@ const defineGridColumns = (search) => {
   return defns;
 };
 
+type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
+  name: string;
+  label?: string;
+  // missing from types
+  generateDefault?: (record: Record<string, unknown>) => unknown;
+};
+
+type SchemaClassDefinition = ClassDefinition & { properties: Record<string, SchemaPropertyDefinition> };
+
+/**
+ * return models with all properties (including inherited)
+ * and adds any labels we want for anywhere we use that property
+ *
+ * preparing them all and generating once so that the models
+ * are stable in render without having to wrap in useMemo
+ */
+function prepareModels() {
+  const prepared: Record<string, SchemaClassDefinition> = {};
+  schemaDefn.getModels().forEach((model) => {
+    const preparedModel = {
+      ...model,
+      // schemaDefn.getProperties differs from model.properties in that it includes
+      // all inherited properties
+      properties: Object.fromEntries(Object.entries(schemaDefn.getProperties(model.name)).map(([name, prop]) => [name, { ...prop }])) as SchemaClassDefinition['properties'],
+    };
+
+    if (model.isEdge && model.name !== 'E') {
+      preparedModel.properties.in.label = 'Target Record (in)';
+      preparedModel.properties.out.label = 'Source Record (out)';
+    }
+
+    prepared[model.name] = preparedModel;
+  });
+  return prepared;
+}
+
+const models = prepareModels();
+
+function getModel(valueOrName: unknown): SchemaClassDefinition;
+function getModel(valueOrName: unknown, strict: false): SchemaClassDefinition | null;
+function getModel(valueOrName: unknown, strict: true): SchemaClassDefinition;
+function getModel(valueOrName: unknown, strict = true): SchemaClassDefinition | null {
+  const name = schemaDefn.get(valueOrName, strict as true)?.name;
+  return models[name];
+}
+
 const schema = {
+  models,
+  get: getModel,
   defineGridColumns,
   validateValue,
-  isEdge,
   getEdges,
-  getProperties,
   getQueryProperties,
   getMetadata,
   getLabel,
   getLink,
+  has: schemaDefn.has.bind(schemaDefn),
+  getPreview: schemaDefn.getPreview.bind(schemaDefn) as (value: unknown) => string,
+  descendants: schemaDefn.descendants.bind(schemaDefn),
+  ancestors: schemaDefn.ancestors.bind(schemaDefn),
+  inheritsFrom: schemaDefn.inheritsFrom.bind(schemaDefn),
+  queryableProperties: schemaDefn.queryableProperties.bind(schemaDefn),
+  children: schemaDefn.children.bind(schemaDefn),
 };
+
+export type { SchemaClassDefinition, SchemaPropertyDefinition };
 
 export default schema;

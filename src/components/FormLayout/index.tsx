@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
@@ -9,22 +8,23 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
 import StatementSentence from '@/components/SentencePreview/StatementSentence';
 import { CLASS_MODEL_PROP, sortAndGroupFields } from '@/components/util';
+import schema, { SchemaClassDefinition } from '@/services/schema';
 
 import { EdgeType, GeneralRecordType, StatementType } from '../types';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 
-function getIsStatement(model: ClassDefinition, record: GeneralRecordType | undefined): record is StatementType {
+function getIsStatement(model: SchemaClassDefinition, record: GeneralRecordType | undefined): record is StatementType {
   return Boolean(model) && model.name === 'Statement';
 }
 
-function getIsEdge(model: ClassDefinition, record: GeneralRecordType | undefined): record is EdgeType {
+function getIsEdge(model: SchemaClassDefinition, record: GeneralRecordType | undefined): record is EdgeType {
   return Boolean(model) && model.isEdge;
 }
 
@@ -91,13 +91,13 @@ const FormLayout = ({
   } = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const model = useMemo(() => schemaDefn.get(modelName), [modelName]);
+  const model = schema.get(modelName);
 
   if (!formVariant) {
     return null;
   }
 
-  const { extraFields, fields } = sortAndGroupFields(schemaDefn.getProperties(model.name), {
+  const { extraFields, fields } = sortAndGroupFields(model.properties, {
     aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
   });
 

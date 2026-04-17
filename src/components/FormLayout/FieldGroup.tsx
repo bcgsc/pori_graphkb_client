@@ -1,12 +1,12 @@
 import './index.scss';
 
-import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@mui/material';
 import React, { ReactNode } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
+import schema, { SchemaClassDefinition } from '@/services/schema';
 
 /**
  * returns an array of strings without any of the indicated exclusion values
@@ -40,7 +40,7 @@ const filterNullFields = (orderingList: (string | string[])[], formContent) => {
 
 interface FieldGroupProps {
   /** ClassModel */
-  model: Partial<Pick<ClassDefinition, 'properties' | 'isEdge' | 'name'>>;
+  model: Partial<Pick<SchemaClassDefinition, 'properties' | 'isEdge' | 'name'>>;
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
   /** if field should be disabled */
@@ -59,7 +59,7 @@ const FieldGroup = ({
   let properties;
 
   if (model.name) {
-    properties = schemaDefn.getProperties(model.name);
+    properties = schema.get(model.name).properties;
   } else {
     properties = model.properties; // Field Group is used by passing props in some cases
   }

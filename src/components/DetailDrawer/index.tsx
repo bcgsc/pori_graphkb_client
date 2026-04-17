@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -186,12 +185,9 @@ function DetailDrawer(props: DetailDrawerProps) {
   const formatOtherProps = (record, isNested?: boolean) => {
     const identifiers = ['@class', '@rid'];
 
-    let properties = Object.keys(record)
+    const properties = record['@class'] ? schema.get(record['@class']).properties : Object.keys(record)
       .map((key) => ({ name: key, type: util.parseKBType(record[key]) }));
 
-    if (record['@class'] && schemaDefn.getProperties(record['@class'])) {
-      properties = schema.getProperties(record['@class']);
-    }
     const propsList = Object.values(properties)
       .filter((prop) => !identifiers.map((id) => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')

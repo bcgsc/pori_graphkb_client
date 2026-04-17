@@ -1,13 +1,13 @@
-import { ClassDefinition } from '@bcgsc-pori/graphkb-schema';
 import React from 'react';
 
 import FormField from '@/components/FormField';
+import { SchemaClassDefinition } from '@/services/schema';
 
 interface EdgeFieldsProps {
   /**
    * the current edge model
    */
-  model: ClassDefinition;
+  model: SchemaClassDefinition;
   /** flag to indicate these fields should be disabled */
   disabled?: boolean;
 }

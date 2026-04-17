@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@mui/material';
@@ -18,7 +17,7 @@ import FormField from '@/components/FormField';
 import FieldWrapper from '@/components/FormField/FieldWrapper';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
-import schema from '@/services/schema';
+import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
@@ -41,7 +40,7 @@ const propertySort = ({ label: label1 }, { label: label2 }) => {
   return prop1.localeCompare(prop2);
 };
 
-const constructOperatorOptions = ({ iterable, type, name }: Partial<PropertyDefinition> | undefined = {}, currentVal, subqueryType = '') => {
+const constructOperatorOptions = ({ iterable, type, name }: Partial<SchemaPropertyDefinition> | undefined = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {
     return OPERATORS.filter((op) => ['CONTAINSTEXT', '='].includes(op.label));
   }
@@ -121,7 +120,7 @@ const PropertyFilter = ({
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
           if (prop.linkedClass) {
-            Object.values(schemaDefn.getProperties(prop.linkedClass)).forEach((subProp) => {
+            Object.values(schema.get(prop.linkedClass).properties).forEach((subProp) => {
               const key = `${prop.name}.${subProp.name}`;
               choices.push({
                 label: key, value: key, key, caption: subProp.description,
@@ -155,21 +154,21 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel: PropertyDefinition | null;
-      newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
+      let newPropertyModel: SchemaPropertyDefinition | null;
+      newPropertyModel = { ...schema.queryableProperties(modelName)[prop], mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
       } else {
         if (subProp && newPropertyModel) {
-          if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
+          if (newPropertyModel.linkedClass && schema.get(newPropertyModel.linkedClass).properties.embedded) {
             const parentPropModel = newPropertyModel;
-            newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
+            newPropertyModel = schema.get(newPropertyModel.linkedClass).properties[subProp];
 
             if (subProp === '@class' && parentPropModel.linkedClass) {
-              const choices = schemaDefn.children(parentPropModel.linkedClass);
+              const choices = schema.children(parentPropModel.linkedClass);
 
-              if (!schemaDefn.get(parentPropModel.linkedClass).isAbstract) {
+              if (!schema.get(parentPropModel.linkedClass).isAbstract) {
                 choices.push(parentPropModel.linkedClass);
               }
               newPropertyModel.choices = choices;
@@ -233,8 +232,8 @@ const PropertyFilter = ({
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
-      setKeywordTargetOptions(schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
+      const linkedModel = schema.get(originalPropertyModel?.linkedClass || 'V');
+      setKeywordTargetOptions(schema.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);

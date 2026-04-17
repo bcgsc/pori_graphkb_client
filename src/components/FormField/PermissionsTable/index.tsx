@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { PERMISSIONS, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { PERMISSIONS } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Table,
@@ -12,6 +12,7 @@ import {
 import React, { useCallback, useState } from 'react';
 
 import { FormContextState } from '@/components/FormContext';
+import schemaDefn from '@/services/schema';
 
 /* eslint-disable no-bitwise */
 

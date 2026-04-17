@@ -43,9 +43,11 @@ const FieldGroup = ({
     Object.values(properties).forEach((prop) => {
       const isEmpty = formContent[prop.name] === '' || formContent[prop.name] === null || formContent[prop.name] === undefined;
 
-      if ((formVariant === FORM_VARIANT.EDIT || formVariant === FORM_VARIANT.NEW) && prop.generated) {
-        toExclude.push(prop.name);
-      } else if (formVariant === FORM_VARIANT.VIEW && isEmpty) {
+      if (
+        (formVariant === FORM_VARIANT.NEW && prop.generated)
+        || (formVariant === FORM_VARIANT.EDIT && prop.generated && isEmpty)
+        || (formVariant === FORM_VARIANT.VIEW && isEmpty)
+      ) {
         toExclude.push(prop.name);
       }
     });

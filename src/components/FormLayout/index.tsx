@@ -19,8 +19,6 @@ import FieldGroup from './FieldGroup';
 interface FormLayoutProps {
   /** the property names which should be put above the collapse */
   aboveFold?: string[];
-  /** the property names which should be put in the collapsed section */
-  belowFold?: string[];
   /** css class to add to main element */
   className?: string;
   /** flag to indicate a collapsible section should be created */
@@ -59,7 +57,6 @@ const FormLayout = ({
     'sourceId',
     'description',
   ],
-  belowFold = ['deprecated', 'history'],
   collapseExtra = false,
   groups = [
     ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
@@ -86,7 +83,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model.properties, {
-    aboveFold, belowFold, collapseExtra, groups,
+    aboveFold, collapseExtra, groups,
   });
 
   return (

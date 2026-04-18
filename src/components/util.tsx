@@ -2,6 +2,8 @@ import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
 
+import { SchemaPropertyDefinition } from '@/services/schema';
+
 const CLASS_MODEL_PROP = '@class';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -25,10 +27,8 @@ enum FORM_VARIANT {
  */
 const sortAndGroupFields = (
   /** the current class model to base the form off of */
-  properties: unknown,
+  propertiesWithClass: Record<string, SchemaPropertyDefinition>,
   opt: {
-    /** names of properties that should fall below the fold */
-    belowFold?: string[];
     /** names of properties that should be promoted above the fold */
     aboveFold?: string[];
     /** flag to indicate if a collaspible section should be created */
@@ -37,97 +37,66 @@ const sortAndGroupFields = (
     groups?: string[][],
   } = {},
 ) => {
-  const {
-    belowFold = [],
-    aboveFold = [],
-    collapseExtra = false,
-    groups = [],
-  } = opt;
-
-  const groupMap = {};
-
-  if (!properties) {
+  if (!propertiesWithClass) {
     return { extraFields: [], fields: [] };
   }
+  const { [CLASS_MODEL_PROP]: _, ...properties } = propertiesWithClass;
+  type Group = {
+    fields: string[];
+    aboveFold: boolean;
+    required: boolean;
+  };
+  const fieldsMap: Record<string, Group> = {};
 
-  groups.forEach((groupItems) => {
-    // assume each field only can belong to a single group, overwrite others
-    const key = groupItems.slice().sort((p1, p2) => p1.localeCompare(p2)).join('-');
-    const groupDefn = {
-      fields: groupItems.filter((fname) => properties[fname]),
-      mandatory: false,
-      generated: true,
-      name: key,
+  Object.values(properties).forEach((prop) => {
+    const required = Boolean(
+      prop.mandatory
+      && prop.default === undefined
+      && !prop.generated,
+    );
+    fieldsMap[prop.name] = {
+      fields: [prop.name],
+      required,
+      aboveFold: required || opt.aboveFold?.includes(prop.name) || !opt.collapseExtra,
     };
+  });
 
-    if (groupDefn.fields.length > 1) {
-      groupDefn.fields.forEach((name) => {
-        const { mandatory, generated } = properties[name];
-        groupDefn.mandatory = groupDefn.mandatory || mandatory;
-        groupDefn.generated = groupDefn.generated && generated;
-        groupMap[name] = groupDefn;
-      });
-    }
+  opt.groups?.forEach((group) => {
+    const filteredGroup = group.filter((key) => properties[key]);
+    if (!filteredGroup.length) return;
+    const first = filteredGroup[0];
+    let { aboveFold, required } = fieldsMap[first];
+    filteredGroup.slice(1).forEach((key) => {
+      aboveFold ||= fieldsMap[key].aboveFold;
+      required ||= fieldsMap[key].required;
+
+      delete fieldsMap[key];
+    });
+
+    fieldsMap[first] = {
+      fields: filteredGroup,
+      required,
+      aboveFold,
+    };
   });
 
   const mainFields: (string | string[])[] = [];
   const extraFields: (string | string[])[] = [];
 
-  const visited = new Set();
-
-  const sortedPropModels = Object.values(properties)
-    .sort((p1, p2) => {
-      if (p1.mandatory === p2.mandatory) {
-        return p1.name.localeCompare(p2.name);
-      } if (p1.mandatory) {
-        return -1;
-      }
-      return 1;
-    });
-
-  // get the form content
-  for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
-    if (prop.name === CLASS_MODEL_PROP
-    ) {
-      continue; // eslint-disable-line no-continue
+  Object.values(fieldsMap).sort((groupA, groupB) => {
+    if (groupA.required === groupB.required) {
+      return groupA.fields[0].localeCompare(groupB.fields[0]);
     }
-    const {
-      name, mandatory, generated, fields,
-    } = (groupMap[prop.name] || prop);
+    return groupA.required ? -1 : 1;
+  }).forEach((group) => {
+    const fields = group.fields.length === 1 ? group.fields[0] : group.fields;
 
-    const isAboveFold = fields
-      ? fields.some((fname) => aboveFold.includes(fname))
-      : aboveFold.includes(name);
-
-    const isBelowFold = fields
-      ? fields.some((fname) => belowFold.includes(fname))
-      : belowFold.includes(name);
-
-    const mustBeFilled = (
-      prop.mandatory
-      && prop.default === undefined
-      && !prop.generated
-    );
-
-    if (!visited.has(name)) {
-      if (!collapseExtra || isAboveFold || mustBeFilled) {
-        mainFields.push(fields || name);
-      } else if (isBelowFold) {
-        extraFields.push(fields || name);
-      } else if (mandatory && !generated && prop.default === undefined) {
-        mainFields.push(fields || name);
-      } else {
-        extraFields.push(fields || name);
-      }
+    if (group.aboveFold) {
+      mainFields.push(fields);
+    } else {
+      extraFields.push(fields);
     }
-    visited.add(name);
-
-    if (fields) {
-      fields.forEach((field) => {
-        visited.add(field);
-      });
-    }
-  }
+  });
   return { fields: mainFields, extraFields };
 };
 

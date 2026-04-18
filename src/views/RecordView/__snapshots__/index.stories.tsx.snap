@@ -5057,49 +5057,6 @@ exports[`ViewCategoryVariant snapshot 1`] = `
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
           <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-          >
-            <div
-              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-            >
-              <label
-                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                data-shrink="true"
-                for="_r_XXXX_"
-                id="_r_XXXX_-label"
-              >
-                displayName
-              </label>
-              <div
-                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-              >
-                <textarea
-                  aria-describedby="_r_XXXX_-helper-text"
-                  aria-invalid="false"
-                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                  data-testid="displayName"
-                  id="_r_XXXX_"
-                  name="displayName"
-                  readonly=""
-                >
-                  NOTCH4 increased RNA expression
-                </textarea>
-                <textarea
-                  aria-hidden="true"
-                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                  readonly=""
-                  tabindex="-1"
-                />
-              </div>
-              <p
-                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                id="_r_XXXX_-helper-text"
-              >
-                Optional string used for display in the web application. Can be overwritten w/o tracking
-              </p>
-            </div>
-          </li>
-          <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
             <div
@@ -5237,6 +5194,49 @@ exports[`ViewCategoryVariant snapshot 1`] = `
                   The variant classification
                 </p>
               </div>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                displayName
+              </label>
+              <div
+                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="displayName"
+                  id="_r_XXXX_"
+                  name="displayName"
+                  readonly=""
+                >
+                  NOTCH4 increased RNA expression
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Optional string used for display in the web application. Can be overwritten w/o tracking
+              </p>
             </div>
           </li>
         </ul>
@@ -5394,49 +5394,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
           class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
         >
           <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-          >
-            <div
-              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-            >
-              <label
-                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                data-shrink="true"
-                for="_r_XXXX_"
-                id="_r_XXXX_-label"
-              >
-                displayName
-              </label>
-              <div
-                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-              >
-                <textarea
-                  aria-describedby="_r_XXXX_-helper-text"
-                  aria-invalid="false"
-                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                  data-testid="displayName"
-                  id="_r_XXXX_"
-                  name="displayName"
-                  readonly=""
-                >
-                  NOTCH4 increased RNA expression
-                </textarea>
-                <textarea
-                  aria-hidden="true"
-                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                  readonly=""
-                  tabindex="-1"
-                />
-              </div>
-              <p
-                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                id="_r_XXXX_-helper-text"
-              >
-                Optional string used for display in the web application. Can be overwritten w/o tracking
-              </p>
-            </div>
-          </li>
-          <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
             <div
@@ -5574,6 +5531,49 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                   The variant classification
                 </p>
               </div>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                displayName
+              </label>
+              <div
+                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="displayName"
+                  id="_r_XXXX_"
+                  name="displayName"
+                  readonly=""
+                >
+                  NOTCH4 increased RNA expression
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Optional string used for display in the web application. Can be overwritten w/o tracking
+              </p>
             </div>
           </li>
         </ul>
@@ -6352,6 +6352,76 @@ exports[`ViewPositionalVariant snapshot 1`] = `
             </li>
           </ul>
           <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+          >
+            <div
+              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  type
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        missense (#145:31)
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    readonly=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  The variant classification
+                </p>
+              </div>
+            </div>
+          </li>
+          <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
           >
             <div
@@ -6484,76 +6554,6 @@ exports[`ViewPositionalVariant snapshot 1`] = `
               </div>
             </li>
           </ul>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
-          >
-            <div
-              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
-            >
-              <div
-                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
-              >
-                <label
-                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  type
-                  <span
-                    aria-hidden="true"
-                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                  >
-                     
-                    *
-                  </span>
-                </label>
-                <div
-                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <div
-                    class="detail-chip"
-                  >
-                    <div
-                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                      data-item-index="0"
-                      role="button"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
-                      >
-                        missense (#145:31)
-                      </span>
-                    </div>
-                  </div>
-                  <input
-                    aria-autocomplete="list"
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-expanded="false"
-                    aria-invalid="false"
-                    autocapitalize="none"
-                    autocomplete="off"
-                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                    id="_r_XXXX_"
-                    placeholder=""
-                    readonly=""
-                    required=""
-                    role="combobox"
-                    spellcheck="false"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <p
-                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  The variant classification
-                </p>
-              </div>
-            </div>
-          </li>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
@@ -6917,6 +6917,76 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
             </li>
           </ul>
           <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+          >
+            <div
+              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  type
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        missense (#145:31)
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    readonly=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  The variant classification
+                </p>
+              </div>
+            </div>
+          </li>
+          <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
           >
             <div
@@ -7049,76 +7119,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
               </div>
             </li>
           </ul>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
-          >
-            <div
-              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
-            >
-              <div
-                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
-              >
-                <label
-                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  type
-                  <span
-                    aria-hidden="true"
-                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                  >
-                     
-                    *
-                  </span>
-                </label>
-                <div
-                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <div
-                    class="detail-chip"
-                  >
-                    <div
-                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                      data-item-index="0"
-                      role="button"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
-                      >
-                        missense (#145:31)
-                      </span>
-                    </div>
-                  </div>
-                  <input
-                    aria-autocomplete="list"
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-expanded="false"
-                    aria-invalid="false"
-                    autocapitalize="none"
-                    autocomplete="off"
-                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                    id="_r_XXXX_"
-                    placeholder=""
-                    readonly=""
-                    required=""
-                    role="combobox"
-                    spellcheck="false"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <p
-                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  The variant classification
-                </p>
-              </div>
-            </div>
-          </li>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
@@ -7822,68 +7822,6 @@ exports[`ViewStatement snapshot 1`] = `
               </div>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
-          >
-            <div
-              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
-            >
-              <div
-                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  evidenceLevel
-                </label>
-                <div
-                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <div
-                    class="detail-chip"
-                  >
-                    <div
-                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                      data-item-index="0"
-                      role="button"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
-                      >
-                        IPR-A (#108:30)
-                      </span>
-                    </div>
-                  </div>
-                  <input
-                    aria-autocomplete="list"
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-expanded="false"
-                    aria-invalid="false"
-                    autocapitalize="none"
-                    autocomplete="off"
-                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                    id="_r_XXXX_"
-                    placeholder=""
-                    readonly=""
-                    role="combobox"
-                    spellcheck="false"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  A summarization of the supporting evidence for this statment as a category
-                </p>
-              </div>
-            </div>
-          </li>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
           >
@@ -8028,6 +7966,68 @@ exports[`ViewStatement snapshot 1`] = `
               </div>
             </li>
           </ul>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+          >
+            <div
+              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  evidenceLevel
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        IPR-A (#108:30)
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    readonly=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  A summarization of the supporting evidence for this statment as a category
+                </p>
+              </div>
+            </div>
+          </li>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
           >
@@ -8622,68 +8622,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
               </div>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
-          >
-            <div
-              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
-            >
-              <div
-                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  evidenceLevel
-                </label>
-                <div
-                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <div
-                    class="detail-chip"
-                  >
-                    <div
-                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                      data-item-index="0"
-                      role="button"
-                      tabindex="-1"
-                    >
-                      <span
-                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
-                      >
-                        IPR-A (#108:30)
-                      </span>
-                    </div>
-                  </div>
-                  <input
-                    aria-autocomplete="list"
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-expanded="false"
-                    aria-invalid="false"
-                    autocapitalize="none"
-                    autocomplete="off"
-                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                    id="_r_XXXX_"
-                    placeholder=""
-                    readonly=""
-                    role="combobox"
-                    spellcheck="false"
-                    type="text"
-                    value=""
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  A summarization of the supporting evidence for this statment as a category
-                </p>
-              </div>
-            </div>
-          </li>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
           >
@@ -8828,6 +8766,68 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
               </div>
             </li>
           </ul>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+          >
+            <div
+              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  evidenceLevel
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        IPR-A (#108:30)
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    readonly=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  A summarization of the supporting evidence for this statment as a category
+                </p>
+              </div>
+            </div>
+          </li>
           <ul
             class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
           >

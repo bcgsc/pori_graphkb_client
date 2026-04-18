@@ -86,7 +86,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model.properties, {
-    aboveFold, belowFold, collapseExtra, variant: formVariant, groups,
+    aboveFold, belowFold, collapseExtra, groups,
   });
 
   return (

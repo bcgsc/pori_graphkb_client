@@ -15,7 +15,7 @@ describe('util', () => {
     test('no order or collapse', () => {
       const grouping = sortAndGroupFields(testModel.properties);
       expect(grouping).toEqual({
-        fields: ['address', 'gender', 'name'],
+        fields: ['gender', 'name', 'address'],
         extraFields: [],
       });
     });
@@ -24,7 +24,7 @@ describe('util', () => {
       const grouping = sortAndGroupFields(testModel.properties, { collapseExtra: true });
       expect(grouping).toEqual({
         fields: ['name'],
-        extraFields: ['address', 'gender'],
+        extraFields: ['gender', 'address'],
       });
     });
 
@@ -45,7 +45,7 @@ describe('util', () => {
         aboveFold: ['address'],
       });
       expect(grouping).toEqual({
-        fields: ['address', 'name'],
+        fields: ['name', 'address'],
         extraFields: ['gender'],
       });
     });

@@ -45,7 +45,7 @@ const leftoverPositionalProps = omit(
 );
 const { fields: positionalFields } = sortAndGroupFields(
   leftoverPositionalProps,
-  { collapseExtra: false, variant: FORM_VARIANT.NEW },
+  { collapseExtra: false },
 );
 
 const leftoverCategoryProps = omit(
@@ -60,7 +60,7 @@ const leftoverCategoryProps = omit(
 );
 const { fields: categoryFields } = sortAndGroupFields(
   leftoverCategoryProps,
-  { collapseExtra: false, variant: FORM_VARIANT.NEW },
+  { collapseExtra: false },
 );
 
 const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({

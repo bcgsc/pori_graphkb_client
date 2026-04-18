@@ -35,8 +35,6 @@ const sortAndGroupFields = (
     collapseExtra?: boolean;
     /** properties that should co-occur */
     groups?: string[][],
-    /** the form variant this is being grouped for */
-    variant?: FORM_VARIANT,
   } = {},
 ) => {
   const {
@@ -44,7 +42,6 @@ const sortAndGroupFields = (
     aboveFold = [],
     collapseExtra = false,
     groups = [],
-    variant = FORM_VARIANT.VIEW,
   } = opt;
 
   const groupMap = {};
@@ -80,7 +77,7 @@ const sortAndGroupFields = (
 
   const sortedPropModels = Object.values(properties)
     .sort((p1, p2) => {
-      if (p1.mandatory === p2.mandatory || variant === FORM_VARIANT.VIEW) {
+      if (p1.mandatory === p2.mandatory) {
         return p1.name.localeCompare(p2.name);
       } if (p1.mandatory) {
         return -1;
@@ -91,7 +88,6 @@ const sortAndGroupFields = (
   // get the form content
   for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
     if (prop.name === CLASS_MODEL_PROP
-      || (variant === FORM_VARIANT.NEW && prop.generated)
     ) {
       continue; // eslint-disable-line no-continue
     }
@@ -109,7 +105,6 @@ const sortAndGroupFields = (
 
     const mustBeFilled = (
       prop.mandatory
-      && variant === FORM_VARIANT.NEW
       && prop.default === undefined
       && !prop.generated
     );

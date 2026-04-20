@@ -103,11 +103,11 @@ interface VariantFormProps {
  * Input form for new Variants
  */
 const VariantForm = ({
-  onSubmit, value = {}, formVariant = FORM_VARIANT.NEW,
+  onSubmit, value, formVariant = FORM_VARIANT.NEW,
 }: VariantFormProps) => {
   let defaultCoordinateType;
 
-  if (value.break1Start) {
+  if (value?.break1Start) {
     defaultCoordinateType = value.break1Start['@class'];
   }
   const [coordinateType, setCoordinateType] = useState(defaultCoordinateType || 'GenomicPosition');

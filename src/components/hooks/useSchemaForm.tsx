@@ -33,7 +33,7 @@ interface UseSchemaFormOptions {
  */
 const useSchemaForm = (
   initialModel: FormContextState['model'],
-  initialValue: GeneralRecordType = {},
+  initialValue: GeneralRecordType | undefined,
   { variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ): FormContextState => {
   const [formIsDirty, setFormIsDirty] = useState(false);
@@ -49,7 +49,7 @@ const useSchemaForm = (
     content: formContent,
     updateField: setFormFieldContent,
     replace: replaceContent,
-  } = useObject(initialValue);
+  } = useObject(initialValue ?? {});
 
   const {
     content: formErrors,

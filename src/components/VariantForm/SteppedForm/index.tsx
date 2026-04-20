@@ -8,7 +8,9 @@ import {
   Stepper,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, {
+  ReactNode, useCallback, useMemo, useState,
+} from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import FormContext from '@/components/FormContext';
@@ -34,12 +36,13 @@ interface SteppedFormProps {
 }
 
 const SteppedForm = ({
-  children, modelName, model, onSubmit, className = '', value = {}, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false, errors,
+  children, modelName, model, onSubmit, className = '', value, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false, errors,
 }: SteppedFormProps) => {
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
   const { content: visited, updateField: setStepVisit } = useObject({ 0: true });
-  const form = useSchemaForm(model, { '@class': modelName, ...value }, { variant: formVariant });
+  const initialValue = useMemo(() => ({ '@class': modelName, ...value }), [modelName, value]);
+  const form = useSchemaForm(model, initialValue, { variant: formVariant });
   const {
     formContent, formErrors, formHasErrors, formIsDirty,
   } = form;

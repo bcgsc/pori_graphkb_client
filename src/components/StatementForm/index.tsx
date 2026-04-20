@@ -48,7 +48,7 @@ interface StatementFormProps {
  * Form/View that displays the contents of a single node
  */
 const StatementForm = ({
-  value: initialValue = {},
+  value: initialValue,
   title,
   onToggleState,
   onSubmit,

@@ -48,7 +48,7 @@ interface RecordFormProps {
  * Form/View that displays the contents of a single node
  */
 const RecordForm = ({
-  value: initialValue = {},
+  value: initialValue,
   modelName = '',
   title,
   onToggleState,

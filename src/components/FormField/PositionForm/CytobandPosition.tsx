@@ -3,7 +3,7 @@ import './index.scss';
 import {
   TextField,
 } from '@mui/material';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import useSchemaForm from '@/components/hooks/useSchemaForm';
@@ -41,10 +41,8 @@ const CytobandPosition = ({
   disabled = false,
   readOnly,
 }: CytobandPositionProps) => {
-  const { formContent, formErrors, updateField } = useSchemaForm(
-    model,
-    { ...(value || {}), '@class': VARIANT },
-  );
+  const initialValue = useMemo(() => ({ ...(value || {}), '@class': VARIANT }), [value]);
+  const { formContent, formErrors, updateField } = useSchemaForm(model, initialValue);
 
   useDeepCompareEffect(() => {
     if (readOnly) return;

@@ -106,7 +106,7 @@ const PropertyFilter = ({
   const model = useMemo(() => ({ properties: { [property]: propertyModel } }), [property, propertyModel]);
 
   // use a schema form so that validation runs on the value based on the property selected
-  const form = useSchemaForm(model, {}, { variant: FORM_VARIANT.SEARCH });
+  const form = useSchemaForm(model, undefined, { variant: FORM_VARIANT.SEARCH });
   const {
     formContent,
     formHasErrors,

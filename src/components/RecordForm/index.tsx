@@ -60,7 +60,7 @@ const RecordForm = ({
 
   const model = useMemo(() => schemaDefn.get(modelName, false) ?? { properties: {}, isEdge: undefined, name: modelName }, [modelName]);
 
-  const form = useSchemaForm(model, initialValue, {}, { variant });
+  const form = useSchemaForm(model, initialValue, { variant });
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
   } = form;

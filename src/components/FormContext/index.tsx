@@ -19,10 +19,6 @@ export interface FormContextState {
   updateField: (name: string, value: unknown) => void;
   /** update a single field using a synthetic event */
   updateFieldEvent: (event: { target: { name: string; value: unknown } }) => void;
-  /** update multiple form values */
-  update: (record: Partial<GeneralRecordType>) => void;
-  /** replace the form content */
-  replaceContent: (record: GeneralRecordType) => void;
   /** the variant of the form (ex. view) */
   formVariant: FORM_VARIANT | '';
   /** setter for setting the formIsDirty property */

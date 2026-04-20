@@ -16,8 +16,6 @@ import { FORM_VARIANT } from '../util';
 import useObject from './useObject';
 
 interface UseSchemaFormOptions {
-  /** do not throw errors when required fields are missing */
-  ignoreMandatoryErrors?: boolean;
   /** the form type/variant (ex. view) */
   variant?: FORM_VARIANT | '';
   /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
@@ -36,8 +34,7 @@ interface UseSchemaFormOptions {
 const useSchemaForm = (
   initialModel: FormContextState['model'],
   initialValue: GeneralRecordType = {},
-  err: Record<string, any> = {},
-  { ignoreMandatoryErrors = false, variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
+  { variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ): FormContextState => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [model, setModel] = useState(initialModel);
@@ -52,24 +49,23 @@ const useSchemaForm = (
     content: formContent,
     updateField: setFormFieldContent,
     replace: replaceContent,
-    update,
   } = useObject(initialValue);
 
   const {
     content: formErrors,
     updateField: setFormFieldError,
     replace: replaceErrors,
-  } = useObject(err);
+  } = useObject<Record<string, any>>({});
 
   const formValidator = useCallback((propName, propValue) => {
     const prop = model.properties[propName];
 
     if (prop) {
-      return schema.validateValue(prop, propValue, { ignoreMandatory: ignoreMandatoryErrors });
+      return schema.validateValue(prop, propValue, { ignoreMandatory: false });
     }
 
     return { value: propValue };
-  }, [model, ignoreMandatoryErrors]);
+  }, [model]);
 
   const formHasErrors = useMemo(() => {
     const errorState = Object.values(formErrors).some((err) => err);
@@ -136,10 +132,8 @@ const useSchemaForm = (
     formVariant,
     additionalValidationError,
     setFormIsDirty,
-    update,
     updateField,
     updateFieldEvent,
-    replaceContent,
     model,
   };
 };

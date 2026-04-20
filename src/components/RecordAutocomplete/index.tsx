@@ -70,8 +70,6 @@ interface RecordAutocompleteProps {
   isMulti?: boolean;
   /** the label for this form field */
   label?: string;
-  /** the minimum length of characters required before the async options handler is called */
-  minSearchLength?: number;
   /** the parent handler function */
   onChange?: (arg: { target: { name: string; value: unknown; } }) => unknown;
   /** the text placeholder for the search box */
@@ -95,7 +93,6 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     error,
     isMulti = false,
     label = '',
-    minSearchLength = 1,
     name,
     onChange,
     placeholder = 'Search Records by Name or ID',
@@ -148,7 +145,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   let enabled = !disabled && !readOnly;
 
   if (!singleLoad) {
-    enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength);
+    enabled = Boolean(enabled && debouncedSearchTerm && debouncedSearchTerm.length >= 1);
   }
 
   const { data: options, isLoading } = useQuery({
@@ -174,21 +171,17 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
   const handleInputChange = useCallback((e, newSearchTerm) => {
     if (readOnly) return;
-    const newHelperText = (newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0 && !singleLoad)
-      ? `Requires ${minSearchLength} or more characters to search`
-      : '';
-
-    setHelperText(newHelperText);
+    setHelperText('');
     setSearchTerm(newSearchTerm);
-  }, [minSearchLength, singleLoad, readOnly]);
+  }, [readOnly]);
 
   const handleOnFocus = useCallback(
     () => {
       if (isMulti && !disabled && !readOnly) {
-        setHelperText(`Requires ${minSearchLength} or more characters to search`);
+        setHelperText('Requires 1 or more characters to search');
       }
     },
-    [disabled, isMulti, minSearchLength, readOnly],
+    [disabled, isMulti, readOnly],
   );
 
   const handleOnBlur = useCallback(

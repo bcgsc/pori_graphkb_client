@@ -21,8 +21,6 @@ function MockProvider({
   const state = useMemo(() => ({
     updateFieldEvent: fn(),
     updateField: fn(),
-    update: fn(),
-    replaceContent: fn(),
     setFormIsDirty: fn(),
     formIsDirty: value !== undefined,
     additionalValidationError: '',

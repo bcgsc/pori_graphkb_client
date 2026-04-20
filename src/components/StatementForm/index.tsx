@@ -146,7 +146,7 @@ const StatementForm = ({
     return '';
   }, [diagnosticData, prognosticData, therapeuticData]);
 
-  const form = useSchemaForm(model, initialValue, {}, {
+  const form = useSchemaForm(model, initialValue, {
     variant,
     additionalValidationFn: checkLogicalStatement,
   });

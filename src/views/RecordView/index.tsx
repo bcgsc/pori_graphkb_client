@@ -29,26 +29,16 @@ const DEFAULT_TITLES = {
   [FORM_VARIANT.VIEW]: 'Record Contents',
 };
 
-const modelsByRoute = Object.fromEntries(Object.values(schema.models).map((model) => [model.routeName, model]));
-
-const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
-  let defaultModelName = modelName;
-
+const getModelFromName = (modelName: string | undefined, variant = FORM_VARIANT.VIEW) => {
   if (modelName) {
-    const model = schema.get(modelName) ?? modelsByRoute[modelName];
+    const model = schema.get(modelName);
 
     if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
       throw new Error(`Page Not Found. '${modelName}' is not a valid model`);
     }
-    defaultModelName = model.name;
-  } else if (path.includes('/user/')) {
-    defaultModelName = 'User';
-  } else if (path.includes('/usergroup/')) {
-    defaultModelName = 'UserGroup';
-  } else if (path.includes('/e/')) {
-    defaultModelName = 'E';
+    return model.name;
   }
-  return schema.get(defaultModelName || 'V').name;
+  return 'V';
 };
 
 type RouteParams = {
@@ -79,7 +69,7 @@ const RecordView = ({
 
   useEffect(() => {
     if (path) {
-      const name = getModelFromName(path, modelNameParam, variant);
+      const name = getModelFromName(modelNameParam, variant);
       setModelName(name);
     }
   }, [path, modelNameParam, variant, navigate]);
@@ -151,7 +141,7 @@ const RecordView = ({
       <StatementForm
         onSubmit={handleSubmit}
         onToggleState={handleToggleState}
-        title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
+        title={DEFAULT_TITLES[variant]}
         value={recordContent}
         variant={variant}
       />
@@ -162,7 +152,7 @@ const RecordView = ({
       modelName={modelName}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
-      title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+      title={DEFAULT_TITLES[variant]}
       value={recordContent}
       variant={variant}
     />

@@ -89,6 +89,7 @@ New.test('on submit sets reviewStatus as initial and adds empty review if left b
   const expectedPayload = {
     '@class': 'Statement',
     conditions: ['11:11'],
+    displayNameTemplate: 'Given {conditions}, {relevance} applies to {subject} ({evidence})',
     evidence: ['12:23'],
     relevance: '90:32',
     subject: '20:20',

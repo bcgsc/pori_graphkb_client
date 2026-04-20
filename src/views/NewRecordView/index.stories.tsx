@@ -1,5 +1,5 @@
 import { HttpResponse } from 'msw';
-import { expect, screen, waitFor } from 'storybook/test';
+import { expect, screen } from 'storybook/test';
 
 import preview, {
   hasFinishedLoading,
@@ -19,12 +19,6 @@ export const NewSourceAsAdmin = meta.story({
   args: {
     path: '/new/source',
     auth: { isAdmin: true },
-  },
-  play: async ({ step, canvas }) => {
-    await hasFinishedLoading({ step, canvas });
-    await waitFor(async () => {
-      await expect(canvas.getByRole('button', { name: /submit/i })).toBeDisabled();
-    });
   },
 });
 

@@ -191,9 +191,9 @@ exports[`Editing snapshot 1`] = `
               </div>
             </div>
             <p
-              class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              class="Mui-error MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
             >
-              This is the statement context. Formally it is a set of conditions which when true result in the overall assertion of the statement
+              Required Value
             </p>
           </div>
         </li>
@@ -333,9 +333,9 @@ exports[`Editing snapshot 1`] = `
               </div>
             </div>
             <p
-              class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              class="Mui-error MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
             >
-              One or more pieces of evidence (Literature, DB, etc) which support the overall assertion
+              Required Value
             </p>
           </div>
         </li>
@@ -352,7 +352,7 @@ exports[`Editing snapshot 1`] = `
                 class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
               >
                 <label
-                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  class="Mui-error Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
                   for="_r_XXXX_"
                   id="_r_XXXX_-label"
@@ -360,20 +360,20 @@ exports[`Editing snapshot 1`] = `
                   relevance
                   <span
                     aria-hidden="true"
-                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                    class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                   >
                      
                     *
                   </span>
                 </label>
                 <div
-                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                  class="Mui-error MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                 >
                   <input
                     aria-autocomplete="list"
                     aria-describedby="_r_XXXX_-helper-text"
                     aria-expanded="false"
-                    aria-invalid="false"
+                    aria-invalid="true"
                     autocapitalize="none"
                     autocomplete="off"
                     class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
@@ -410,10 +410,10 @@ exports[`Editing snapshot 1`] = `
                   </div>
                 </div>
                 <p
-                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  class="Mui-error Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  Adds meaning to a statement and applies to the "subject" element
+                  Required Value
                 </p>
               </div>
             </div>
@@ -554,9 +554,9 @@ exports[`Editing snapshot 1`] = `
                 </div>
               </div>
               <p
-                class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                class="Mui-error MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
               >
-                The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
+                Required Value
               </p>
             </div>
           </li>
@@ -934,8 +934,9 @@ exports[`Editing snapshot 1`] = `
         class="action-button"
       >
         <button
-          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-          tabindex="0"
+          class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+          disabled=""
+          tabindex="-1"
           type="button"
         >
           SUBMIT CHANGES

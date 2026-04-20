@@ -61,20 +61,17 @@ const FormField = ({
   baseModel = '',
 }: FormFieldProps) => {
   const {
-    formIsDirty, formContent = {}, formErrors = {}, updateFieldEvent, formVariant,
+    formIsDirty, formContent, formErrors, updateFieldEvent, formVariant,
   } = useFormContext();
 
   const {
     choices,
-    default: defaultValue,
     description,
     examples,
-    generateDefault,
     linkedClass: linkedClassName,
     linkedType,
     name,
     type = 'string',
-    nullable,
     iterable,
     format,
     label: modelLabel,
@@ -83,7 +80,7 @@ const FormField = ({
   const example = examples?.[0];
   const linkedClass = schemaDefn.get(linkedClassName, false);
 
-  const inputValue = formContent[name];
+  const value = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && formVariant !== FORM_VARIANT.SEARCH);
 
@@ -103,22 +100,6 @@ const FormField = ({
     } else {
       helperText = description;
     }
-  }
-
-  let value = inputValue as any;
-
-  if (formVariant !== FORM_VARIANT.SEARCH) {
-    if (value === undefined || (!nullable && value === null)) {
-      if (defaultValue !== undefined) {
-        value = defaultValue;
-      } else if (generateDefault) {
-        value = generateDefault(formContent);
-      }
-    }
-  }
-
-  if (value !== inputValue) {
-    updateFieldEvent({ target: { name, value } });
   }
 
   // ensure all components both get and support

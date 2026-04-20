@@ -2306,7 +2306,7 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
                 class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
               >
                 <label
-                  class="Mui-error Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="false"
                   for="_r_XXXX_"
                   id="_r_XXXX_-label"
@@ -2314,18 +2314,18 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
                   name
                   <span
                     aria-hidden="true"
-                    class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                   >
                      
                     *
                   </span>
                 </label>
                 <div
-                  class="Mui-error MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                  class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                 >
                   <textarea
                     aria-describedby="_r_XXXX_-helper-text"
-                    aria-invalid="true"
+                    aria-invalid="false"
                     class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
                     data-testid="name"
                     id="_r_XXXX_"
@@ -2340,10 +2340,10 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
                   />
                 </div>
                 <p
-                  class="Mui-error Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  Required Value
+                  Name of the source
                 </p>
               </div>
             </li>
@@ -2466,9 +2466,8 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
             class="action-button"
           >
             <button
-              class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-              disabled=""
-              tabindex="-1"
+              class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
               type="button"
             >
               SUBMIT
@@ -3582,9 +3581,9 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                   </div>
                 </div>
                 <p
-                  class="Mui-error MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                 >
-                  Required Value
+                  This is the statement context. Formally it is a set of conditions which when true result in the overall assertion of the statement
                 </p>
               </div>
             </li>
@@ -3724,9 +3723,9 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                   </div>
                 </div>
                 <p
-                  class="Mui-error MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                 >
-                  Required Value
+                  One or more pieces of evidence (Literature, DB, etc) which support the overall assertion
                 </p>
               </div>
             </li>
@@ -3743,7 +3742,7 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                     class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                   >
                     <label
-                      class="Mui-error Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
@@ -3751,20 +3750,20 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                       relevance
                       <span
                         aria-hidden="true"
-                        class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                       >
                          
                         *
                       </span>
                     </label>
                     <div
-                      class="Mui-error MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                     >
                       <input
                         aria-autocomplete="list"
                         aria-describedby="_r_XXXX_-helper-text"
                         aria-expanded="false"
-                        aria-invalid="true"
+                        aria-invalid="false"
                         autocapitalize="none"
                         autocomplete="off"
                         class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
@@ -3801,7 +3800,7 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                       </div>
                     </div>
                     <p
-                      class="Mui-error Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                       id="_r_XXXX_-helper-text"
                     >
                       Adds meaning to a statement and applies to the "subject" element
@@ -3945,9 +3944,9 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                     </div>
                   </div>
                   <p
-                    class="Mui-error MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   >
-                    Required Value
+                    The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
                   </p>
                 </div>
               </li>
@@ -4418,9 +4417,8 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
             class="action-button"
           >
             <button
-              class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-              disabled=""
-              tabindex="-1"
+              class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
               type="button"
             >
               SUBMIT

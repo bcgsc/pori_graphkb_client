@@ -3,23 +3,57 @@
  */
 import {
   useCallback,
+  useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import schema from '@/services/schema';
 
 import { FormContextState } from '../FormContext';
 import { GeneralRecordType } from '../types';
 import { FORM_VARIANT } from '../util';
-import useObject from './useObject';
 
 interface UseSchemaFormOptions {
   /** the form type/variant (ex. view) */
   variant?: FORM_VARIANT | '';
   /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
   additionalValidationFn?: ((content: unknown) => string) | null;
+}
+
+function getInitialFormState(
+  model: FormContextState['model'],
+  initialContent: FormContextState['formContent'] | undefined,
+  variant: FORM_VARIANT | '',
+) {
+  const nextState: Pick<FormContextState, 'formContent' | 'formErrors' | 'formIsDirty'> = {
+    formContent: { ...initialContent ?? {} },
+    formErrors: {},
+    formIsDirty: variant === FORM_VARIANT.EDIT,
+  };
+
+  if (variant === FORM_VARIANT.VIEW) {
+    return nextState;
+  }
+
+  Object.values(model.properties).forEach((prop) => {
+    let value = initialContent?.[prop.name];
+
+    if ((value === undefined || (value === null && !prop.nullable)) && variant === FORM_VARIANT.NEW && !prop.readOnly && !prop.generated) {
+      if (prop.default !== undefined) {
+        value = prop.default;
+      } else if (prop.generateDefault) {
+        value = prop.generateDefault(initialContent ?? {});
+      }
+    }
+
+    const { error, value: validatedValue } = schema.validateValue(prop, value, { ignoreMandatory: false });
+
+    nextState.formContent[prop.name] = validatedValue;
+    nextState.formErrors[prop.name] = error as Error | null;
+  });
+
+  return nextState;
 }
 
 /**
@@ -32,90 +66,60 @@ interface UseSchemaFormOptions {
  * @returns {FormContext} the form context values
  */
 const useSchemaForm = (
-  initialModel: FormContextState['model'],
+  model: FormContextState['model'],
   initialValue: GeneralRecordType | undefined,
   { variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ): FormContextState => {
-  const [formIsDirty, setFormIsDirty] = useState(false);
-  const [model, setModel] = useState(initialModel);
-  const [additionalValidationError, setAdditionalValidationError] = useState('');
+  const [{ formContent, formErrors, formIsDirty }, setFormState] = useState<Pick<FormContextState, 'formContent' | 'formErrors' | 'formIsDirty'>>(getInitialFormState(model, initialValue, formVariant));
 
-  useDeepCompareEffect(() => {
-    setModel(initialModel);
-  }, [initialModel]);
+  // reset form state if any of initial value/model/variant change
+  useLayoutEffect(() => {
+    setFormState(getInitialFormState(model, initialValue, formVariant));
+  }, [formVariant, initialValue, model]);
 
-  // handle and store the form content
-  const {
-    content: formContent,
-    updateField: setFormFieldContent,
-    replace: replaceContent,
-  } = useObject(initialValue ?? {});
-
-  const {
-    content: formErrors,
-    updateField: setFormFieldError,
-    replace: replaceErrors,
-  } = useObject<Record<string, any>>({});
-
-  const formValidator = useCallback((propName, propValue) => {
-    const prop = model.properties[propName];
-
-    if (prop) {
-      return schema.validateValue(prop, propValue, { ignoreMandatory: false });
-    }
-
-    return { value: propValue };
-  }, [model]);
+  const additionalValidationError = useMemo(() => additionalValidationFn?.(formContent) ?? '', [formContent, additionalValidationFn]);
 
   const formHasErrors = useMemo(() => {
     const errorState = Object.values(formErrors).some((err) => err);
     return errorState || !!additionalValidationError;
   }, [formErrors, additionalValidationError]);
 
-  useDeepCompareEffect(() => {
-    if (additionalValidationFn) {
-      setAdditionalValidationError(additionalValidationFn(formContent));
-    }
-  }, [formContent || {}, additionalValidationFn]);
-
-  // check the initial content for errors
-  useDeepCompareEffect(() => {
-    replaceContent(initialValue);
-    replaceErrors({});
-
-    Object.values(model.properties).forEach((prop) => {
-      const propValue = (initialValue || {})[prop.name];
-
-      const { error, value } = formValidator(prop.name, propValue);
-      setFormFieldContent(prop.name as keyof GeneralRecordType, value);
-      setFormFieldError(prop.name, error);
-    });
-
-    setFormIsDirty(false);
-  }, [initialValue || {}, model]);
-
   // provide an update callback which includes the validation step
-  const updateField = useCallback((propName, propValue) => {
-    const { value, error } = formValidator(propName, propValue);
+  const updateField = useCallback((propName: string, propValue: unknown) => {
+    setFormState((prev) => {
+      if (prev.formContent[propName] === propValue) {
+        return prev;
+      }
+      const { value, error } = schema.validateValue(model.properties[propName], propValue, { ignoreMandatory: false });
+      const next = {
+        formContent: {
+          ...prev.formContent,
+          [propName]: value,
+        },
+        formErrors: {
+          ...prev.formErrors,
+          [propName]: error as Error | null,
+        },
+        formIsDirty: true,
+      };
 
-    setFormFieldContent(propName, value);
-    setFormFieldError(propName, error);
-
-    // re-build the display name template for the statement
-    // TODO: add flag to property to auto regenerating defaults
-    if (
-      ['subject', 'conditions', 'relevance'].includes(propName)
+      // re-build the display name template for the statement
+      // TODO: add flag to property to auto regenerating defaults
+      if (
+        ['subject', 'conditions', 'relevance'].includes(propName)
       && model.properties.displayNameTemplate
       && model.properties.displayNameTemplate.generateDefault
-      && formContent.displayNameTemplate
-    ) {
-      const { displayNameTemplate: _, ...rest } = formContent;
-      const newTemplate = model.properties.displayNameTemplate.generateDefault({ ...rest, [propName]: value });
-      setFormFieldContent('displayNameTemplate', newTemplate);
-    }
-
-    setFormIsDirty(true);
-  }, [model.properties.displayNameTemplate, formContent, formValidator, setFormFieldContent, setFormFieldError]);
+      && next.formContent.displayNameTemplate
+      ) {
+        const { displayNameTemplate: _, ...rest } = next.formContent;
+        next.formContent = {
+          ...next.formContent,
+          displayNameTemplate: model.properties.displayNameTemplate.generateDefault({ ...rest, [propName]: value }) as string,
+        };
+      }
+      return next;
+    });
+  }, [model, setFormState]);
 
   const updateFieldEvent = useCallback(({ target }) => {
     // add the new value to the field
@@ -123,6 +127,13 @@ const useSchemaForm = (
     const eventValue = target.value;
     updateField(eventName, eventValue);
   }, [updateField]);
+
+  const setFormIsDirty = useCallback(() => {
+    setFormState((prev) => ({
+      ...prev,
+      formIsDirty: true,
+    }));
+  }, []);
 
   return {
     formContent,

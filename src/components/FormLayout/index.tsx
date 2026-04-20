@@ -11,14 +11,12 @@ import {
 import React, { useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
-import { CLASS_MODEL_PROP, sortAndGroupFields } from '@/components/util';
+import { sortAndGroupFields } from '@/components/util';
 import schema from '@/services/schema';
 
 import FieldGroup from './FieldGroup';
 
 interface FormLayoutProps {
-  /** the property names which should be put above the collapse */
-  aboveFold?: string[];
   /** css class to add to main element */
   className?: string;
   /** flag to indicate a collapsible section should be created */
@@ -38,25 +36,6 @@ const FormLayout = ({
   modelName,
   disabled = false,
   className = '',
-  aboveFold = [
-    CLASS_MODEL_PROP,
-    'displayName',
-    'name',
-    'groups',
-    'journalName',
-    'out',
-    'in',
-    'permissions',
-    'evidenceLevel',
-    'reviewStatus',
-    'reviews',
-    'refSeq',
-    'recruitmentStatus',
-    'email',
-    'source',
-    'sourceId',
-    'description',
-  ],
   collapseExtra = false,
   groups = [
     ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
@@ -83,7 +62,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model.properties, {
-    aboveFold, collapseExtra, groups,
+    collapseExtra, groups,
   });
 
   return (

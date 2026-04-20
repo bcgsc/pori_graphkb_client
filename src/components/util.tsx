@@ -2,7 +2,7 @@ import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
 
-import { SchemaPropertyDefinition } from '@/services/schema';
+import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
 const CLASS_MODEL_PROP = '@class';
 
@@ -10,6 +10,8 @@ const CLASS_MODEL_PROP = '@class';
 enum FORM_VARIANT {
   EDIT = 'edit', VIEW = 'view', DELETE = 'delete', NEW = 'new', SEARCH = 'search',
 }
+
+const BELOW_FOLD = Object.keys(schema.get('V').properties);
 
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'
@@ -29,8 +31,6 @@ const sortAndGroupFields = (
   /** the current class model to base the form off of */
   propertiesWithClass: Record<string, SchemaPropertyDefinition>,
   opt: {
-    /** names of properties that should be promoted above the fold */
-    aboveFold?: string[];
     /** flag to indicate if a collaspible section should be created */
     collapseExtra?: boolean;
     /** properties that should co-occur */
@@ -57,7 +57,7 @@ const sortAndGroupFields = (
     fieldsMap[prop.name] = {
       fields: [prop.name],
       required,
-      aboveFold: required || opt.aboveFold?.includes(prop.name) || !opt.collapseExtra,
+      aboveFold: required || !BELOW_FOLD.includes(prop.name) || !opt.collapseExtra,
     };
   });
 

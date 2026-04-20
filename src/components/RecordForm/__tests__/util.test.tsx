@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
 import { sortAndGroupFields } from '@/components/util';
+import schema from '@/services/schema';
 
 describe('util', () => {
   describe('sortAndGroupFields', () => {
@@ -9,13 +10,14 @@ describe('util', () => {
         name: { name: 'name', mandatory: true },
         address: { name: 'address' },
         gender: { name: 'gender', default: null, mandatory: true },
+        comment: schema.get('V').properties.comment,
       },
     };
 
     test('no order or collapse', () => {
       const grouping = sortAndGroupFields(testModel.properties);
       expect(grouping).toEqual({
-        fields: ['name', 'address', 'gender'],
+        fields: ['name', 'address', 'comment', 'gender'],
         extraFields: [],
       });
     });
@@ -23,8 +25,8 @@ describe('util', () => {
     test('collapse flag given', () => {
       const grouping = sortAndGroupFields(testModel.properties, { collapseExtra: true });
       expect(grouping).toEqual({
-        fields: ['name'],
-        extraFields: ['address', 'gender'],
+        fields: ['name', 'address', 'gender'],
+        extraFields: ['comment'],
       });
     });
 
@@ -34,19 +36,18 @@ describe('util', () => {
         groups: [['name', 'address']],
       });
       expect(grouping).toEqual({
-        fields: [['name', 'address']],
-        extraFields: ['gender'],
+        fields: [['name', 'address'], 'gender'],
+        extraFields: ['comment'],
       });
     });
 
     test('promote field above the fold', () => {
       const grouping = sortAndGroupFields(testModel.properties, {
         collapseExtra: true,
-        aboveFold: ['address'],
       });
       expect(grouping).toEqual({
-        fields: ['name', 'address'],
-        extraFields: ['gender'],
+        fields: ['name', 'address', 'gender'],
+        extraFields: ['comment'],
       });
     });
   });

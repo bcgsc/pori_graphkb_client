@@ -106,7 +106,7 @@ const BasicPositionForm = ({
             htmlInput: { 'data-testid': `${name}.pos` },
             input: { readOnly, disableUnderline: readOnly },
           }}
-          value={position}
+          value={position ?? ''}
         />
       </FieldWrapper>
       {isOffsetVariant && (
@@ -121,11 +121,11 @@ const BasicPositionForm = ({
             onChange={handleOffsetChange}
             required={required}
             slotProps={{
-              inputLabel: { shrink: offset !== '' },
+              inputLabel: { shrink: (offset ?? '') !== '' },
               htmlInput: { 'data-testid': `${name}.offset` },
               input: { readOnly, disableUnderline: readOnly },
             }}
-            value={offset}
+            value={offset ?? ''}
           />
         </FieldWrapper>
       )}

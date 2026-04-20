@@ -111,6 +111,7 @@ exports[`CdsPositionVariant snapshot 1`] = `
             name="pos"
             required=""
             type="text"
+            value=""
           />
         </div>
         <p
@@ -128,8 +129,8 @@ exports[`CdsPositionVariant snapshot 1`] = `
         class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root form-field position-form__offset"
       >
         <label
-          class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-          data-shrink="true"
+          class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+          data-shrink="false"
           for="_r_XXXX_"
           id="_r_XXXX_-label"
         >
@@ -153,6 +154,7 @@ exports[`CdsPositionVariant snapshot 1`] = `
             name="offset"
             required=""
             type="text"
+            value=""
           />
         </div>
       </div>
@@ -1108,6 +1110,7 @@ exports[`GenomicPositionBaseVariant snapshot 1`] = `
             name="pos"
             required=""
             type="text"
+            value=""
           />
         </div>
         <p
@@ -1236,6 +1239,7 @@ exports[`GenomicPositionVariant snapshot 1`] = `
             name="pos"
             required=""
             type="text"
+            value=""
           />
         </div>
         <p

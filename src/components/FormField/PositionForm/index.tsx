@@ -97,7 +97,7 @@ const PositionForm = ({
           disabled={disabled}
           onChange={handleVariantChange}
           options={positionVariants}
-          value={variant}
+          value={variant ?? ''}
         />
       )}
       {(variant || positionVariants.length === 1) && (

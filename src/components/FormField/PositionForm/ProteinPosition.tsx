@@ -4,9 +4,7 @@ import { validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
-import React, {
-  useCallback, useEffect, useMemo, useState,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import schema from '@/services/schema';
 
@@ -47,14 +45,7 @@ const ProteinPosition = ({
   disabled = false,
   readOnly,
 }: ProteinPositionProps) => {
-  const { pos: initialPos, refAA: initialRefAA } = value || {};
-  const [position, setPosition] = useState(initialPos);
-  const [refAA, setRefAA] = useState(initialRefAA);
-
-  useEffect(() => {
-    setPosition(value?.pos);
-    setRefAA(value?.refAA);
-  }, [value]);
+  const { pos: position, refAA } = value || {};
 
   // validate the position input
   const positionError = useMemo(() => {
@@ -88,13 +79,11 @@ const ProteinPosition = ({
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
     if (readOnly) return;
-    setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, pos: newValue, refAA } } });
   }, [readOnly, onChange, name, refAA]);
 
   const handleRefAAChange = useCallback(({ target: { value: newValue } }) => {
     if (readOnly) return;
-    setRefAA(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, refAA: newValue, pos: position } } });
   }, [readOnly, onChange, name, position]);
 

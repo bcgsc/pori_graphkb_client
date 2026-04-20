@@ -3,6 +3,7 @@
  */
 import {
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -39,7 +40,6 @@ const useSchemaForm = (
   { ignoreMandatoryErrors = false, variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
 ): FormContextState => {
   const [formIsDirty, setFormIsDirty] = useState(false);
-  const [formHasErrors, setFormHasErrors] = useState(false);
   const [model, setModel] = useState(initialModel);
   const [additionalValidationError, setAdditionalValidationError] = useState('');
 
@@ -71,10 +71,10 @@ const useSchemaForm = (
     return { value: propValue };
   }, [model, ignoreMandatoryErrors]);
 
-  useDeepCompareEffect(() => {
+  const formHasErrors = useMemo(() => {
     const errorState = Object.values(formErrors).some((err) => err);
-    setFormHasErrors(errorState || !!additionalValidationError);
-  }, [formErrors || {}, additionalValidationError]);
+    return errorState || !!additionalValidationError;
+  }, [formErrors, additionalValidationError]);
 
   useDeepCompareEffect(() => {
     if (additionalValidationFn) {
@@ -118,9 +118,6 @@ const useSchemaForm = (
       setFormFieldContent('displayNameTemplate', newTemplate);
     }
 
-    if (error) {
-      setFormHasErrors(true);
-    }
     setFormIsDirty(true);
   }, [model.properties.displayNameTemplate, formContent, formValidator, setFormFieldContent, setFormFieldError]);
 

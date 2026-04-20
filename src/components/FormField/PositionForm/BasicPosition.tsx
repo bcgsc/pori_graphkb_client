@@ -4,9 +4,7 @@ import { validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
-import React, {
-  useCallback, useEffect, useMemo, useState,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import schema from '@/services/schema';
 
@@ -46,14 +44,7 @@ const BasicPositionForm = ({
   disabled = false,
   readOnly,
 }: BasicPositionFormProps) => {
-  const { pos: initialPos, offset: initialOffset } = value || {};
-  const [position, setPosition] = useState(initialPos);
-  const [offset, setOffset] = useState(initialOffset);
-
-  useEffect(() => {
-    setPosition(value?.pos);
-    setOffset(value?.offset);
-  }, [value]);
+  const { pos: position, offset } = value || {};
 
   // validate the position input
   const positionError = useMemo(() => {
@@ -88,13 +79,11 @@ const BasicPositionForm = ({
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
     if (readOnly) return;
-    setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': variant, pos: newValue, offset } } });
   }, [readOnly, onChange, name, variant, offset]);
 
   const handleOffsetChange = useCallback(({ target: { value: newValue } }) => {
     if (readOnly) return;
-    setOffset(newValue);
     onChange?.({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
   }, [onChange, name, variant, position, readOnly]);
 

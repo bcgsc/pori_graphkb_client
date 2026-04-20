@@ -109,13 +109,8 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [helperText, setHelperText] = useState(initialHelperText);
-  const [selectedValues, setSelectedValues] = useState(getAsArray(value));
+  const selectedValues = useMemo(() => getAsArray(value), [value]);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
-
-  // update the selected value if the initial input value changes
-  useEffect(() => {
-    setSelectedValues(getAsArray(value));
-  }, [value]);
 
   // check if there are any short terms below min length and give warning if so
   useEffect(() => {
@@ -167,17 +162,11 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     (e, newValue, actionType, details) => {
       if (readOnly) return;
       const { option } = details ?? {};
-      setSelectedValues(newValue);
 
       if (actionType === 'selectOption' && !isMulti) {
-        setSelectedValues(isMulti ? newValue : [option]);
         onChange?.({ target: { name, value: option } });
-      } else {
-        setSelectedValues(newValue);
-
-        if (actionType !== 'blur') {
-          onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
-        }
+      } else if (actionType !== 'blur') {
+        onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
       }
     },
     [isMulti, name, onChange, readOnly],

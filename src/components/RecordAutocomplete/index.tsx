@@ -6,7 +6,7 @@ import {
   CircularProgress, ListSubheader, TextField,
 } from '@mui/material';
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useMemo, useState,
 } from 'react';
 import { useQuery } from 'react-query';
 import { useDebounce } from 'use-debounce';
@@ -105,13 +105,14 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [helperText, setHelperText] = useState(initialHelperText);
   const selectedValues = useMemo(() => getAsArray(value), [value]);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
+  const [isFocused, setIsFocused] = useState<boolean | null>(null);
 
   // check if there are any short terms below min length and give warning if so
-  useEffect(() => {
-    if (searchTerm) {
+  const helperText = useMemo(() => {
+    if (disabled || readOnly) return initialHelperText;
+    if (isFocused && searchTerm) {
       const terms = searchTerm.split(' ');
       const searchTerms = terms.filter((term) => term); // remove empty/null terms
 
@@ -119,12 +120,17 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
         const badTerms = searchTerms.filter((term) => term.length < MIN_TERM_LENGTH);
 
         if (badTerms.length) {
-          const badLengthText = `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
-          setHelperText(badLengthText);
+          return `WARNING: terms (${badTerms.join(', ')}) will be ignored in search because they are below MIN length of 3`;
         }
       }
+    } else if (isFocused) {
+      return 'Requires 1 or more characters to search';
     }
-  }, [searchTerm]);
+    if (!error && isMulti && isFocused === false) {
+      return `May take more than one value. ${initialHelperText}`;
+    }
+    return initialHelperText;
+  }, [disabled, error, initialHelperText, isFocused, isMulti, readOnly, searchTerm]);
 
   const searchBody = useMemo(
     () => {
@@ -171,26 +177,21 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
 
   const handleInputChange = useCallback((e, newSearchTerm) => {
     if (readOnly) return;
-    setHelperText('');
     setSearchTerm(newSearchTerm);
   }, [readOnly]);
 
   const handleOnFocus = useCallback(
     () => {
-      if (isMulti && !disabled && !readOnly) {
-        setHelperText('Requires 1 or more characters to search');
-      }
+      setIsFocused(true);
     },
-    [disabled, isMulti, readOnly],
+    [],
   );
 
   const handleOnBlur = useCallback(
     () => {
-      if (!error && isMulti && !disabled && !readOnly) {
-        setHelperText('May take more than one value');
-      }
+      setIsFocused(false);
     },
-    [disabled, error, isMulti, readOnly],
+    [],
   );
 
   const filterOptions = useCallback((opts, { inputValue }) => {

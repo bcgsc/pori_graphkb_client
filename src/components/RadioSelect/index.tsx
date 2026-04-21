@@ -10,7 +10,7 @@ import {
   MenuList,
   Radio,
 } from '@mui/material';
-import isObject from 'lodash.isobject';
+import { isObject } from 'lodash';
 import React, { ReactNode, useId } from 'react';
 
 interface Option<V = unknown> {

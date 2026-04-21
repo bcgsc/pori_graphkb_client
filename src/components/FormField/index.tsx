@@ -5,7 +5,7 @@ import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-sc
 import {
   TextField,
 } from '@mui/material';
-import omit from 'lodash.omit';
+import { omit } from 'lodash';
 import React, { useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';

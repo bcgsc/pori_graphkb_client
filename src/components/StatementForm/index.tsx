@@ -7,7 +7,7 @@ import {
   Alert, Button, CircularProgress,
   Paper, Typography,
 } from '@mui/material';
-import isempty from 'lodash.isempty';
+import { isEmpty } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback, useEffect, useMemo, useState,
@@ -107,7 +107,7 @@ const StatementForm = ({
   const statementQuery = useQuery({
     queryKey: [`/statements/${params.rid}?neighbors=1`],
     queryFn: async ({ queryKey: [route] }) => api.get(route),
-    enabled: (isempty(initialValue) && Boolean(params.rid)),
+    enabled: (isEmpty(initialValue) && Boolean(params.rid)),
     throwOnError: true,
   });
 
@@ -335,7 +335,7 @@ const StatementForm = ({
               className="header__review-action"
               component={Link}
               target="_blank"
-              to={!isempty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
+              to={!isEmpty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
               variant="outlined"
             >
               <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy

@@ -79,7 +79,7 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
     }
   }, [edges, grid.ref, isFetching]);
 
-  const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink {...cellValue} /></>);
+  const renderCellRenderer = ({ value: cellValue }) => (<><RecordIdLink recordClass={cellValue?.recordClass} recordId={cellValue?.recordId} /></>);
 
   if (!isFetching && (!edges || edges.length === 0)) {
     return null;

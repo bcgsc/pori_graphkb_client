@@ -59,11 +59,10 @@ function ActionButton(props: ActionButtonProps) {
     requireConfirm = true,
     size = 'large',
     variant = 'contained',
-    ...rest
   } = props;
 
   return (
-    <div className={`action-button ${className}`} {...rest}>
+    <div className={`action-button ${className}`}>
       <Button
         className="action-button__button"
         color={color}

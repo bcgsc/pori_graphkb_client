@@ -68,8 +68,12 @@ export const Disabled = WithValue.extend({
   },
 });
 
+export const ReadOnly = WithValue.extend({
+  args: { readOnly: true },
+});
+
 export const WithError = WithValue.extend({
-  args: { errorText: 'bad value' },
+  args: { error: true, helperText: 'bad value' },
 });
 
 export const MultiWithValue = WithValue.extend({
@@ -103,4 +107,8 @@ export const MultiWithMultipleValues = WithValue.extend({
     await expect(canvas.findByText('bob (#1:1)')).resolves.toBeInTheDocument();
     await expect(canvas.findByText('alice (#2:1)')).resolves.toBeInTheDocument();
   },
+});
+
+export const MultiWithMultipleValuesReadOnly = MultiWithMultipleValues.extend({
+  args: { readOnly: true },
 });

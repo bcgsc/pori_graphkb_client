@@ -4,7 +4,9 @@ import { schema as schemaDefn, validateProperty } from '@bcgsc-pori/graphkb-sche
 import {
   TextField,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
@@ -27,6 +29,7 @@ interface BasicPositionFormProps {
     pos?: number;
     offset?: number | '';
   },
+  readOnly?: boolean;
 }
 
 /**
@@ -39,12 +42,11 @@ const BasicPositionForm = ({
   name = '',
   required = true,
   disabled = false,
+  readOnly,
 }: BasicPositionFormProps) => {
   const { pos: initialPos, offset: initialOffset } = value || {};
   const [position, setPosition] = useState(initialPos);
-  const [positionError, setPositionError] = useState('');
   const [offset, setOffset] = useState(initialOffset);
-  const [offsetError, setOffsetError] = useState('');
 
   useEffect(() => {
     setPosition(value?.pos);
@@ -52,46 +54,47 @@ const BasicPositionForm = ({
   }, [value]);
 
   // validate the position input
-  useEffect(() => {
+  const positionError = useMemo(() => {
     if (!position && required && posProperty.mandatory) {
-      setPositionError('missing required property');
-    } else {
-      try {
-        validateProperty(posProperty, position);
-        setPositionError('');
-      } catch (err) {
-        setPositionError((err as Error).toString());
-      }
+      return 'missing required property';
     }
+
+    try {
+      validateProperty(posProperty, position);
+    } catch (err) {
+      return (err as Error).toString();
+    }
+
+    return '';
   }, [position, required]);
 
   // validate the offset input
-  useEffect(() => {
+  const offsetError = useMemo(() => {
     if (!offset && offset !== 0) {
       if (required && offsetProperty.mandatory) {
-        setOffsetError('missing required property');
-      } else {
-        setOffsetError('');
+        return 'missing required property';
       }
     } else {
       try {
         validateProperty(offsetProperty, offset);
-        setOffsetError('');
       } catch (err) {
-        setOffsetError((err as Error).toString());
+        return (err as Error).toString();
       }
     }
+    return '';
   }, [offset, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': variant, pos: newValue, offset } } });
-  }, [onChange, name, variant, offset]);
+  }, [readOnly, onChange, name, variant, offset]);
 
   const handleOffsetChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setOffset(newValue);
     onChange?.({ target: { name, value: { '@class': variant, offset: newValue, pos: position } } });
-  }, [onChange, name, variant, position]);
+  }, [onChange, name, variant, position, readOnly]);
 
   const isOffsetVariant = Boolean(schemaDefn.getProperty(variant, 'offset'));
 
@@ -103,12 +106,15 @@ const BasicPositionForm = ({
           disabled={disabled}
           error={Boolean(positionError)}
           helperText={positionError || ''}
-          InputLabelProps={{ shrink: !!position }}
-          inputProps={{ 'data-testid': `${name}.pos` }}
           label="position"
           name="pos"
           onChange={handlePositionChange}
           required={required}
+          slotProps={{
+            inputLabel: { shrink: !!position },
+            htmlInput: { 'data-testid': `${name}.pos` },
+            input: { readOnly, disableUnderline: readOnly },
+          }}
           value={position}
         />
       </FieldWrapper>
@@ -119,12 +125,15 @@ const BasicPositionForm = ({
             disabled={disabled}
             error={Boolean(offsetError)}
             helperText={offsetError || ''}
-            InputLabelProps={{ shrink: offset !== '' }}
-            inputProps={{ 'data-testid': `${name}.offset` }}
             label="offset"
             name="offset"
             onChange={handleOffsetChange}
             required={required}
+            slotProps={{
+              inputLabel: { shrink: offset !== '' },
+              htmlInput: { 'data-testid': `${name}.offset` },
+              input: { readOnly, disableUnderline: readOnly },
+            }}
             value={offset}
           />
         </FieldWrapper>

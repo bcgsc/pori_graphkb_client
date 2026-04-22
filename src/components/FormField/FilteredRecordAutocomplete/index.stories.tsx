@@ -44,6 +44,10 @@ export const Disabled = WithValue.extend({
   args: { disabled: true },
 });
 
+export const ReadOnly = WithValue.extend({
+  args: { readOnly: true },
+});
+
 export const WithError = WithValue.extend({
   args: { error: true, helperText: 'bad value' },
 });

@@ -1,5 +1,108 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Disabled snapshot 1`] = `
+<div>
+  <div
+    class="text-array-field"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-array-field__text-field"
+    >
+      <label
+        class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="text array field-temp"
+        id="text array field-temp-label"
+      >
+        Text array field
+      </label>
+      <div
+        class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root text-array-field__field"
+      >
+        <div
+          class="Mui-disabled MuiButtonBase-root MuiChip-colorDefault MuiChip-deletable MuiChip-deletableColorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root text-array-field__chip"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 1
+          </span>
+          <svg
+            aria-hidden="true"
+            aria-label="delete value"
+            class="MuiChip-deleteIcon MuiChip-deleteIconColorDefault MuiChip-deleteIconFilledColorDefault MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="CancelIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z"
+            />
+          </svg>
+        </div>
+        <div
+          class="Mui-disabled MuiButtonBase-root MuiChip-colorDefault MuiChip-deletable MuiChip-deletableColorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root text-array-field__chip"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 2
+          </span>
+          <svg
+            aria-hidden="true"
+            aria-label="delete value"
+            class="MuiChip-deleteIcon MuiChip-deleteIconColorDefault MuiChip-deleteIconFilledColorDefault MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="CancelIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z"
+            />
+          </svg>
+        </div>
+        <input
+          aria-invalid="false"
+          class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
+          disabled=""
+          id="text array field-temp"
+          name="text array field"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="text-array-field__btns"
+    >
+      <button
+        aria-label="add"
+        class="Mui-disabled MuiButtonBase-root MuiIconButton-colorPrimary MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+        disabled=""
+        tabindex="-1"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+          data-testid="AddIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Empty snapshot 1`] = `
 <div>
   <div
@@ -24,6 +127,167 @@ exports[`Empty snapshot 1`] = `
           class="MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
           id="text array field-temp"
           name="text array field"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="text-array-field__btns"
+    >
+      <button
+        aria-label="add"
+        class="MuiButtonBase-root MuiIconButton-colorPrimary MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+        tabindex="0"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+          data-testid="AddIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ReadOnly snapshot 1`] = `
+<div>
+  <div
+    class="text-array-field"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-array-field__text-field"
+    >
+      <label
+        class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="text array field-temp"
+        id="text array field-temp-label"
+      >
+        Text array field
+      </label>
+      <div
+        class="Mui-readOnly MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root text-array-field__field"
+      >
+        <div
+          class="MuiChip-colorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root text-array-field__chip"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 1
+          </span>
+        </div>
+        <div
+          class="MuiChip-colorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root text-array-field__chip"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 2
+          </span>
+        </div>
+        <input
+          aria-invalid="false"
+          class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
+          id="text array field-temp"
+          name="text array field"
+          readonly=""
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Required snapshot 1`] = `
+<div>
+  <div
+    class="text-array-field"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-array-field__text-field"
+    >
+      <label
+        class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="text array field-temp"
+        id="text array field-temp-label"
+      >
+        Text array field
+        <span
+          aria-hidden="true"
+          class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+        >
+           
+          *
+        </span>
+      </label>
+      <div
+        class="MuiInput-root MuiInput-underline MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root text-array-field__field"
+      >
+        <div
+          class="MuiButtonBase-root MuiChip-colorDefault MuiChip-deletable MuiChip-deletableColorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root text-array-field__chip"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 1
+          </span>
+          <svg
+            aria-hidden="true"
+            aria-label="delete value"
+            class="MuiChip-deleteIcon MuiChip-deleteIconColorDefault MuiChip-deleteIconFilledColorDefault MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="CancelIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z"
+            />
+          </svg>
+        </div>
+        <div
+          class="MuiButtonBase-root MuiChip-colorDefault MuiChip-deletable MuiChip-deletableColorDefault MuiChip-filled MuiChip-filledDefault MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root text-array-field__chip"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+          >
+            thing 2
+          </span>
+          <svg
+            aria-hidden="true"
+            aria-label="delete value"
+            class="MuiChip-deleteIcon MuiChip-deleteIconColorDefault MuiChip-deleteIconFilledColorDefault MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="CancelIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z"
+            />
+          </svg>
+        </div>
+        <input
+          aria-invalid="false"
+          class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
+          id="text array field-temp"
+          name="text array field"
+          required=""
           type="text"
           value=""
         />
@@ -121,6 +385,7 @@ exports[`WithError snapshot 1`] = `
           </svg>
         </div>
         <input
+          aria-describedby="text array field-temp-helper-text"
           aria-invalid="true"
           class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
           id="text array field-temp"
@@ -129,6 +394,12 @@ exports[`WithError snapshot 1`] = `
           value=""
         />
       </div>
+      <p
+        class="Mui-error MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="text array field-temp-helper-text"
+      >
+        bad value
+      </p>
     </div>
     <div
       class="text-array-field__btns"
@@ -222,6 +493,7 @@ exports[`WithHelperTextAndLabel snapshot 1`] = `
           </svg>
         </div>
         <input
+          aria-describedby="list of subsets-temp-helper-text"
           aria-invalid="false"
           class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input text-array-field__input"
           id="list of subsets-temp"
@@ -230,6 +502,12 @@ exports[`WithHelperTextAndLabel snapshot 1`] = `
           value=""
         />
       </div>
+      <p
+        class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="list of subsets-temp-helper-text"
+      >
+        this field is useful
+      </p>
     </div>
     <div
       class="text-array-field__btns"

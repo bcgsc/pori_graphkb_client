@@ -1,8 +1,9 @@
 class ErrorMixin extends Error {
   content: any;
 
-  constructor(content) {
+  constructor(errorContent) {
     let message;
+    let content = errorContent;
 
     if (typeof content === 'object' && content !== null) {
       ({ message, ...content } = content);

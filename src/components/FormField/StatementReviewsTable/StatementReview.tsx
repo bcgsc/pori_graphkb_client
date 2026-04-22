@@ -1,7 +1,6 @@
 import '../index.scss';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import EmbeddedIcon from '@mui/icons-material/SelectAll';
 import {
   Avatar,
   Card,
@@ -18,17 +17,15 @@ import { useQuery } from 'react-query';
 import ActionButton from '@/components/ActionButton';
 import DetailChip from '@/components/DetailChip';
 import { GeneralRecordType } from '@/components/types';
-import { FORM_VARIANT, tuple } from '@/components/util';
+import { tuple } from '@/components/util';
 import api from '@/services/api';
 
 interface StatementReviewProps {
   index: number;
-  label?: string;
+  disabled?: boolean;
   onDelete: (arg: { index: number }) => void;
   /** single linked record or review */
   value: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType });
-  /** one of ['view', 'edit'] mode */
-  variant?: FORM_VARIANT | '';
 }
 
 /**
@@ -37,9 +34,8 @@ interface StatementReviewProps {
 const StatementReview = ({
   value,
   index,
-  variant = FORM_VARIANT.VIEW,
   onDelete,
-  label,
+  disabled = true,
 }: StatementReviewProps) => {
   const {
     status, createdBy, comment,
@@ -90,7 +86,7 @@ const StatementReview = ({
             {comment}
           </Typography>
           <div className="review-card__action-button">
-            {variant === 'edit' && (
+            {!disabled && (
               <ActionButton
                 color="primary"
                 onClick={() => onDelete({ index })}
@@ -127,23 +123,8 @@ const StatementReview = ({
               variant: 'outlined',
               color: 'secondary',
             }}
-            details={details}
             label={previewStr}
             PopUpComponent={ReviewComponent}
-            PopUpProps={{ onDelete }}
-            title={label}
-            valueToString={(value) => {
-              const record = value as GeneralRecordType | undefined;
-
-              if (record && record.name) {
-                return record.name;
-              }
-              if (record && record['@rid']) {
-                return record['@rid'];
-              }
-
-              return `${record}`;
-            }}
           />
         </TableCell>
       </TableRow>

@@ -10,7 +10,7 @@ import {
 import isempty from 'lodash.isempty';
 import { useSnackbar } from 'notistack';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -36,8 +36,6 @@ interface StatementFormProps {
   onError?: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** the record id of the current record for the form */
-  rid?: string;
   /** values of individual properties of passed class model */
   value?: GeneralRecordType;
   /** the type of NodeForm to create */
@@ -54,7 +52,6 @@ const StatementForm = ({
   onSubmit,
   onError,
   variant = FORM_VARIANT.VIEW,
-  ...rest
 }: StatementFormProps) => {
   const params = useParams();
   const navigate = useNavigate();
@@ -120,7 +117,6 @@ const StatementForm = ({
   const fieldDefs = schemaDefn.getProperties('Statement');
 
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
-  const [civicEvidenceId, setCivicEvidenceId] = useState('');
 
   const checkLogicalStatement = useCallback((formContent) => {
     try {
@@ -182,16 +178,15 @@ const StatementForm = ({
     }
   }, [navigate, statementQuery.data, updateField]);
 
-  useEffect(() => {
+  const civicEvidenceId = useMemo(() => {
     try {
       if (variant === FORM_VARIANT.VIEW && formContent.source?.name === 'civic' && formContent.sourceId) {
-        setCivicEvidenceId(formContent.sourceId);
-      } else {
-        setCivicEvidenceId('');
+        return formContent.sourceId;
       }
     } catch (err) {
-      setCivicEvidenceId('');
+      // pass
     }
+    return '';
   }, [variant, formContent]);
 
   const statementReviewCheck = useCallback((currContent, content) => {
@@ -380,7 +375,6 @@ const StatementForm = ({
       </div>
       <FormContext.Provider value={form}>
         <FormLayout
-          {...rest}
           collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}

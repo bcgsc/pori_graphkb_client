@@ -61,7 +61,7 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
     translateY = (node.y);
   }
 
-  const actionsRing: JSX.Element[] = [];
+  const actionsRing: React.JSX.Element[] = [];
   options?.forEach((option, i) => {
     const l = options.length;
     const offset = 1 / l * Math.PI;

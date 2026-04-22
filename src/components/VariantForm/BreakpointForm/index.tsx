@@ -1,4 +1,4 @@
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   FormControlLabel,
@@ -11,10 +11,7 @@ import FormField from '@/components/FormField';
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
-  /**
-   * @todo get type from schema package
-   */
-  model: any;
+  model: Pick<ClassDefinition, 'name'>;
   /** the field name of the reference element (ex. reference1) */
   reference: string | undefined;
   /** the field name of the end position (ex. break1End) */
@@ -50,7 +47,7 @@ const BreakpointForm = ({
       {reference && (
         <FormField
           label="reference"
-          model={{ ...schemaDefn.getProperty(model.name, 'reference1'), required, name: reference }}
+          model={{ ...schemaDefn.getProperty(model.name, 'reference1'), mandatory: required, name: reference }}
         />
       )}
       {start && (
@@ -73,7 +70,7 @@ const BreakpointForm = ({
               ...schemaDefn.getProperty(model.name, 'break1Start'),
               name: start,
               mandatory: required,
-              linkedClass: schemaDefn.get(coordinateType),
+              linkedClass: coordinateType,
               description: '',
             }}
           />
@@ -85,7 +82,7 @@ const BreakpointForm = ({
                 ...schemaDefn.getProperty(model.name, 'break1End'),
                 name: end,
                 mandatory: required,
-                linkedClass: schemaDefn.get(coordinateType),
+                linkedClass: coordinateType,
                 description: 'end of the breakpoint range',
               }}
             />

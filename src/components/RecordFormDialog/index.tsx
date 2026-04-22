@@ -34,7 +34,7 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
     title = '',
     variant,
     value,
-    ...rest
+    onToggleState,
   } = props;
 
   const defaultTitle = variant === FORM_VARIANT.NEW
@@ -64,10 +64,10 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
       </div>
       <DialogContent>
         <RecordForm
-          {...rest}
           modelName={modelName}
           onError={onError}
           onSubmit={onSubmit}
+          onToggleState={onToggleState}
           title={title}
           value={value}
           variant={variant}

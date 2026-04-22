@@ -9,20 +9,15 @@ import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 
-interface FilteredRecordAutocompleteProps extends Omit<React.ComponentProps<typeof RecordAutocomplete>, 'getQueryBody' | 'placeholder'> {
+interface FilteredRecordAutocompleteProps extends Pick<React.ComponentProps<typeof RecordAutocomplete>, 'disabled' | 'isMulti' | 'helperText' | 'label' | 'className' | 'onChange' | 'required' | 'value' | 'readOnly'> {
   /** the base class for creating the class filter for the paired autocomplete component */
   linkedClassName: string;
   /** the field name used in passing to parent handlers */
   name: string;
   /** the initial class selection for the class filter */
   defaultFilterClassName?: string;
-  /** allows multiple selections for the autocomplete */
-  isMulti?: boolean;
-  // all remaining properties are passed to the RecordAutocomplete component
-  disabled?: boolean;
   error?: boolean;
   filterOptions?: string[];
-  helperText?: string;
 }
 
 /**
@@ -38,16 +33,22 @@ const FilteredRecordAutocomplete = ({
   filterOptions,
   error = false,
   name,
-  ...rest
+  label,
+  onChange,
+  className,
+  required,
+  value,
+  readOnly,
 }: FilteredRecordAutocompleteProps) => {
   const [selectedClassName, setSelectedClassName] = useState(
     defaultFilterClassName || linkedClassName,
   );
 
   const handleClassChange = useCallback((event) => {
+    if (readOnly) return;
     const { target: { value } } = event;
     setSelectedClassName(value);
-  }, [setSelectedClassName]);
+  }, [setSelectedClassName, readOnly]);
 
   const model = schemaDefn.get(linkedClassName);
 
@@ -58,9 +59,10 @@ const FilteredRecordAutocomplete = ({
   return (
     <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
       <div className="filtered-record-autocomplete__content">
-        {!disabled && (
+        {!readOnly && (
           <DropDownSelect
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
+            disabled={disabled}
             IconComponent={FilterIcon}
             label={`Filter (${name}) Search by Class`}
             name="search-class"
@@ -70,14 +72,19 @@ const FilteredRecordAutocomplete = ({
           />
         )}
         <RecordAutocomplete
-          {...rest}
+          className={className}
           disabled={disabled}
           getQueryBody={getQueryBody}
           isMulti={isMulti}
+          label={label}
           name={name}
+          onChange={onChange}
           placeholder={isMulti
             ? `Search for Existing ${selectedClassName} Record(s)`
             : `Search for an Existing ${selectedClassName} Record`}
+          readOnly={readOnly}
+          required={required}
+          value={value}
         />
       </div>
       {helperText && (<FormHelperText>{helperText}</FormHelperText>)}

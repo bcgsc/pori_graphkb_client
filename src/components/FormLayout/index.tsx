@@ -1,7 +1,6 @@
 import './index.scss';
 
 import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
-import { StatementRecord } from '@bcgsc-pori/graphkb-schema/dist/types';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
@@ -10,7 +9,9 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useMemo, useState,
+} from 'react';
 
 import FormContext from '@/components/FormContext';
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
@@ -96,13 +97,9 @@ const FormLayout = ({
   } = useContext(FormContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [model, setModel] = useState<ClassDefinition | null>(null);
+  const model = useMemo(() => schemaDefn.get(modelName), [modelName]);
 
-  useEffect(() => {
-    setModel(schemaDefn.get(modelName));
-  }, [modelName]);
-
-  if (!model || !formVariant) {
+  if (!formVariant) {
     return null;
   }
 

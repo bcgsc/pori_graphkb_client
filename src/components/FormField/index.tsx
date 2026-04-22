@@ -1,9 +1,11 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
+import omit from 'lodash.omit';
 import React, { useContext } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -11,7 +13,6 @@ import FormContext from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
-import schema from '@/services/schema';
 
 import BooleanField from './BooleanField';
 import FieldWrapper from './FieldWrapper';
@@ -30,9 +31,8 @@ const POSITION_CLASSES = [
 interface FormFieldProps {
   /**
    * the property model which defines the property type and other requirements
-   * @todo replace with type from schema
    */
-  model: any;
+  model: Partial<PropertyDefinition> & Pick<PropertyDefinition, 'name' | 'type'>;
   baseModel?: string;
   className?: string;
   disabled?: boolean;
@@ -42,9 +42,6 @@ interface FormFieldProps {
     multiline?: boolean;
     rows?: number;
     variant?: 'outlined'
-    inputProps?: {
-      'data-test-id'?: string;
-    },
   },
   /** the label to use for the form field (defaults to the property model name) */
   label?: string;
@@ -71,7 +68,7 @@ const FormField = ({
     choices,
     default: defaultValue,
     description,
-    example,
+    examples,
     generateDefault,
     linkedClass: linkedClassName,
     linkedType,
@@ -81,13 +78,8 @@ const FormField = ({
     iterable,
     format,
   } = model;
-  let linkedClass;
-
-  if (typeof linkedClassName === 'string') {
-    linkedClass = schemaDefn.get(linkedClassName);
-  } else {
-    linkedClass = linkedClassName;
-  }
+  const example = examples?.[0];
+  const linkedClass = schemaDefn.get(linkedClassName, false);
 
   const inputValue = formContent[name];
   const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
@@ -127,96 +119,90 @@ const FormField = ({
     updateFieldEvent({ target: { name, value } });
   }
 
+  // ensure all components both get and support
+  // the following props
+  const sharedTableProps = {
+    disabled: generated || disabled,
+    name,
+    onChange: updateFieldEvent,
+    value,
+  } satisfies SharedProps<[
+    React.ComponentProps<typeof StatementReviewsTable>,
+    React.ComponentProps<typeof PermissionsTable>,
+  ]>;
+  const sharedProps = {
+    disabled: (generated || disabled) && formVariant !== FORM_VARIANT.VIEW,
+    error: errorFlag,
+    helperText,
+    label: label || name,
+    name,
+    required: mandatory,
+    onChange: updateFieldEvent,
+    value,
+    readOnly: generated || formVariant === FORM_VARIANT.VIEW,
+  } satisfies SharedProps<[
+    React.ComponentProps<typeof BooleanField>,
+    React.ComponentProps<typeof Timestamp>,
+    React.ComponentProps<typeof TextField> & { readOnly?: boolean },
+    React.ComponentProps<typeof TextArrayField>,
+    React.ComponentProps<typeof PositionForm>,
+    React.ComponentProps<typeof DropDownSelect>,
+    React.ComponentProps<typeof FilteredRecordAutocomplete>,
+    React.ComponentProps<typeof RecordAutocomplete>,
+  ]>;
+
   let propComponent;
 
   if (type === 'boolean') {
     propComponent = (
       <BooleanField
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value}
+        {...sharedProps}
       />
     );
   } else if (type.includes('embedded') && linkedType === 'string' && iterable) {
     propComponent = (
       <TextArrayField
-        disabled={disabled || generated}
-        error={errorFlag}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        value={value}
+        {...sharedProps}
       />
     );
   } else if (type.includes('embedded') && linkedClass) {
     if (iterable && linkedClass.name === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
-          name={name}
-          onChange={updateFieldEvent}
-          values={value || []}
-          variant={formVariant}
+          {...sharedTableProps}
+          value={sharedProps.value || []}
         />
       );
     } else if (linkedClass.name === 'Permissions') {
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
-          disabled={disabled || generated}
-          name={name}
-          onChange={updateFieldEvent}
-          value={value}
+          {...sharedTableProps}
         />
       );
     } else if (POSITION_CLASSES.includes(linkedClass.name)) {
       propComponent = (
         <PositionForm
+          {...sharedProps}
           baseVariant={baseModel}
-          disabled={disabled}
-          error={errorFlag}
-          helperText={helperText}
-          label={label || name}
-          name={name}
-          onChange={updateFieldEvent}
-          value={value}
-          variant={value && value['@class']}
+          variant={sharedProps.value && sharedProps.value['@class']}
         />
       );
     }
   } else if (choices) {
     propComponent = (
       <DropDownSelect
-        className={className}
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText}
-        innerProps={innerProps}
-        label={label || name}
-        name={name}
-        onChange={updateFieldEvent}
-        options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices]}
-        required={mandatory}
-        value={value || ''}
+        {...sharedProps}
+        options={[{ key: 'default', value: null, label: 'Not Specified' }, ...choices as string[]]}
+        value={sharedProps.value || ''}
       />
     );
   } else if (type === 'link' || type === 'linkset') {
     const autoProps = {
-      disabled: generated || disabled,
-      error: errorFlag,
+      ...sharedProps,
       isMulti: type === 'linkset',
-      label: label || name,
       className,
-      name,
-      onChange: updateFieldEvent,
-      required: mandatory,
-      value,
-      helperText,
-    };
+    } satisfies SharedProps<[React.ComponentProps<typeof FilteredRecordAutocomplete>, React.ComponentProps<typeof RecordAutocomplete>]>;
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
       const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
@@ -270,18 +256,8 @@ const FormField = ({
     // timestamp type compoennt
     propComponent = (
       <Timestamp
-        {...innerProps}
-        className="text-field"
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText || ' '}
-        InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
-        label={name}
-        name={label || name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value || ''}
+        {...sharedProps}
+        value={sharedProps.value || ''}
       />
     );
   }
@@ -290,19 +266,18 @@ const FormField = ({
     // for lack of better option default to text field as catch all
     propComponent = (
       <TextField
-        multiline
-        {...innerProps}
+        {...omit(sharedProps, 'readOnly')}
         className="text-field"
-        disabled={generated || disabled}
-        error={errorFlag}
-        helperText={helperText || ' '}
-        InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps?.inputProps || {}), 'data-testid': name }}
-        label={name}
-        name={label || name}
-        onChange={updateFieldEvent}
-        required={mandatory}
-        value={value || ''}
+        helperText={sharedProps.helperText || ' '}
+        multiline={innerProps?.multiline ?? true}
+        rows={innerProps?.rows}
+        slotProps={{
+          inputLabel: { shrink: !!sharedProps.value },
+          htmlInput: { 'data-testid': name },
+          input: { readOnly: sharedProps.readOnly, disableUnderline: sharedProps.readOnly },
+        }}
+        value={sharedProps.value || ''}
+        variant={innerProps?.variant}
       />
     );
   }

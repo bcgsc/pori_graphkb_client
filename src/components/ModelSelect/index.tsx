@@ -1,5 +1,5 @@
 import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import RadioSelect from '@/components/RadioSelect';
@@ -9,8 +9,6 @@ interface ModelSelectProps {
   onChange: (arg: { target: { name?: string; value: unknown } }) => void;
   /** the top level model to be used as the base of the tree of models to collect as options */
   baseModel?: string;
-  /** the default value to be selected when value is not given */
-  defaultValue?: string;
   disabled?: boolean;
   /** flag to indicate the options should include abstract classes */
   includeAbstract?: boolean;
@@ -27,17 +25,13 @@ interface ModelSelectProps {
  * Select a database model class
  */
 const ModelSelect = ({
-  baseModel = 'V', defaultValue = '', value = '', includeAbstract = false, onChange, name = '', variant = 'select', disabled = false, ...props
+  baseModel = 'V', value = '', includeAbstract = false, onChange, name = '', variant = 'select', disabled = false, className,
 }: ModelSelectProps) => {
-  const [choices, setChoices] = useState<any>([]);
-  const model = value || defaultValue;
+  const model = value || '';
 
-  useEffect(() => {
-    const models = schemaDefn.descendants(baseModel || '', { excludeAbstract: !includeAbstract, includeSelf: true }).map((m) => ({
-      label: m, value: m, caption: schemaDefn.get(m).description, key: m,
-    })).sort((m1, m2) => m1.label.localeCompare(m2.label));
-    setChoices(models);
-  }, [baseModel, includeAbstract, name, onChange, value]);
+  const choices = useMemo(() => schemaDefn.descendants(baseModel || '', { excludeAbstract: !includeAbstract, includeSelf: true }).map((m) => ({
+    label: m, value: m, caption: schemaDefn.get(m).description, key: m,
+  })).sort((m1, m2) => m1.label.localeCompare(m2.label)), [baseModel, includeAbstract]);
 
   useEffect(() => {
     if (choices.length === 1 && model !== choices[0].value) {
@@ -54,11 +48,11 @@ const ModelSelect = ({
   }
   return (
     <BaseComponent
+      className={className}
       disabled={choices.length < 2 || disabled}
       onChange={onChange}
       options={choices}
       value={model}
-      {...props}
     />
   );
 };

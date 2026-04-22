@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ThemeProvider from '../src/theme';
 import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -9,10 +9,12 @@ import { Decorator, definePreview, StoryObj } from '@storybook/react-vite';
 import addonTest from '@storybook/addon-vitest';
 import { MswParameters } from 'msw-storybook-addon'
 import { PreviewAddon } from 'storybook/internal/csf';
+import { AppRoutes } from '../src/views/MainView';
 import { MemoryRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor } from 'storybook/test';
+import { CircularProgress } from '@mui/material';
 
 function wrapAsResponse<T extends Record<string, any> | any[]>(maybeResponse: T | HttpResponse<T>): HttpResponse<T> {
   if (maybeResponse instanceof Response) {
@@ -79,8 +81,8 @@ const preview = definePreview({
 export async function hasFinishedLoading({ step, canvas }: Pick<Parameters<NonNullable<StoryObj['play']>>[0], 'step' | 'canvas'>) {
   await step('Finished Loading', async () => {
     await waitFor(async () => {
-      await expect(canvas.queryAllByRole('progressbar')).toHaveLength(0);
-      await expect(canvas.queryAllByText(/loading\.\.\./i)).toHaveLength(0);
+      await expect(canvas.queryAllByRole('progressbar'), 'has no progress bars').toHaveLength(0);
+      await expect(canvas.queryAllByText(/loading\.\.\./i), 'has no loading messages').toHaveLength(0);
     }, { timeout: 10000 });
   });
 }
@@ -128,6 +130,34 @@ export const withRouter: Decorator<WithRouterArgs> = (Story, { args }) => {
         <Story />
       </MemoryRouter>
     )
+}
+
+type ViewArgs  = WithAuthArgs & WithRouterArgs;
+
+export interface ViewPreviewType {
+  args: ViewArgs;
+}
+
+function View() {
+  return (
+      <div style={{height: '100%', minWidth: '300px'}}>
+          <Suspense fallback={(<CircularProgress color="secondary" />)}>
+            <AppRoutes />
+          </Suspense>
+      </div>
+  )
+}
+
+export const view = {
+  component: View,
+  play: hasFinishedLoading,
+  parameters: {
+    layout: 'fullscreen' as const,
+    msw: {
+      handlers: [http.gkb.query(() => [])]
+    }
+  },
+  decorators: [withSnackbar, withAuth, withRouter],
 }
 
 

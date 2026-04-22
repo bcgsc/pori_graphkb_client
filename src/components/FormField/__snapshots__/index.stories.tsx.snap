@@ -1,5 +1,58 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`FreeTexReadOnly snapshot 1`] = `
+<div>
+  <li
+    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+  >
+    <div
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+    >
+      <label
+        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="true"
+        for="_r_XXXX_"
+        id="_r_XXXX_-label"
+      >
+        comment
+      </label>
+      <div
+        class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+      >
+        <textarea
+          aria-describedby="_r_XXXX_-helper-text"
+          aria-invalid="false"
+          class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+          data-testid="comment"
+          id="_r_XXXX_"
+          name="comment"
+          readonly=""
+        >
+          hello world
+        </textarea>
+        <textarea
+          aria-hidden="true"
+          class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+          readonly=""
+          tabindex="-1"
+        />
+      </div>
+      <p
+        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        id="_r_XXXX_-helper-text"
+      >
+        <span
+          aria-hidden="true"
+          class="notranslate"
+        >
+          ​
+        </span>
+      </p>
+    </div>
+  </li>
+</div>
+`;
+
 exports[`FreeText snapshot 1`] = `
 <div>
   <li
@@ -216,7 +269,7 @@ exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
         for="_r_XXXX_"
         id="_r_XXXX_-label"
       >
-        comment
+        User Comments
       </label>
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -227,7 +280,7 @@ exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
           class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
           data-testid="comment"
           id="_r_XXXX_"
-          name="User Comments"
+          name="comment"
         >
           hello world
         </textarea>

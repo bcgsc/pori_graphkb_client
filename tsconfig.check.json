@@ -7,8 +7,7 @@
   },
   "exclude": [
     // TODO fix type errors and remove this
-    "src/*.tsx",
-    "src/views/MainView/",
-    "src/views/GraphView/",
+    "src/views/MainView/**/__tests__/*",
+    "src/views/GraphView/**/__tests__/*",
   ],
 }

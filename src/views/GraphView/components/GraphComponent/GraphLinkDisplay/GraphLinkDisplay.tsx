@@ -22,7 +22,7 @@ interface GraphLinkDisplayProps {
   /** color of link. CSS color syntax(es). */
   color?: string;
   /** Node currently opened in detail drawer. */
-  detail?: Record<string, unknown>;
+  detail?: Record<string, unknown> | null;
   /** current filter string value. */
   filter?: string;
   /** handler for clicking link. */
@@ -133,6 +133,7 @@ function GraphLinkDisplay(props: GraphLinkDisplayProps) {
           <textPath
             baselineShift={LABEL_BASELINE_SHIFT}
             href={`#link${link.data['@rid']}`}
+            // @ts-expect-error only exists on certain browsers
             side={left ? 'left' : 'right'}
             startOffset={START_OFFSET}
           >

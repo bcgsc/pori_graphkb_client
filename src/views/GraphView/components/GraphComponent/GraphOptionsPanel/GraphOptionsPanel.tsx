@@ -28,7 +28,7 @@ interface GraphOptionsPanelProps {
   /** function for field changing. */
   handleGraphOptionsChange: (...args: unknown[]) => unknown;
   /** Graph options object. */
-  graphOptions?: GraphOptions;
+  graphOptions: GraphOptions;
   /** dialog open flag. */
   graphOptionsOpen?: boolean;
   /** link legend disabled flag. */
@@ -43,7 +43,7 @@ interface GraphOptionsPanelProps {
 function GraphOptionsPanel(props: GraphOptionsPanelProps) {
   const {
     graphOptionsOpen = false,
-    graphOptions = {},
+    graphOptions,
     propsMap = { nodeProps: [], linkProps: [] },
     linkLegendDisabled = true,
     handleDialogClose,
@@ -219,10 +219,10 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
               <FormControlLabel
                 control={(
                   <Checkbox
-                    checked={(
+                    checked={Boolean(
                       graphOptions.linksLegend
                       && graphOptions.linksColor
-                      && !linkLegendDisabled
+                      && !linkLegendDisabled,
                     )}
                     color="secondary"
                     disabled={linkLegendDisabled || !graphOptions.linksColor}

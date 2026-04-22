@@ -22,7 +22,10 @@ import schema from '@/services/schema';
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
 
-const propertySort = ({ label: prop1 }, { label: prop2 }) => {
+const propertySort = ({ label: label1 }, { label: label2 }) => {
+  let prop1 = label1;
+  let prop2 = label2;
+
   if (prop1.startsWith('break1') && prop2.startsWith('break1')) {
     prop1 = prop1.replace('break1', '');
     prop2 = prop2.replace('break1', '');

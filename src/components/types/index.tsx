@@ -11,7 +11,8 @@ interface TGeneralRecordType {
   name: string;
   displayName: string;
   displayNameTemplate: string;
-  createdBy: TGeneralRecordType | string;
+  createdBy: Partial<TGeneralRecordType> | string;
+  updatedBy: Partial<TGeneralRecordType> | string;
   [key: `out_${string}` | `in_${string}`]: unknown[] | undefined;
 
   // add other properties that exist on any record type
@@ -24,6 +25,30 @@ interface TGeneralRecordType {
   reviews: unknown[];
   email: string;
   journalName: string;
+  reference1: Partial<TGeneralRecordType> | string;
+  reference2: Partial<TGeneralRecordType> | string | null;
+  germline: boolean;
+  type: Partial<TGeneralRecordType> | string;
+  deprecated: boolean;
+  firstLoginAt: number;
+  signedLicenseAt: number;
+  lastLoginAt: number;
+  groups: string[] | Partial<TGeneralRecordType>[];
+  loginCount: number;
+  alias: boolean;
+  dependency: null;
+  usage: string;
+  url: string;
+  sort: number;
+  description: string;
+  biotype: string;
+  longName: string;
+  shortName: string;
+  untemplatedSeq: string;
+  refSeq: string;
+  break1Repr: string;
+  pos: number;
+  refAA: string;
 
   count: number;
 }
@@ -43,8 +68,8 @@ interface StatementType extends GeneralRecordType {
 }
 
 interface EdgeType extends GeneralRecordType<'@rid'> {
-  in: GeneralRecordType<'@rid' | '@class'>;
-  out: GeneralRecordType<'@rid' | '@class'>;
+  in: GeneralRecordType<'@rid' | '@class'> | string;
+  out: GeneralRecordType<'@rid' | '@class'> | string;
   source: GeneralRecordType<'@rid' | '@class'>;
 }
 

@@ -4,7 +4,9 @@ import { schema, validateProperty } from '@bcgsc-pori/graphkb-schema';
 import {
   TextField,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 
 import FieldWrapper from '../FieldWrapper';
 
@@ -29,6 +31,7 @@ interface ProteinPositionProps {
   name?: string;
   /** flag to indicate this field must be filled */
   required?: boolean;
+  readOnly?: boolean;
 }
 
 /**
@@ -40,12 +43,11 @@ const ProteinPosition = ({
   name = '',
   required = true,
   disabled = false,
+  readOnly,
 }: ProteinPositionProps) => {
   const { pos: initialPos, refAA: initialRefAA } = value || {};
   const [position, setPosition] = useState(initialPos);
-  const [positionError, setPositionError] = useState('');
   const [refAA, setRefAA] = useState(initialRefAA);
-  const [refAAError, setRefAAError] = useState('');
 
   useEffect(() => {
     setPosition(value?.pos);
@@ -53,42 +55,46 @@ const ProteinPosition = ({
   }, [value]);
 
   // validate the position input
-  useEffect(() => {
+  const positionError = useMemo(() => {
     if (!position && required && posProperty.mandatory) {
-      setPositionError('missing required field');
-    } else {
-      try {
-        validateProperty(posProperty, position || null);
-        setPositionError('');
-      } catch (err) {
-        setPositionError((err as Error).toString());
-      }
+      return 'missing required field';
     }
+
+    try {
+      validateProperty(posProperty, position || null);
+    } catch (err) {
+      return (err as Error).toString();
+    }
+
+    return '';
   }, [position, required]);
 
   // validate the offset input
-  useEffect(() => {
+  const refAAError = useMemo(() => {
     if (!refAA && required && refAAProperty.mandatory) {
-      setPositionError('missing required field');
-    } else {
-      try {
-        validateProperty(refAAProperty, refAA || null);
-        setRefAAError('');
-      } catch (err) {
-        setRefAAError((err as Error).toString());
-      }
+      return 'missing required field';
     }
+
+    try {
+      validateProperty(refAAProperty, refAA || null);
+    } catch (err) {
+      return (err as Error).toString();
+    }
+
+    return '';
   }, [refAA, required]);
 
   const handlePositionChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setPosition(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, pos: newValue, refAA } } });
-  }, [onChange, name, refAA]);
+  }, [readOnly, onChange, name, refAA]);
 
   const handleRefAAChange = useCallback(({ target: { value: newValue } }) => {
+    if (readOnly) return;
     setRefAA(newValue);
     onChange?.({ target: { name, value: { '@class': VARIANT, refAA: newValue, pos: position } } });
-  }, [onChange, name, position]);
+  }, [readOnly, onChange, name, position]);
 
   return (
     <>
@@ -98,13 +104,16 @@ const ProteinPosition = ({
           disabled={disabled}
           error={Boolean(refAAError)}
           helperText={refAAError || ''}
-          InputLabelProps={{ shrink: Boolean(refAA) }}
-          inputProps={{ 'data-testid': `${name}.refAA` }}
           label="refAA"
           name="refAA"
-          onChange={handleRefAAChange}
+          onChange={!readOnly ? handleRefAAChange : undefined}
           required={required && refAAProperty.mandatory}
-          value={refAA}
+          slotProps={{
+            inputLabel: { shrink: Boolean(refAA) },
+            htmlInput: { 'data-testid': `${name}.refAA` },
+            input: { readOnly, disableUnderline: readOnly },
+          }}
+          value={refAA ?? ''}
         />
       </FieldWrapper>
       <FieldWrapper>
@@ -113,13 +122,16 @@ const ProteinPosition = ({
           disabled={disabled}
           error={Boolean(positionError)}
           helperText={positionError || ''}
-          InputLabelProps={{ shrink: Boolean(position) }}
-          inputProps={{ 'data-testid': `${name}.pos` }}
           label="position"
           name="pos"
-          onChange={handlePositionChange}
+          onChange={!readOnly ? handlePositionChange : undefined}
           required={required && posProperty.mandatory}
-          value={position}
+          slotProps={{
+            inputLabel: { shrink: Boolean(position) },
+            htmlInput: { 'data-testid': `${name}.pos` },
+            input: { readOnly, disableUnderline: readOnly },
+          }}
+          value={position ?? ''}
         />
       </FieldWrapper>
     </>

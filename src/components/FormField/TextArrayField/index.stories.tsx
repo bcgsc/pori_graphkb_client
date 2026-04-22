@@ -96,7 +96,19 @@ export const WithHelperTextAndLabel = WithValues.extend({
 });
 
 export const WithError = WithValues.extend({
-  args: { error: true },
+  args: { error: true, helperText: 'bad value' },
+});
+
+export const Disabled = WithValues.extend({
+  args: { disabled: true },
+});
+
+export const ReadOnly = WithValues.extend({
+  args: { readOnly: true },
+});
+
+export const Required = WithValues.extend({
+  args: { required: true },
 });
 
 export const WithItemRestorable = WithValues.extend({

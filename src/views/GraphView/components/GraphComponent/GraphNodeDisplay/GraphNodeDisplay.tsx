@@ -1,10 +1,11 @@
 import './GraphNodeDisplay.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { GraphRecord, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import * as d3Drag from 'd3-drag';
 import * as d3Select from 'd3-selection';
 import React, { useEffect, useRef } from 'react';
 
+import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import config from '@/static/config';
 
@@ -22,7 +23,7 @@ interface GraphNodeDisplayProps {
   /** Color of node. */
   color?: string;
   /** Node currently opened in detail drawer. */
-  detail?: Record<string, unknown>;
+  detail?: Record<string, unknown> | null;
   /** current filter string value. */
   filter?: string;
   /** Parent method on node click event. */
@@ -30,11 +31,7 @@ interface GraphNodeDisplayProps {
   /** Property to label node by. */
   labelKey?: string;
   /** Node to be rendered. */
-  node: GraphNode | Record<string, unknown> & {
-    data: {
-      [labelKey: string]: unknown;
-    }
-  };
+  node: GraphNode | { data: GeneralRecordType; x: number; y: number; };
 }
 
 /**
@@ -76,7 +73,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   let label;
 
   if (labelKey === 'preview') {
-    label = schemaDefn.getPreview(node.data);
+    label = schemaDefn.getPreview(node.data as GraphRecord);
   } else if (labelKey) {
     label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
 

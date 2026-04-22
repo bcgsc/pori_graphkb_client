@@ -6,9 +6,7 @@ import {
   Paper, Typography,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import React, {
-  useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useMutation } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
@@ -36,8 +34,6 @@ interface RecordFormProps {
   onError?: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** the record id of the current record for the form */
-  rid?: string;
   /** values of individual properties of passed class model */
   value?: GeneralRecordType;
   /** the type of NodeForm to create */
@@ -55,22 +51,12 @@ const RecordForm = ({
   onSubmit,
   onError,
   variant = FORM_VARIANT.VIEW,
-  ...rest
 }: RecordFormProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
 
-  const [isEdge, setIsEdge] = useState(false);
-
-  const [fieldDefs, setFieldDefs] = useState({});
-
-  useEffect(() => {
-    if (modelName) {
-      const properties = schemaDefn.getProperties(modelName);
-      setFieldDefs(properties);
-      setIsEdge(schema.isEdge(modelName));
-    }
-  }, [modelName]);
+  const fieldDefs = useMemo(() => (modelName ? schemaDefn.getProperties(modelName) : {}), [modelName]);
+  const isEdge = useMemo(() => (modelName ? schema.isEdge(modelName) : false), [modelName]);
 
   const form = useSchemaForm(fieldDefs, initialValue, {}, { variant });
   const {
@@ -214,7 +200,6 @@ const RecordForm = ({
       </div>
       <FormContext.Provider value={form}>
         <FormLayout
-          {...rest}
           collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && isEdge)}
           exclusions={FIELD_EXCLUSIONS}

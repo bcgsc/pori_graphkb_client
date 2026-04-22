@@ -9,6 +9,67 @@ exports[`Disabled snapshot 1`] = `
       class="filtered-record-autocomplete__content"
     >
       <div
+        class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+      >
+        <label
+          class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+          data-shrink="true"
+          for="option-select-search-class"
+        >
+          Filter (search) Search by Class
+        </label>
+        <div
+          class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+        >
+          <div
+            aria-disabled="true"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-labelledby="mui-component-select-search-class"
+            class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+            id="mui-component-select-search-class"
+            role="combobox"
+          >
+            <div
+              class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+              >
+                Variant
+              </span>
+              <p
+                class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+              />
+            </div>
+          </div>
+          <input
+            aria-hidden="true"
+            aria-invalid="false"
+            class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+            disabled=""
+            id="option-select-search-class"
+            name="search-class"
+            tabindex="-1"
+            value="Variant"
+          />
+          <svg
+            aria-hidden="true"
+            class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+            data-testid="FilterListIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+            />
+          </svg>
+        </div>
+        <p
+          class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+        />
+      </div>
+      <div
         class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
       >
         <div
@@ -19,14 +80,13 @@ exports[`Disabled snapshot 1`] = `
           >
             <div
               class="detail-chip"
-              data-tag-index="0"
-              disabled=""
-              tabindex="-1"
             >
               <div
-                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                aria-disabled="true"
+                class="Mui-disabled MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                data-item-index="0"
                 role="button"
-                tabindex="0"
+                tabindex="-1"
               >
                 <span
                   class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -215,6 +275,62 @@ exports[`Empty snapshot 1`] = `
 </div>
 `;
 
+exports[`ReadOnly snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete"
+  >
+    <div
+      class="filtered-record-autocomplete__content"
+    >
+      <div
+        class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+      >
+        <div
+          class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+        >
+          <div
+            class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              class="detail-chip"
+            >
+              <div
+                class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                data-item-index="0"
+                role="button"
+                tabindex="-1"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  #15:1
+                </span>
+              </div>
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-invalid="false"
+              autocapitalize="none"
+              autocomplete="off"
+              class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              placeholder=""
+              readonly=""
+              role="combobox"
+              spellcheck="false"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`WithError snapshot 1`] = `
 <div>
   <div
@@ -290,17 +406,16 @@ exports[`WithError snapshot 1`] = `
           class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
         >
           <div
-            class="Mui-disabled MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
           >
             <div
               class="detail-chip"
-              data-tag-index="0"
-              tabindex="-1"
             >
               <div
-                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                data-item-index="0"
                 role="button"
-                tabindex="0"
+                tabindex="-1"
               >
                 <span
                   class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -326,7 +441,7 @@ exports[`WithError snapshot 1`] = `
               aria-invalid="false"
               autocapitalize="none"
               autocomplete="off"
-              class="Mui-disabled MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+              class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
               id="_r_XXXX_"
               placeholder=""
               role="combobox"
@@ -590,13 +705,12 @@ exports[`WithMultipleValues snapshot 1`] = `
           >
             <div
               class="detail-chip"
-              data-tag-index="0"
-              tabindex="-1"
             >
               <div
-                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                data-item-index="0"
                 role="button"
-                tabindex="0"
+                tabindex="-1"
               >
                 <span
                   class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -618,13 +732,12 @@ exports[`WithMultipleValues snapshot 1`] = `
             </div>
             <div
               class="detail-chip"
-              data-tag-index="1"
-              tabindex="-1"
             >
               <div
-                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                data-item-index="1"
                 role="button"
-                tabindex="0"
+                tabindex="-1"
               >
                 <span
                   class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -783,17 +896,16 @@ exports[`WithValue snapshot 1`] = `
           class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
         >
           <div
-            class="Mui-disabled MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
           >
             <div
               class="detail-chip"
-              data-tag-index="0"
-              tabindex="-1"
             >
               <div
-                class="MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                data-item-index="0"
                 role="button"
-                tabindex="0"
+                tabindex="-1"
               >
                 <span
                   class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
@@ -819,7 +931,7 @@ exports[`WithValue snapshot 1`] = `
               aria-invalid="false"
               autocapitalize="none"
               autocomplete="off"
-              class="Mui-disabled MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+              class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
               id="_r_XXXX_"
               placeholder=""
               role="combobox"

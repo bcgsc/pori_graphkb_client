@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -118,7 +119,6 @@ const VariantForm = ({
       : pickInputType(value),
   );
   const snackbar = useSnackbar();
-  const [model, setModel] = useState<any>(null);
 
   useEffect(() => {
     if (formVariant !== FORM_VARIANT.NEW && value) {
@@ -135,7 +135,7 @@ const VariantForm = ({
   const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS;
   const queryClient = useQueryClient();
 
-  useEffect(() => {
+  const model = useMemo(() => {
     const newModel = hasPositions
       ? {
         name: PositionalVariant.name,
@@ -157,7 +157,7 @@ const VariantForm = ({
           reference2: { ...schemaDefn.getProperty('PositionalVariant', 'reference2'), mandatory: isFusion },
         },
       };
-    setModel(newModel);
+    return newModel;
   }, [hasPositions, isSubstitution, isFusion]);
 
   /**
@@ -179,7 +179,7 @@ const VariantForm = ({
       if (formVariant === FORM_VARIANT.NEW) {
         return api.post(routeName, payload);
       }
-      const { displayName, ...rest } = payload;
+      const { displayName: _, ...rest } = payload;
       return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, rest);
     },
     onSuccess: (result) => {

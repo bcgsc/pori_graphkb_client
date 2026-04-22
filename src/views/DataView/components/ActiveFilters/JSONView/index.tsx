@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import './index.scss';
 
 import React, { ReactNode } from 'react';

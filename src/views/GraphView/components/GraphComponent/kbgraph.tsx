@@ -1,6 +1,6 @@
 import isObject from 'lodash.isobject';
 
-import { GeneralRecordType } from '@/components/types';
+import { EdgeType, GeneralRecordType } from '@/components/types';
 import config from '@/static/config';
 
 const DEFAULT_NODE_VPROPS = [
@@ -29,7 +29,7 @@ const {
  * Represents an object in the d3 force directed graph.
  */
 class GraphObj {
-  data: GeneralRecordType<'@rid'>;
+  data: GeneralRecordType<'@rid'> & { isLinkProp?: boolean };
 
   constructor(data) {
     this.data = data;
@@ -53,7 +53,7 @@ class GraphObj {
 
     if (labelKey.includes('.')) {
       [parentKey, key] = labelKey.split('.');
-      obj = (this.data as Record<string, GeneralRecordType<'@rid'>>)[parentKey];
+      obj = (this.data as Record<string, any>)[parentKey];
     }
     const label = obj && obj[key] as string;
 
@@ -86,6 +86,8 @@ class GraphNode extends GraphObj {
 class GraphLink extends GraphObj {
   source: GraphNode;
 
+  data: EdgeType;
+
   target: GraphNode;
 
   constructor(data, source, target) {
@@ -116,9 +118,9 @@ class GraphLink extends GraphObj {
  * in of each.
  */
 class PropsMap {
-  nodeProps: unknown;
+  nodeProps: Record<string, unknown[]>;
 
-  linkProps: unknown;
+  linkProps: Record<string, unknown[]>;
 
   constructor() {
     this.nodeProps = {};

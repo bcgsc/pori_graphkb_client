@@ -24,6 +24,7 @@ interface BooleanFieldProps {
   required?: boolean;
   /** the current value */
   value?: string | boolean;
+  readOnly?: boolean;
 }
 
 /**
@@ -39,7 +40,7 @@ const BooleanField = (props: BooleanFieldProps) => {
     required = false,
     helperText = '',
     value: initialValue,
-    ...rest
+    readOnly,
   } = props;
   const value = initialValue === undefined || initialValue === null
     ? null
@@ -48,7 +49,6 @@ const BooleanField = (props: BooleanFieldProps) => {
   return (
     <div
       className="form-templater-radio-wrapper"
-      {...rest}
     >
       <FormControl
         component="fieldset"
@@ -61,12 +61,30 @@ const BooleanField = (props: BooleanFieldProps) => {
         </FormLabel>
         <RadioGroup
           name={name}
-          onChange={(e) => onChange(e)}
+          onChange={!readOnly ? onChange : undefined}
           style={{ flexDirection: 'row' }}
           value={value}
         >
-          <FormControlLabel control={<Radio checked={value === 'true'} />} label="Yes" value="true" />
-          <FormControlLabel control={<Radio checked={value === 'false'} />} label="No" value="false" />
+          <FormControlLabel
+            control={(
+              <Radio
+                checked={value === 'true'}
+                slotProps={{ input: { readOnly } }}
+              />
+            )}
+            label="Yes"
+            value="true"
+          />
+          <FormControlLabel
+            control={(
+              <Radio
+                checked={value === 'false'}
+                slotProps={{ input: { readOnly } }}
+              />
+            )}
+            label="No"
+            value="false"
+          />
         </RadioGroup>
         {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
       </FormControl>

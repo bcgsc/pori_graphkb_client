@@ -100,14 +100,14 @@ const initialGraphData: GraphData = {
 interface GraphComponentProps {
   /** graph data in the format of { '@rid': {data}, ... } */
   data: Record<string, GeneralRecordType<string>>;
-  getRecord: (...args: unknown[]) => Promise<GeneralRecordType<'@rid'>>;
+  getRecord: (recordId: string) => Promise<GeneralRecordType<'@rid'>>;
   /** Method to handle closing of detail drawer. */
-  handleDetailDrawerClose: (...args: unknown[]) => unknown;
+  handleDetailDrawerClose: () => void;
   /** Method to handle opening of detail drawer. */
-  handleDetailDrawerOpen: (...args: unknown[]) => unknown;
+  handleDetailDrawerOpen: (node: GraphObj | null) => void;
   handleError: (...args: unknown[]) => unknown;
   /** record ID of node currently selected for detail viewing. in the initial query. */
-  detail?: Record<string, unknown>;
+  detail?: Record<string, unknown> | null;
   /** list of valid edge classes. */
   edgeTypes?: [key: `out_${string}` | `in_${string}`];
   /** parent handler to save state in URL */
@@ -302,7 +302,7 @@ function GraphComponent(props: GraphComponentProps) {
    * graphobjects, and expandable map, from previous state.
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
-  const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
+  const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions: any[] = []) => {
     const { edgeTypes = [] } = props;
     let {
       nodes, // eslint-disable-line no-shadow
@@ -635,7 +635,12 @@ function GraphComponent(props: GraphComponentProps) {
    * @property {Arrayof<GraphObjects>} nodes list of node graphObjects
    * @property {Arrayof<GraphObjects>} links list of link graphObjects
    */
-  const refresh = useCallback((seed = null) => {
+  const refresh = useCallback((seed: {
+    simulation,
+    nodes: GraphNode[];
+    links: GraphLink[],
+    graphOptions: GraphOptions
+  } | null = null) => {
     let sim = simulation;
     let gNodes = nodes;
     let gLinks = links;
@@ -849,7 +854,7 @@ function GraphComponent(props: GraphComponentProps) {
       const record = await getRecord(node['@rid']);
 
       if (data[record['@rid']] === undefined) {
-        data[record['@rid']] = record;
+        data[record['@rid']!] = record as any;
         update({ data });
       }
     } catch (err) {
@@ -931,7 +936,7 @@ function GraphComponent(props: GraphComponentProps) {
     const { handleDetailDrawerOpen } = props;
 
     // Update contents of detail drawer if open.
-    handleDetailDrawerOpen(link, false, true);
+    handleDetailDrawerOpen(link);
 
     // Sets clicked object as actions node.
     update({ actionsNode: link });
@@ -1101,7 +1106,7 @@ function GraphComponent(props: GraphComponentProps) {
     ? [
       {
         name: 'Details',
-        action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
+        action: () => withClose(() => handleDetailDrawerOpen(actionsNode)),
         disabled: (link) => link.getId() === (detail || {})['@rid'],
       },
       {
@@ -1112,7 +1117,7 @@ function GraphComponent(props: GraphComponentProps) {
     : [
       {
         name: 'Details',
-        action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true)),
+        action: () => withClose(() => handleDetailDrawerOpen(actionsNode)),
         disabled: (node) => node.getId() === (detail || {})['@rid'],
       },
       {

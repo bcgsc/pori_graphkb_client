@@ -61,6 +61,37 @@ exports[`Empty snapshot 1`] = `
 </div>
 `;
 
+exports[`ReadOnly snapshot 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
+    >
+      Created
+    </label>
+    <div
+      class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-invalid="false"
+        class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+        data-testid="created"
+        id="_r_XXXX_"
+        name="created"
+        readonly=""
+        type="datetime-local"
+        value="2020-01-01T00:00"
+      />
+    </div>
+  </div>
+</div>
+`;
+
 exports[`WithError snapshot 1`] = `
 <div>
   <div

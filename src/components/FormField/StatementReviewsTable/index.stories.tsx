@@ -2,7 +2,6 @@ import {
   expect, fn, screen,
 } from 'storybook/test';
 
-import { FORM_VARIANT } from '@/components/util';
 import preview, { http } from '#.storybook/preview';
 
 import Component from '.';
@@ -12,7 +11,7 @@ const meta = preview.meta({
   args: {
     onChange: fn(),
     name: 'permissions',
-    variant: FORM_VARIANT.EDIT,
+    disabled: false,
   },
 });
 
@@ -25,7 +24,7 @@ export const Empty = meta.story({
 
 export const WithValue = meta.story({
   args: {
-    values: [
+    value: [
       {
         '@class': 'StatementReview',
         createdBy: '#19:1',
@@ -73,7 +72,7 @@ export const WithDetails = WithValue.extend({
 
 export const WithDetailsAsViewVariant = WithValue.extend({
   args: {
-    variant: FORM_VARIANT.VIEW,
+    disabled: true,
   },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(await canvas.findByText('bob (#19:1)'));
@@ -84,7 +83,7 @@ export const WithDetailsAsViewVariant = WithValue.extend({
 
 export const WithCreatedByAsObject = WithValue.extend({
   args: {
-    values: [{
+    value: [{
       '@class': 'StatementReview',
       createdBy: { '@rid': '#19:0', name: 'bob' },
       status: 'initial',

@@ -10,12 +10,13 @@ import Component from '.';
 type FormContextArgs = {
   value?: any;
   errorMessage?: string | null | undefined;
+  formVariant?: FORM_VARIANT;
 };
 
 type CustomArgs = React.ComponentProps<typeof Component> & FormContextArgs;
 
 function MockProvider({
-  children, value, name, errorMessage,
+  children, value, name, errorMessage, formVariant,
 }: { children: ReactNode; name: string } & FormContextArgs) {
   const state = useMemo(() => ({
     updateFieldEvent: fn(),
@@ -30,8 +31,8 @@ function MockProvider({
     formContent: {
       [name]: value,
     },
-    formVariant: FORM_VARIANT.NEW,
-  }), [value, errorMessage, name]);
+    formVariant: formVariant ?? FORM_VARIANT.NEW,
+  }), [value, errorMessage, name, formVariant]);
 
   return <FormContext.Provider value={state}>{children}</FormContext.Provider>;
 }
@@ -41,14 +42,16 @@ const meta = preview.type<{ args: CustomArgs }>().meta({
   title: 'components/FormField/FreeText',
   render: (args) => {
     const {
-      value, errorMessage, model, ...rest
+      value, errorMessage, model, formVariant, ...rest
     } = args;
     return (
       <MockProvider
         errorMessage={errorMessage}
+        formVariant={formVariant}
         name={model.name ?? ''}
         value={value}
       >
+        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Component {...rest} model={model} />
       </MockProvider>
     );
@@ -78,6 +81,12 @@ export const FreeTextWithHelperTextAndLabel = FreeText.extend({
 export const FreeTextDisabled = FreeText.extend({
   args: {
     disabled: true,
+  },
+});
+
+export const FreeTexReadOnly = FreeText.extend({
+  args: {
+    formVariant: FORM_VARIANT.VIEW,
   },
 });
 

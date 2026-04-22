@@ -114,7 +114,7 @@ const QuickSearch = () => {
       } catch (err: any) {
       // if it was partially parsed use that result
         if (err.content && err.content.parsed) {
-          const { content: { parsed: { variantString, ...parsed } } } = err;
+          const { content: { parsed: { variantString: _, ...parsed } } } = err;
           setErrorMessage(`${err || err.message}`);
           setVariant(parsed);
         } else {

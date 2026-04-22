@@ -10,6 +10,7 @@ import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import DetailDrawer from '@/components/DetailDrawer';
+import { GeneralRecordType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -17,6 +18,7 @@ import util from '@/services/util';
 import config from '@/static/config';
 
 import GraphComponent from './components/GraphComponent';
+import { GraphObj } from './components/GraphComponent/kbgraph';
 
 const { DEFAULT_NEIGHBORS } = config;
 
@@ -27,7 +29,7 @@ const GraphView = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const isLoading = useIsFetching();
-  const [detailPanelRow, setDetailPanelRow] = useState(null);
+  const [detailPanelRow, setDetailPanelRow] = useState<GeneralRecordType | null>(null);
   // the existing behaviour of the graph relies on this not changing even when the url *is* updated
   const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
   const queryClient = useQueryClient();
@@ -57,8 +59,8 @@ const GraphView = () => {
   /**
    * Opens the right-hand panel that shows details of a given record
    */
-  const handleToggleDetailPanel = useCallback(async (opt = {}) => {
-    const { data: detailData } = opt;
+  const handleToggleDetailPanel = useCallback(async (opt?: GraphObj | null) => {
+    const { data: detailData } = opt ?? { data: undefined };
 
     // no data or clicked link is a link property without a class model
     if (!detailData || detailData.isLinkProp) {
@@ -91,7 +93,7 @@ const GraphView = () => {
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
-  const handleExpandRecord = async (recordId) => {
+  const handleExpandRecord = async (recordId: string) => {
     const key = tuple('/query', { target: [recordId], neighbors: DEFAULT_NEIGHBORS });
     let fullRecord = queryClient.getQueryData(key);
 
@@ -101,7 +103,7 @@ const GraphView = () => {
         queryFn: async ({ queryKey: [, body] }) => api.query(body),
       });
     }
-    return fullRecord;
+    return fullRecord as GeneralRecordType<'@rid'>;
   };
 
   return (
@@ -120,7 +122,6 @@ const GraphView = () => {
               handleDetailDrawerOpen={handleToggleDetailPanel}
               handleError={handleError}
               handleGraphStateSave={handleGraphStateSaveIntoURL}
-              onRecordClicked={handleToggleDetailPanel}
             />
             {detailPanelRow && (
               <DetailDrawer

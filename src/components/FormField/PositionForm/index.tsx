@@ -37,6 +37,8 @@ interface PositionFormProps {
   value?: Record<string, unknown>;
   /** the position class model name */
   variant?: string;
+  required?: boolean;
+  readOnly?: boolean;
 }
 
 const PositionForm = ({
@@ -49,7 +51,8 @@ const PositionForm = ({
   onChange,
   value,
   variant: initialVariant = '',
-  ...props
+  required,
+  readOnly,
 }: PositionFormProps) => {
   const positionVariants = schemaDefn.descendants(baseVariant || DEFAULT_BASE_VARIANT, { excludeAbstract: true, includeSelf: true });
   const [variant, setVariant] = useState(initialVariant);
@@ -77,9 +80,10 @@ const PositionForm = ({
       {label && (
         <FormLabel disabled={disabled} error={error}>{label}</FormLabel>
       )}
-      {!disabled && variant && (
+      {!readOnly && variant && (
         <IconButton
           className="position-form__cancel"
+          disabled={disabled}
           onClick={() => {
             onChange({ target: { name, value: null } });
             setVariant('');
@@ -88,7 +92,7 @@ const PositionForm = ({
           <CancelIcon />
         </IconButton>
       )}
-      {positionVariants.length > 1 && (
+      {positionVariants.length > 1 && !readOnly && (
         <DropDownSelect
           disabled={disabled}
           onChange={handleVariantChange}
@@ -101,9 +105,10 @@ const PositionForm = ({
           disabled={disabled}
           name={name}
           onChange={onChange}
+          readOnly={readOnly}
+          required={required}
           value={value}
           variant={variant || positionVariants[0]}
-          {...props}
         />
       )}
       <FormHelperText error={error}>{helperText}</FormHelperText>

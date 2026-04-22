@@ -55,7 +55,7 @@ const RelatedVariantsTable = ({ recordId }: RelatedVariantsTableProps) => {
     }
   }, [grid.ref, isFetching, variants]);
 
-  const renderCellRenderer = ({ value }) => (<><RecordIdLink {...value} /></>);
+  const renderCellRenderer = ({ value }) => (<><RecordIdLink recordClass={value?.recordClass} recordId={value?.recordId} /></>);
 
   if (!isFetching && (!variants || variants.length === 0)) {
     return null;

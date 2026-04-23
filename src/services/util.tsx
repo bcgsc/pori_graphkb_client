@@ -2,7 +2,7 @@
  * Handles miscellaneous tasks.
  */
 
-import { NavigateFunction } from 'react-router-dom';
+import { NavigateFunction } from 'react-router';
 
 import { GeneralRecordType } from '@/components/types';
 import config from '@/static/config';

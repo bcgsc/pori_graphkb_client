@@ -7,7 +7,7 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useIsFetching, useQuery, useQueryClient } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import { GeneralRecordType } from '@/components/types';

@@ -14,7 +14,7 @@ import React, {
   useState,
 } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';

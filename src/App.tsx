@@ -1,7 +1,7 @@
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 
 import { AuthProvider } from '@/components/Auth';
 import api from '@/services/api';

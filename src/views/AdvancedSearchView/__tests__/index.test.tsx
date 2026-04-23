@@ -6,7 +6,7 @@ import {
   screen,
 } from '@testing-library/react';
 import React, { useEffect } from 'react';
-import { BrowserRouter, useLocation } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router';
 import {
   afterEach, describe, expect, test, vi,
 } from 'vitest';

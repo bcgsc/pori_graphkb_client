@@ -14,7 +14,7 @@ import React, {
   useState,
 } from 'react';
 import { useIsFetching, useQuery } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';

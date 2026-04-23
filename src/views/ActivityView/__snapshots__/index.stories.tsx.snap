@@ -859,6 +859,7 @@ exports[`Default snapshot 1`] = `
                               >
                                 <a
                                   class="activity-view__jump-to-record"
+                                  data-discover="true"
                                   href="/view/Infers/1234:777"
                                   target="_blank"
                                 >
@@ -985,6 +986,7 @@ exports[`Default snapshot 1`] = `
                               >
                                 <a
                                   class="activity-view__jump-to-record"
+                                  data-discover="true"
                                   href="/view/CategoryVariant/1:1"
                                   target="_blank"
                                 >

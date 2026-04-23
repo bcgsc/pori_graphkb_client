@@ -2,7 +2,7 @@ import './index.scss';
 
 import { Paper } from '@mui/material';
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 
 import ModelSelect from '@/components/ModelSelect';
 

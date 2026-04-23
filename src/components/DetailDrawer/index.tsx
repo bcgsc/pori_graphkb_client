@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';

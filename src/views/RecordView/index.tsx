@@ -14,7 +14,7 @@ import { useQuery } from 'react-query';
 import {
   NavigateOptions,
   useLocation, useNavigate, useParams, useSearchParams,
-} from 'react-router-dom';
+} from 'react-router';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';

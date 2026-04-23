@@ -13,7 +13,7 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';

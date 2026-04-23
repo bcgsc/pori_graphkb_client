@@ -8,7 +8,7 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router';
 
 import { AuthenticatedRoute } from '@/components/Auth';
 
@@ -68,7 +68,7 @@ export function AppRoutes() {
       <Route element={<AuthenticatedRoute component={ActivityView} signedLicenseRequired />} path="/activity" />
       <Route element={<AuthenticatedRoute component={QuickSearch} signedLicenseRequired />} path="/query" />
       <Route element={<AuthenticatedRoute component={AdvancedSearchView} signedLicenseRequired />} path="/query-advanced" />
-      {generateAuthenticatedRoutes(['edit'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
+      {generateAuthenticatedRoutes(['edit'], ['Source', 'User', 'UserGroup'], {
         component: RecordView,
         admin: true,
       })}
@@ -76,7 +76,7 @@ export function AppRoutes() {
       <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'view' }} />} path="/view/:modelName/:rid" />
       <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'edit' }} />} path="/edit/:rid" />
       <Route element={<AuthenticatedRoute component={RecordView} componentProps={{ variant: 'view' }} />} path="/view/:rid" />
-      {generateAuthenticatedRoutes(['new'], ['Source', 'source', 'User', 'user', 'UserGroup', 'usergroup'], {
+      {generateAuthenticatedRoutes(['new'], ['Source', 'User', 'UserGroup'], {
         component: NewRecordView,
         admin: true,
       })}

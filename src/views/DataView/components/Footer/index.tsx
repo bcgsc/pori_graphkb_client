@@ -10,7 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import React, {
   useCallback,
 } from 'react';
-import { NavigateFunction } from 'react-router-dom';
+import { NavigateFunction } from 'react-router';
 
 import { navigateToGraph } from '@/components/util';
 

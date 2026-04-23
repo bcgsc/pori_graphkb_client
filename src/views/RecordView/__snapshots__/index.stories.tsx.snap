@@ -6160,6 +6160,7 @@ exports[`ViewStatement snapshot 1`] = `
         >
           <a
             class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root header__review-action"
+            data-discover="true"
             href="/new/statement/153:14338/"
             tabindex="0"
             target="_blank"
@@ -6910,6 +6911,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
         >
           <a
             class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root header__review-action"
+            data-discover="true"
             href="/new/statement/153:14338/"
             tabindex="0"
             target="_blank"

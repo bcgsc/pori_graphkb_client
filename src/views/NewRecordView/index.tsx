@@ -19,7 +19,7 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = ({ modelName: propsModelName }) => {
+const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();

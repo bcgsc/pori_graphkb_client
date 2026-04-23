@@ -66,7 +66,7 @@ const RecordView = ({
   modelName: modelNameParamProp,
   variant,
 }: {
-  modelName: ModelNamesType;
+  modelName?: ModelNamesType;
   variant: FORM_VARIANT;
 }) => {
   const navigate = useNavigate();

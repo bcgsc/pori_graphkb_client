@@ -106,6 +106,7 @@ const SteppedForm = ({
           {formVariant === FORM_VARIANT.EDIT && (
           <ActionButton
             className="stepped-form__actions--secondary"
+            color="error"
             disabled={isLoading}
             onClick={handleDelete}
             requireConfirm

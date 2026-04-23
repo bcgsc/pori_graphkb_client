@@ -219,6 +219,7 @@ const RecordForm = ({
         {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (
             <ActionButton
+              color="error"
               disabled={actionInProgress}
               message="Are you sure you want to delete this record?"
               onClick={handleDeleteAction}

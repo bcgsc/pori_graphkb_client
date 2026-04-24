@@ -57,14 +57,6 @@
     display: block;
   }
 
-  .license-agreement-message {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    padding-top: 40px;
-    width: 100%;
-  }
-
   .tabs-content {
     max-height: calc(100% - #{globals.$tab-bar-height});
     overflow-y: scroll;

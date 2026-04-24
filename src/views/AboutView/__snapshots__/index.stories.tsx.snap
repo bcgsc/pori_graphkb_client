@@ -238,25 +238,29 @@ exports[`ClassesTab snapshot 1`] = `
         </div>
       </div>
       <div
-        class="license-agreement-message"
+        class="tabs-content"
       >
-        <h2
-          class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+        <div
+          class="auth-centered"
         >
-          Forbidden
-        </h2>
-        <p
-          class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
-        >
-          User must sign the license agreement before they can access data.
-        </p>
-        <button
-          class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-          tabindex="0"
-          type="button"
-        >
-          Terms of Use and License Agreement
-        </button>
+          <h2
+            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Forbidden
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            User must sign the license agreement before they can access data.
+          </p>
+          <button
+            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Terms of Use and License Agreement
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -2548,25 +2552,29 @@ exports[`MatchingTab snapshot 1`] = `
         </div>
       </div>
       <div
-        class="license-agreement-message"
+        class="tabs-content"
       >
-        <h2
-          class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+        <div
+          class="auth-centered"
         >
-          Forbidden
-        </h2>
-        <p
-          class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
-        >
-          User must sign the license agreement before they can access data.
-        </p>
-        <button
-          class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-          tabindex="0"
-          type="button"
-        >
-          Terms of Use and License Agreement
-        </button>
+          <h2
+            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Forbidden
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            User must sign the license agreement before they can access data.
+          </p>
+          <button
+            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Terms of Use and License Agreement
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -17,6 +17,12 @@ import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
 
 const AboutView = lazy(() => import('@/views/AboutView'));
+const AboutViewMainTab = lazy(() => import('@/views/AboutView/components/AboutMain'));
+const AboutViewClassesTab = lazy(() => import('@/views/AboutView/components/AboutClasses'));
+const AboutViewGettingStartedTab = lazy(() => import('@/views/AboutView/components/GettingStarted'));
+const AboutViewTermsTab = lazy(() => import('@/views/AboutView/components/AboutUsageTerms'));
+const AboutViewMatchingTab = lazy(() => import('@/views/AboutView/components/Matching'));
+const AboutViewNotationTab = lazy(() => import('@/views/AboutView/components/Notation'));
 const ActivityView = lazy(() => import('@/views/ActivityView'));
 const AdminView = lazy(() => import('@/views/AdminView'));
 const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
@@ -41,7 +47,16 @@ export function AppRoutes() {
       <Route element={<ErrorView />} path="/error" />
       <Route element={<AuthenticatedLayout />}>
         <Route Component={FeedbackView} path="/feedback" />
-        <Route Component={AboutView} path="/about/*" />
+        <Route Component={AboutView} path="/about">
+          <Route Component={AboutViewMainTab} index />
+          <Route Component={AboutViewGettingStartedTab} path="getting-started" />
+          <Route Component={AboutViewNotationTab} path="notation" />
+          <Route Component={AboutViewTermsTab} path="terms" />
+          <Route element={<AuthenticatedLayout signedLicenseRequired />}>
+            <Route Component={AboutViewClassesTab} path="classes" />
+            <Route Component={AboutViewMatchingTab} path="matching" />
+          </Route>
+        </Route>
         <Route element={<AuthenticatedLayout signedLicenseRequired />}>
           <Route Component={ActivityView} path="/activity" />
           <Route Component={QuickSearch} path="/query" />

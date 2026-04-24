@@ -42,35 +42,33 @@ export function AppRoutes() {
       <Route element={<AuthenticatedLayout />}>
         <Route Component={FeedbackView} path="/feedback" />
         <Route Component={AboutView} path="/about/*" />
-      </Route>
-      <Route element={<AuthenticatedLayout signedLicenseRequired />}>
-        <Route Component={ActivityView} path="/activity" />
-        <Route Component={QuickSearch} path="/query" />
-        <Route Component={AdvancedSearchView} path="/query-advanced" />
-        <Route Component={UserProfileView} path="/user-profile" />
-      </Route>
-      <Route element={<AuthenticatedLayout admin />}>
-        <Route Component={AdminView} path="/admin" />
-        <Route element={<RecordView modelName="Source" variant={FORM_VARIANT.EDIT} />} path="/edit/Source/:rid" />
-        <Route element={<NewRecordView modelName="Source" />} path="/new/Source" />
-        <Route element={<RecordView modelName="User" variant={FORM_VARIANT.EDIT} />} path="/edit/User/:rid" />
-        <Route element={<NewRecordView modelName="User" />} path="/new/User" />
-        <Route element={<RecordView modelName="UserGroup" variant={FORM_VARIANT.EDIT} />} path="/edit/UserGroup/:rid" />
-        <Route element={<NewRecordView modelName="UserGroup" />} path="/new/UserGroup" />
-      </Route>
-      <Route element={<AuthenticatedLayout />}>
-        <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:modelName/:rid" />
-        <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:modelName/:rid" />
-        <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:rid" />
-        <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:rid" />
-        {ABSTRACT_CLASSES.map((modelName) => (
-          <Route key={modelName} element={<NewRecordSelectView modelName={modelName} />} path={`/new/${modelName}`} />
-        ))}
-        <Route Component={NewRecordView} path="/new/:modelName/:rid" />
-        <Route Component={NewRecordView} path="/new/:modelName" />
-        <Route Component={DataView} path="/data/table" />
-        <Route Component={GraphView} path="/data/graph" />
-        <Route Component={ImportPubmedView} path="/import/pubmed" />
+        <Route element={<AuthenticatedLayout signedLicenseRequired />}>
+          <Route Component={ActivityView} path="/activity" />
+          <Route Component={QuickSearch} path="/query" />
+          <Route Component={AdvancedSearchView} path="/query-advanced" />
+          <Route Component={UserProfileView} path="/user-profile" />
+          <Route element={<AuthenticatedLayout admin />}>
+            <Route Component={AdminView} path="/admin" />
+            <Route element={<RecordView modelName="Source" variant={FORM_VARIANT.EDIT} />} path="/edit/Source/:rid" />
+            <Route element={<NewRecordView modelName="Source" />} path="/new/Source" />
+            <Route element={<RecordView modelName="User" variant={FORM_VARIANT.EDIT} />} path="/edit/User/:rid" />
+            <Route element={<NewRecordView modelName="User" />} path="/new/User" />
+            <Route element={<RecordView modelName="UserGroup" variant={FORM_VARIANT.EDIT} />} path="/edit/UserGroup/:rid" />
+            <Route element={<NewRecordView modelName="UserGroup" />} path="/new/UserGroup" />
+          </Route>
+          <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:modelName/:rid" />
+          <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:modelName/:rid" />
+          <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:rid" />
+          <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:rid" />
+          {ABSTRACT_CLASSES.map((modelName) => (
+            <Route key={modelName} element={<NewRecordSelectView modelName={modelName} />} path={`/new/${modelName}`} />
+          ))}
+          <Route Component={NewRecordView} path="/new/:modelName/:rid" />
+          <Route Component={NewRecordView} path="/new/:modelName" />
+          <Route Component={DataView} path="/data/table" />
+          <Route Component={GraphView} path="/data/graph" />
+          <Route Component={ImportPubmedView} path="/import/pubmed" />
+        </Route>
       </Route>
       <Route element={<Navigate to="/query" />} path="/*" />
     </Routes>

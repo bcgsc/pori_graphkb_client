@@ -30,6 +30,12 @@ function replaceNonDeterministicValues(value) {
   // react useId
   fixed = fixed.replace(/"\_r\_[0-9a-z]+_/g, '"_r_XXXX_')
 
+  // aria-live description from ag-grid that doesn't always update the same
+  fixed = fixed.replace(/<div[^>]*aria-relevant="additions text"[^>\/]*(>[^/]*<\/div>|\/>)/, '');
+  // other generated ag-grid ids
+  fixed = fixed.replace(/id="cell-[^-"]+-[^-"]+"/, (matched) => matched.replaceAll(/\d+/g, 'XXXX'));
+  fixed = fixed.replace(/id="ag-\d+/, 'id="ag-XXXX');
+
   fixed = fixed.replaceAll(/class="([^"]+)"/g, (_, classnames) => {
     const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).sort().join(' ');
     return `class="${classes}"`;

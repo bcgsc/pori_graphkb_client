@@ -31,7 +31,7 @@ interface TGeneralRecordType {
   type: Partial<TGeneralRecordType> | string;
   deprecated: boolean;
   firstLoginAt: number;
-  signedLicenseAt: number;
+  signedLicenseAt: number | null;
   lastLoginAt: number;
   groups: string[] | Partial<TGeneralRecordType>[];
   loginCount: number;

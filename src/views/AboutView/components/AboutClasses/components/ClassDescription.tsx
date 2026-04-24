@@ -24,7 +24,7 @@ const ClassDescription = ({ name, description }: ClassDescriptionProps) => {
     queryKey: tuple('/query', { target: name, neighbors: 1, limit: 1 }),
     queryFn: async ({ queryKey: [, body] }) => {
       const [result] = await api.query(body);
-      return result;
+      return result ?? null;
     },
     staleTime: Infinity,
   });

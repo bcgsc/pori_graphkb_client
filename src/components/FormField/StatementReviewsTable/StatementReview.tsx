@@ -88,11 +88,11 @@ const StatementReview = ({
           <div className="review-card__action-button">
             {!disabled && (
               <ActionButton
-                color="primary"
+                color="error"
                 onClick={() => onDelete({ index })}
                 requireConfirm={false}
                 size="medium"
-                variant="contained"
+                variant="outlined"
               >
                 Delete
                 <DeleteIcon />

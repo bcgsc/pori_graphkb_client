@@ -33,6 +33,7 @@ const theme = createTheme({
     MuiToggleButton: { defaultProps: { size: 'small' } },
     MuiToggleButtonGroup: { defaultProps: { size: 'small' } },
     MuiToolbar: { defaultProps: { variant: 'dense' } },
+    MuiFormLabel: { styleOverrides: { asterisk: ({ theme }) => ({ color: theme.palette.error.main }) } },
   },
   mixins: {},
   palette: {

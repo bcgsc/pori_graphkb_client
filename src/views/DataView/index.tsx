@@ -395,7 +395,6 @@ const DataView = (): React.JSX.Element => {
       </div>
       <Footer
         navigate={navigate}
-        onError={handleError}
         selectedRecords={selectedRecords}
         statusMessage={statusMessage}
         totalRows={totalRows as number}

@@ -5,6 +5,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Buffer } from 'buffer';
+import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
@@ -70,6 +71,7 @@ const RecordView = ({
   variant: FORM_VARIANT;
 }) => {
   const navigate = useNavigate();
+  const snackbar = useSnackbar();
   const {
     rid,
     modelName: modelNameParams,
@@ -166,12 +168,12 @@ const RecordView = ({
     // Will give newState as null if user clicks same state (view/edit/graph)
     if (!newState) { return; }
     if (newState === 'graph') {
-      navigateToGraph([recordContent['@rid']], navigate, handleError);
+      navigateToGraph([recordContent['@rid']], navigate, snackbar);
     } else {
       const newPath = `/${newState}/${model.name}/${rid}`;
       navigate(newPath);
     }
-  }, [handleError, navigate, model.name, recordContent, rid]);
+  }, [snackbar, navigate, model.name, recordContent, rid]);
 
   if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
     // wait for the model to be set for new Records

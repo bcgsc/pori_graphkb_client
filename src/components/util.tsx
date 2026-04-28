@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
 
@@ -203,7 +204,7 @@ const cleanPayload = (payload) => {
  * @param {object} navigate navigate of react-router-dom
  * @param {function} onErrorCallback callback function to call if error occurs
  */
-const navigateToGraph = (nodeRIDs, navigate: NavigateFunction, onErrorCallback) => {
+const navigateToGraph = (nodeRIDs: unknown[], navigate: NavigateFunction, snackbar: ReturnType<typeof useSnackbar>) => {
   const savedState: { nodes?: string } = {};
   let encodedState;
 
@@ -215,7 +216,7 @@ const navigateToGraph = (nodeRIDs, navigate: NavigateFunction, onErrorCallback) 
     savedState.nodes = encodedContent;
     encodedState = qs.stringify(savedState);
   } catch (err) {
-    onErrorCallback(err);
+    snackbar.enqueueSnackbar({ message: 'Unable to view graph. An error occurred encoding graph state', variant: 'error' });
   }
 
   navigate({

@@ -3,6 +3,7 @@ import './index.scss';
 import {
   CircularProgress,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
@@ -34,6 +35,7 @@ const GraphView = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const recordIds = useMemo(() => getNodeRIDsFromURL(`${window.location.origin}${search}`), []);
   const queryClient = useQueryClient();
+  const snackbar = useSnackbar();
 
   const handleError = useCallback((err) => {
     util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
@@ -86,8 +88,8 @@ const GraphView = () => {
   }, [handleError, queryClient]);
 
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
-    navigateToGraph(nodeRIDs, navigate, handleError);
-  }, [handleError, navigate]);
+    navigateToGraph(nodeRIDs, navigate, snackbar);
+  }, [snackbar, navigate]);
 
   const edges = schema.getEdges();
   const expandedEdgeTypes = util.expandEdges(edges);

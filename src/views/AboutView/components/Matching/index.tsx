@@ -177,9 +177,7 @@ const MatchView = () => {
   }, []);
 
   const handleJumpToGraph = useCallback(() => {
-    navigateToGraph(matches.map((m) => m['@rid']), navigate, (err) => {
-      snackbar.enqueueSnackbar(err, { variant: 'error' });
-    });
+    navigateToGraph(matches.map((m) => m['@rid']), navigate, snackbar);
   }, [navigate, matches, snackbar]);
 
   let alertText = '';

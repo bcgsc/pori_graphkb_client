@@ -1,7 +1,11 @@
-import { expect, waitFor } from 'storybook/test';
+import { HttpResponse } from 'msw';
+import {
+  expect, screen, waitFor, waitForElementToBeRemoved,
+} from 'storybook/test';
 
 import preview, {
   hasFinishedLoading,
+  http,
   view, ViewPreviewType,
 } from '#.storybook/preview';
 
@@ -61,5 +65,30 @@ export const NewRelationship = meta.story({
 export const NewRelationshipAliasOf = meta.story({
   args: {
     path: '/new/AliasOf',
+  },
+});
+
+export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
+  args: {
+    path: '/new/AliasOf',
+  },
+  parameters: {
+    msw: {
+      handlers: [
+        http.gkb.query(() => [{ '@rid': '111:111', '@class': 'Ontology' }, { '@rid': '222:222', '@class': 'Ontology' }]),
+        http.gkb.post('/api/aliasof', () => HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 })),
+      ],
+    },
+  },
+  play: async ({ canvas, step, userEvent }) => {
+    await hasFinishedLoading({ canvas, step });
+    await userEvent.type(canvas.getByLabelText(/source record \(out\)/i), '111');
+    await userEvent.click(await screen.findByText('Ontology (111:111)'));
+    await userEvent.type(canvas.getByLabelText(/target record \(in\)/i), '222');
+    await userEvent.click(await screen.findByText('Ontology (222:222)'));
+    await userEvent.click(canvas.getByText(/submit/i));
+    const snackbar = await canvas.findByText(/Error \(Error\) in creating the record/);
+    await canvas.findByText(/Internal Server Error/, { exact: false });
+    await waitForElementToBeRemoved(snackbar, { timeout: 10000 });
   },
 });

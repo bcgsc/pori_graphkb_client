@@ -2519,6 +2519,59 @@ exports[`EditStatement snapshot 1`] = `
 </div>
 `;
 
+exports[`EditStatementErrorDeleting snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="error-wrapper"
+    >
+      <h2
+        class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        AuthorizationError
+      </h2>
+      <h3
+        class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Insufficient permissions to delete record.
+      </h3>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Report this error in a
+        <a
+          href="https://www.bcgsc.ca/jira/projects/KBDEV"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Ticket/Issue
+        </a>
+         ticket or email us at 
+        <a
+          href="mailto:graphkb@bcgsc.ca?subject=AuthorizationError%3A%20Insufficient%20permissions%20to%20delete%20record.&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20AuthorizationError%0Aerror%20text%3A%20Insufficient%20permissions%20to%20delete%20record."
+        >
+          graphkb@bcgsc.ca
+        </a>
+        .
+      </p>
+      <a
+        data-discover="true"
+        href="/"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Home
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`ViewAliasOf snapshot 1`] = `
 <div>
   <div
@@ -3030,6 +3083,59 @@ exports[`ViewAliasOf snapshot 1`] = `
         <div />
         <div />
       </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ViewAliasOfNotFound snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="error-wrapper"
+    >
+      <h2
+        class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        APIConnectionFailureError
+      </h2>
+      <h3
+        class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        query expected 1 records but only found 0
+      </h3>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Report this error in a
+        <a
+          href="https://www.bcgsc.ca/jira/projects/KBDEV"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Ticket/Issue
+        </a>
+         ticket or email us at 
+        <a
+          href="mailto:graphkb@bcgsc.ca?subject=APIConnectionFailureError%3A%20query%20expected%201%20records%20but%20only%20found%200&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20APIConnectionFailureError%0Aerror%20text%3A%20query%20expected%201%20records%20but%20only%20found%200"
+        >
+          graphkb@bcgsc.ca
+        </a>
+        .
+      </p>
+      <a
+        data-discover="true"
+        href="/"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Home
+        </button>
+      </a>
     </div>
   </div>
 </div>
@@ -6877,6 +6983,59 @@ exports[`ViewStatement snapshot 1`] = `
         <div />
         <div />
       </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ViewStatementNotFound snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="error-wrapper"
+    >
+      <h2
+        class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        APIConnectionFailureError
+      </h2>
+      <h3
+        class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        query expected 1 records but only found 0
+      </h3>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Report this error in a
+        <a
+          href="https://www.bcgsc.ca/jira/projects/KBDEV"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Ticket/Issue
+        </a>
+         ticket or email us at 
+        <a
+          href="mailto:graphkb@bcgsc.ca?subject=APIConnectionFailureError%3A%20query%20expected%201%20records%20but%20only%20found%200&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20APIConnectionFailureError%0Aerror%20text%3A%20query%20expected%201%20records%20but%20only%20found%200"
+        >
+          graphkb@bcgsc.ca
+        </a>
+        .
+      </p>
+      <a
+        data-discover="true"
+        href="/"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Home
+        </button>
+      </a>
     </div>
   </div>
 </div>

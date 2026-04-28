@@ -39,6 +39,11 @@ export const http = {
         return wrapAsResponse(resolver(body, info));
       })
     },
+    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => AllowedResponse) => {
+      return httpBase.delete(`${window._env_.API_BASE_URL}${url}`, async (info) => {
+        return wrapAsResponse(resolver(info));
+      })
+    },
     query: (resolver: (body: QueryBody) => (HttpResponse<Partial<GeneralRecordType>[]> | Partial<GeneralRecordType>[])) => http.gkb.post('/api/query', resolver)
   }
 }

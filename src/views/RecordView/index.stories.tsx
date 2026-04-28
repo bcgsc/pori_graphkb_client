@@ -1,5 +1,5 @@
 import { HttpResponse } from 'msw';
-import { expect } from 'storybook/test';
+import { expect, screen, waitForElementToBeRemoved } from 'storybook/test';
 
 import preview, {
   hasFinishedLoading,
@@ -58,6 +58,21 @@ export const ViewAliasOfOptionalFieldsExpanded = ViewAliasOf.extend({
     await hasFinishedLoading({ canvas, step });
     await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
     await expect(canvas.findByText('@rid')).resolves.toBeInTheDocument();
+  },
+});
+
+export const ViewAliasOfNotFound = meta.story({
+  args: {
+    path: '/view/AliasOf/65:69073',
+    auth: { hasWriteAccess: true },
+  },
+  parameters: {
+    msw: {
+      handlers: [
+        http.gkb.query(() => []),
+        http.gkb.get('/api/aliasof/:rid', () => HttpResponse.json({ message: 'query expected 1 records but only found 0', name: 'NoRecordFoundError' }, { status: 404 })),
+      ],
+    },
   },
 });
 
@@ -245,6 +260,21 @@ export const ViewStatement = meta.story({
   },
 });
 
+export const ViewStatementNotFound = meta.story({
+  args: {
+    path: '/view/Statement/157:106045',
+    auth: { hasWriteAccess: true },
+  },
+  parameters: {
+    msw: {
+      handlers: [
+        http.gkb.query(() => []),
+        http.gkb.get('/api/statements/:rid', () => HttpResponse.json({ message: 'query expected 1 records but only found 0', name: 'NoRecordFoundError' }, { status: 404 })),
+      ],
+    },
+  },
+});
+
 export const ViewStatementOptionalFieldsExpanded = ViewStatement.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
@@ -255,4 +285,24 @@ export const ViewStatementOptionalFieldsExpanded = ViewStatement.extend({
 
 export const EditStatement = ViewStatement.extend({
   args: { path: '/edit/Statement/157:106045' },
+});
+
+export const EditStatementErrorDeleting = ViewStatement.extend({
+  args: { path: '/edit/Statement/157:106045' },
+  parameters: {
+    msw: {
+      handlers: [
+        ...ViewStatement.input.parameters.msw.handlers,
+        http.gkb.delete('/api/statements/:rid', () => HttpResponse.json({ message: 'Insufficient permissions to delete record.' }, { status: 403 })),
+      ],
+    },
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    await hasFinishedLoading({ canvas, step });
+    await userEvent.click(await canvas.findByText(/delete record/i));
+    await userEvent.click(await screen.findByText(/confirm/i));
+    const snackbar = await canvas.findByText(/Error \(AuthorizationError\) in deleting the record \(#153:14338\)/);
+    await canvas.findByText(/Insufficient permissions to delete record./, { exact: false });
+    await waitForElementToBeRemoved(snackbar, { timeout: 10000 });
+  },
 });

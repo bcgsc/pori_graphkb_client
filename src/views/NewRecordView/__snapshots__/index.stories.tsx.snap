@@ -1618,6 +1618,59 @@ exports[`NewRelationshipAliasOf snapshot 1`] = `
 </div>
 `;
 
+exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="error-wrapper"
+    >
+      <h2
+        class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Error
+      </h2>
+      <h3
+        class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Unexpected Error [500]: Internal Server Error
+      </h3>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Report this error in a
+        <a
+          href="https://www.bcgsc.ca/jira/projects/KBDEV"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Ticket/Issue
+        </a>
+         ticket or email us at 
+        <a
+          href="mailto:graphkb@bcgsc.ca?subject=Error%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20Error%0Aerror%20text%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error"
+        >
+          graphkb@bcgsc.ca
+        </a>
+        .
+      </p>
+      <a
+        data-discover="true"
+        href="/"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Home
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`NewSource snapshot 1`] = `
 <div>
   <div

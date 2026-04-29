@@ -231,6 +231,7 @@ const getNodeRIDsFromURL = (href) => {
   const URLBeforeNodeEncoding = href.split('nodes')[0];
   const encodedData = href.split(URLBeforeNodeEncoding)[1];
   const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+  if (!nodes) return [];
 
   const decodedContent = decodeURIComponent(nodes);
   const base64decoded = atob(decodedContent);

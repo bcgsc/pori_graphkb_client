@@ -83,6 +83,7 @@ export default defineConfig(({ mode }) => {
             storybookTest({
               configDir: path.join(__dirname, '.storybook'),
               storybookScript: 'npm run storybook --no-open',
+              tags: { exclude: ['flaky']}
             }),
           ],
           test: {

@@ -30,8 +30,9 @@ const GraphView = () => {
   const navigate = useNavigate();
   const isLoading = useIsFetching();
   const [detailPanelRow, setDetailPanelRow] = useState<GeneralRecordType | null>(null);
-  // the existing behaviour of the graph relies on this not changing even when the url *is* updated
-  const recordIds = useMemo(() => getNodeRIDsFromURL(window.location.href), []);
+  // the existing behaviour of the graph relies on this not changing even when the url *is* updated (TODO fix logic so this can update)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const recordIds = useMemo(() => getNodeRIDsFromURL(`${window.location.origin}${search}`), []);
   const queryClient = useQueryClient();
 
   const handleError = useCallback((err) => {

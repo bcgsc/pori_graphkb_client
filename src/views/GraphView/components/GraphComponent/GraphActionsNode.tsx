@@ -99,10 +99,13 @@ function GraphActionsNode(props: GraphActionsNodeProps) {
     const dx = DETAILS_RING_RADIUS * Math.cos(angle) * ICON_POSITION_COEFFICIENT;
     const dy = DETAILS_RING_RADIUS * Math.sin(angle) * ICON_POSITION_COEFFICIENT;
 
+    const id = option.name.toLowerCase();
+
     actionsRing.push((
       <g
         key={option.name}
-        id={option.name.toLowerCase()}
+        aria-label={id}
+        id={id}
         onClick={option.action}
         style={{ cursor: 'pointer' }}
       >

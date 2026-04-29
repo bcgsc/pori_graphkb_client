@@ -54,6 +54,7 @@ interface DetailDrawerProps {
   /** Ontology to be displayed in drawer. */
   node?: GeneralRecordType;
   onClose?: () => void;
+  error?: ReactNode;
 }
 
 /**
@@ -65,6 +66,7 @@ function DetailDrawer(props: DetailDrawerProps) {
     node,
     onClose,
     isEdge = false,
+    error,
   } = props;
   const auth = useAuth();
 
@@ -249,6 +251,7 @@ function DetailDrawer(props: DetailDrawerProps) {
             <CloseIcon />
           </IconButton>
         </div>
+        {error}
         <Divider />
         {otherProps}
         <ListItem

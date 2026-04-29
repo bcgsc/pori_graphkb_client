@@ -66,7 +66,6 @@ describe('RecordForm', () => {
   });
 
   const onSubmitSpy = vi.fn();
-  const onErrorSpy = vi.fn();
   const onToggleStateSpy = vi.fn();
   const snackbarSpy = vi.fn();
 
@@ -78,7 +77,6 @@ describe('RecordForm', () => {
             <SnackbarProvider onEnter={snackbarSpy}>
               <RecordForm
                 modelName="User"
-                onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
                 onToggleState={onToggleStateSpy}
                 title="blargh monkeys"
@@ -127,7 +125,6 @@ describe('RecordForm', () => {
             <SnackbarProvider onEnter={snackbarSpy}>
               <RecordForm
                 modelName="User"
-                onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
                 onToggleState={onToggleStateSpy}
                 title="blargh monkeys"
@@ -175,7 +172,6 @@ describe('RecordForm', () => {
             <AuthContext.Provider value={auth}>
               <RecordForm
                 modelName="User"
-                onError={onErrorSpy}
                 onSubmit={onSubmitSpy}
                 onToggleState={onToggleStateSpy}
                 title="blargh monkeys"

@@ -1,5 +1,5 @@
 import { HttpResponse } from 'msw';
-import { expect, screen, waitForElementToBeRemoved } from 'storybook/test';
+import { expect, screen } from 'storybook/test';
 
 import preview, {
   hasFinishedLoading,
@@ -301,8 +301,6 @@ export const EditStatementErrorDeleting = ViewStatement.extend({
     await hasFinishedLoading({ canvas, step });
     await userEvent.click(await canvas.findByText(/delete record/i));
     await userEvent.click(await screen.findByText(/confirm/i));
-    const snackbar = await canvas.findByText(/Error \(AuthorizationError\) in deleting the record \(#153:14338\)/);
     await canvas.findByText(/Insufficient permissions to delete record./, { exact: false });
-    await waitForElementToBeRemoved(snackbar, { timeout: 10000 });
   },
 });

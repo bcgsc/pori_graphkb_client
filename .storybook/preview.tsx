@@ -17,6 +17,7 @@ import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor } from 'storybook/test';
 import { CircularProgress } from '@mui/material';
+import ErrorView from '../src/views/ErrorView';
 
 function wrapAsResponse<T extends Record<string, any> | any[]>(maybeResponse: T | HttpResponse<T>): HttpResponse<T> {
   if (maybeResponse instanceof Response) {
@@ -148,9 +149,11 @@ export interface ViewPreviewType {
 function View() {
   return (
       <div style={{height: '100%', minWidth: '300px'}}>
+        <ErrorView>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
             <AppRoutes />
           </Suspense>
+        </ErrorView>
       </div>
   )
 }

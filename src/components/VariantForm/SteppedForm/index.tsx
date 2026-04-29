@@ -30,10 +30,11 @@ interface SteppedFormProps {
   formVariant?: FORM_VARIANT;
   isLoading?: boolean;
   value?: Record<string, unknown>;
+  errors?: ReactNode;
 }
 
 const SteppedForm = ({
-  children, modelName, properties, onSubmit, className = '', value = {}, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false,
+  children, modelName, properties, onSubmit, className = '', value = {}, formVariant = FORM_VARIANT.NEW, onDelete, isLoading = false, errors,
 }: SteppedFormProps) => {
   const snackbar = useSnackbar();
   const [activeStep, setActiveStep] = useState(0);
@@ -102,6 +103,7 @@ const SteppedForm = ({
             </Step>
           );
         })}
+        {errors}
         <div className="stepped-form__actions">
           {formVariant === FORM_VARIANT.EDIT && (
           <ActionButton

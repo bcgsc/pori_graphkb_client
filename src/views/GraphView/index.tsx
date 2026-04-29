@@ -14,6 +14,7 @@ import DetailDrawer from '@/components/DetailDrawer';
 import { GeneralRecordType } from '@/components/types';
 import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
+import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 import util from '@/services/util';
 import config from '@/static/config';
@@ -30,34 +31,38 @@ const GraphView = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const isLoading = useIsFetching();
-  const [detailPanelRow, setDetailPanelRow] = useState<GeneralRecordType | null>(null);
+  const [detailPanelRid, setDetailPanelRid] = useState<string | null>(null);
   // the existing behaviour of the graph relies on this not changing even when the url *is* updated (TODO fix logic so this can update)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const recordIds = useMemo(() => getNodeRIDsFromURL(`${window.location.origin}${search}`), []);
   const queryClient = useQueryClient();
   const snackbar = useSnackbar();
 
-  const handleError = useCallback((err) => {
-    util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
-  }, [navigate, search]);
-
-  const { data: graphData } = useQuery({
+  const graphQuery = useQuery({
     queryKey: tuple('/query', { target: recordIds, neighbors: DEFAULT_NEIGHBORS }),
     queryFn: async ({ queryKey: [, body] }) => api.query(body),
     enabled: Boolean(recordIds.length),
     select: (response) => util.hashRecordsByRID(response),
+    throwOnError: true,
+  });
+
+  const detailsQuery = useQuery({
+    queryKey: tuple('/query', { target: [detailPanelRid!], neighbors: DEFAULT_NEIGHBORS }),
+    queryFn: async ({ queryKey: [, body] }) => api.query(body),
+    enabled: Boolean(detailPanelRid),
+    select: (response) => response[0],
   });
 
   useEffect(() => {
-    if (graphData) {
-      Object.keys(graphData).forEach((recordId) => {
+    if (graphQuery.data) {
+      Object.keys(graphQuery.data).forEach((recordId) => {
         queryClient.setQueryData(
           [{ target: [recordId], neighbors: DEFAULT_NEIGHBORS }],
-          [graphData[recordId]],
+          [graphQuery.data[recordId]],
         );
       });
     }
-  }, [graphData, queryClient]);
+  }, [graphQuery.data, queryClient]);
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -67,25 +72,11 @@ const GraphView = () => {
 
     // no data or clicked link is a link property without a class model
     if (!detailData || detailData.isLinkProp) {
-      setDetailPanelRow(null);
+      setDetailPanelRid(null);
     } else {
-      try {
-        const [fullRecord] = await queryClient.fetchQuery({
-          queryKey: tuple('/query', { target: [detailData['@rid']], neighbors: DEFAULT_NEIGHBORS }),
-          queryFn: async ({ queryKey: [, body] }) => api.query(body),
-        });
-
-        if (!fullRecord) {
-          setDetailPanelRow(null);
-        } else {
-          setDetailPanelRow(fullRecord);
-        }
-      } catch (err) {
-        console.error(err);
-        handleError(err);
-      }
+      setDetailPanelRid(detailData['@rid']);
     }
-  }, [handleError, queryClient]);
+  }, []);
 
   const handleGraphStateSaveIntoURL = useCallback((nodeRIDs) => {
     navigateToGraph(nodeRIDs, navigate, snackbar);
@@ -93,7 +84,7 @@ const GraphView = () => {
 
   const edges = schema.getEdges();
   const expandedEdgeTypes = util.expandEdges(edges);
-
+  const detailPanelRow = detailsQuery.isEnabled ? detailsQuery.data : null;
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
   const handleExpandRecord = async (recordId: string) => {
@@ -114,20 +105,20 @@ const GraphView = () => {
       className={`data-view ${detailPanelIsOpen ? 'data-view--squished' : ''}`}
     >
       <div className="data-view__content--graph-view">
-        {graphData && (
+        {graphQuery.data && (
           <>
             <GraphComponent
-              data={graphData}
+              data={graphQuery.data}
               detail={detailPanelRow}
               edgeTypes={expandedEdgeTypes}
               getRecord={handleExpandRecord}
               handleDetailDrawerClose={handleToggleDetailPanel}
               handleDetailDrawerOpen={handleToggleDetailPanel}
-              handleError={handleError}
               handleGraphStateSave={handleGraphStateSaveIntoURL}
             />
             {detailPanelRow && (
               <DetailDrawer
+                error={<ErrorMessage error={detailsQuery.error}>An error occurred loading details.</ErrorMessage>}
                 node={detailPanelRow}
                 onClose={handleToggleDetailPanel}
               />

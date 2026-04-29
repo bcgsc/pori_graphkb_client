@@ -23,8 +23,8 @@ import useGrid from '@/components/hooks/useGrid';
 import { GeneralRecordType } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
+import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
-import util from '@/services/util';
 import config from '@/static/config';
 
 import ActiveFilters from './components/ActiveFilters';
@@ -207,22 +207,12 @@ const DataView = (): React.JSX.Element => {
     gridApi.addEventListener('selectionChanged', handleSelectionChange);
   }, [grid.ref, initializeGrid, search, totalRows]);
 
-  const handleError = useCallback((err) => {
-    util.handleErrorSaveLocation(err, { navigate, pathname: '/data/table', search });
-  }, [navigate, search]);
-
   const { data: detailPanelRow, error } = useQuery({
     queryKey: tuple('/query', { target: [detailsRowId!], neighbors: DEFAULT_NEIGHBORS }),
     queryFn: async ({ queryKey: [, body] }) => api.query(body),
     enabled: Boolean(detailsRowId),
     select: (response) => response[0],
   });
-
-  useEffect(() => {
-    if (error) {
-      handleError(error);
-    }
-  }, [error, handleError]);
 
   const handleToggleDetailPanel = useCallback((params?: IRowNode | null) => {
     // no data or clicked link is a link property without a class model
@@ -389,6 +379,7 @@ const DataView = (): React.JSX.Element => {
           />
         </div>
         <DetailDrawer
+          error={<ErrorMessage error={error}>An error occurred loading the details.</ErrorMessage>}
           node={detailPanelRow}
           onClose={handleToggleDetailPanel}
         />

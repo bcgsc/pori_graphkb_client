@@ -1,7 +1,5 @@
 import { HttpResponse } from 'msw';
-import {
-  expect, screen, waitFor, waitForElementToBeRemoved,
-} from 'storybook/test';
+import { expect, screen, waitFor } from 'storybook/test';
 
 import preview, {
   hasFinishedLoading,
@@ -87,8 +85,12 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
     await userEvent.type(canvas.getByLabelText(/target record \(in\)/i), '222');
     await userEvent.click(await screen.findByText('Ontology (222:222)'));
     await userEvent.click(canvas.getByText(/submit/i));
-    const snackbar = await canvas.findByText(/Error \(Error\) in creating the record/);
     await canvas.findByText(/Internal Server Error/, { exact: false });
-    await waitForElementToBeRemoved(snackbar, { timeout: 10000 });
+  },
+});
+
+export const NewInvalidModel = meta.story({
+  args: {
+    path: '/new/Blargh',
   },
 });

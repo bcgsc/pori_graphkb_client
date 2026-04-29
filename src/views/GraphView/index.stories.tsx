@@ -79,6 +79,7 @@ export const GraphOneNodeDetailsOpen = GraphOneNode.extend({
     const node = await canvas.findByLabelText('immunotherapy');
     await userEvent.click(node);
     await expect(await canvas.findByText('immunological therapy [c15262] (#124:124)')).toBeInTheDocument();
+    await hasFinishedLoading({ canvas, step });
   },
 });
 

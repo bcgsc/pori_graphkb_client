@@ -75,9 +75,8 @@ export const WithDetailsOpenError = WithRows.extend({
       ],
     },
   },
-  play: async ({ canvas, step, userEvent }) => {
-    await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('source 1234'));
-    await expect(await canvas.findByText('BadRequestError')).toBeInTheDocument();
+  play: async ({ canvas, context }) => {
+    await WithDetailsOpen.play(context);
+    await expect(await canvas.findByText('An error occurred loading the details.', { exact: false })).toBeInTheDocument();
   },
 });

@@ -24,6 +24,7 @@ import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
+import { ErrorMessage } from '@/services/errors';
 
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
@@ -33,7 +34,6 @@ const FIELD_EXCLUSIONS = ['groupRestrictions'];
 interface StatementFormProps {
   /** the title for this form */
   title: string;
-  onError?: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
   /** values of individual properties of passed class model */
@@ -50,7 +50,6 @@ const StatementForm = ({
   title,
   onToggleState,
   onSubmit,
-  onError,
   variant = FORM_VARIANT.VIEW,
 }: StatementFormProps) => {
   const params = useParams();
@@ -109,6 +108,7 @@ const StatementForm = ({
     queryKey: [`/statements/${params.rid}?neighbors=1`],
     queryFn: async ({ queryKey: [route] }) => api.get(route),
     enabled: (isempty(initialValue) && Boolean(params.rid)),
+    throwOnError: true,
   });
 
   const snackbar = useSnackbar();
@@ -208,7 +208,7 @@ const StatementForm = ({
     return updatedContent;
   }, [auth]);
 
-  const { mutate: addNewAction, isPending: isAdding } = useMutation({
+  const { mutate: addNewAction, isPending: isAdding, error: errorAdding } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
@@ -217,11 +217,6 @@ const StatementForm = ({
     onSuccess: (result) => {
       snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
       onSubmit?.(result);
-    },
-    onError: (err: Error, content) => {
-      console.error(err);
-      snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-      onError?.({ error: err, content });
     },
   });
 
@@ -242,7 +237,7 @@ const StatementForm = ({
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
 
-  const { mutate: deleteAction, isPending: isDeleting } = useMutation({
+  const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
@@ -250,10 +245,6 @@ const StatementForm = ({
     onSuccess: (_, content) => {
       snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
       onSubmit?.();
-    },
-    onError: (err: Error, content) => {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-      onError?.({ error: err, content });
     },
   });
 
@@ -265,7 +256,7 @@ const StatementForm = ({
     deleteAction(content);
   }, [deleteAction, formContent, model.name]);
 
-  const { mutate: updateAction, isPending: isUpdating } = useMutation({
+  const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
@@ -274,10 +265,6 @@ const StatementForm = ({
     onSuccess: (result) => {
       snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
       onSubmit?.(result);
-    },
-    onError: (err: Error, content) => {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-      onError?.({ error: err, content });
     },
   });
 
@@ -381,6 +368,9 @@ const StatementForm = ({
           modelName={model.name}
         />
       </FormContext.Provider>
+      <ErrorMessage error={errorAdding}>An error occurred while creating record.</ErrorMessage>
+      <ErrorMessage error={errorDeleting}>An error occurred while deleting record.</ErrorMessage>
+      <ErrorMessage error={errorUpdating}>An error occurred while updating record.</ErrorMessage>
       <div className="statement-form__action-buttons">
         {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (

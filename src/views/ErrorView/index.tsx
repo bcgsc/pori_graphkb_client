@@ -1,80 +1,53 @@
 import './index.scss';
 
 import { Button, Typography } from '@mui/material';
-import React from 'react';
-import { Link, useLocation } from 'react-router';
+import React, { ReactNode } from 'react';
+import { Link } from 'react-router';
 
-interface EmailReportErrorProps {
-  body: string;
-  linkText: string;
-  subject: string;
-}
+import { ReportErrorMessage } from '@/services/errors';
 
-const EmailReportError = (props: EmailReportErrorProps) => {
-  const { linkText, body, subject } = props;
-  return (
-    <a
-      href={`mailto:${window._env_.CONTACT_EMAIL}?subject=${encodeURIComponent(
-        subject,
-      )}&body=${encodeURIComponent(body)}`}
-    >
-      {linkText}
-    </a>
-  );
-};
+class ErrorBoundary extends React.Component<{ children: ReactNode }, { error: Error | null }> {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
 
-/**
- * View for displaying uncaught error messages.
- */
-const ErrorView = () => {
-  const location = useLocation();
-  const state = location.state ?? {};
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
 
-  const {
-    error: {
+  render() {
+    const { error } = this.state;
+    const { children } = this.props;
+
+    if (!error) {
+      return children;
+    }
+
+    const {
       message = 'This is the default page where errors are reported if encountered',
       name = 'No Error Reported',
-      ...rest
-    } = {},
-  } = state;
+    } = error;
 
-  const jiraLink = <a href={window._env_.CONTACT_TICKET_URL} rel="noopener noreferrer" target="_blank">Ticket/Issue</a>;
+    return (
+      <div className="error-wrapper">
+        <Typography variant="h2">
+          {name}
+        </Typography>
+        <Typography variant="h3">
+          {message}
+        </Typography>
+        <Typography paragraph>
+          <ReportErrorMessage error={error} />
+        </Typography>
+        <Link to="/">
+          <Button color="primary" variant="contained">
+            Home
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+}
 
-  let errorDetails = `Error Details (Please include in error reports)
-version: ${process.env.npm_package_version || process.env.REACT_APP_VERSION || ''}
-error name: ${name}
-error text: ${message}`;
-
-  Object.entries(rest).forEach(([key, value]) => {
-    if (value) {
-      errorDetails = `${errorDetails}\n${key}: ${`${value}`.trim()}`;
-    }
-  });
-
-  return (
-    <div className="error-wrapper">
-      <Typography variant="h2">
-        {name}
-      </Typography>
-      <Typography variant="h3">
-        {message}
-      </Typography>
-      <Typography paragraph>
-        Report this error in a {jiraLink} ticket or email us at&nbsp;
-        <EmailReportError
-          body={errorDetails}
-          linkText={window._env_.CONTACT_EMAIL}
-          subject={`${name}: ${message}`}
-        />
-        .
-      </Typography>
-      <Link to="/">
-        <Button color="primary" variant="contained">
-          Home
-        </Button>
-      </Link>
-    </div>
-  );
-};
-
-export default ErrorView;
+export default ErrorBoundary;

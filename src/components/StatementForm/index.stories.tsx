@@ -14,7 +14,6 @@ const meta = preview.meta({
   decorators: [withSnackbar, withAuth, withRouter],
   args: {
     title: 'blargh monkeys',
-    onError: fn(),
     onSubmit: fn(),
     value: {},
   },

@@ -29,7 +29,6 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
     isOpen = false,
     modelName,
     onClose,
-    onError,
     onSubmit,
     title = '',
     variant,
@@ -65,7 +64,6 @@ const RecordFormDialog = (props: RecordFormDialogProps) => {
       <DialogContent>
         <RecordForm
           modelName={modelName}
-          onError={onError}
           onSubmit={onSubmit}
           onToggleState={onToggleState}
           title={title}

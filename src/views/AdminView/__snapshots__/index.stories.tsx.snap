@@ -95,7 +95,7 @@ exports[`AddNewGroup snapshot 1`] = `
                   <div
                     aria-colcount="7"
                     aria-rowcount="2"
-                    class="ag-body-horizontal-content-no-gap ag-layout-normal ag-root ag-unselectable"
+                    class="ag-layout-normal ag-root ag-unselectable"
                     role="grid"
                   >
                     <div
@@ -877,7 +877,7 @@ exports[`AddNewGroup snapshot 1`] = `
                           <div
                             aria-colindex="7"
                             class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
-                            col-id="1"
+                            col-id="actions"
                             role="columnheader"
                             tabindex="-1"
                           >
@@ -970,7 +970,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ag-floating-top ag-invisible ag-selectable"
+                      class="ag-floating-top ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -1002,7 +1002,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       role="presentation"
                     >
                       <div
-                        class="ag-body-viewport ag-layout-normal ag-row-animation ag-selectable"
+                        class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
                         role="presentation"
                       >
                         <div
@@ -1167,7 +1167,7 @@ exports[`AddNewGroup snapshot 1`] = `
                             <div
                               aria-colindex="7"
                               class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
-                              col-id="1"
+                              col-id="actions"
                               role="gridcell"
                               tabindex="-1"
                             >
@@ -1177,7 +1177,7 @@ exports[`AddNewGroup snapshot 1`] = `
                               >
                                 <span
                                   class="ag-cell-value"
-                                  id="cell-XXXX-XXXX"
+                                  id="cell-actions-XXXX"
                                   role="presentation"
                                 >
                                   <button
@@ -1251,7 +1251,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-invisible ag-selectable ag-sticky-bottom"
+                      class="ag-selectable ag-sticky-bottom"
                       role="presentation"
                     >
                       <div
@@ -1279,7 +1279,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-floating-bottom ag-invisible ag-selectable"
+                      class="ag-floating-bottom ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -1308,7 +1308,7 @@ exports[`AddNewGroup snapshot 1`] = `
                     </div>
                     <div
                       aria-hidden="true"
-                      class="ag-body-horizontal-scroll ag-invisible ag-scrollbar-invisible"
+                      class="ag-body-horizontal-scroll ag-scrollbar-invisible"
                     >
                       <div
                         class="ag-horizontal-left-spacer ag-scroller-corner"
@@ -2021,7 +2021,7 @@ exports[`AddNewGroup snapshot 1`] = `
                           <div
                             aria-colindex="4"
                             class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
-                            col-id="0"
+                            col-id="actions"
                             role="columnheader"
                             tabindex="-1"
                           >
@@ -2114,7 +2114,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ag-floating-top ag-invisible ag-selectable"
+                      class="ag-floating-top ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -2146,7 +2146,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       role="presentation"
                     >
                       <div
-                        class="ag-body-viewport ag-layout-normal ag-row-animation ag-selectable"
+                        class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
                         role="presentation"
                       >
                         <div
@@ -2249,7 +2249,7 @@ exports[`AddNewGroup snapshot 1`] = `
                             <div
                               aria-colindex="4"
                               class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
-                              col-id="0"
+                              col-id="actions"
                               role="gridcell"
                               tabindex="-1"
                             >
@@ -2259,7 +2259,7 @@ exports[`AddNewGroup snapshot 1`] = `
                               >
                                 <span
                                   class="ag-cell-value"
-                                  id="cell-XXXX-XXXX"
+                                  id="cell-actions-XXXX"
                                   role="presentation"
                                 >
                                   <button
@@ -2333,7 +2333,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-invisible ag-selectable ag-sticky-bottom"
+                      class="ag-selectable ag-sticky-bottom"
                       role="presentation"
                     >
                       <div
@@ -2361,7 +2361,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-floating-bottom ag-invisible ag-selectable"
+                      class="ag-floating-bottom ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -2390,7 +2390,7 @@ exports[`AddNewGroup snapshot 1`] = `
                     </div>
                     <div
                       aria-hidden="true"
-                      class="ag-body-horizontal-scroll ag-invisible ag-scrollbar-invisible"
+                      class="ag-body-horizontal-scroll ag-scrollbar-invisible"
                     >
                       <div
                         class="ag-horizontal-left-spacer ag-scroller-corner"
@@ -6279,7 +6279,7 @@ exports[`AddNewUser snapshot 1`] = `
                   <div
                     aria-colcount="7"
                     aria-rowcount="2"
-                    class="ag-body-horizontal-content-no-gap ag-layout-normal ag-root ag-unselectable"
+                    class="ag-layout-normal ag-root ag-unselectable"
                     role="grid"
                   >
                     <div
@@ -7061,7 +7061,7 @@ exports[`AddNewUser snapshot 1`] = `
                           <div
                             aria-colindex="7"
                             class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
-                            col-id="0"
+                            col-id="actions"
                             role="columnheader"
                             tabindex="-1"
                           >
@@ -7154,7 +7154,7 @@ exports[`AddNewUser snapshot 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ag-floating-top ag-invisible ag-selectable"
+                      class="ag-floating-top ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -7186,7 +7186,7 @@ exports[`AddNewUser snapshot 1`] = `
                       role="presentation"
                     >
                       <div
-                        class="ag-body-viewport ag-layout-normal ag-row-animation ag-selectable"
+                        class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
                         role="presentation"
                       >
                         <div
@@ -7351,7 +7351,7 @@ exports[`AddNewUser snapshot 1`] = `
                             <div
                               aria-colindex="7"
                               class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
-                              col-id="0"
+                              col-id="actions"
                               role="gridcell"
                               tabindex="-1"
                             >
@@ -7361,7 +7361,7 @@ exports[`AddNewUser snapshot 1`] = `
                               >
                                 <span
                                   class="ag-cell-value"
-                                  id="cell-XXXX-XXXX"
+                                  id="cell-actions-XXXX"
                                   role="presentation"
                                 >
                                   <button
@@ -7435,7 +7435,7 @@ exports[`AddNewUser snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-invisible ag-selectable ag-sticky-bottom"
+                      class="ag-selectable ag-sticky-bottom"
                       role="presentation"
                     >
                       <div
@@ -7463,7 +7463,7 @@ exports[`AddNewUser snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-floating-bottom ag-invisible ag-selectable"
+                      class="ag-floating-bottom ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -7492,7 +7492,7 @@ exports[`AddNewUser snapshot 1`] = `
                     </div>
                     <div
                       aria-hidden="true"
-                      class="ag-body-horizontal-scroll ag-invisible ag-scrollbar-invisible"
+                      class="ag-body-horizontal-scroll ag-scrollbar-invisible"
                     >
                       <div
                         class="ag-horizontal-left-spacer ag-scroller-corner"
@@ -8202,7 +8202,7 @@ exports[`AddNewUser snapshot 1`] = `
                           <div
                             aria-colindex="4"
                             class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
-                            col-id="1"
+                            col-id="actions"
                             role="columnheader"
                             tabindex="-1"
                           >
@@ -8295,7 +8295,7 @@ exports[`AddNewUser snapshot 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ag-floating-top ag-invisible ag-selectable"
+                      class="ag-floating-top ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -8327,7 +8327,7 @@ exports[`AddNewUser snapshot 1`] = `
                       role="presentation"
                     >
                       <div
-                        class="ag-body-viewport ag-layout-normal ag-row-animation ag-selectable"
+                        class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
                         role="presentation"
                       >
                         <div
@@ -8430,7 +8430,7 @@ exports[`AddNewUser snapshot 1`] = `
                             <div
                               aria-colindex="4"
                               class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
-                              col-id="1"
+                              col-id="actions"
                               role="gridcell"
                               tabindex="-1"
                             >
@@ -8440,7 +8440,7 @@ exports[`AddNewUser snapshot 1`] = `
                               >
                                 <span
                                   class="ag-cell-value"
-                                  id="cell-XXXX-XXXX"
+                                  id="cell-actions-XXXX"
                                   role="presentation"
                                 >
                                   <button
@@ -8514,7 +8514,7 @@ exports[`AddNewUser snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-invisible ag-selectable ag-sticky-bottom"
+                      class="ag-selectable ag-sticky-bottom"
                       role="presentation"
                     >
                       <div
@@ -8542,7 +8542,7 @@ exports[`AddNewUser snapshot 1`] = `
                       />
                     </div>
                     <div
-                      class="ag-floating-bottom ag-invisible ag-selectable"
+                      class="ag-floating-bottom ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -8571,7 +8571,7 @@ exports[`AddNewUser snapshot 1`] = `
                     </div>
                     <div
                       aria-hidden="true"
-                      class="ag-body-horizontal-scroll ag-invisible ag-scrollbar-invisible"
+                      class="ag-body-horizontal-scroll ag-scrollbar-invisible"
                     >
                       <div
                         class="ag-horizontal-left-spacer ag-scroller-corner"
@@ -9148,7 +9148,7 @@ exports[`AsAdmin snapshot 1`] = `
                 <div
                   aria-colcount="7"
                   aria-rowcount="2"
-                  class="ag-body-horizontal-content-no-gap ag-layout-normal ag-root ag-unselectable"
+                  class="ag-layout-normal ag-root ag-unselectable"
                   role="grid"
                 >
                   <div
@@ -9930,7 +9930,7 @@ exports[`AsAdmin snapshot 1`] = `
                         <div
                           aria-colindex="7"
                           class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
-                          col-id="1"
+                          col-id="actions"
                           role="columnheader"
                           tabindex="-1"
                         >
@@ -10023,7 +10023,7 @@ exports[`AsAdmin snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    class="ag-floating-top ag-invisible ag-selectable"
+                    class="ag-floating-top ag-selectable"
                     role="presentation"
                   >
                     <div
@@ -10055,7 +10055,7 @@ exports[`AsAdmin snapshot 1`] = `
                     role="presentation"
                   >
                     <div
-                      class="ag-body-viewport ag-layout-normal ag-row-animation ag-selectable"
+                      class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -10220,7 +10220,7 @@ exports[`AsAdmin snapshot 1`] = `
                           <div
                             aria-colindex="7"
                             class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
-                            col-id="1"
+                            col-id="actions"
                             role="gridcell"
                             tabindex="-1"
                           >
@@ -10230,7 +10230,7 @@ exports[`AsAdmin snapshot 1`] = `
                             >
                               <span
                                 class="ag-cell-value"
-                                id="cell-XXXX-XXXX"
+                                id="cell-actions-XXXX"
                                 role="presentation"
                               >
                                 <button
@@ -10304,7 +10304,7 @@ exports[`AsAdmin snapshot 1`] = `
                     />
                   </div>
                   <div
-                    class="ag-invisible ag-selectable ag-sticky-bottom"
+                    class="ag-selectable ag-sticky-bottom"
                     role="presentation"
                   >
                     <div
@@ -10332,7 +10332,7 @@ exports[`AsAdmin snapshot 1`] = `
                     />
                   </div>
                   <div
-                    class="ag-floating-bottom ag-invisible ag-selectable"
+                    class="ag-floating-bottom ag-selectable"
                     role="presentation"
                   >
                     <div
@@ -10361,7 +10361,7 @@ exports[`AsAdmin snapshot 1`] = `
                   </div>
                   <div
                     aria-hidden="true"
-                    class="ag-body-horizontal-scroll ag-invisible ag-scrollbar-invisible ag-scrollbar-scrolling"
+                    class="ag-body-horizontal-scroll ag-scrollbar-invisible"
                   >
                     <div
                       class="ag-horizontal-left-spacer ag-scroller-corner"
@@ -11071,7 +11071,7 @@ exports[`AsAdmin snapshot 1`] = `
                         <div
                           aria-colindex="4"
                           class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
-                          col-id="1"
+                          col-id="actions"
                           role="columnheader"
                           tabindex="-1"
                         >
@@ -11164,7 +11164,7 @@ exports[`AsAdmin snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    class="ag-floating-top ag-invisible ag-selectable"
+                    class="ag-floating-top ag-selectable"
                     role="presentation"
                   >
                     <div
@@ -11196,7 +11196,7 @@ exports[`AsAdmin snapshot 1`] = `
                     role="presentation"
                   >
                     <div
-                      class="ag-body-viewport ag-layout-normal ag-row-animation ag-selectable"
+                      class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
                       role="presentation"
                     >
                       <div
@@ -11299,7 +11299,7 @@ exports[`AsAdmin snapshot 1`] = `
                           <div
                             aria-colindex="4"
                             class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
-                            col-id="1"
+                            col-id="actions"
                             role="gridcell"
                             tabindex="-1"
                           >
@@ -11309,7 +11309,7 @@ exports[`AsAdmin snapshot 1`] = `
                             >
                               <span
                                 class="ag-cell-value"
-                                id="cell-XXXX-XXXX"
+                                id="cell-actions-XXXX"
                                 role="presentation"
                               >
                                 <button
@@ -11383,7 +11383,7 @@ exports[`AsAdmin snapshot 1`] = `
                     />
                   </div>
                   <div
-                    class="ag-invisible ag-selectable ag-sticky-bottom"
+                    class="ag-selectable ag-sticky-bottom"
                     role="presentation"
                   >
                     <div
@@ -11411,7 +11411,7 @@ exports[`AsAdmin snapshot 1`] = `
                     />
                   </div>
                   <div
-                    class="ag-floating-bottom ag-invisible ag-selectable"
+                    class="ag-floating-bottom ag-selectable"
                     role="presentation"
                   >
                     <div
@@ -11440,7 +11440,7 @@ exports[`AsAdmin snapshot 1`] = `
                   </div>
                   <div
                     aria-hidden="true"
-                    class="ag-body-horizontal-scroll ag-invisible ag-scrollbar-invisible ag-scrollbar-scrolling"
+                    class="ag-body-horizontal-scroll ag-scrollbar-invisible"
                   >
                     <div
                       class="ag-horizontal-left-spacer ag-scroller-corner"

@@ -1,9 +1,7 @@
 import './index.scss';
 
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import { Button, Tooltip, Typography } from '@mui/material';
-import copy from 'copy-to-clipboard';
-import React, { useCallback, useState } from 'react';
+import { Button, Typography } from '@mui/material';
+import React from 'react';
 import { Link, useLocation } from 'react-router';
 
 interface EmailReportErrorProps {
@@ -29,7 +27,6 @@ const EmailReportError = (props: EmailReportErrorProps) => {
  * View for displaying uncaught error messages.
  */
 const ErrorView = () => {
-  const [tooltipOpen, setTooltipOpen] = useState(false);
   const location = useLocation();
   const state = location.state ?? {};
 
@@ -37,7 +34,6 @@ const ErrorView = () => {
     error: {
       message = 'This is the default page where errors are reported if encountered',
       name = 'No Error Reported',
-      stacktrace = '',
       ...rest
     } = {},
   } = state;
@@ -54,16 +50,6 @@ error text: ${message}`;
       errorDetails = `${errorDetails}\n${key}: ${`${value}`.trim()}`;
     }
   });
-
-  // TODO: Remove this after alpha testing
-  if (stacktrace) {
-    errorDetails = `${errorDetails}\n\nstack trace:\n\n${stacktrace}`;
-  }
-
-  const handleCopyToClipboard = useCallback(() => {
-    setTooltipOpen(true);
-    copy(errorDetails);
-  }, [errorDetails]);
 
   return (
     <div className="error-wrapper">
@@ -82,28 +68,6 @@ error text: ${message}`;
         />
         .
       </Typography>
-      {stacktrace && (
-        <div className="stacktrace">
-          <pre>
-            <code>{errorDetails}</code>
-          </pre>
-          <Tooltip
-            disableHoverListener
-            onClose={() => setTooltipOpen(false)}
-            open={tooltipOpen}
-            title="Copied!"
-          >
-            <Button
-              id="copy-button"
-              onClick={handleCopyToClipboard}
-              variant="outlined"
-            >
-              Copy To Clipboard
-              <AssignmentIcon />
-            </Button>
-          </Tooltip>
-        </div>
-      )}
       <Link to="/">
         <Button color="primary" variant="contained">
           Home

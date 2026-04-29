@@ -11,12 +11,6 @@
     text-decoration: none;
   }
 
-  .stacktrace {
-    @include globals.code-block;
-    max-width: globals.$readable-max;
-    min-width: globals.$readable-min;
-  }
-
   h2 {
     color: globals.$palette__error--main;
     margin-top: 40px;
@@ -29,6 +23,3 @@
   }
 }
 
-#copy-button {
-  margin: 8px auto;
-}

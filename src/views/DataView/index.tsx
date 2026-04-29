@@ -13,7 +13,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useIsFetching, useQuery } from 'react-query';
+import {
+  QueryClient, useIsFetching, useQuery, useQueryClient,
+} from 'react-query';
 import { useLocation, useNavigate } from 'react-router';
 
 import DetailDrawer from '@/components/DetailDrawer';
@@ -82,6 +84,7 @@ interface GetRowsFromBlocksArgs {
   sortModel?: { colId: string; sort: string; }[];
   search: string;
   blockSize: number;
+  queryClient: QueryClient;
 }
 
 /**
@@ -93,6 +96,7 @@ const getRowsFromBlocks = async ({
   sortModel,
   search,
   blockSize,
+  queryClient,
 }: GetRowsFromBlocksArgs) => {
   const firstBlock = Math.floor(startRow / blockSize) * blockSize;
   const lastBlock = Math.floor((endRow - 1) / blockSize) * blockSize;
@@ -104,7 +108,7 @@ const getRowsFromBlocks = async ({
       search, skip: block, limit: blockSize, sortModel,
     });
 
-    blockRequests.push(api.queryClient.fetchQuery({
+    blockRequests.push(queryClient.fetchQuery({
       queryKey: tuple('/query', payload),
       queryFn: async ({ queryKey: [, body] }) => api.query(body),
     }));
@@ -113,7 +117,7 @@ const getRowsFromBlocks = async ({
   (await Promise.all(blockRequests)).forEach((block) => data.push(...block));
 
   data.forEach((record) => {
-    api.queryClient.setQueryData(
+    queryClient.setQueryData(
       ['/query', { target: [record['@rid']], neighbors: DEFAULT_NEIGHBORS }],
       [record],
     );
@@ -136,6 +140,7 @@ const DataView = (): React.JSX.Element => {
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState<HTMLButtonElement | null>(null);
   const [detailsRowId, setDetailsRowId] = useState<string | null>(null);
   const grid = useGrid();
+  const queryClient = useQueryClient();
 
   const payload = useMemo(() => getQueryPayload({
     search, count: true,
@@ -167,7 +172,7 @@ const DataView = (): React.JSX.Element => {
           sortModel,
         }) => {
           const result = await getRowsFromBlocks({
-            startRow, endRow, sortModel, search, blockSize: DEFAULT_BLOCK_SIZE,
+            startRow, endRow, sortModel, search, blockSize: DEFAULT_BLOCK_SIZE, queryClient,
           });
           return [result, totalRows] as const;
         };
@@ -179,7 +184,7 @@ const DataView = (): React.JSX.Element => {
           }).catch(() => failCallback());
       },
     });
-  }, [grid.ref, search, totalRows]);
+  }, [grid.ref, search, totalRows, queryClient]);
 
   useEffect(() => {
     // normalize the input query
@@ -281,6 +286,7 @@ const DataView = (): React.JSX.Element => {
         sortModel: gridApi.sortController.getSortModel(),
         search,
         blockSize: DEFAULT_BLOCK_SIZE,
+        queryClient,
       });
       // @ts-expect-error doesn't exist?
       const { gridOptions } = gridApi.getModel().gridOptionsWrapper;
@@ -305,7 +311,7 @@ const DataView = (): React.JSX.Element => {
 
       gridApi.setGridOption('datasource', tempDataSource);
     }
-  }, [grid.ref, initializeGrid, isExportingData, search, totalRows]);
+  }, [grid.ref, initializeGrid, isExportingData, search, totalRows, queryClient]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 

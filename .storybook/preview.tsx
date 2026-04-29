@@ -1,3 +1,5 @@
+import './preview.css';
+
 import React, { Suspense } from 'react';
 import ThemeProvider from '../src/theme';
 import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
@@ -44,7 +46,7 @@ export const http = {
         return wrapAsResponse(resolver(info));
       })
     },
-    query: (resolver: (body: QueryBody) => (HttpResponse<Partial<GeneralRecordType>[]> | Partial<GeneralRecordType>[])) => http.gkb.post('/api/query', resolver)
+    query: (resolver: (body: QueryBody) => (HttpResponse<Partial<GeneralRecordType>> | HttpResponse<{ message?: string }> | Partial<GeneralRecordType>[])) => http.gkb.post('/api/query', resolver)
   }
 }
 

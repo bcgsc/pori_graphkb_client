@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 interface DefaultPopupComponentProps<D extends object> {
   /** description of object. Defaults to title of card if title is not present */

@@ -15,6 +15,7 @@ import React, {
   useState,
 } from 'react';
 
+import useGrid from '@/components/hooks/useGrid';
 import RecordFormDialog from '@/components/RecordFormDialog';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
@@ -36,6 +37,7 @@ interface AdminTableProps {
 const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProps) => {
   const [recordOpen, setRecordOpen] = useState<GeneralRecordType | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const grid = useGrid();
 
   const handleOpenEditDialog = (record) => {
     setRecordOpen(record);
@@ -107,6 +109,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
     },
     {
       headerName: 'Actions',
+      colId: 'actions',
       cellRenderer: 'Actions',
       pinned: 'right',
       sortable: false,
@@ -156,6 +159,7 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
         }}
       >
         <AgGridReact
+          {...grid.props}
           columnDefs={colDefs}
           components={{ EmailLink, Actions }}
           defaultColDef={{

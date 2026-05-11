@@ -1,60 +1,38 @@
 import './index.scss';
 
 import {
-  Button,
   Tab,
   Tabs,
-  Typography,
 } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   NavLink,
-  Route,
-  Routes,
+  Outlet,
   useLocation,
-  useNavigate,
-} from 'react-router-dom';
+} from 'react-router';
 import slugify from 'slugify';
-
-import { useAuth } from '@/components/Auth';
-
-import AboutClasses from './components/AboutClasses';
-import AboutMain from './components/AboutMain';
-import AboutUsageTerms from './components/AboutUsageTerms';
-import GettingStarted from './components/GettingStarted';
-import Matching from './components/Matching';
-import AboutNotation from './components/Notation';
 
 type TabsList = {
   label: string;
-  component: (props?: { [key: string]: unknown }) => React.JSX.Element;
   slug?: string;
   uri?: string;
 }[];
 
 const defaultTabsList: TabsList = [
-  { label: 'About', component: AboutMain },
-  { label: 'Getting Started', component: GettingStarted },
-  { label: 'Classes', component: AboutClasses },
-  { label: 'Notation', component: AboutNotation },
-  { label: 'Matching', component: Matching },
-  { label: 'Terms of Use', component: AboutUsageTerms, slug: '/terms' },
+  { label: 'About' },
+  { label: 'Getting Started' },
+  { label: 'Classes' },
+  { label: 'Notation' },
+  { label: 'Matching' },
+  { label: 'Terms of Use', slug: '/terms' },
 ];
 
 const AboutView = () => {
   const { pathname: currentUri } = useLocation();
-  const auth = useAuth();
-  const navigate = useNavigate();
-
-  const routeChange = () => {
-    const path = '/about/terms';
-    navigate(path);
-  };
 
   const [tabIndex, setTabIndex] = useState(0);
 
   const baseUri = '/about';
-  const tabsRequiringTermsAgreement = ['/about/classes', '/about/matching'];
 
   const uriLookup = useMemo(() => ({}), []);
 
@@ -77,32 +55,6 @@ const AboutView = () => {
     setTabIndex(value);
   };
 
-  const tabsContent = () => {
-    if (!auth.user?.signedLicenseAt && tabsRequiringTermsAgreement.includes(currentUri)) {
-      return (
-        <div className="license-agreement-message">
-          <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
-          <Typography paragraph>User must sign the license agreement before they can access data.</Typography>
-          <Button onClick={routeChange}>Terms of Use and License Agreement</Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="tabs-content">
-        <Routes>
-          {tabsList.map(({ slug, label, component }) => (
-            <Route
-              key={label}
-              Component={component}
-              path={slug}
-            />
-          ))}
-        </Routes>
-      </div>
-    );
-  };
-
   return (
     <div className="about-page">
       <Tabs className="tabs-bar" onChange={handleTabChange} value={tabIndex} variant="scrollable">
@@ -116,7 +68,7 @@ const AboutView = () => {
           />
         ))}
       </Tabs>
-      {tabsContent()}
+      <div className="tabs-content"><Outlet /></div>
     </div>
   );
 };

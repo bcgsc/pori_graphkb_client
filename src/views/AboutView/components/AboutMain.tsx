@@ -15,8 +15,7 @@ const AboutMain = () => {
   const auth = useAuth();
   const hasSignedLicense = !!auth.user?.signedLicenseAt;
 
-  const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
-
+  const guiVersion = process.env.REACT_APP_VERSION || process.env.npm_package_version || '';
   const { data: chartData } = useQuery({
     queryKey: ['/stats?classList=Statement&groupBy=source'],
     queryFn: async ({ queryKey: [route] }) => api.get(route),

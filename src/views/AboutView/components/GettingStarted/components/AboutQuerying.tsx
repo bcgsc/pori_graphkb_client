@@ -7,7 +7,7 @@ import {
 import React from 'react';
 import {
   Link,
-} from 'react-router-dom';
+} from 'react-router';
 
 import queryResults from '@/static/images/table-view.png';
 

@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import useGrid from '@/components/hooks/useGrid';
 import api from '@/services/api';

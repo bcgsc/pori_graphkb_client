@@ -1,5 +1,5 @@
 import * as qs from 'qs';
-import { NavigateFunction } from 'react-router-dom';
+import { NavigateFunction } from 'react-router';
 
 const CLASS_MODEL_PROP = '@class';
 

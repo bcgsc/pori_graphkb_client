@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { expect, fn, screen } from 'storybook/test';
 
 import preview from '#.storybook/preview';

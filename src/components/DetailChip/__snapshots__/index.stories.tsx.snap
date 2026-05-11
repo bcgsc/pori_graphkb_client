@@ -383,6 +383,7 @@ exports[`WithGetLink snapshot 1`] = `
               bob (#19:0)
             </h4>
             <a
+              data-discover="true"
               href="/test"
               target="_blank"
             >

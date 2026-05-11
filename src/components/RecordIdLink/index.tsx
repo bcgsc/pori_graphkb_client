@@ -2,7 +2,7 @@ import './index.scss';
 
 import { OpenInNew } from '@mui/icons-material';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 interface RecordIdLinkProps {
   recordClass: string;

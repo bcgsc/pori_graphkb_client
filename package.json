@@ -48,7 +48,7 @@
     "react-dom": "^19.2.4",
     "react-google-charts": "^3.0.15",
     "react-query": "npm:@tanstack/react-query@^5.96.1",
-    "react-router-dom": "^6.22.2",
+    "react-router": "^7.14.2",
     "slugify": "^1.4.0",
     "typescript": "5.1",
     "use-debounce": "^3.4.2",
@@ -104,14 +104,14 @@
     "build": "vite build",
     "build:ci": "vite build; vite build --mode staging; NODE_ENV=development vite build --mode development",
     "compress": "tar cvfz v${npm_package_version}.tar.gz dist",
-    "test": "TZ=UTC vitest",
+    "test": "REACT_APP_VERSION=1.0.0 TZ=UTC vitest",
     "test:ci": "npm run test --",
     "lint": "eslint src --config .eslintrc.json --quiet",
     "check-types": "tsc --noEmit --project ./tsconfig.check.json",
     "serve": "NODE_ENV=development serve dist/development -s",
     "commit": "git-cz",
-    "storybook": "TZ=UTC storybook dev -p 6006",
-    "build-storybook": "TZ=UTC storybook build"
+    "storybook": "REACT_APP_VERSION=1.0.0 TZ=UTC storybook dev -p 6006",
+    "build-storybook": "REACT_APP_VERSION=1.0.0 TZ=UTC storybook build"
   },
   "config": {
     "commitizen": {

@@ -9,7 +9,7 @@ import React, {
   useEffect, useRef,
 } from 'react';
 import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import useGrid from '@/components/hooks/useGrid';
 import { GeneralRecordType } from '@/components/types';

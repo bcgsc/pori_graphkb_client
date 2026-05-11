@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import {
   useLocation, useNavigate, useParams, useSearchParams,
-} from 'react-router-dom';
+} from 'react-router';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -19,7 +19,7 @@ import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
-const NewRecordView = ({ modelName: propsModelName }) => {
+const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();

@@ -8,7 +8,7 @@ import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { useDebounce } from 'use-debounce';
 
 import { tuple } from '@/components/util';

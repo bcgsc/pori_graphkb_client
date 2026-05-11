@@ -30,15 +30,23 @@ function replaceNonDeterministicValues(value) {
   // react useId
   fixed = fixed.replace(/"\_r\_[0-9a-z]+_/g, '"_r_XXXX_')
 
+  // aria-live description from ag-grid that doesn't always update the same
+  fixed = fixed.replace(/<div[^>]*aria-relevant="additions text"[^>\/]*(>[^/]*<\/div>|\/>)/g, '');
+  // other generated ag-grid ids
+  fixed = fixed.replace(/id="cell-[^-"]+-[^-"]+"/g, (matched) => matched.replaceAll(/\d+/g, 'XXXX'));
+  fixed = fixed.replace(/id="ag-\d+/g, 'id="ag-XXXX');
+
+  const flakyAgGridClasses = ['ag-row-not-inline-editing','ag-body-horizontal-content-no-gap', 'ag-scrollbar-scrolling', 'ag-invisible']
+
   fixed = fixed.replaceAll(/class="([^"]+)"/g, (_, classnames) => {
-    const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).sort().join(' ');
+    const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).filter((name) => !flakyAgGridClasses.includes(name)).sort().join(' ');
     return `class="${classes}"`;
   });
 
   fixed = fixed.replaceAll(/[ ]*style="([^"]+)"\n?/g, '');
 
   fixed = fixed.replaceAll(new RegExp(`"${today}"`, 'g'), '":today:"');
-  fixed = fixed.replace(/page last updated \d+ [a-z]+ ago/g, 'page last updated XXXX ago');
+  fixed = fixed.replace(/\d+ [a-z]+ ago/g, 'XXXX XXXX ago');
 
   // remove html comments
   fixed = fixed.replace(/<!--[ a-zA-Z0-9_-]+-->/g, '');

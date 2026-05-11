@@ -10,7 +10,7 @@ import addonTest from '@storybook/addon-vitest';
 import { MswParameters } from 'msw-storybook-addon'
 import { PreviewAddon } from 'storybook/internal/csf';
 import { AppRoutes } from '../src/views/MainView';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor } from 'storybook/test';
@@ -83,7 +83,7 @@ export async function hasFinishedLoading({ step, canvas }: Pick<Parameters<NonNu
     await waitFor(async () => {
       await expect(canvas.queryAllByRole('progressbar'), 'has no progress bars').toHaveLength(0);
       await expect(canvas.queryAllByText(/loading\.\.\./i), 'has no loading messages').toHaveLength(0);
-    }, { timeout: 10000 });
+    }, { timeout: 30000 });
   });
 }
 

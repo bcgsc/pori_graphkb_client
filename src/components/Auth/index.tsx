@@ -8,7 +8,7 @@ import React, {
   createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo,
 } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router';
 
 import api from '@/services/api';
 
@@ -154,18 +154,14 @@ const Centered = ({ children }: { children: ReactNode }) => (
 );
 
 interface AuthenticatedRouteProps {
-  component: React.ComponentType<any>;
-  componentProps?: any;
   admin?: boolean;
   signedLicenseRequired?: boolean;
 }
 
-const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
+const AuthenticatedLayout = (props: AuthenticatedRouteProps) => {
   const {
     admin = false,
     signedLicenseRequired = false,
-    component: Comp,
-    componentProps = {},
   } = props;
   const auth = useAuth();
   const navigate = useNavigate();
@@ -218,15 +214,13 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
       </Centered>
     );
   }
-  const cp = componentProps || {};
 
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Comp {...cp} />;
+  return <Outlet />;
 };
 
 export {
   AuthContext,
-  AuthenticatedRoute,
+  AuthenticatedLayout,
   AuthProvider,
   useAuth,
 };

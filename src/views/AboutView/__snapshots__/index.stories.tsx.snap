@@ -1,0 +1,3869 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AboutTab snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="0"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-page__content"
+        >
+          <div
+            class="pie-partner"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Knowlegebase is a curated database of variants in cancer and their therapeutic, biological, diagnostic, and prognostic implications according to literature. The main use of Knowlegebase is to act as the link between the known and published variant information and the expermientally collected data.
+            </p>
+            <div
+              class="about-page__version-chips"
+            >
+              <div
+                class="MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  DB undefined
+                </span>
+              </div>
+              <div
+                class="MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  API vundefined
+                </span>
+              </div>
+              <div
+                class="MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  Schema vundefined
+                </span>
+              </div>
+              <div
+                class="MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiChip-root"
+              >
+                <span
+                  class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                >
+                  Client v1.0.0
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ClassesTab snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="0"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="auth-centered"
+        >
+          <h2
+            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Forbidden
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            User must sign the license agreement before they can access data.
+          </p>
+          <button
+            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Terms of Use and License Agreement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ClassesTabSigned snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="0"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-page__content"
+        >
+          <h1
+            class="MuiTypography-h1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Record Classes
+          </h1>
+          <p
+            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            There are a number of record class types that exist in GraphKB. Descriptions of select classes can be found below
+          </p>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Abstract
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Abstract from a publication or conference proceeding
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  AnatomicalEntity
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Physiological structures such as body parts or tissues
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  CatalogueVariant
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Variant as described by an identifier in an external database/source
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  CategoryVariant
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Variants which cannot be described by a particular position and use common terms instead
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  ClinicalTrial
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  CuratedContent
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Evidence which has been summarized, amalgemated, or curated by some external database/society
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Disease
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  a disorder of structure or function in an organism that produces specific signs or symptoms or that affects a specific location
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  EvidenceLevel
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Evidence Classification Term
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Feature
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Biological Feature. Can be a gene, protein, etc.
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  LicenseAgreement
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Pathway
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Primarily describes biological pathways
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  PositionalVariant
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Variants which can be described by there position on some reference sequence
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Publication
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  a book, journal, manuscript, or article
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Signature
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Characteristic pattern of mutations or changes
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  External database, collection, or other authority which is used as reference for other entries
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Statement
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Decomposed sentences linking variants and ontological terms to implications and evidence
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Therapy
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Therapy or Drug
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  User
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  UserGroup
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The role or group which users can belong to. Defines permissions
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Vocabulary
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Curated list of terms used in classifying variants or assigning relevance to statements
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+          </ul>
+          <h2
+            class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Relationship (Edge) Classes
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Relationship classes are types of edge records that can be used to relate records to one another
+          </p>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  AliasOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The source record is an equivalent representation of the target record, both of which are from the same source
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Cites
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Generally refers to relationships between publications. For example, some article cites another
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  CrossReferenceOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The source record is an equivalent representation of the target record from a different source
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  DeprecatedBy
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The target record is a newer version of the source record
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  ElementOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The source record is part of (or contained within) the target record
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  GeneralizationOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The source record is a less specific (or more general) instance of the target record
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Infers
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Given the source record, the target record is also expected. For example given some genomic variant we infer the protein change equivalent
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  OppositeOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  SubClassOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The source record is a subset of the target record
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                10
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  TargetOf
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  The source record is a target of the target record. For example some gene is the target of a particular drug
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GettingStartedTab snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="0"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-page__content getting-started"
+        >
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                W
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/getting-started#welcome"
+                  >
+                    Welcome
+                  </a>
+                </span>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                C
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/getting-started#core-concepts"
+                  >
+                    Core Concepts
+                  </a>
+                </span>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                S
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/getting-started#statement-examples"
+                  >
+                    Statement Examples
+                  </a>
+                </span>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                Q
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/getting-started#querying"
+                  >
+                    Querying
+                  </a>
+                </span>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                A
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/getting-started#adding-data"
+                  >
+                    Adding Data
+                  </a>
+                </span>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                G
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/getting-started#graph-view"
+                  >
+                    Graph View
+                  </a>
+                </span>
+              </div>
+            </li>
+          </ul>
+          <div
+            class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
+            id="welcome"
+          >
+            <div
+              class="MuiCardContent-root css-XXXX-MuiCardContent-root"
+            >
+              <h2
+                class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                Welcome to GraphKB
+              </h2>
+              <p
+                class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                If you are a new User there are a couple things to do to get started. You will need to sign the end user license agreement in the terms Card 
+                <a
+                  data-discover="true"
+                  href="/about/terms"
+                >
+                  here
+                </a>
+                . Once you have signed, you will be able to query GraphKB using this interface of the API. Next you should read through the sections below.
+              </p>
+            </div>
+          </div>
+          <div
+            class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
+            id="core-concepts"
+          >
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Core Concepts
+            </h2>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              There are 3 main data types in GraphKB: Statements, Ontologies, and Variants.
+            </p>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Statements
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Statements are used to represent the interpretive content or assertions. Statements make up most of the interpretive content of GraphKB. Statements are decomposed sentences which link conditions to a conclusion. There are four main elements to a statement
+            </p>
+            <img
+              alt="Statement Schema"
+              src="https://graphkbdev-api.bcgsc.ca/public/pori-statement-schema.svg"
+            />
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Subject
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    This is the element which the relevance of the statement applies to
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Relevance
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    This adds meaning to a statement and applies to the previous element
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Conditions
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    This is the statement context. It is a series of required conditions for the statement to be applicable/true
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Evidence
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    One or more pieces of evidence (Literature, DB, etc) which support this statement
+                  </p>
+                </div>
+              </li>
+            </ul>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Variants
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Variants can be the well known small mutations (KRAS:p.G12D), fusions, signature variants, expression variants, copy variants, etc. Variant Records are composed of three key attributes: reference1, reference2, and type. All of these are foreign keys to an ontology record. Most often reference1/2 are genes and type is a Vocabulary record.
+            </p>
+            <img
+              alt="Variant Schema"
+              src="https://graphkbdev-api.bcgsc.ca/public/pori-positional-variant-schema.svg"
+            />
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    reference1
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    the reference element this variant is defined with respect to. Most often a gene
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    reference2
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    reference2 is only used for fusions and structural variants
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    type
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    This is the class this variant belongs to (ex. indel)
+                  </p>
+                </div>
+              </li>
+            </ul>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Ontology Terms
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Ontologies can be used to represent any set of controlled vocabulary. Important features of an ontology record in GraphKB are
+            </p>
+            <img
+              alt="Ontology Schema"
+              src="https://graphkbdev-api.bcgsc.ca/public/pori-ontology-schema.svg"
+            />
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    source
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    This is the database or external collection that defines this record (ex. PubMed)
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    sourceId
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    This is the ID for this record as defined by its source definition (ex. PMID:1234). This is essential for tracibility or records
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    name
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    The name is generally the longer form and more human readable form to represent this record. However it can be the same as the sourceId when no other name has been attributed
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    description
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    The definition of the ontology term
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div
+            class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
+            id="statement-examples"
+          >
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Statement Examples
+            </h2>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Somtimes it can be confusing how to decompose the content you want to enter into a statement. There are recurring type of statements being entered, we will go through examples of some of these types in detail below.
+            </p>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Before a statement can be entered, all of the elements of the statement must first exist so that they can be linked to. In most cases the required elements (variants, therapies, vocabulary, etc.) will already exist. However if they do not, they should be created prior to attempting to input the statement.
+            </p>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Eligibility for a Clinical Trial
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              For this example we are attempting to input the following. There is a clinical trial with the trial id NCT0444444 (Fictional trial ID). This trial requires participants to have mutations in the gene EGFR for Eligibility. It also requires the patients to be diagnosed with Lung Adenocarcinoma. Decomposed this becomes
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    subject
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    NCT0444444: Here 'Eligibility' applies to the clinical trial 'NCT0444444'
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Relevance
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Eligibility: The purpose or relevance of this statement is 'Eligibility'. This is what we are trying to communicate
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    conditions
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Lung Adenocarcinoma, and EGFR mutation: These are the conditions required
+                  </p>
+                </div>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    evidence
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    NCT0444444: Here the support is also the clinical trial since it is responsible for defining the eligibility requirements
+                  </p>
+                </div>
+              </li>
+            </p>
+          </div>
+          <div
+            class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
+            id="querying"
+          >
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="about-page__querying"
+            >
+              Querying
+            </h2>
+            <p
+              class="MuiTypography-body2 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              There are 2 ways to query GraphKB. The basic/quick search is found on the home page of the application and the search Icon will lead users to the advanced search option For more
+            </p>
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root search-list"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <a
+                  data-discover="true"
+                  href="/query"
+                >
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                  >
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      Basic/Quick Search
+                    </span>
+                  </div>
+                </a>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  This is the simplest way to query. It is the main page view of this application and contains a single text box for input
+                </p>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <a
+                  data-discover="true"
+                  href="/query-advanced"
+                >
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                  >
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      Advanced Search
+                    </span>
+                  </div>
+                </a>
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  This view is for advanced users and lets the user build their own queries from scratch
+                </p>
+              </li>
+            </ul>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="about-results-table"
+            >
+              Viewing Results (Table)
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              After sending a query, result records will be loaded into the Table view
+            </p>
+            <img
+              alt="Query Results"
+              id="query-table-view"
+              src="/src/static/images/table-view.png"
+            />
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Clicking any row in table view will open the details panel. From the details panel you can view or edit the record in a new window
+            </p>
+            <h4
+              class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Configuring Table Options
+            </h4>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Clicking the top-right ellipsis to modify the visible columns or export the current table to a document
+            </p>
+          </div>
+          <div
+            class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
+            id="adding-data"
+          >
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="about-forms"
+            >
+              GraphKB Forms
+            </h2>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              When filling out forms, certain fields will behave differently from others based on the type of input. The following are several of the core field types that you will encounter when interacting with GraphKB through this GUI:
+            </p>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              List Fields
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              List fields are used for properties that are lists of strings. To use these, simply type the item you wish to add to the list, and press enter or click the add button to add it to the list. Items can be deleted by backspacing against them or clicking the
+              <q>
+                x
+              </q>
+               shown in the example image.
+            </p>
+            <img
+              alt="List Fields"
+              src="/src/static/images/list-fields.png"
+            />
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Link Fields
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Some records in GraphKB are dependent on or reference others. To express these links in forms, a small query bar is included to allow you to find the linked record you need. Start typing and wait for the dropdown list of items to appear for you to pick from. The default query logic is to match the record
+              <q>
+                name
+              </q>
+               property. If you require more control over finding this linked record, some link fields have an expand button that creates a mini-form to fill out, similar to the Advanced Query form. You can clear the existing linked record by clicking the
+              <q>
+                x
+              </q>
+               as shown in the example image.
+            </p>
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root about-page__image-list css-XXXX-MuiListItem-root"
+              >
+                <h4
+                  class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Before Input
+                </h4>
+                <img
+                  alt="blank link field"
+                  src="/src/static/images/single-autocomplete-1.png"
+                />
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root about-page__image-list css-XXXX-MuiListItem-root"
+              >
+                <h4
+                  class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Auto-completion on Type
+                </h4>
+                <img
+                  alt="searching link field"
+                  src="/src/static/images/single-autocomplete-2.png"
+                />
+              </li>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root about-page__image-list css-XXXX-MuiListItem-root"
+              >
+                <h4
+                  class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Selected Input
+                </h4>
+                <img
+                  alt="selected link field"
+                  src="/src/static/images/single-autocomplete-3.png"
+                />
+              </li>
+            </ul>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Select Fields
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Select fields are used to select an item from a set of options. Most selects are able to be set to a null/empty value, but for mandatory selects an option must be chosen before submitting the form.
+            </p>
+            <img
+              alt="Select Fields"
+              src="/src/static/images/select-fields.png"
+            />
+          </div>
+          <div
+            class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
+            id="graph-view"
+          >
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="about-results-graph"
+            >
+              Graph View
+            </h2>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              The Graph view can be used to view clusters of records and their relationships with eachother. Click and drag nodes with your mouse or finger, and open the Graph settings to change labels, coloring schemes, and physical behavior of the graph and its constituents.
+            </p>
+            <img
+              alt="Graph"
+              src="/src/static/images/graph-view.png"
+            />
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="about-results-graph"
+            >
+              Graph Node Actions
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              After clicking a graph node or link, you will see this actions ring appear, which will allow you to
+            </p>
+            <div
+              class="about-page__column-image"
+            >
+              <img
+                alt="Graph Node Actions"
+                src="/src/static/images/graph-actions.png"
+              />
+              <p
+                class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                <ul
+                  class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        Expand
+                      </span>
+                      <p
+                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        Expand the record to view its related records
+                      </p>
+                    </div>
+                  </li>
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        Hide
+                      </span>
+                      <p
+                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        Hide the record from the graph
+                      </p>
+                    </div>
+                  </li>
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        Details
+                      </span>
+                      <p
+                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        View record details in a side drawer
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MatchingTab snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="0"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="auth-centered"
+        >
+          <h2
+            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Forbidden
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            User must sign the license agreement before they can access data.
+          </p>
+          <button
+            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Terms of Use and License Agreement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MatchingTabSigned snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="0"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="match-view"
+        >
+          <h2
+            class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root match-view__title"
+          >
+            Visualize GraphKB (python) Matching
+          </h2>
+          <h6
+            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root match-view__description"
+          >
+            Input a term below to display what terms it would match using the GraphKB python adapter.
+          </h6>
+          <div
+            class="MuiFormControl-root css-XXXX-MuiFormControl-root match-view__input option-select"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="option-select-"
+            >
+              record class
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                role="combobox"
+                tabindex="0"
+              >
+                <div
+                  class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Vocabulary
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                  />
+                </div>
+              </div>
+              <input
+                aria-hidden="true"
+                aria-invalid="false"
+                class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                id="option-select-"
+                name=""
+                tabindex="-1"
+                value="Vocabulary"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                data-testid="ArrowDropDownIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="m7 10 5 5 5-5z"
+                />
+              </svg>
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+            />
+          </div>
+          <div
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root match-view__input"
+          >
+            <label
+              class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              root term
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-disabled MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+                disabled=""
+                id="_r_XXXX_"
+                type="text"
+                value=""
+              />
+            </div>
+            <p
+              class="Mui-disabled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              Top level term to match. Exclude parents of this term
+            </p>
+          </div>
+          <div
+            class="match-view__input search-box"
+            role="textbox"
+            tabindex="0"
+          >
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+            >
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <input
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="search-box__input"
+                  id="_r_XXXX_"
+                  type="text"
+                  value=""
+                />
+                <div
+                  class="MuiInputAdornment-positionEnd MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                >
+                  <button
+                    class="MuiButtonBase-root MuiIconButton-colorPrimary MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+                    data-testid="search-box__button"
+                    tabindex="0"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                      data-testid="SearchIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <p
+                class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Input a term to Match
+              </p>
+            </div>
+          </div>
+          <div
+            class="match-view__matches"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NotationTab snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="0"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-notation about-page__content"
+        >
+          <h2
+            class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Positional Variant Notation in GraphKB
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Positional variants in GraphKB use notation that is an extended form of 
+            <a
+              href="https://varnomen.hgvs.org/"
+            >
+              HGVS
+            </a>
+            . The traditional HGVS notation has been extended to support additional types and coordinate systems (ex. cytoband positions, exon numbers, etc.). The parser is implemented as a separate node package, further documentation on the parser and the notation it supports can be found with the 
+            <a
+              href="https://github.com/bcgsc/pori_graphkb_parser"
+            >
+              repository
+            </a>
+             for that package
+          </p>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            You can test out the parser below to see how it processes notation and to check if certain notation is valid
+          </p>
+          <div
+            class="notation-parser"
+          >
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root notation-parser__input"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="false"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                notation
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <input
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+                  id="_r_XXXX_"
+                  name="notation"
+                  type="text"
+                  value=""
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Input notation to be parsed
+              </p>
+            </div>
+          </div>
+          <h3
+            class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Examples
+          </h3>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Some examples of non-standard HGVS notation supported by the GraphKB parser are given below
+          </p>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  (EWSR1,FLI1):fusion(e.1,e.2)
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  A fusion of exon 1 of EWSR1 to exon2 of FLI1
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  14:y.q12.1_q12.2del
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  deletion of the cytoband section on chromosome 14, arm Q major band 12 minor bands 1 and 2
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NotationTabWithParsedValue snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="0"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="-1"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-notation about-page__content"
+        >
+          <h2
+            class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Positional Variant Notation in GraphKB
+          </h2>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Positional variants in GraphKB use notation that is an extended form of 
+            <a
+              href="https://varnomen.hgvs.org/"
+            >
+              HGVS
+            </a>
+            . The traditional HGVS notation has been extended to support additional types and coordinate systems (ex. cytoband positions, exon numbers, etc.). The parser is implemented as a separate node package, further documentation on the parser and the notation it supports can be found with the 
+            <a
+              href="https://github.com/bcgsc/pori_graphkb_parser"
+            >
+              repository
+            </a>
+             for that package
+          </p>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            You can test out the parser below to see how it processes notation and to check if certain notation is valid
+          </p>
+          <div
+            class="notation-parser"
+          >
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root notation-parser__input"
+            >
+              <label
+                class="Mui-focused MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                notation
+              </label>
+              <div
+                class="Mui-focused MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <input
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input css-XXXX-MuiInputBase-input-MuiInput-input"
+                  id="_r_XXXX_"
+                  name="notation"
+                  type="text"
+                  value="(EWSR1,FLI1):fusion(e.1,e.2)"
+                />
+              </div>
+              <p
+                class="Mui-focused MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Input notation to be parsed
+              </p>
+            </div>
+            <table
+              class="MuiTable-root css-XXXX-MuiTable-root notation-parser__results"
+            >
+              <thead
+                class="MuiTableHead-root css-XXXX-MuiTableHead-root"
+              >
+                <tr
+                  class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <th
+                    class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                    scope="col"
+                  >
+                    Property
+                  </th>
+                  <th
+                    class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                    scope="col"
+                  >
+                    Parsed Value
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+              >
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break1Repr
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    e.1
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break1Start.@class
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    ExonicPosition
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break1Start.pos
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    1
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break1Start.prefix
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    e
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break2Repr
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    e.2
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break2Start.@class
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    ExonicPosition
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break2Start.pos
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    2
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    break2Start.prefix
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    e
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    multiFeature
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  />
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    prefix
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    e
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    reference1
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    EWSR1
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    reference2
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    FLI1
+                  </td>
+                </tr>
+                <tr
+                  class="MuiTableRow-root css-XXXX-MuiTableRow-root"
+                >
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    type
+                  </td>
+                  <td
+                    class="MuiTableCell-body MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
+                  >
+                    fusion
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h3
+            class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Examples
+          </h3>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Some examples of non-standard HGVS notation supported by the GraphKB parser are given below
+          </p>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  (EWSR1,FLI1):fusion(e.1,e.2)
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  A fusion of exon 1 of EWSR1 to exon2 of FLI1
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  14:y.q12.1_q12.2del
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  deletion of the cytoband section on chromosome 14, arm Q major band 12 minor bands 1 and 2
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TermsTab snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="0"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-page__content"
+        >
+          <h2
+            class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            GraphKB Terms of Use
+          </h2>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                T
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/terms#undefined"
+                  >
+                    Term A
+                  </a>
+                </span>
+              </div>
+            </li>
+          </ul>
+          <div>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Term A
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              You must provide free oranges for the team.
+            </p>
+          </div>
+          <div
+            class="about-page__sign-off"
+          >
+            <label
+              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+            >
+              <span
+                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
+              >
+                <input
+                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                  data-indeterminate="false"
+                  type="checkbox"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="CheckBoxOutlineBlankIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                I have read and understood the terms of use
+              </span>
+            </label>
+            <div
+              class="action-button"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            page last updated
+            over 26 years
+             ago
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TermsTabSigned snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="about-page"
+    >
+      <div
+        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      >
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
+        />
+        <div
+          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
+        >
+          <div
+            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
+            role="tablist"
+          >
+            <a
+              aria-current="page"
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about"
+              role="tab"
+              tabindex="-1"
+            >
+              About
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/getting-started"
+              role="tab"
+              tabindex="-1"
+            >
+              Getting Started
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/classes"
+              role="tab"
+              tabindex="-1"
+            >
+              Classes
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/notation"
+              role="tab"
+              tabindex="-1"
+            >
+              Notation
+            </a>
+            <a
+              aria-selected="false"
+              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/matching"
+              role="tab"
+              tabindex="-1"
+            >
+              Matching
+            </a>
+            <a
+              aria-current="page"
+              aria-selected="true"
+              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
+              data-discover="true"
+              href="/about/terms"
+              role="tab"
+              tabindex="0"
+            >
+              Terms of Use
+            </a>
+          </div>
+          <span
+            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
+          />
+        </div>
+      </div>
+      <div
+        class="tabs-content"
+      >
+        <div
+          class="about-page__content"
+        >
+          <h2
+            class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            GraphKB Terms of Use
+          </h2>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root letter-icon letter-icon--contained letter-icon--secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                T
+              </button>
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  <a
+                    href="about/terms#undefined"
+                  >
+                    Term A
+                  </a>
+                </span>
+              </div>
+            </li>
+          </ul>
+          <div>
+            <h3
+              class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Term A
+            </h3>
+            <p
+              class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              You must provide free oranges for the team.
+            </p>
+          </div>
+          <div
+            class="about-page__sign-off"
+          >
+            <label
+              class="Mui-disabled MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+            >
+              <span
+                class="Mui-checked Mui-disabled MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
+              >
+                <input
+                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                  data-indeterminate="false"
+                  disabled=""
+                  type="checkbox"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="CheckBoxIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="Mui-disabled MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                I have read and understood the terms of use
+              </span>
+            </label>
+            <div
+              class="action-button"
+            >
+              <button
+                class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+                disabled=""
+                tabindex="-1"
+                type="button"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+          <p
+            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            page last updated
+            over 26 years
+             ago
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

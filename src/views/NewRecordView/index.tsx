@@ -5,9 +5,7 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import {
-  useLocation, useNavigate, useParams, useSearchParams,
-} from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -15,14 +13,11 @@ import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
-import util from '@/services/util';
 
 const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 
 const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [searchParams] = useSearchParams();
   const { modelName: paramsModelName } = useParams<{ modelName: string }>();
   const modelName = propsModelName || paramsModelName;
 
@@ -36,15 +31,6 @@ const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) =>
       navigate('/');
     }
   }, [navigate]);
-
-  /**
-   * Handles the redirect if an error occurs in the child component
-   */
-  const handleError = useCallback(({ error = {} }: { error: { name?: string; message?: string } }) => {
-    const { name } = error;
-    const massagedMsg = util.massageRecordExistsError(error);
-    util.handleErrorSaveLocation({ name, message: massagedMsg }, { navigate, pathname, search: searchParams.toString() });
-  }, [navigate, pathname, searchParams]);
 
   let innerComponent: ReactNode = null;
 
@@ -62,14 +48,12 @@ const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) =>
   ) {
     innerComponent = (
       <NewVariant
-        onError={handleError}
         onSubmit={handleSubmit}
       />
     );
   } else if (modelName.toLowerCase() === 'statement') {
     innerComponent = (
       <StatementForm
-        onError={handleError}
         onSubmit={handleSubmit}
         title="Create a new Statement Record"
         variant={FORM_VARIANT.NEW}
@@ -79,7 +63,6 @@ const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) =>
     innerComponent = (
       <RecordForm
         modelName={modelName}
-        onError={handleError}
         onSubmit={handleSubmit}
         title={`Create a new ${modelName} Record`}
         variant={FORM_VARIANT.NEW}

@@ -5,6 +5,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Buffer } from 'buffer';
+import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import React, {
   useCallback, useEffect, useMemo,
@@ -12,8 +13,7 @@ import React, {
 } from 'react';
 import { useQuery } from 'react-query';
 import {
-  NavigateOptions,
-  useLocation, useNavigate, useParams, useSearchParams,
+  useLocation, useNavigate, useParams,
 } from 'react-router';
 
 import RecordForm from '@/components/RecordForm';
@@ -25,7 +25,6 @@ import {
 import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import schema from '@/services/schema';
-import util from '@/services/util';
 
 window.Buffer = window.Buffer || Buffer;
 
@@ -70,6 +69,7 @@ const RecordView = ({
   variant: FORM_VARIANT;
 }) => {
   const navigate = useNavigate();
+  const snackbar = useSnackbar();
   const {
     rid,
     modelName: modelNameParams,
@@ -79,22 +79,12 @@ const RecordView = ({
   const modelNameParam = modelNameParamProp ?? modelNameParams;
 
   const { pathname: path } = useLocation();
-  const [searchParams] = useSearchParams();
   const [modelName, setModelName] = useState(modelNameParam || '');
 
   useEffect(() => {
     if (path) {
-      try {
-        const name = getModelFromName(path, modelNameParam, variant);
-        setModelName(name as ModelNamesType);
-      } catch (err) {
-        if (err instanceof Error) {
-          const error: NavigateOptions = { state: { error: { name: err.name, message: err.toString() } } };
-          navigate('/error', error);
-        } else {
-          console.error(err);
-        }
-      }
+      const name = getModelFromName(path, modelNameParam, variant);
+      setModelName(name as ModelNamesType);
     }
   }, [path, modelNameParam, variant, navigate]);
 
@@ -116,37 +106,18 @@ const RecordView = ({
     }
   }, [navigate, variant]);
 
-  /**
-   * Handles the redirect if an error occurs in the child component
-   */
-  const handleError = useCallback(({ error = {} }: { error?: { name?: string; message?: string } }) => {
-    const { name } = error;
-    const massagedMsg = util.massageRecordExistsError(error);
-    util.handleErrorSaveLocation(
-      { name, message: massagedMsg },
-      { navigate, pathname: path, search: searchParams.toString() },
-    );
-  }, [navigate, path, searchParams]);
-
   const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
 
-  const { data: recordContent, error } = useQuery({
+  const { data: recordContent } = useQuery({
     queryKey: tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
     queryFn: async ({ queryKey: [route, options] }) => {
-      if (!model) {
-        handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName}` } });
-        return undefined;
-      }
       const result = await api.get(route, options);
 
-      if (result && result.length) {
-        return { ...result[0] };
-      }
-      handleError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${model.routeName}/${rid}` } });
-      return undefined;
+      return { ...result[0] };
     },
     enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
     refetchOnMount: 'always',
+    throwOnError: true,
   });
 
   useEffect(() => {
@@ -155,23 +126,17 @@ const RecordView = ({
     }
   }, [recordContent]);
 
-  useEffect(() => {
-    if (error) {
-      handleError({ error });
-    }
-  }, [error, handleError]);
-
   // redirect when the user clicks the top right button
   const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {
     // Will give newState as null if user clicks same state (view/edit/graph)
     if (!newState) { return; }
     if (newState === 'graph') {
-      navigateToGraph([recordContent['@rid']], navigate, handleError);
+      navigateToGraph([recordContent['@rid']], navigate, snackbar);
     } else {
       const newPath = `/${newState}/${model.name}/${rid}`;
       navigate(newPath);
     }
-  }, [handleError, navigate, model.name, recordContent, rid]);
+  }, [snackbar, navigate, model.name, recordContent, rid]);
 
   if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
     // wait for the model to be set for new Records
@@ -186,7 +151,6 @@ const RecordView = ({
       <div className="edit-variant-view">
         <VariantForm
           formVariant={variant}
-          onError={handleError}
           onSubmit={handleSubmit}
           value={recordContent}
         />
@@ -196,7 +160,6 @@ const RecordView = ({
   if (modelName.toLowerCase() === 'statement') {
     return (
       <StatementForm
-        onError={handleError}
         onSubmit={handleSubmit}
         onToggleState={handleToggleState}
         title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
@@ -208,7 +171,6 @@ const RecordView = ({
   return (
     <RecordForm
       modelName={modelName}
-      onError={handleError}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
       title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}

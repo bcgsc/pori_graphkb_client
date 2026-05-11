@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
 } from 'react';
@@ -15,7 +16,6 @@ import { NavigateFunction } from 'react-router';
 import { navigateToGraph } from '@/components/util';
 
 interface DataViewFooterProps {
-  onError?: (...args: unknown[]) => unknown;
   selectedRecords?: Record<string, unknown>[];
   statusMessage?: string;
   navigate: NavigateFunction;
@@ -23,12 +23,15 @@ interface DataViewFooterProps {
 }
 
 const DataViewFooter = ({
-  selectedRecords = [], onError, navigate, statusMessage = '', totalRows,
+  selectedRecords = [], navigate, statusMessage = '', totalRows,
 }: DataViewFooterProps) => {
+  const snackbar = useSnackbar();
+
   const handleSwapToGraph = useCallback(() => {
     const nodeRIDs = selectedRecords.map((node) => node['@rid']);
-    navigateToGraph(nodeRIDs, navigate, onError);
-  }, [navigate, onError, selectedRecords]);
+
+    navigateToGraph(nodeRIDs, navigate, snackbar);
+  }, [navigate, snackbar, selectedRecords]);
 
   return (
     <div className="data-view__footer">

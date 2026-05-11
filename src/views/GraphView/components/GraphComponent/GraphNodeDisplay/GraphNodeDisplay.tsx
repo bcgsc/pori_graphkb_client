@@ -5,7 +5,6 @@ import * as d3Drag from 'd3-drag';
 import * as d3Select from 'd3-selection';
 import React, { useEffect, useRef } from 'react';
 
-import { GeneralRecordType } from '@/components/types';
 import schema from '@/services/schema';
 import config from '@/static/config';
 
@@ -31,7 +30,7 @@ interface GraphNodeDisplayProps {
   /** Property to label node by. */
   labelKey?: string;
   /** Node to be rendered. */
-  node: GraphNode | { data: GeneralRecordType; x: number; y: number; };
+  node: GraphNode;
 }
 
 /**
@@ -75,7 +74,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
   if (labelKey === 'preview') {
     label = schemaDefn.getPreview(node.data as GraphRecord);
   } else if (labelKey) {
-    label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
+    label = node.getLabel(labelKey);
 
     if (typeof label === 'object') {
       label = schema.getLabel(label);
@@ -96,6 +95,8 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
     opacity = FADED_OPACITY;
   }
 
+  const id = node.getId();
+
   return (
     <g
       ref={nodeSVG}
@@ -106,7 +107,7 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
           opacity,
         }}
       >
-        <tspan className="node-name" dy={28}>
+        <tspan className="node-name" dy={28} id={`node-${id}-label`}>
           {label}
         </tspan>
       </text>
@@ -118,12 +119,14 @@ function GraphNodeDisplay(props: GraphNodeDisplayProps) {
         r={NODE_RADIUS}
       />
       <circle
+        aria-labelledby={`node-${id}-label`}
         className="node"
         cx={0}
         cy={0}
         fill={color}
         onClick={handleClick}
         r={NODE_RADIUS}
+        role="button"
         style={{
           opacity,
         }}

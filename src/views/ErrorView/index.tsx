@@ -1,116 +1,53 @@
 import './index.scss';
 
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import { Button, Tooltip, Typography } from '@mui/material';
-import copy from 'copy-to-clipboard';
-import React, { useCallback, useState } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Button, Typography } from '@mui/material';
+import React, { ReactNode } from 'react';
+import { Link } from 'react-router';
 
-interface EmailReportErrorProps {
-  body: string;
-  linkText: string;
-  subject: string;
-}
+import { ReportErrorMessage } from '@/services/errors';
 
-const EmailReportError = (props: EmailReportErrorProps) => {
-  const { linkText, body, subject } = props;
-  return (
-    <a
-      href={`mailto:${window._env_.CONTACT_EMAIL}?subject=${encodeURIComponent(
-        subject,
-      )}&body=${encodeURIComponent(body)}`}
-    >
-      {linkText}
-    </a>
-  );
-};
-
-/**
- * View for displaying uncaught error messages.
- */
-const ErrorView = () => {
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  const location = useLocation();
-  const state = location.state ?? {};
-
-  const {
-    error: {
-      message = 'This is the default page where errors are reported if encountered',
-      name = 'No Error Reported',
-      stacktrace = '',
-      ...rest
-    } = {},
-  } = state;
-
-  const jiraLink = <a href={window._env_.CONTACT_TICKET_URL} rel="noopener noreferrer" target="_blank">Ticket/Issue</a>;
-
-  let errorDetails = `Error Details (Please include in error reports)
-version: ${process.env.npm_package_version || process.env.REACT_APP_VERSION || ''}
-error name: ${name}
-error text: ${message}`;
-
-  Object.entries(rest).forEach(([key, value]) => {
-    if (value) {
-      errorDetails = `${errorDetails}\n${key}: ${`${value}`.trim()}`;
-    }
-  });
-
-  // TODO: Remove this after alpha testing
-  if (stacktrace) {
-    errorDetails = `${errorDetails}\n\nstack trace:\n\n${stacktrace}`;
+class ErrorBoundary extends React.Component<{ children: ReactNode }, { error: Error | null }> {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
   }
 
-  const handleCopyToClipboard = useCallback(() => {
-    setTooltipOpen(true);
-    copy(errorDetails);
-  }, [errorDetails]);
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
 
-  return (
-    <div className="error-wrapper">
-      <Typography variant="h2">
-        {name}
-      </Typography>
-      <Typography variant="h3">
-        {message}
-      </Typography>
-      <Typography paragraph>
-        Report this error in a {jiraLink} ticket or email us at&nbsp;
-        <EmailReportError
-          body={errorDetails}
-          linkText={window._env_.CONTACT_EMAIL}
-          subject={`${name}: ${message}`}
-        />
-        .
-      </Typography>
-      {stacktrace && (
-        <div className="stacktrace">
-          <pre>
-            <code>{errorDetails}</code>
-          </pre>
-          <Tooltip
-            disableHoverListener
-            onClose={() => setTooltipOpen(false)}
-            open={tooltipOpen}
-            title="Copied!"
-          >
-            <Button
-              id="copy-button"
-              onClick={handleCopyToClipboard}
-              variant="outlined"
-            >
-              Copy To Clipboard
-              <AssignmentIcon />
-            </Button>
-          </Tooltip>
-        </div>
-      )}
-      <Link to="/">
-        <Button color="primary" variant="contained">
-          Home
-        </Button>
-      </Link>
-    </div>
-  );
-};
+  render() {
+    const { error } = this.state;
+    const { children } = this.props;
 
-export default ErrorView;
+    if (!error) {
+      return children;
+    }
+
+    const {
+      message = 'This is the default page where errors are reported if encountered',
+      name = 'No Error Reported',
+    } = error;
+
+    return (
+      <div className="error-wrapper">
+        <Typography variant="h2">
+          {name}
+        </Typography>
+        <Typography variant="h3">
+          {message}
+        </Typography>
+        <Typography paragraph>
+          <ReportErrorMessage error={error} />
+        </Typography>
+        <Link to="/">
+          <Button color="primary" variant="contained">
+            Home
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+}
+
+export default ErrorBoundary;

@@ -28,9 +28,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-*.css
-!src/_theme.css
-/src/index.css
 /jsdoc
 /build
 

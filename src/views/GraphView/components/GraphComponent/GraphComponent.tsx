@@ -105,7 +105,6 @@ interface GraphComponentProps {
   handleDetailDrawerClose: () => void;
   /** Method to handle opening of detail drawer. */
   handleDetailDrawerOpen: (node: GraphObj | null) => void;
-  handleError: (...args: unknown[]) => unknown;
   /** record ID of node currently selected for detail viewing. in the initial query. */
   detail?: Record<string, unknown> | null;
   /** list of valid edge classes. */
@@ -179,7 +178,7 @@ function GraphComponent(props: GraphComponentProps) {
    * node coloring to avoid sending full graph state over limited URL.
    */
   const saveGraphStatetoURL = (graphNodes) => {
-    const { handleGraphStateSave, handleError } = props;
+    const { handleGraphStateSave } = props;
     const withoutStatementData:{ '@rid': string }[] = [];
 
     /* Because properties types like linkset are uni-directional, we need to
@@ -206,7 +205,7 @@ function GraphComponent(props: GraphComponentProps) {
         handleGraphStateSave(nodeRIDs);
       }
     } catch (err) {
-      handleError(err);
+      snackbar.enqueueSnackbar(`An error occurred saving graph state. ${(err as Error).toString()}`, { variant: 'error' });
     }
   };
 
@@ -848,7 +847,7 @@ function GraphComponent(props: GraphComponentProps) {
   };
 
   const handleExpandNode = async ({ data: node }) => {
-    const { handleError, getRecord } = props;
+    const { getRecord } = props;
 
     try {
       const record = await getRecord(node['@rid']);
@@ -858,8 +857,7 @@ function GraphComponent(props: GraphComponentProps) {
         update({ data });
       }
     } catch (err) {
-      console.error(err);
-      handleError(err);
+      snackbar.enqueueSnackbar(`An error attempting to expand node. ${(err as Error).toString()}`, { variant: 'error' });
     }
   };
 

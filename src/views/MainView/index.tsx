@@ -12,6 +12,7 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { AuthenticatedLayout } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
+import ErrorBoundary from '@/views/ErrorView';
 
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
@@ -28,7 +29,6 @@ const AdminView = lazy(() => import('@/views/AdminView'));
 const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
 const DataView = lazy(() => import('@/views/DataView'));
 const GraphView = lazy(() => import('@/views/GraphView'));
-const ErrorView = lazy(() => import('@/views/ErrorView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
 const NewRecordView = lazy(() => import('@/views/NewRecordView'));
@@ -44,7 +44,6 @@ const ABSTRACT_CLASSES = Object.values(schemaDefn.models)
 export function AppRoutes() {
   return (
     <Routes>
-      <Route element={<ErrorView />} path="/error" />
       <Route element={<AuthenticatedLayout />}>
         <Route Component={FeedbackView} path="/feedback" />
         <Route Component={AboutView} path="/about">
@@ -109,9 +108,11 @@ const Main = () => {
         onDrawerChange={setDrawerOpen}
       />
       <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
-        <Suspense fallback={(<CircularProgress color="secondary" />)}>
-          <AppRoutes />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={(<CircularProgress color="secondary" />)}>
+            <AppRoutes />
+          </Suspense>
+        </ErrorBoundary>
       </section>
     </div>
   );

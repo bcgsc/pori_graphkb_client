@@ -6,22 +6,18 @@ import {
 } from '@mui/material';
 import { titleCase } from 'change-case';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { useDebounce } from 'use-debounce';
 
 import { tuple } from '@/components/util';
-import util from '@/services/util';
+import { ErrorMessage } from '@/services/errors';
 
 import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
 import PubmedCard from './components/PubmedCard';
 
 const ImportPubmedView = () => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [searchParams] = useSearchParams();
   const snackbar = useSnackbar();
   const [errorText, setErrorText] = useState('');
   const [text, setText] = useState('');
@@ -59,16 +55,6 @@ const ImportPubmedView = () => {
     enabled: Boolean(text),
   });
 
-  useEffect(() => {
-    if (error || sourceError) {
-      util.handleErrorSaveLocation(error || sourceError, {
-        navigate,
-        pathname,
-        search: searchParams.toString(),
-      });
-    }
-  }, [error, navigate, pathname, searchParams, sourceError]);
-
   // fetch details from PUBMED
   const { data: externalRecord = null } = useQuery({
     queryKey: [`/extensions/pubmed/${pmid}`],
@@ -76,20 +62,12 @@ const ImportPubmedView = () => {
     enabled: Boolean(pmid),
   });
 
-  const { mutate: importRecord, isPending: isImporting } = useMutation({
+  const { mutate: importRecord, isPending: isImporting, error: importError } = useMutation({
     mutationFn: async () => {
       if (externalRecord) {
-        try {
-          const result = await api.post('/publications', { ...externalRecord, source });
-          snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
-          refetchCurrentRecords();
-        } catch (err) {
-          util.handleErrorSaveLocation(err, {
-            navigate,
-            pathname,
-            search: searchParams.toString(),
-          });
-        }
+        const result = await api.post('/publications', { ...externalRecord, source });
+        snackbar.enqueueSnackbar(`created the new publication record ${result['@rid']}`, { variant: 'success' });
+        refetchCurrentRecords();
       }
     },
   });
@@ -128,6 +106,8 @@ const ImportPubmedView = () => {
           title={titleCase(rec.name as string)}
         />
       ))}
+      <ErrorMessage error={error || sourceError}>An error occurred loading records.</ErrorMessage>
+      <ErrorMessage error={importError}>An error occurred importing records.</ErrorMessage>
       {(isImporting || isLoading) && <CircularProgress className="import-view__progress" />}
       {(!currentRecords || !currentRecords.length) && externalRecord && (
         <PubmedCard

@@ -27,7 +27,7 @@ describe('NewVariant', () => {
       getByText, getByTestId, queryByText,
     } = render(
       <QueryClientProvider client={api.queryClient}>
-        <NewVariant onError={vi.fn()} onSubmit={vi.fn()} />
+        <NewVariant onSubmit={vi.fn()} />
       </QueryClientProvider>,
     ));
   });

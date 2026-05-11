@@ -1,3 +1,5 @@
+import './preview.css';
+
 import React, { Suspense } from 'react';
 import ThemeProvider from '../src/theme';
 import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
@@ -15,6 +17,7 @@ import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor } from 'storybook/test';
 import { CircularProgress } from '@mui/material';
+import ErrorView from '../src/views/ErrorView';
 
 function wrapAsResponse<T extends Record<string, any> | any[]>(maybeResponse: T | HttpResponse<T>): HttpResponse<T> {
   if (maybeResponse instanceof Response) {
@@ -39,7 +42,12 @@ export const http = {
         return wrapAsResponse(resolver(body, info));
       })
     },
-    query: (resolver: (body: QueryBody) => (HttpResponse<Partial<GeneralRecordType>[]> | Partial<GeneralRecordType>[])) => http.gkb.post('/api/query', resolver)
+    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => AllowedResponse) => {
+      return httpBase.delete(`${window._env_.API_BASE_URL}${url}`, async (info) => {
+        return wrapAsResponse(resolver(info));
+      })
+    },
+    query: (resolver: (body: QueryBody) => (HttpResponse<Partial<GeneralRecordType>> | HttpResponse<{ message?: string }> | Partial<GeneralRecordType>[])) => http.gkb.post('/api/query', resolver)
   }
 }
 
@@ -141,9 +149,11 @@ export interface ViewPreviewType {
 function View() {
   return (
       <div style={{height: '100%', minWidth: '300px'}}>
+        <ErrorView>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
             <AppRoutes />
           </Suspense>
+        </ErrorView>
       </div>
   )
 }

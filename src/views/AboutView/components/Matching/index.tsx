@@ -14,7 +14,7 @@ import React, {
   useState,
 } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useDebounce } from 'use-debounce';
 
 import DetailChip from '@/components/DetailChip';
@@ -23,7 +23,7 @@ import SearchBox from '@/components/SearchBox';
 import { GeneralRecordType } from '@/components/types';
 import { navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
-import util from '@/services/util';
+import { ErrorMessage } from '@/services/errors';
 
 const MATCH_LIMIT = 100;
 
@@ -98,7 +98,6 @@ const ROOT_TERM_MAPPING = {
 const DEBOUNCE_MS = 100;
 
 const MatchView = () => {
-  const { search, pathname } = useLocation();
   const navigate = useNavigate();
   const snackbar = useSnackbar();
   const [text, setText] = useState('');
@@ -149,12 +148,6 @@ const MatchView = () => {
   });
 
   useEffect(() => {
-    if (error) {
-      util.handleErrorSaveLocation(error, { navigate, search, pathname });
-    }
-  }, [error, navigate, pathname, search]);
-
-  useEffect(() => {
     const normalizedTerm = text.toLowerCase().trim();
 
     if (ROOT_TERM_MAPPING[normalizedTerm] && rootTerm !== ROOT_TERM_MAPPING[normalizedTerm]) {
@@ -177,9 +170,7 @@ const MatchView = () => {
   }, []);
 
   const handleJumpToGraph = useCallback(() => {
-    navigateToGraph(matches.map((m) => m['@rid']), navigate, (err) => {
-      snackbar.enqueueSnackbar(err, { variant: 'error' });
-    });
+    navigateToGraph(matches.map((m) => m['@rid']), navigate, snackbar);
   }, [navigate, matches, snackbar]);
 
   let alertText = '';
@@ -222,6 +213,7 @@ const MatchView = () => {
         onChange={handleTextChange}
         value={text}
       />
+      <ErrorMessage error={error} />
       {text && (isLoading
         ? (<CircularProgress />)
         : (

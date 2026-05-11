@@ -16,6 +16,7 @@ import FieldGroup from '@/components/FormLayout/FieldGroup';
 import RadioSelect from '@/components/RadioSelect';
 import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
 import api from '@/services/api';
+import { ErrorMessage } from '@/services/errors';
 
 import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
@@ -92,8 +93,6 @@ const pickInputType = (record) => {
 };
 
 interface VariantFormProps {
-  /** the handler to be called when the submission throws an error */
-  onError: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   /** the handler to be called when the form is submitted */
   onSubmit: (record?: GeneralRecordType | null) => void;
   formVariant?: FORM_VARIANT;
@@ -104,7 +103,7 @@ interface VariantFormProps {
  * Input form for new Variants
  */
 const VariantForm = ({
-  onSubmit, onError, value = {}, formVariant = FORM_VARIANT.NEW,
+  onSubmit, value = {}, formVariant = FORM_VARIANT.NEW,
 }: VariantFormProps) => {
   let defaultCoordinateType;
 
@@ -207,12 +206,6 @@ const VariantForm = ({
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(result);
     },
-    onError: (error: any, content) => {
-      const actionType = formVariant === FORM_VARIANT.NEW ? 'creating' : 'editing';
-      console.error(error);
-      snackbar.enqueueSnackbar(`Error (${error.name}) in ${actionType} the record`, { variant: 'error' });
-      onError({ error, content });
-    },
   });
 
   const deleteMutation = useMutation({
@@ -225,11 +218,6 @@ const VariantForm = ({
       queryClient.invalidateQueries();
       snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
       onSubmit(null);
-    },
-    onError: (error: any, content) => {
-      console.error(error);
-      snackbar.enqueueSnackbar(`Error (${error.name}) in deleting the record`, { variant: 'error' });
-      onError({ error, content });
     },
   });
 
@@ -244,6 +232,12 @@ const VariantForm = ({
   return model && (
     <SteppedForm
       className="new-variant"
+      errors={(
+        <>
+          <ErrorMessage error={submitMutation.error}>An error occurred while creating/editing record.</ErrorMessage>
+          <ErrorMessage error={deleteMutation.error}>An error occurred while deleting record.</ErrorMessage>
+        </>
+      )}
       formVariant={formVariant}
       isLoading={submitMutation.isPending || deleteMutation.isPending}
       modelName={model.name}

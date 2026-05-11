@@ -1,5 +1,58 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`NewInvalidModel snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="error-wrapper"
+    >
+      <h2
+        class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        ValidationError
+      </h2>
+      <h3
+        class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Unable to retrieve model: blargh
+      </h3>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Report this error in a
+        <a
+          href="https://www.bcgsc.ca/jira/projects/KBDEV"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Ticket/Issue
+        </a>
+         ticket or email us at 
+        <a
+          href="mailto:graphkb@bcgsc.ca?subject=ValidationError%3A%20Unable%20to%20retrieve%20model%3A%20blargh&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20ValidationError%0Aerror%20text%3A%20Unable%20to%20retrieve%20model%3A%20blargh"
+        >
+          graphkb@bcgsc.ca
+        </a>
+        .
+      </p>
+      <a
+        data-discover="true"
+        href="/"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Home
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`NewOntology snapshot 1`] = `
 <div>
   <div
@@ -1609,6 +1662,580 @@ exports[`NewRelationshipAliasOf snapshot 1`] = `
               type="button"
             >
               SUBMIT
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="new-record-view"
+    >
+      <div
+        class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      >
+        <div
+          class="record-form__header"
+        >
+          <span
+            class="title"
+          >
+            <h1
+              class="MuiTypography-h1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Create a new AliasOf Record
+            </h1>
+          </span>
+          <div
+            class="header__actions header__actions--new"
+          />
+        </div>
+        <div
+          class="form-layout"
+        >
+          <div
+            class="form-layout__content form-layout__content--long"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+            >
+              <span
+                class="sentence-preview__chunk"
+              >
+                 is a Alias Of
+              </span>
+            </p>
+          </div>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            >
+              <div
+                class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete"
+              >
+                <div
+                  class="filtered-record-autocomplete__content"
+                >
+                  <div
+                    class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                  >
+                    <label
+                      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="true"
+                      for="option-select-search-class"
+                    >
+                      Filter (out) Search by Class
+                    </label>
+                    <div
+                      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="mui-component-select-search-class"
+                        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                        id="mui-component-select-search-class"
+                        role="combobox"
+                        tabindex="0"
+                      >
+                        <div
+                          class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                        >
+                          <span
+                            class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            Ontology
+                          </span>
+                          <p
+                            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                          />
+                        </div>
+                      </div>
+                      <input
+                        aria-hidden="true"
+                        aria-invalid="false"
+                        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                        id="option-select-search-class"
+                        name="search-class"
+                        tabindex="-1"
+                        value="Ontology"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                        data-testid="FilterListIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                        />
+                      </svg>
+                    </div>
+                    <p
+                      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    />
+                  </div>
+                  <div
+                    class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                  >
+                    <div
+                      class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                    >
+                      <label
+                        class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                        data-shrink="true"
+                        for="_r_XXXX_"
+                        id="_r_XXXX_-label"
+                      >
+                        Source Record (out)
+                        <span
+                          aria-hidden="true"
+                          class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                        >
+                           
+                          *
+                        </span>
+                      </label>
+                      <div
+                        class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                      >
+                        <div
+                          class="detail-chip"
+                        >
+                          <div
+                            class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                            data-item-index="0"
+                            role="button"
+                            tabindex="-1"
+                          >
+                            <span
+                              class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                            >
+                              Ontology (111:111)
+                            </span>
+                            <svg
+                              aria-hidden="true"
+                              class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                              data-testid="CancelIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <input
+                          aria-autocomplete="list"
+                          aria-expanded="false"
+                          aria-invalid="false"
+                          autocapitalize="none"
+                          autocomplete="off"
+                          class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                          id="_r_XXXX_"
+                          placeholder=""
+                          required=""
+                          role="combobox"
+                          spellcheck="false"
+                          type="text"
+                          value=""
+                        />
+                        <div
+                          class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                        >
+                          <button
+                            aria-label="Clear"
+                            class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                            tabindex="-1"
+                            title="Clear"
+                            type="button"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                              data-testid="CloseIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            aria-label="Open"
+                            class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                            tabindex="-1"
+                            title="Open"
+                            type="button"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                              data-testid="SearchIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p
+                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                >
+                  The source record for the relationship
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            >
+              <div
+                class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete"
+              >
+                <div
+                  class="filtered-record-autocomplete__content"
+                >
+                  <div
+                    class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                  >
+                    <label
+                      class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="true"
+                      for="option-select-search-class"
+                    >
+                      Filter (in) Search by Class
+                    </label>
+                    <div
+                      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="mui-component-select-search-class"
+                        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                        id="mui-component-select-search-class"
+                        role="combobox"
+                        tabindex="0"
+                      >
+                        <div
+                          class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                        >
+                          <span
+                            class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            Ontology
+                          </span>
+                          <p
+                            class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                          />
+                        </div>
+                      </div>
+                      <input
+                        aria-hidden="true"
+                        aria-invalid="false"
+                        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                        id="option-select-search-class"
+                        name="search-class"
+                        tabindex="-1"
+                        value="Ontology"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                        data-testid="FilterListIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                        />
+                      </svg>
+                    </div>
+                    <p
+                      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    />
+                  </div>
+                  <div
+                    class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                  >
+                    <div
+                      class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                    >
+                      <label
+                        class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                        data-shrink="true"
+                        for="_r_XXXX_"
+                        id="_r_XXXX_-label"
+                      >
+                        Target Record (in)
+                        <span
+                          aria-hidden="true"
+                          class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                        >
+                           
+                          *
+                        </span>
+                      </label>
+                      <div
+                        class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                      >
+                        <div
+                          class="detail-chip"
+                        >
+                          <div
+                            class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                            data-item-index="0"
+                            role="button"
+                            tabindex="-1"
+                          >
+                            <span
+                              class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                            >
+                              Ontology (222:222)
+                            </span>
+                            <svg
+                              aria-hidden="true"
+                              class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                              data-testid="CancelIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <input
+                          aria-autocomplete="list"
+                          aria-expanded="false"
+                          aria-invalid="false"
+                          autocapitalize="none"
+                          autocomplete="off"
+                          class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                          id="_r_XXXX_"
+                          placeholder=""
+                          required=""
+                          role="combobox"
+                          spellcheck="false"
+                          type="text"
+                          value=""
+                        />
+                        <div
+                          class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                        >
+                          <button
+                            aria-label="Clear"
+                            class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                            tabindex="-1"
+                            title="Clear"
+                            type="button"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                              data-testid="CloseIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            aria-label="Open"
+                            class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                            tabindex="-1"
+                            title="Open"
+                            type="button"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                              data-testid="SearchIcon"
+                              focusable="false"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p
+                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                >
+                  The target record for the relationship
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            >
+              <div
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+              >
+                <div
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
+                  >
+                    source
+                  </label>
+                  <div
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                  >
+                    <input
+                      aria-autocomplete="list"
+                      aria-expanded="false"
+                      aria-invalid="false"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
+                      id="_r_XXXX_"
+                      placeholder="Search Records by Name or ID"
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
+                    />
+                    <div
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                    >
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                Expand to see all optional fields
+              </span>
+            </div>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ExpandMoreIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              />
+            </svg>
+          </li>
+        </div>
+        <div
+          class="MuiAlert-colorError MuiAlert-root MuiAlert-standard MuiAlert-standardError MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiAlert-root"
+          role="alert"
+        >
+          <div
+            class="MuiAlert-icon css-XXXX-MuiAlert-icon"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeInherit MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ErrorOutlineIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+              />
+            </svg>
+          </div>
+          <div
+            class="MuiAlert-message css-XXXX-MuiAlert-message"
+          >
+            An error occurred while creating record.
+            Unexpected Error [500]: Internal Server Error
+            Report this error in a
+            <a
+              href="https://www.bcgsc.ca/jira/projects/KBDEV"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Ticket/Issue
+            </a>
+             ticket or email us at 
+            <a
+              href="mailto:graphkb@bcgsc.ca?subject=Error%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20Error%0Aerror%20text%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error"
+            >
+              graphkb@bcgsc.ca
+            </a>
+            .
+          </div>
+        </div>
+        <div
+          class="record-form__action-buttons"
+        >
+          <div />
+          <div
+            class="action-button"
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              SUBMIT
+              <span
+                class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+              />
             </button>
           </div>
         </div>
@@ -4528,7 +5155,7 @@ exports[`NewVariant snapshot 1`] = `
         </div>
         <div
           class="stepped-form__actions"
-          index="6"
+          index="7"
         >
           <div
             class="action-button stepped-form__actions--primary"

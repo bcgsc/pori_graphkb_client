@@ -54,11 +54,6 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
     setRecordOpen(undefined);
   };
 
-  const handleDialogError = () => {
-    setDialogOpen(false);
-    setRecordOpen(undefined);
-  };
-
   const handleDialogSubmit = useCallback(() => {
     setDialogOpen(false);
     setRecordOpen(undefined);
@@ -133,7 +128,6 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
         isOpen={dialogOpen}
         modelName={variant}
         onClose={handleDialogCancel}
-        onError={handleDialogError}
         onSubmit={handleDialogSubmit}
         value={recordOpen}
         variant={!recordOpen

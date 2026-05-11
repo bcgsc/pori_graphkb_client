@@ -17,6 +17,7 @@ import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
+import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
 import { useAuth } from '../Auth';
@@ -31,7 +32,6 @@ interface RecordFormProps {
   title: string;
   /** name of class model to be displayed */
   modelName?: string;
-  onError?: (arg: { error: { name?: string; message?: string }; content: unknown }) => void;
   onSubmit?: (record?: GeneralRecordType) => void;
   onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
   /** values of individual properties of passed class model */
@@ -49,7 +49,6 @@ const RecordForm = ({
   title,
   onToggleState,
   onSubmit,
-  onError,
   variant = FORM_VARIANT.VIEW,
 }: RecordFormProps) => {
   const snackbar = useSnackbar();
@@ -63,7 +62,7 @@ const RecordForm = ({
     formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
   } = form;
 
-  const { mutate: addNewAction, isPending: isAdding } = useMutation({
+  const { mutate: addNewAction, isPending: isAdding, error: errorAdding } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
@@ -72,11 +71,6 @@ const RecordForm = ({
     onSuccess: (result) => {
       snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
       onSubmit?.(result);
-    },
-    onError: (err: Error, content) => {
-      console.error(err);
-      snackbar.enqueueSnackbar(`Error (${err.name}) in creating the record`, { variant: 'error' });
-      onError?.({ error: err, content });
     },
   });
 
@@ -101,7 +95,7 @@ const RecordForm = ({
     }
   }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
 
-  const { mutate: deleteAction, isPending: isDeleting } = useMutation({
+  const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const { routeName } = schemaDefn.get(content);
       return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
@@ -109,10 +103,6 @@ const RecordForm = ({
     onSuccess: (_, content) => {
       snackbar.enqueueSnackbar(`Successfully deleted the record ${content['@rid']}`, { variant: 'success' });
       onSubmit?.();
-    },
-    onError: (err: Error, content) => {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in deleting the record (${content['@rid']})`, { variant: 'error' });
-      onError?.({ error: err, content });
     },
   });
 
@@ -128,7 +118,7 @@ const RecordForm = ({
     deleteAction(content);
   }, [deleteAction, formContent, modelName]);
 
-  const { mutate: updateAction, isPending: isUpdating } = useMutation({
+  const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schemaDefn.get(payload);
@@ -137,10 +127,6 @@ const RecordForm = ({
     onSuccess: (result) => {
       snackbar.enqueueSnackbar(`Successfully edited the record ${result['@rid']}`, { variant: 'success' });
       onSubmit?.(result);
-    },
-    onError: (err: Error, content) => {
-      snackbar.enqueueSnackbar(`Error (${err.name}) in editing the record (${content['@rid']})`, { variant: 'error' });
-      onError?.({ error: err, content });
     },
   });
 
@@ -215,6 +201,9 @@ const RecordForm = ({
           )}
         </>
       )}
+      <ErrorMessage error={errorAdding}>An error occurred while creating record.</ErrorMessage>
+      <ErrorMessage error={errorDeleting}>An error occurred while deleting record.</ErrorMessage>
+      <ErrorMessage error={errorUpdating}>An error occurred while updating record.</ErrorMessage>
       <div className="record-form__action-buttons">
         {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
           ? (

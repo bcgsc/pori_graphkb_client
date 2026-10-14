@@ -7,7 +7,7 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 interface SelectOption {
   key?: string;
@@ -16,34 +16,33 @@ interface SelectOption {
   caption?: string;
 }
 
-const DefaultOptionComponent = (option, disabled) => {
-  const key = option.key === undefined
-    ? option
-    : option.key;
+function getOption(option: SelectOption | string): SelectOption {
+  if (typeof option === 'string') {
+    return { value: option, label: option, key: option };
+  }
+  return option;
+}
 
-  const value = option.value === undefined
-    ? option
-    : option.value;
-
-  const label = option.label === undefined
-    ? option || 'None'
-    : option.label;
+const getOptionNode = (props: { key: string; disabled: boolean; } & SelectOption): ReactNode => {
+  const {
+    key, value, label, caption, disabled,
+  } = props;
 
   return (
     <MenuItem
       key={key}
       className="option-select__option"
       component="li"
-      value={value}
+      value={value as string}
     >
       <ListItemText
         classes={{
           primary: disabled ? 'disabled-text' : '',
-          multiline: option.caption ? 'margin-reset' : '',
-          root: option.caption ? 'margin-reset' : '',
+          multiline: caption ? 'margin-reset' : '',
+          root: caption ? 'margin-reset' : '',
         }}
         primary={label}
-        secondary={option.caption || ''}
+        secondary={caption || ''}
         slotProps={{
           secondary: { className: 'option-select__option-description' },
         }}
@@ -101,7 +100,31 @@ function DropDownSelect(props: DropDownSelectProps) {
   } = props;
 
   const id = idProp;
-  const optionsDisplay = options.map((option) => DefaultOptionComponent(option, disabled));
+  let valueIsOption = false;
+  const optionsDisplay: ReactNode[] = [];
+  options.forEach((option) => {
+    const opt = getOption(option);
+
+    if (opt.value === value) {
+      valueIsOption = true;
+    }
+    optionsDisplay.push(
+      getOptionNode({
+        key: opt.key ?? String(opt.value),
+        caption: opt.caption,
+        disabled,
+        label: opt.label,
+        value: opt.value,
+      }),
+    );
+  });
+
+  // show the invalid value if readOnly
+  if (readOnly && !valueIsOption && value) {
+    optionsDisplay.push(getOptionNode({
+      key: '_invalid_option', disabled, label: value, value,
+    }));
+  }
 
   return (
     <TextField

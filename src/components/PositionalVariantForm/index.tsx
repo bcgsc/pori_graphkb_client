@@ -4,7 +4,6 @@ import {
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -22,6 +21,7 @@ import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
+import RecordAutocomplete from '../RecordAutocomplete';
 import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 
@@ -36,29 +36,31 @@ const FIELD_EXCLUSIONS = [
   'break2End',
   'reference1',
   'reference2',
+  'type',
 ];
 
 const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
   label: m, value: m, key: m, caption: schema.get(m).description,
 }));
 
-const MAJOR_FORM_TYPES = {
-  SUB: 'Substitution',
-  INDEL: 'Indel',
-  TRANS_WITH_POS: 'Multi-Reference (ex. Translocation)',
-  OTHER_WITH_POS: 'Other Variant',
+const typeToAllowedCoordinates = {
+  frameshift: ['ProteinPosition'],
+  fusion: ['CdsLikePosition', 'ExonicPosition', 'GenomicPosition'],
+  inversion: ['CdsLikePosition', 'GenomicPosition'],
+  deletion: ['CdsLikePosition', 'ExonicPosition', 'GenomicPosition', 'ProteinPosition'],
+  duplication: ['CdsLikePosition', 'GenomicPosition', 'ProteinPosition'],
+  insertion: ['CdsLikePosition', 'GenomicPosition', 'ProteinPosition'],
+  indel: ['CdsLikePosition', 'GenomicPosition', 'ProteinPosition'],
+  'missense mutation': ['ProteinPosition'],
+  'nonsense mutation': ['ProteinPosition'],
+  substitution: ['CdsLikePosition', 'GenomicPosition', 'ProteinPosition'],
+  acetylation: ['ProteinPosition'],
+  methylation: ['ProteinPosition'],
+  phosphorylation: ['ProteinPosition'],
+  ubiquitination: ['ProteinPosition'],
 };
 
-const pickInputType = (record) => {
-  if (record.reference2) {
-    return MAJOR_FORM_TYPES.TRANS_WITH_POS;
-  } if (record.type && record.type.name) {
-    if (record.type.name === 'substitution') {
-      return MAJOR_FORM_TYPES.SUB;
-    }
-  }
-  return MAJOR_FORM_TYPES.OTHER_WITH_POS;
-};
+const allowedTypes = Object.keys(typeToAllowedCoordinates).sort();
 
 interface VariantFormProps {
   /** the title for this form */
@@ -83,21 +85,12 @@ const VariantForm = ({
     break1Start: valueProp?.break1Start ?? { '@class': 'GenomicPosition' },
   }), [valueProp]);
 
-  const [inputType, setInputType] = useState(
-    variant === FORM_VARIANT.NEW
-      ? MAJOR_FORM_TYPES.SUB
-      : pickInputType(value),
-  );
   const snackbar = useSnackbar();
 
-  useEffect(() => {
-    if (variant !== FORM_VARIANT.NEW && value) {
-      setInputType(pickInputType(value));
-    }
-  }, [value, variant]);
+  const [variantType, setVariantType] = useState((value?.type as any)?.displayName ?? 'substitution');
 
-  const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
-  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS;
+  const isSubstitution = ['substitution', 'missense mutation', 'nonsense mutation'].includes(variantType);
+  const isFusion = ['fusion'].includes(variantType);
   const queryClient = useQueryClient();
 
   const model = useMemo(() => ({
@@ -120,8 +113,34 @@ const VariantForm = ({
   const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
   const form = useSchemaForm(model, initialValue, { variant });
   const {
-    formContent, formErrors, formHasErrors, formIsDirty, update: updateForm,
+    formContent, formErrors, formIsDirty, update: updateForm,
   } = form;
+
+  const otherValidation = useMemo(() => {
+    if (variant === FORM_VARIANT.VIEW) {
+      return null;
+    }
+    const variantTypeName = (formContent as any)?.type?.displayName;
+    const coordinateTypeClass = (formContent as any)?.break1Start?.['@class'] ?? 'GenomicPosition';
+
+    if (variantTypeName) {
+      if (!allowedTypes.includes(variantTypeName)) {
+        return { type: `Type ${variantTypeName} is invalid. Only the following types are allowed to be created/modified in the interface: ${allowedTypes.join(', ')}.` };
+      } if (!typeToAllowedCoordinates[variantTypeName].includes(coordinateTypeClass)) {
+        return {
+          coordinateType: `Coordinate System ${coordinateTypeClass} is not compatible with the selected type ${variantTypeName}. Only the following coordinate systems are allowed for this type: ${typeToAllowedCoordinates[variantTypeName].join(', ')}.`,
+        };
+      }
+    }
+    return null;
+  }, [variant, formContent]);
+
+  const formHasErrors = form.formHasErrors || Boolean(otherValidation);
+
+  const handleUpdateVariantType = useCallback((value: unknown) => {
+    setVariantType((value as any)?.displayName ?? null);
+    updateForm({ type: value });
+  }, [updateForm]);
 
   const coordinateType = formContent?.break1Start?.['@class'] || 'GenomicPosition';
 
@@ -250,31 +269,44 @@ const VariantForm = ({
           className="new-variant"
           spacing={2}
         >
-          <DropDownSelect
-            label="Pick the Input Type"
-            onChange={({ target: { value: newValue } }) => setInputType(newValue)}
-            options={Object.values(MAJOR_FORM_TYPES)}
+          <RecordAutocomplete
+            error={Boolean((form.formErrors.type && form.formIsDirty) || otherValidation?.type)}
+            getQueryBody={() => ({
+              target: 'Vocabulary',
+              orderBy: ['displayName'],
+              filters: [{ operator: 'IN', displayName: allowedTypes }],
+            })}
+            helperText={otherValidation?.type ?? form.formErrors.type?.message ?? form.model.properties.type.description}
+            isMulti={false}
+            label="type"
+            name="type"
+            onChange={(e) => handleUpdateVariantType(e.target.value)}
+            readOnly={variant === FORM_VARIANT.VIEW}
             required
-            value={inputType}
+            singleLoad
+            value={formContent.type ?? null}
           />
           <DropDownSelect
-            label="Pick the Position Coordinate System"
+            error={Boolean(otherValidation?.coordinateType)}
+            helperText={otherValidation?.coordinateType}
+            label="Position Coordinate System"
             onChange={({ target: { value: newValue } }) => handleUpdateCoordinateType(newValue)}
             options={coordinateOptions}
+            readOnly={variant === FORM_VARIANT.VIEW}
             required
             value={coordinateType}
           />
           <BreakpointForm
             breakpoint="1"
             coordinateType={coordinateType}
-            label={`Input the ${(isFusion || !isSubstitution) ? 'First ' : ''}Breakpoint`}
+            label={`${!isSubstitution ? 'First ' : ''}Breakpoint`}
             readOnly={variant === FORM_VARIANT.VIEW}
           />
-          {(!isSubstitution && isFusion) && (
+          {!isSubstitution && (
             <BreakpointForm
               breakpoint="2"
               coordinateType={coordinateType}
-              label="Input the Second Breakpoint"
+              label="Second Breakpoint"
               readOnly={variant === FORM_VARIANT.VIEW}
             />
           )}

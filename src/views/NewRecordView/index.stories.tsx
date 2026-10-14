@@ -45,21 +45,31 @@ export const NewPositionalVariant = meta.story({
   args: {
     path: '/new/PositionalVariant',
   },
+  parameters: {
+    msw: {
+      handlers: [http.gkb.query((body) => {
+        if (body.target === 'Vocabulary') {
+          return [{ '@rid': '111:111', '@class': 'Vocabulary', displayName: 'fusion' }];
+        }
+        return [];
+      })],
+    },
+  },
 });
 
 NewPositionalVariant.test('changing coordinate type affects position forms in later section', async ({ canvas, userEvent, step }) => {
   await hasFinishedLoading({ canvas, step });
   await expect(canvas.findByText('position (GenomicPosition)')).resolves.toBeInTheDocument();
-  await selectOption(canvas, userEvent, /pick the position coordinate system/i, /^CdsPosition/i);
+  await selectOption(canvas, userEvent, /coordinate system/i, /^CdsPosition/i);
   await expect(canvas.findByText('position (CdsPosition)')).resolves.toBeInTheDocument();
   await expect(canvas.findByLabelText(/offset/i)).resolves.toBeInTheDocument();
 });
 
 NewPositionalVariant.test('Fusion shows 2nd breakpoint', async ({ canvas, userEvent, step }) => {
   await hasFinishedLoading({ canvas, step });
-  await selectOption(canvas, userEvent, /pick the input type/i, 'Multi-Reference (ex. Translocation)');
-  await expect(canvas.findByText('Input the First Breakpoint')).resolves.toBeInTheDocument();
-  await expect(canvas.findByText('Input the Second Breakpoint')).resolves.toBeInTheDocument();
+  await selectOption(canvas, userEvent, /^type/i, /^fusion/i);
+  await expect(canvas.findByText('First Breakpoint')).resolves.toBeInTheDocument();
+  await expect(canvas.findByText('Second Breakpoint')).resolves.toBeInTheDocument();
 });
 
 export const NewStatement = meta.story({

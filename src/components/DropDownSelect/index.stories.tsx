@@ -37,6 +37,13 @@ export const ReadOnly = WithValue.extend({
   args: { readOnly: true },
 });
 
+export const ReadOnlyWithInvalidValue = Empty.extend({
+  args: { readOnly: true, value: 'invalid' },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByLabelText('Fruit')).toHaveTextContent('invalid');
+  },
+});
+
 export const WithError = WithValue.extend({
   args: { error: true, helperText: 'bad value' },
 });

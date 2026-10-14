@@ -12,7 +12,7 @@ import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';
 
-import BreakpointForm from '..';
+import BreakpointForm from './BreakpointForm';
 
 const CONTEXT_DEFAULTS: FormContextState = {
   formContent: {},

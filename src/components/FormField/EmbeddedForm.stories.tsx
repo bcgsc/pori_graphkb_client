@@ -6,7 +6,7 @@ import { FORM_VARIANT } from '@/components/util';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
 import preview from '#.storybook/preview';
 
-import Component from '../EmbeddedForm';
+import Component from './EmbeddedForm';
 
 type FormContextArgs = {
   value?: any;
@@ -53,7 +53,6 @@ const meta = preview.type<{ args: CustomArgs }>().meta({
     defaultLinkedClass: 'GenomicPosition',
     model: break1StartModel,
   },
-  title: 'components/FormField/EmbeddedForm',
   render: (args) => {
     const {
       value, errorMessage, name, formVariant, model, ...rest

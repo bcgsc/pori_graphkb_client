@@ -5,14 +5,9 @@ import {
 } from '@mui/material';
 import { Buffer } from 'buffer';
 import { useSnackbar } from 'notistack';
-import React, {
-  useCallback, useEffect, useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import {
-  useLocation, useNavigate, useParams,
-} from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
@@ -36,9 +31,9 @@ const getModelFromName = (modelName: string | undefined, variant = FORM_VARIANT.
     if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
       throw new Error(`Page Not Found. '${modelName}' is not a valid model`);
     }
-    return model.name;
+    return model;
   }
-  return 'V';
+  return schema.get('V');
 };
 
 type RouteParams = {
@@ -62,17 +57,7 @@ const RecordView = ({
   } = useParams<RouteParams>();
 
   // Use props over params
-  const modelNameParam = modelNameParamProp ?? modelNameParams;
-
-  const { pathname: path } = useLocation();
-  const [modelName, setModelName] = useState(modelNameParam || '');
-
-  useEffect(() => {
-    if (path) {
-      const name = getModelFromName(modelNameParam, variant);
-      setModelName(name);
-    }
-  }, [path, modelNameParam, variant, navigate]);
+  const model = getModelFromName((modelNameParamProp ?? modelNameParams) || 'V');
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -85,10 +70,8 @@ const RecordView = ({
     }
   }, [navigate, variant]);
 
-  const model = useMemo(() => schema.get(modelName || 'V'), [modelName]);
-
-  const { data: recordContent } = useQuery({
-    queryKey: tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
+  const { data: recordContent, isPending } = useQuery({
+    queryKey: tuple(`${model.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
     queryFn: async ({ queryKey: [route, options] }) => {
       const result = await api.get(route, options);
 
@@ -100,10 +83,10 @@ const RecordView = ({
   });
 
   useEffect(() => {
-    if (recordContent) {
-      setModelName(recordContent['@class']);
+    if (recordContent?.['@class'] && recordContent['@class'] !== model.name) {
+      navigate(`/${variant}/${recordContent['@class']}/${rid}`);
     }
-  }, [recordContent]);
+  }, [model.name, navigate, recordContent, rid, variant]);
 
   // redirect when the user clicks the top right button
   const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {
@@ -117,13 +100,12 @@ const RecordView = ({
     }
   }, [snackbar, navigate, model.name, recordContent, rid]);
 
-  if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
-    // wait for the model to be set for new Records
+  if (isPending && Boolean(variant !== FORM_VARIANT.NEW && rid)) {
     // wait for the content to load for existing records
     return (<CircularProgress />);
   }
   if (
-    ['positionalvariant', 'categoryvariant', 'variant'].includes(modelName.toLowerCase())
+    ['positionalvariant', 'categoryvariant', 'variant'].includes(model.name.toLowerCase())
     && variant === FORM_VARIANT.EDIT
   ) {
     return (
@@ -136,7 +118,7 @@ const RecordView = ({
       </div>
     );
   }
-  if (modelName.toLowerCase() === 'statement') {
+  if (model.name.toLowerCase() === 'statement') {
     return (
       <StatementForm
         onSubmit={handleSubmit}
@@ -149,7 +131,7 @@ const RecordView = ({
   }
   return (
     <RecordForm
-      modelName={modelName}
+      modelName={model.name}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
       title={DEFAULT_TITLES[variant]}

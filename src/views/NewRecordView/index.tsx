@@ -1,10 +1,6 @@
 import './index.scss';
 
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-} from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import RecordForm from '@/components/RecordForm';
@@ -19,7 +15,7 @@ const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
 const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) => {
   const navigate = useNavigate();
   const { modelName: paramsModelName } = useParams<{ modelName: string }>();
-  const modelName = propsModelName || paramsModelName;
+  const modelName = (propsModelName || paramsModelName)!;
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -34,18 +30,7 @@ const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) =>
 
   let innerComponent: ReactNode = null;
 
-  useEffect(() => {
-    if (!modelName) {
-      navigate('/query', { replace: true });
-    }
-  }, [modelName, navigate]);
-
-  if (!modelName) return null;
-
-  if (
-    VARIANT_CLASSES.includes(modelName.toLowerCase())
-    || (modelName && VARIANT_CLASSES.includes(modelName.toLowerCase()))
-  ) {
+  if (VARIANT_CLASSES.includes(modelName.toLowerCase())) {
     innerComponent = (
       <NewVariant
         onSubmit={handleSubmit}

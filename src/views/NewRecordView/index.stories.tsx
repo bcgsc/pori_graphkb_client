@@ -49,7 +49,10 @@ export const NewPositionalVariant = meta.story({
     msw: {
       handlers: [http.gkb.query((body) => {
         if (body.target === 'Vocabulary') {
-          return [{ '@rid': '111:111', '@class': 'Vocabulary', displayName: 'fusion' }];
+          return [
+            { '@rid': '111:111', '@class': 'Vocabulary', displayName: 'fusion' },
+            { '@rid': '111:222', '@class': 'Vocabulary', displayName: 'substitution' },
+          ];
         }
         return [];
       })],

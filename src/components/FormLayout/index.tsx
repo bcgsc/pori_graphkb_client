@@ -25,7 +25,8 @@ interface FormLayoutProps {
   /** an array of fields not to display */
   exclusions?: string[];
   /** properties that should be grouped together */
-  groups?: string[][];
+  order?: string[][];
+  excludeFieldsNotInOrder?: boolean;
 }
 
 const FormLayout = ({
@@ -33,17 +34,8 @@ const FormLayout = ({
   disabled = false,
   className = '',
   collapseExtra = false,
-  groups = [
-    ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-    ['relevance', 'subject'],
-    ['refSeq', 'untemplatedSeq'],
-    ['reviewStatus', 'reviews'],
-    ['reference1', 'break1Repr', 'break1Start', 'break1End', 'reference2', 'break2Repr', 'break2Start', 'break2End'],
-    ['source', 'sourceId', 'sourceIdVersion'],
-    ['startYear', 'completionYear'],
-    ['city', 'country'],
-    ['out', 'in'],
-  ],
+  order,
+  excludeFieldsNotInOrder = false,
 }: FormLayoutProps) => {
   const {
     formVariant,
@@ -56,7 +48,7 @@ const FormLayout = ({
   }
 
   const { extraFields, fields } = sortAndGroupFields(model.properties, {
-    collapseExtra, groups,
+    collapseExtra, order, excludeFieldsNotInOrder, exclude: exclusions,
   });
 
   return (

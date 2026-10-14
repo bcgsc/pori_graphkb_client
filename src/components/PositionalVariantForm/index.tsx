@@ -39,6 +39,10 @@ const FIELD_EXCLUSIONS = [
   'type',
 ];
 
+const REMAINING_FIELD_ORDER = [
+  ['refSeq', 'untemplatedSeq', 'truncation', 'untemplatedSeqSize'],
+];
+
 const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
   label: m, value: m, key: m, caption: schema.get(m).description,
 }));
@@ -315,6 +319,7 @@ const VariantForm = ({
           collapseExtra
           disabled={actionInProgress || form.formVariant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
+          order={REMAINING_FIELD_ORDER}
         />
         <ErrorMessage error={submitMutation.error}>An error occurred while creating/editing record.</ErrorMessage>
         <ErrorMessage error={deleteMutation.error}>An error occurred while deleting record.</ErrorMessage>

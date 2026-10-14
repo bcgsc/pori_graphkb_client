@@ -33,7 +33,7 @@ describe('util', () => {
     test('co-require name and address', () => {
       const grouping = sortAndGroupFields(testModel.properties, {
         collapseExtra: true,
-        groups: [['name', 'address']],
+        order: [['name', 'address']],
       });
       expect(grouping).toEqual({
         fields: [['name', 'address'], 'gender'],

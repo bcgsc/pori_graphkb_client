@@ -6968,6 +6968,96 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                   for="_r_XXXX_"
                   id="_r_XXXX_-label"
                 >
+                  refSeq
+                </label>
+                <div
+                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <textarea
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-invalid="false"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    data-testid="refSeq"
+                    id="_r_XXXX_"
+                    name="refSeq"
+                    readonly=""
+                  >
+                    D
+                  </textarea>
+                  <textarea
+                    aria-hidden="true"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    readonly=""
+                    tabindex="-1"
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  the variants reference sequence
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+            >
+              <div
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  untemplatedSeq
+                </label>
+                <div
+                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <textarea
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-invalid="false"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    data-testid="untemplatedSeq"
+                    id="_r_XXXX_"
+                    name="untemplatedSeq"
+                    readonly=""
+                  >
+                    N
+                  </textarea>
+                  <textarea
+                    aria-hidden="true"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    readonly=""
+                    tabindex="-1"
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  Untemplated or alternative sequence
+                </p>
+              </div>
+            </li>
+          </ul>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+            >
+              <div
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
                   break1Repr
                 </label>
                 <div
@@ -7048,96 +7138,6 @@ exports[`ViewPositionalVariant snapshot 1`] = `
               </p>
             </div>
           </li>
-          <ul
-            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-          >
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-            >
-              <div
-                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  refSeq
-                </label>
-                <div
-                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <textarea
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-invalid="false"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    data-testid="refSeq"
-                    id="_r_XXXX_"
-                    name="refSeq"
-                    readonly=""
-                  >
-                    D
-                  </textarea>
-                  <textarea
-                    aria-hidden="true"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    readonly=""
-                    tabindex="-1"
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  the variants reference sequence
-                </p>
-              </div>
-            </li>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-            >
-              <div
-                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  untemplatedSeq
-                </label>
-                <div
-                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <textarea
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-invalid="false"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    data-testid="untemplatedSeq"
-                    id="_r_XXXX_"
-                    name="untemplatedSeq"
-                    readonly=""
-                  >
-                    N
-                  </textarea>
-                  <textarea
-                    aria-hidden="true"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    readonly=""
-                    tabindex="-1"
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  Untemplated or alternative sequence
-                </p>
-              </div>
-            </li>
-          </ul>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
@@ -7711,6 +7711,96 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                   for="_r_XXXX_"
                   id="_r_XXXX_-label"
                 >
+                  refSeq
+                </label>
+                <div
+                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <textarea
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-invalid="false"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    data-testid="refSeq"
+                    id="_r_XXXX_"
+                    name="refSeq"
+                    readonly=""
+                  >
+                    D
+                  </textarea>
+                  <textarea
+                    aria-hidden="true"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    readonly=""
+                    tabindex="-1"
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  the variants reference sequence
+                </p>
+              </div>
+            </li>
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+            >
+              <div
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  untemplatedSeq
+                </label>
+                <div
+                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <textarea
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-invalid="false"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    data-testid="untemplatedSeq"
+                    id="_r_XXXX_"
+                    name="untemplatedSeq"
+                    readonly=""
+                  >
+                    N
+                  </textarea>
+                  <textarea
+                    aria-hidden="true"
+                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                    readonly=""
+                    tabindex="-1"
+                  />
+                </div>
+                <p
+                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  Untemplated or alternative sequence
+                </p>
+              </div>
+            </li>
+          </ul>
+          <ul
+            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+          >
+            <li
+              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+            >
+              <div
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
                   break1Repr
                 </label>
                 <div
@@ -7791,96 +7881,6 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
               </p>
             </div>
           </li>
-          <ul
-            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-          >
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-            >
-              <div
-                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  refSeq
-                </label>
-                <div
-                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <textarea
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-invalid="false"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    data-testid="refSeq"
-                    id="_r_XXXX_"
-                    name="refSeq"
-                    readonly=""
-                  >
-                    D
-                  </textarea>
-                  <textarea
-                    aria-hidden="true"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    readonly=""
-                    tabindex="-1"
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  the variants reference sequence
-                </p>
-              </div>
-            </li>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-            >
-              <div
-                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="true"
-                  for="_r_XXXX_"
-                  id="_r_XXXX_-label"
-                >
-                  untemplatedSeq
-                </label>
-                <div
-                  class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                >
-                  <textarea
-                    aria-describedby="_r_XXXX_-helper-text"
-                    aria-invalid="false"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    data-testid="untemplatedSeq"
-                    id="_r_XXXX_"
-                    name="untemplatedSeq"
-                    readonly=""
-                  >
-                    N
-                  </textarea>
-                  <textarea
-                    aria-hidden="true"
-                    class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                    readonly=""
-                    tabindex="-1"
-                  />
-                </div>
-                <p
-                  class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  id="_r_XXXX_-helper-text"
-                >
-                  Untemplated or alternative sequence
-                </p>
-              </div>
-            </li>
-          </ul>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"

@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
@@ -12,6 +13,18 @@ enum FORM_VARIANT {
 }
 
 const BELOW_FOLD = Object.keys(schema.get('V').properties);
+
+const FIELD_GROUPS = [
+  ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
+  ['relevance', 'subject'],
+  ['refSeq', 'untemplatedSeq'],
+  ['reviewStatus', 'reviews'],
+  ['reference1', 'break1Repr', 'break1Start', 'break1End', 'reference2', 'break2Repr', 'break2Start', 'break2End'],
+  ['source', 'sourceId', 'sourceIdVersion'],
+  ['startYear', 'completionYear'],
+  ['city', 'country'],
+  ['out', 'in'],
+];
 
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'
@@ -33,14 +46,34 @@ const sortAndGroupFields = (
   opt: {
     /** flag to indicate if a collaspible section should be created */
     collapseExtra?: boolean;
-    /** properties that should co-occur */
-    groups?: string[][],
+    order?: string[][];
+    excludeFieldsNotInOrder?: boolean;
+    exclude?: string[];
   } = {},
 ) => {
+  const mainFields: (string | string[])[] = [];
+  const extraFields: (string | string[])[] = [];
+
   if (!propertiesWithClass) {
-    return { extraFields: [], fields: [] };
+    return { extraFields, fields: mainFields };
   }
-  const { [CLASS_MODEL_PROP]: _, ...properties } = propertiesWithClass;
+
+  opt.order?.forEach((group) => {
+    const filtered = group.filter((field) => Boolean(propertiesWithClass[field]) && !opt.exclude?.includes(field));
+
+    if (filtered.length === 1) {
+      mainFields.push(filtered[0]);
+    } else if (filtered.length) {
+      mainFields.push(filtered);
+    }
+  });
+
+  if (opt.excludeFieldsNotInOrder) {
+    return { fields: mainFields, extraFields };
+  }
+
+  const exclude = [...opt.exclude || [], ...mainFields.flat()];
+  const { [CLASS_MODEL_PROP]: _, ...properties } = omit(propertiesWithClass, exclude) as typeof propertiesWithClass;
   type Group = {
     fields: string[];
     aboveFold: boolean;
@@ -61,7 +94,7 @@ const sortAndGroupFields = (
     };
   });
 
-  opt.groups?.forEach((group) => {
+  FIELD_GROUPS?.forEach((group) => {
     const filteredGroup = group.filter((key) => properties[key]);
     if (!filteredGroup.length) return;
     const first = filteredGroup[0];
@@ -79,9 +112,6 @@ const sortAndGroupFields = (
       aboveFold,
     };
   });
-
-  const mainFields: (string | string[])[] = [];
-  const extraFields: (string | string[])[] = [];
 
   Object.values(fieldsMap).sort((groupA, groupB) => {
     if (groupA.required === groupB.required) {

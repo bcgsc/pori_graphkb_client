@@ -14,13 +14,13 @@ interface BreakpointFormProps {
   coordinateType: string;
   model: Pick<SchemaClassDefinition, 'name' | 'properties'>;
   /** the field name of the reference element (ex. reference1) */
-  reference: string | undefined;
+  reference: string;
   /** the field name of the end position (ex. break1End) */
-  end?: string;
+  end: string;
   /** flag to indicate this field is required */
   required?: boolean;
   /** the field name of the start position (ex. break1Start) */
-  start?: string;
+  start: string;
   label?: ReactNode;
 }
 
@@ -31,7 +31,7 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start = '', end = '', required = true, model, label,
+  coordinateType, reference, start, end, required = true, model, label,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useFormContext();
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -47,50 +47,44 @@ const BreakpointForm = ({
   return (
     <Stack spacing={2}>
       {label}
-      {reference && (
-        <FormField
-          label="reference"
-          model={{ ...model.properties.reference1, mandatory: required, name: reference }}
-        />
-      )}
-      {start && (
-        <>
-          <FormControlLabel
-            className="breakpoint-form__uncertain-checkbox"
-            control={(
-              <Checkbox
-                checked={uncertain}
-                data-testid="breakpoint-form__uncertain-checkbox"
-                onChange={() => handleCheckUncertain(!uncertain)}
-              />
+      <FormField
+        label="reference"
+        model={{ ...model.properties.reference1, mandatory: required, name: reference }}
+      />
+      <FormControlLabel
+        className="breakpoint-form__uncertain-checkbox"
+        control={(
+          <Checkbox
+            checked={uncertain}
+            data-testid="breakpoint-form__uncertain-checkbox"
+            onChange={() => handleCheckUncertain(!uncertain)}
+          />
             )}
-            label="uncertain position"
-          />
-          <FormField
-            baseModel={coordinateType}
-            label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
-            model={{
-              ...model.properties.break1Start,
-              name: start,
-              mandatory: required,
-              linkedClass: coordinateType,
-              description: '',
-            }}
-          />
-          {uncertain && (
-            <FormField
-              baseModel={coordinateType}
-              label={`end (${coordinateType})`}
-              model={{
-                ...model.properties.break1End,
-                name: end,
-                mandatory: required,
-                linkedClass: coordinateType,
-                description: 'end of the breakpoint range',
-              }}
-            />
-          )}
-        </>
+        label="uncertain position"
+      />
+      <FormField
+        baseModel={coordinateType}
+        label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
+        model={{
+          ...model.properties.break1Start,
+          name: start,
+          mandatory: required,
+          linkedClass: coordinateType,
+          description: '',
+        }}
+      />
+      {uncertain && (
+        <FormField
+          baseModel={coordinateType}
+          label={`end (${coordinateType})`}
+          model={{
+            ...model.properties.break1End,
+            name: end,
+            mandatory: required,
+            linkedClass: coordinateType,
+            description: 'end of the breakpoint range',
+          }}
+        />
       )}
     </Stack>
   );

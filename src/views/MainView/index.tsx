@@ -38,7 +38,7 @@ const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
 const ABSTRACT_CLASSES = Object.values(schema.models)
-  .filter((m) => m.isAbstract && m.name !== 'Variant')
+  .filter((m) => m.isAbstract)
   .map((m) => m.name);
 
 export function AppRoutes() {

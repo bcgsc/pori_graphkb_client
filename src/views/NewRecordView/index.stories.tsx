@@ -35,7 +35,19 @@ export const NewVariant = meta.story({
   },
 });
 
-NewVariant.test('changing coordinate type affects position forms in later section', async ({ canvas, userEvent, step }) => {
+export const NewCategoryVariant = meta.story({
+  args: {
+    path: '/new/CategoryVariant',
+  },
+});
+
+export const NewPositionalVariant = meta.story({
+  args: {
+    path: '/new/PositionalVariant',
+  },
+});
+
+NewPositionalVariant.test('changing coordinate type affects position forms in later section', async ({ canvas, userEvent, step }) => {
   await hasFinishedLoading({ canvas, step });
   await expect(canvas.findByText('position (GenomicPosition)')).resolves.toBeInTheDocument();
   await selectOption(canvas, userEvent, /pick the position coordinate system/i, /^CdsPosition/i);
@@ -43,7 +55,7 @@ NewVariant.test('changing coordinate type affects position forms in later sectio
   await expect(canvas.findByLabelText(/offset/i)).resolves.toBeInTheDocument();
 });
 
-NewVariant.test('Fusion shows 2nd breakpoint', async ({ canvas, userEvent, step }) => {
+NewPositionalVariant.test('Fusion shows 2nd breakpoint', async ({ canvas, userEvent, step }) => {
   await hasFinishedLoading({ canvas, step });
   await selectOption(canvas, userEvent, /pick the input type/i, 'Multi-Reference (ex. Translocation)');
   await expect(canvas.findByText('Input the First Breakpoint')).resolves.toBeInTheDocument();

@@ -26,7 +26,6 @@ import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 
 const PositionalVariant = schema.get('PositionalVariant');
-const CategoryVariant = schema.get('CategoryVariant');
 
 const FIELD_EXCLUSIONS = [
   'groupRestrictions',
@@ -47,25 +46,18 @@ const MAJOR_FORM_TYPES = {
   SUB: 'Substitution',
   INDEL: 'Indel',
   TRANS_WITH_POS: 'Multi-Reference (ex. Translocation)',
-  TRANS: 'Multi-Reference (ex. Translocation) without Position Information',
   OTHER_WITH_POS: 'Other Variant',
-  OTHER: 'Other Variant without Position Information',
 };
 
 const pickInputType = (record) => {
-  if (record['@class'] === 'PositionalVariant') {
-    if (record.reference2) {
-      return MAJOR_FORM_TYPES.TRANS_WITH_POS;
-    } if (record.type && record.type.name) {
-      if (record.type.name === 'substitution') {
-        return MAJOR_FORM_TYPES.SUB;
-      }
+  if (record.reference2) {
+    return MAJOR_FORM_TYPES.TRANS_WITH_POS;
+  } if (record.type && record.type.name) {
+    if (record.type.name === 'substitution') {
+      return MAJOR_FORM_TYPES.SUB;
     }
-    return MAJOR_FORM_TYPES.OTHER_WITH_POS;
-  } if (record.reference2) {
-    return MAJOR_FORM_TYPES.TRANS;
   }
-  return MAJOR_FORM_TYPES.OTHER;
+  return MAJOR_FORM_TYPES.OTHER_WITH_POS;
 };
 
 interface VariantFormProps {
@@ -110,35 +102,23 @@ const VariantForm = ({
     }
   }, [value, variant]);
 
-  const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
-  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS || inputType === MAJOR_FORM_TYPES.TRANS;
+  const isFusion = inputType === MAJOR_FORM_TYPES.TRANS_WITH_POS;
   const queryClient = useQueryClient();
 
-  const model = useMemo(() => {
-    const newModel = hasPositions
-      ? {
-        name: PositionalVariant.name,
-        properties: {
-          ...PositionalVariant.properties,
-          break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
-          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
-          refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
-          untemplatedSeq: {
-            ...PositionalVariant.properties.untemplatedSeq,
-            mandatory: isSubstitution,
-          },
-        },
-      }
-      : {
-        name: CategoryVariant.name,
-        properties: {
-          ...PositionalVariant.properties,
-          reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
-        },
-      };
-    return newModel;
-  }, [hasPositions, isSubstitution, isFusion]);
+  const model = useMemo(() => ({
+    name: PositionalVariant.name,
+    properties: {
+      ...PositionalVariant.properties,
+      break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
+      reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
+      refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
+      untemplatedSeq: {
+        ...PositionalVariant.properties.untemplatedSeq,
+        mandatory: isSubstitution,
+      },
+    },
+  }), [isSubstitution, isFusion]);
 
   const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
   const form = useSchemaForm(model, initialValue, { variant });
@@ -266,7 +246,6 @@ const VariantForm = ({
             required
             value={inputType}
           />
-          {hasPositions && (
           <DropDownSelect
             label="Pick the Position Coordinate System"
             onChange={({ target: { value: newValue } }) => setCoordinateType(newValue)}
@@ -274,24 +253,23 @@ const VariantForm = ({
             required
             value={coordinateType}
           />
-          )}
           <BreakpointForm
             coordinateType={coordinateType}
-            end={hasPositions ? 'break1End' : undefined}
-            label={`Input the ${(isFusion || (hasPositions && !isSubstitution)) ? 'First ' : ''}${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
+            end="break1End"
+            label={`Input the ${(isFusion || !isSubstitution) ? 'First ' : ''}Breakpoint`}
             model={model}
             reference="reference1"
-            start={hasPositions ? 'break1Start' : undefined}
+            start="break1Start"
           />
-          {(!isSubstitution && (hasPositions || isFusion)) && (
-          <BreakpointForm
-            coordinateType={coordinateType}
-            end={hasPositions ? 'break2End' : undefined}
-            label={`Input the Second ${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
-            model={model}
-            reference={isFusion ? 'reference2' : undefined}
-            start={hasPositions ? 'break2Start' : undefined}
-          />
+          {(!isSubstitution && isFusion) && (
+            <BreakpointForm
+              coordinateType={coordinateType}
+              end="break2End"
+              label="Input the Second Breakpoint"
+              model={model}
+              reference="reference2"
+              start="break2Start"
+            />
           )}
         </Stack>
         <FormLayout

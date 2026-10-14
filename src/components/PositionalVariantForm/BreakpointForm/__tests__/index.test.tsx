@@ -88,21 +88,4 @@ describe('BreakpointForm', () => {
     fireEvent.click(getByTestId('breakpoint-form__uncertain-checkbox'));
     expect(form.updateField).toHaveBeenCalledWith('break1End', null);
   });
-
-  test('displays only gene when start not given', () => {
-    const { getByLabelText, queryByText } = render(
-      <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: {} }}>
-          <BreakpointForm
-            coordinateType="GenomicPosition"
-            model={schemaDefn.get('PositionalVariant')}
-            reference="reference1"
-          />
-        </FormContext.Provider>
-      </QueryClientProvider>,
-    );
-    expect(getByLabelText(/reference/)).toBeInTheDocument();
-    expect(queryByText('position (GenomicPosition)')).not.toBeInTheDocument();
-    expect(queryByText('end (GenomicPosition)')).not.toBeInTheDocument();
-  });
 });

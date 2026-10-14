@@ -1,16 +1,14 @@
 import './index.scss';
 
-import React, { ReactNode, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import NewVariant from '@/components/PositionalVariantForm';
+import PositionalVariantForm from '@/components/PositionalVariantForm';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
-
-const VARIANT_CLASSES = ['Variant', 'PositionalVariant', 'CategoryVariant'];
 
 const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) => {
   const navigate = useNavigate();
@@ -30,8 +28,8 @@ const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) =>
 
   let Form = RecordForm;
 
-  if (VARIANT_CLASSES.includes(model.name)) {
-    Form = NewVariant;
+  if (model.name === 'PositionalVariant') {
+    Form = PositionalVariantForm;
   } else if (model.name === 'Statement') {
     Form = StatementForm;
   }

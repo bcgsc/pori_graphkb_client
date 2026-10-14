@@ -9,7 +9,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router';
 
-import VariantForm from '@/components/PositionalVariantForm';
+import PositionalVariantForm from '@/components/PositionalVariantForm';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
@@ -107,10 +107,8 @@ const RecordView = ({
 
   let Form = RecordForm;
 
-  if (
-    ['PositionalVariant', 'CategoryVariant', 'Variant'].includes(model.name)
-  ) {
-    Form = VariantForm;
+  if (model.name === 'PositionalVariant') {
+    Form = PositionalVariantForm;
   } else if (model.name === 'Statement') {
     Form = StatementForm;
   }

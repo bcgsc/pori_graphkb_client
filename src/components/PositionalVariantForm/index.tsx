@@ -75,15 +75,13 @@ interface VariantFormProps {
  * Input form for new Variants
  */
 const VariantForm = ({
-  title, onSubmit, onToggleState, value, variant = FORM_VARIANT.NEW,
+  title, onSubmit, onToggleState, value: valueProp, variant = FORM_VARIANT.NEW,
 }: VariantFormProps) => {
   const auth = useAuth();
-  let defaultCoordinateType;
-
-  if (value?.break1Start) {
-    defaultCoordinateType = value.break1Start['@class'];
-  }
-  const [coordinateType, setCoordinateType] = useState(defaultCoordinateType || 'GenomicPosition');
+  const value = useMemo(() => ({
+    ...valueProp ?? {},
+    break1Start: valueProp?.break1Start ?? { '@class': 'GenomicPosition' },
+  }), [valueProp]);
 
   const [inputType, setInputType] = useState(
     variant === FORM_VARIANT.NEW
@@ -95,10 +93,6 @@ const VariantForm = ({
   useEffect(() => {
     if (variant !== FORM_VARIANT.NEW && value) {
       setInputType(pickInputType(value));
-
-      if (value?.break1Start) {
-        setCoordinateType(value.break1Start['@class']);
-      }
     }
   }, [value, variant]);
 
@@ -126,8 +120,22 @@ const VariantForm = ({
   const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
   const form = useSchemaForm(model, initialValue, { variant });
   const {
-    formContent, formErrors, formHasErrors, formIsDirty,
+    formContent, formErrors, formHasErrors, formIsDirty, update: updateForm,
   } = form;
+
+  const coordinateType = formContent?.break1Start?.['@class'] || 'GenomicPosition';
+
+  const handleUpdateCoordinateType = useCallback((newCoordinateType: string) => {
+    const updates: Record<string, unknown> = {};
+
+    ['break1Start', 'break1End', 'break2Start', 'break2End'].forEach((prop) => {
+      if (formContent[prop]) {
+        updates[`${prop}.@class`] = newCoordinateType;
+      }
+    });
+
+    updateForm(updates);
+  }, [updateForm, formContent]);
 
   /**
    * Mutation for submitting (creating or updating) a variant record
@@ -251,25 +259,23 @@ const VariantForm = ({
           />
           <DropDownSelect
             label="Pick the Position Coordinate System"
-            onChange={({ target: { value: newValue } }) => setCoordinateType(newValue)}
+            onChange={({ target: { value: newValue } }) => handleUpdateCoordinateType(newValue)}
             options={coordinateOptions}
             required
             value={coordinateType}
           />
           <BreakpointForm
+            breakpoint="1"
             coordinateType={coordinateType}
-            end="break1End"
             label={`Input the ${(isFusion || !isSubstitution) ? 'First ' : ''}Breakpoint`}
-            reference="reference1"
-            start="break1Start"
+            readOnly={variant === FORM_VARIANT.VIEW}
           />
           {(!isSubstitution && isFusion) && (
             <BreakpointForm
+              breakpoint="2"
               coordinateType={coordinateType}
-              end="break2End"
               label="Input the Second Breakpoint"
-              reference="reference2"
-              start="break2Start"
+              readOnly={variant === FORM_VARIANT.VIEW}
             />
           )}
         </Stack>

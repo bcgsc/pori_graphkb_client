@@ -18,6 +18,7 @@ import FormLayout from '..';
 const CONTEXT_DEFAULTS: FormContextState = {
   formContent: {},
   formVariant: FORM_VARIANT.VIEW,
+  update: () => {},
   updateField: () => {},
   updateFieldEvent: () => {},
   setFormIsDirty: () => {},

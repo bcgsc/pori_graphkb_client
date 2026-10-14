@@ -102,10 +102,10 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       && propModel.default === undefined
       && !propModel.generateDefault
     ) {
-      return { error: { message: 'Required Value' }, value };
+      return { message: 'Required Value' };
     }
   } else if (value === null && !propModel.nullable) {
-    return { error: { message: 'Cannot be empty/null' }, value };
+    return { message: 'Cannot be empty/null' };
   } else if (value !== null) { // validate the new value using the schema model property
     if (propModel.linkedClass && propModel.type.includes('embedded')) {
       let subErrors = {};
@@ -113,7 +113,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
 
       const valErrorCheck = (subPropModel, val, errors) => {
         const { name } = subPropModel;
-        const { error } = validateValue(subPropModel, val[name], { ignoreMandatory });
+        const error = validateValue(subPropModel, val[name], { ignoreMandatory });
 
         const newErrors = { ...errors };
 
@@ -140,7 +140,7 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
         } catch (err) { } // eslint-disable-line no-empty
 
         if (!embeddedModel) {
-          return { error: { '@class': { message: 'Required Value' } } };
+          return { '@class': { message: 'Required Value' } };
         }
 
         Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
@@ -149,9 +149,9 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       }
 
       if (Object.keys(subErrors).length) {
-        return { error: subErrors, value };
+        return subErrors;
       }
-      return { value };
+      return null;
     }
 
     try {
@@ -161,12 +161,12 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
         valueToValidate = value['@rid'] || value;
       }
       validateProperty(propModel, valueToValidate);
-      return { value };
+      return null;
     } catch (err) {
-      return { error: err, value };
+      return err;
     }
   }
-  return { value };
+  return null;
 };
 
 /**

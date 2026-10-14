@@ -17,6 +17,7 @@ import BreakpointForm from '..';
 const CONTEXT_DEFAULTS: FormContextState = {
   formContent: {},
   formVariant: FORM_VARIANT.VIEW,
+  update: () => {},
   updateField: () => {},
   updateFieldEvent: () => {},
   setFormIsDirty: () => {},
@@ -33,10 +34,9 @@ describe('BreakpointForm', () => {
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: {} }}>
           <BreakpointForm
+            breakpoint="1"
             coordinateType="GenomicPosition"
-            end="break1End"
-            reference="reference1"
-            start="break1Start"
+            readOnly={false}
           />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -51,10 +51,9 @@ describe('BreakpointForm', () => {
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { break1End: {} } }}>
           <BreakpointForm
+            breakpoint="1"
             coordinateType="GenomicPosition"
-            end="break1End"
-            reference="reference1"
-            start="break1Start"
+            readOnly={false}
           />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -65,15 +64,14 @@ describe('BreakpointForm', () => {
   });
 
   test('clears end from form when uncertain is unset', () => {
-    const form = { ...CONTEXT_DEFAULTS, formContent: { break1End: {} }, updateField: vi.fn() };
+    const form = { ...CONTEXT_DEFAULTS, formContent: { break1End: {} }, update: vi.fn() };
     const { getByText, getByTestId, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={form}>
           <BreakpointForm
+            breakpoint="1"
             coordinateType="GenomicPosition"
-            end="break1End"
-            reference="reference1"
-            start="break1Start"
+            readOnly={false}
           />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -83,6 +81,6 @@ describe('BreakpointForm', () => {
     expect(getByText('end (GenomicPosition)')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('breakpoint-form__uncertain-checkbox'));
-    expect(form.updateField).toHaveBeenCalledWith('break1End', null);
+    expect(form.update).toHaveBeenCalledWith({ break1End: null });
   });
 });

@@ -15,25 +15,21 @@ import api from '@/services/api';
 import schemaDefn from '@/services/schema';
 
 import BooleanField from './BooleanField';
+import EmbeddedForm from './EmbeddedForm';
 import FieldWrapper from './FieldWrapper';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 import PermissionsTable from './PermissionsTable';
-import PositionForm from './PositionForm';
 import StatementReviewsTable from './StatementReviewsTable';
 import TextArrayField from './TextArrayField';
 import Timestamp from './Timestamp';
-
-const POSITION_CLASSES = [
-  'Position',
-  ...schemaDefn.descendants('Position', { excludeAbstract: false, includeSelf: true }),
-];
 
 interface FormFieldProps {
   /**
    * the property model which defines the property type and other requirements
    */
   name: string;
-  baseModel?: string;
+  /** for embedded where the linkedClass is abstract, specifies the default linked class to use */
+  defaultLinkedClass?: string;
   className?: string;
   disabled?: boolean;
   helperText?: string;
@@ -58,7 +54,7 @@ const FormField = ({
   label: labelProp,
   innerProps,
   helperText: defaultHelperText,
-  baseModel = '',
+  defaultLinkedClass,
 }: FormFieldProps) => {
   const form = useFormContext();
 
@@ -103,19 +99,8 @@ const FormField = ({
 
   // ensure all components both get and support
   // the following props
-  const sharedTableProps = {
-    disabled: generated || disabled,
-    name,
-    onChange: form.updateFieldEvent,
-    value,
-  } satisfies SharedProps<[
-    React.ComponentProps<typeof StatementReviewsTable>,
-    React.ComponentProps<typeof PermissionsTable>,
-  ]>;
-  const sharedProps = {
+  const sharedEmbedProps = {
     disabled: (generated || disabled) && form.formVariant !== FORM_VARIANT.VIEW,
-    error: errorFlag,
-    helperText,
     label: label || name,
     name,
     required: mandatory,
@@ -123,11 +108,19 @@ const FormField = ({
     value,
     readOnly: generated || form.formVariant === FORM_VARIANT.VIEW,
   } satisfies SharedProps<[
+    React.ComponentProps<typeof StatementReviewsTable>,
+    React.ComponentProps<typeof PermissionsTable>,
+    React.ComponentProps<typeof EmbeddedForm>,
+  ]>;
+  const sharedProps = {
+    ...sharedEmbedProps,
+    error: errorFlag,
+    helperText,
+  } satisfies SharedProps<[
     React.ComponentProps<typeof BooleanField>,
     React.ComponentProps<typeof Timestamp>,
     React.ComponentProps<typeof TextField> & { readOnly?: boolean },
     React.ComponentProps<typeof TextArrayField>,
-    React.ComponentProps<typeof PositionForm>,
     React.ComponentProps<typeof DropDownSelect>,
     React.ComponentProps<typeof FilteredRecordAutocomplete>,
     React.ComponentProps<typeof RecordAutocomplete>,
@@ -151,7 +144,7 @@ const FormField = ({
     if (iterable && linkedClass.name === 'StatementReview') {
       propComponent = (
         <StatementReviewsTable
-          {...sharedTableProps}
+          {...sharedEmbedProps}
           value={sharedProps.value || []}
         />
       );
@@ -159,15 +152,14 @@ const FormField = ({
       // permissions table of checkboxes
       propComponent = (
         <PermissionsTable
-          {...sharedTableProps}
+          {...sharedEmbedProps}
         />
       );
-    } else if (POSITION_CLASSES.includes(linkedClass.name)) {
+    } else {
       propComponent = (
-        <PositionForm
+        <EmbeddedForm
           {...sharedProps}
-          baseVariant={baseModel}
-          variant={sharedProps.value && sharedProps.value['@class']}
+          defaultLinkedClass={defaultLinkedClass}
         />
       );
     }
@@ -235,7 +227,7 @@ const FormField = ({
       );
     }
   } else if (type === 'long' && (['createdAt', 'deletedAt', 'updatedAt'].includes(name) || format === 'date')) {
-    // timestamp type compoennt
+    // timestamp type component
     propComponent = (
       <Timestamp
         {...sharedProps}

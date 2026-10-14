@@ -15,6 +15,7 @@ export interface FormContextState {
   /** true when the form has been changed from the initial value */
   formIsDirty: boolean;
   additionalValidationError: string;
+  update: (updates: Record<string, unknown>) => void;
   /** update a single field */
   updateField: (name: string, value: unknown) => void;
   /** update a single field using a synthetic event */

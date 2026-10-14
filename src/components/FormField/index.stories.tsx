@@ -1,6 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { fn } from 'storybook/test';
 
+import { SchemaPropertyDefinition } from '@/services/schema';
 import preview from '#.storybook/preview';
 
 import FormContext from '../FormContext';
@@ -11,14 +12,16 @@ type FormContextArgs = {
   value?: any;
   errorMessage?: string | null | undefined;
   formVariant?: FORM_VARIANT;
+  model?: Partial<SchemaPropertyDefinition>
 };
 
 type CustomArgs = React.ComponentProps<typeof Component> & FormContextArgs;
 
 function MockProvider({
-  children, value, name, errorMessage, formVariant,
+  children, value, name, errorMessage, formVariant, model,
 }: { children: ReactNode; name: string } & FormContextArgs) {
   const state = useMemo(() => ({
+    update: fn(),
     updateFieldEvent: fn(),
     updateField: fn(),
     setFormIsDirty: fn(),
@@ -32,10 +35,10 @@ function MockProvider({
     formVariant: formVariant ?? FORM_VARIANT.NEW,
     model: {
       properties: {
-        [name]: { name: 'comment', type: 'string' as const },
+        [name]: { name, type: 'string' as const, ...model },
       },
     },
-  }), [value, errorMessage, name, formVariant]);
+  }), [value, errorMessage, name, formVariant, model]);
 
   return <FormContext.Provider value={state}>{children}</FormContext.Provider>;
 }

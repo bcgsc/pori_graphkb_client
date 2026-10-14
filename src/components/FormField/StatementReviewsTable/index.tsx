@@ -23,6 +23,9 @@ interface StatementReviewsTableProps {
   /** linked records to be displayed in table */
   value?: (Omit<GeneralRecordType, 'createdBy'> & { createdBy: string | GeneralRecordType })[];
   disabled?: boolean;
+  label?: string;
+  required?: boolean;
+  readOnly?: boolean;
 }
 
 /**
@@ -34,6 +37,9 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
     disabled,
     onChange,
     name,
+    readOnly,
+    label: _,
+    required: __,
   } = props;
 
   const handleDeleteReview = ({ index }) => {
@@ -60,7 +66,7 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
         <TableBody>
           {values.map((value, index) => (
             <StatementReviewRow
-              disabled={disabled}
+              disabled={Boolean(disabled || readOnly)}
               index={index}
               onDelete={handleDeleteReview}
               value={value}

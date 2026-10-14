@@ -3,7 +3,7 @@ import {
   FormControlLabel,
   Stack,
 } from '@mui/material';
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
@@ -11,13 +11,9 @@ import FormField from '@/components/FormField';
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
-  /** the field name of the reference element (ex. reference1) */
-  reference: string;
-  /** the field name of the end position (ex. break1End) */
-  end: string;
-  /** the field name of the start position (ex. break1Start) */
-  start: string;
+  breakpoint: '1' | '2';
   label?: ReactNode;
+  readOnly: boolean;
 }
 
 /**
@@ -27,47 +23,51 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, label,
+  coordinateType, breakpoint, label, readOnly,
 }: BreakpointFormProps) => {
-  const { formContent, updateField } = useFormContext();
-  const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
+  const { formContent, update } = useFormContext();
+  const uncertain = Boolean(formContent[`break${breakpoint}End`]);
 
   const handleCheckUncertain = useCallback((checked) => {
     if (!checked) {
       // unchecking
-      updateField(end, null);
+      update({ [`break${breakpoint}End`]: null });
+    } else {
+      update({ [`break${breakpoint}End.@class`]: coordinateType });
     }
-    setUncertain(checked);
-  }, [end, updateField]);
+  }, [breakpoint, coordinateType, update]);
 
   return (
     <Stack spacing={2}>
       {label}
       <FormField
         label="reference"
-        name={reference}
+        name={`reference${breakpoint}`}
       />
-      <FormControlLabel
-        className="breakpoint-form__uncertain-checkbox"
-        control={(
-          <Checkbox
-            checked={uncertain}
-            data-testid="breakpoint-form__uncertain-checkbox"
-            onChange={() => handleCheckUncertain(!uncertain)}
-          />
-            )}
-        label="uncertain position"
-      />
+      {!readOnly && (
+        <FormControlLabel
+          className="breakpoint-form__uncertain-checkbox"
+          control={(
+            <Checkbox
+              checked={uncertain}
+              data-testid="breakpoint-form__uncertain-checkbox"
+              onChange={() => handleCheckUncertain(!uncertain)}
+            />
+              )}
+          label="uncertain position"
+        />
+
+      )}
       <FormField
-        baseModel={coordinateType}
+        defaultLinkedClass={coordinateType}
         label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
-        name={start}
+        name={`break${breakpoint}Start`}
       />
       {uncertain && (
         <FormField
-          baseModel={coordinateType}
+          defaultLinkedClass={coordinateType}
           label={`end (${coordinateType})`}
-          name={end}
+          name={`break${breakpoint}End`}
         />
       )}
     </Stack>

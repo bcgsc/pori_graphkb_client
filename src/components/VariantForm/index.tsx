@@ -298,19 +298,6 @@ const VariantForm = ({
           <List className="form-layout__content--long">
             <FieldGroup
               disabled={false}
-              model={{
-                properties: {
-                  refSeq: {
-                    ...PositionalVariant.properties.refSeq,
-                    mandatory: isSubstitution,
-                  },
-                  untemplatedSeq: {
-                    ...PositionalVariant.properties.untemplatedSeq,
-                    mandatory: isSubstitution,
-                  },
-                  untemplatedSeqSize: PositionalVariant.properties.untemplatedSeqSize,
-                },
-              }}
               ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
             />
           </List>
@@ -319,12 +306,6 @@ const VariantForm = ({
       <FormStepWrapper fields={['type', 'zygosity']} label="Select the Variant Type">
         <FieldGroup
           disabled={false}
-          model={{
-            properties: {
-              type: PositionalVariant.properties.type,
-              zygosity: PositionalVariant.properties.zygosity,
-            },
-          }}
           ordering={['type', 'zygosity']}
         />
       </FormStepWrapper>
@@ -341,11 +322,6 @@ const VariantForm = ({
         <List className="form-layout__content--long">
           <FieldGroup
             disabled={false}
-            model={
-            hasPositions
-              ? PositionalVariant
-              : CategoryVariant
-          }
             ordering={
             hasPositions
               ? positionalFields

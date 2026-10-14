@@ -5,7 +5,7 @@ import {
   Paper, Typography,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useMutation } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
@@ -58,7 +58,7 @@ const RecordForm = ({
   const snackbar = useSnackbar();
   const auth = useAuth();
 
-  const model = useMemo(() => schemaDefn.get(modelName, false) ?? { properties: {}, isEdge: undefined, name: modelName }, [modelName]);
+  const model = schemaDefn.get(modelName);
 
   const form = useSchemaForm(model, initialValue, { variant });
   const {
@@ -201,7 +201,6 @@ const RecordForm = ({
           collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && model.isEdge)}
           exclusions={FIELD_EXCLUSIONS}
-          modelName={modelName}
         />
       </FormContext.Provider>
       {modelName && variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (

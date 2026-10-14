@@ -12,7 +12,6 @@ import React, { useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import { sortAndGroupFields } from '@/components/util';
-import schema from '@/services/schema';
 
 import FieldGroup from './FieldGroup';
 
@@ -27,13 +26,10 @@ interface FormLayoutProps {
   exclusions?: string[];
   /** properties that should be grouped together */
   groups?: string[][];
-  /** the name of the schema model to use */
-  modelName?: string;
 }
 
 const FormLayout = ({
   exclusions = [],
-  modelName,
   disabled = false,
   className = '',
   collapseExtra = false,
@@ -51,10 +47,9 @@ const FormLayout = ({
 }: FormLayoutProps) => {
   const {
     formVariant,
+    model,
   } = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const model = schema.get(modelName);
 
   if (!formVariant) {
     return null;
@@ -72,7 +67,6 @@ const FormLayout = ({
             <FieldGroup
               disabled={disabled}
               exclusions={exclusions}
-              model={model}
               ordering={fields}
             />
           </List>
@@ -93,7 +87,6 @@ const FormLayout = ({
                   <FieldGroup
                     disabled={disabled}
                     exclusions={exclusions}
-                    model={model}
                     ordering={extraFields}
                   />
                 </List>

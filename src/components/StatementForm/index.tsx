@@ -368,7 +368,6 @@ const StatementForm = ({
           collapseExtra
           disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
-          modelName={model.name}
         />
       </FormContext.Provider>
       <ErrorMessage error={errorAdding}>An error occurred while creating record.</ErrorMessage>

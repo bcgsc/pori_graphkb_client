@@ -6,11 +6,8 @@ import React, { ReactNode, useMemo } from 'react';
 import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
-import schema, { SchemaClassDefinition } from '@/services/schema';
 
 interface FieldGroupProps {
-  /** ClassModel */
-  model: Partial<Pick<SchemaClassDefinition, 'properties' | 'name'>>;
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
   /** if field should be disabled */
@@ -23,17 +20,10 @@ interface FieldGroupProps {
  * Given some ordering of fields (possibly grouped) return the set of fields
  */
 const FieldGroup = ({
-  model, ordering, exclusions = [], disabled = false,
+  ordering, exclusions = [], disabled = false,
 }: FieldGroupProps) => {
-  const { formVariant, formContent } = useFormContext();
-  const properties = useMemo(() => {
-    if (model.name) {
-      return schema.get(model.name).properties;
-    } if (model.properties) {
-      return model.properties; // Field Group is used by passing props in some cases
-    }
-    return {};
-  }, [model]);
+  const { formVariant, formContent, model } = useFormContext();
+  const { properties } = model;
 
   // get the form content
   const fields: ReactNode[] = [];
@@ -75,7 +65,6 @@ const FieldGroup = ({
         <List key={key} className="form-layout__content-subgroup">
           <FieldGroup
             disabled={disabled}
-            model={model}
             ordering={item}
           />
         </List>

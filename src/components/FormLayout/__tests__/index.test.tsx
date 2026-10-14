@@ -11,6 +11,7 @@ import {
 import FormContext, { FormContextState } from '@/components/FormContext';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
+import schema from '@/services/schema';
 
 import FormLayout from '..';
 
@@ -24,7 +25,7 @@ const CONTEXT_DEFAULTS: FormContextState = {
   formIsDirty: false,
   formErrors: {},
   additionalValidationError: '',
-  model: { properties: {} },
+  model: schema.get('User'),
 };
 
 describe('FormLayout', () => {
@@ -36,9 +37,7 @@ describe('FormLayout', () => {
     const { findByText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formVariant: FORM_VARIANT.NEW, updateFieldEvent: vi.fn() }}>
-          <FormLayout
-            modelName="User"
-          />
+          <FormLayout />
         </FormContext.Provider>
       </QueryClientProvider>,
     );
@@ -51,9 +50,7 @@ describe('FormLayout', () => {
     const { findByText, findByLabelText, findByTestId } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { '@rid': '#3:4', name: 'name' }, updateFieldEvent: vi.fn() }}>
-          <FormLayout
-            modelName="User"
-          />
+          <FormLayout />
         </FormContext.Provider>
       </QueryClientProvider>,
     );
@@ -70,7 +67,6 @@ describe('FormLayout', () => {
         <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { '@rid': '#3:4', name: 'user' }, updateFieldEvent: vi.fn() }}>
           <FormLayout
             exclusions={['@rid']}
-            modelName="User"
           />
         </FormContext.Provider>
       </QueryClientProvider>,

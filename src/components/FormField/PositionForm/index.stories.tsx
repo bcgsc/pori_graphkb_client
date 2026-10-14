@@ -41,7 +41,7 @@ export const ProteinPositionVariant = meta.story({
     variant: 'ProteinPosition',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/position/)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/^position/)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/refAA/)).toBeInTheDocument();
     await expect(canvas.queryByLabelText(/arm/i)).not.toBeInTheDocument();
   },
@@ -70,7 +70,7 @@ export const CytobandPositionVariant = meta.story({
     await expect(canvas.getByLabelText(/arm/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/majorBand/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/minorBand/i)).toBeInTheDocument();
-    await expect(canvas.queryByLabelText(/position/i)).not.toBeInTheDocument();
+    await expect(canvas.queryByLabelText(/^position/i)).not.toBeInTheDocument();
   },
 });
 
@@ -111,7 +111,7 @@ export const CdsPositionVariant = meta.story({
     variant: 'CdsPosition',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/position/i)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/^position/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/offset/i)).toBeInTheDocument();
   },
 });
@@ -133,7 +133,7 @@ export const GenomicPositionBaseVariant = meta.story({
     baseVariant: 'GenomicPosition',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/position/i)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/^position/i)).toBeInTheDocument();
     await expect(canvas.queryByLabelText(/offset/i)).not.toBeInTheDocument();
   },
 });

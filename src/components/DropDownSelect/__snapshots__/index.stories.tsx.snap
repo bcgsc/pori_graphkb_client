@@ -3,12 +3,13 @@
 exports[`ComplexOptionsWithValueSelect snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="true"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -18,7 +19,9 @@ exports[`ComplexOptionsWithValueSelect snapshot 1`] = `
       <div
         aria-expanded="false"
         aria-haspopup="listbox"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
         tabindex="0"
       >
@@ -39,8 +42,6 @@ exports[`ComplexOptionsWithValueSelect snapshot 1`] = `
         aria-hidden="true"
         aria-invalid="false"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-        id="option-select-"
-        name=""
         tabindex="-1"
         value="apple"
       />
@@ -56,9 +57,6 @@ exports[`ComplexOptionsWithValueSelect snapshot 1`] = `
         />
       </svg>
     </div>
-    <p
-      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-    />
   </div>
 </div>
 `;
@@ -66,12 +64,13 @@ exports[`ComplexOptionsWithValueSelect snapshot 1`] = `
 exports[`Disabled snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="true"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -82,7 +81,9 @@ exports[`Disabled snapshot 1`] = `
         aria-disabled="true"
         aria-expanded="false"
         aria-haspopup="listbox"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
       >
         <div
@@ -103,8 +104,6 @@ exports[`Disabled snapshot 1`] = `
         aria-invalid="false"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
         disabled=""
-        id="option-select-"
-        name=""
         tabindex="-1"
         value="apple"
       />
@@ -120,9 +119,6 @@ exports[`Disabled snapshot 1`] = `
         />
       </svg>
     </div>
-    <p
-      class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-    />
   </div>
 </div>
 `;
@@ -130,12 +126,13 @@ exports[`Disabled snapshot 1`] = `
 exports[`Empty snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="false"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -145,7 +142,9 @@ exports[`Empty snapshot 1`] = `
       <div
         aria-expanded="false"
         aria-haspopup="listbox"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
         tabindex="0"
       >
@@ -160,8 +159,6 @@ exports[`Empty snapshot 1`] = `
         aria-hidden="true"
         aria-invalid="false"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-        id="option-select-"
-        name=""
         tabindex="-1"
         value=""
       />
@@ -177,9 +174,6 @@ exports[`Empty snapshot 1`] = `
         />
       </svg>
     </div>
-    <p
-      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-    />
   </div>
 </div>
 `;
@@ -187,12 +181,13 @@ exports[`Empty snapshot 1`] = `
 exports[`ReadOnly snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="true"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -202,7 +197,9 @@ exports[`ReadOnly snapshot 1`] = `
       <div
         aria-expanded="false"
         aria-haspopup="listbox"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-readOnly MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
         tabindex="0"
       >
@@ -223,8 +220,6 @@ exports[`ReadOnly snapshot 1`] = `
         aria-hidden="true"
         aria-invalid="false"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-        id="option-select-"
-        name=""
         tabindex="-1"
         value="apple"
       />
@@ -232,9 +227,6 @@ exports[`ReadOnly snapshot 1`] = `
         class="MuiSelect-icon MuiSelect-iconStandard css-XXXX-MuiNativeSelect-root-MuiSelect-icon"
       />
     </div>
-    <p
-      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-    />
   </div>
 </div>
 `;
@@ -242,12 +234,13 @@ exports[`ReadOnly snapshot 1`] = `
 exports[`WithCustomIcon snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="true"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -257,7 +250,9 @@ exports[`WithCustomIcon snapshot 1`] = `
       <div
         aria-expanded="false"
         aria-haspopup="listbox"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
         tabindex="0"
       >
@@ -278,8 +273,6 @@ exports[`WithCustomIcon snapshot 1`] = `
         aria-hidden="true"
         aria-invalid="false"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-        id="option-select-"
-        name=""
         tabindex="-1"
         value="apple"
       />
@@ -295,9 +288,6 @@ exports[`WithCustomIcon snapshot 1`] = `
         />
       </svg>
     </div>
-    <p
-      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-    />
   </div>
 </div>
 `;
@@ -305,12 +295,13 @@ exports[`WithCustomIcon snapshot 1`] = `
 exports[`WithError snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="Mui-error MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="true"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -318,10 +309,13 @@ exports[`WithError snapshot 1`] = `
       class="Mui-error MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
     >
       <div
+        aria-describedby="_r_XXXX_-helper-text"
         aria-expanded="false"
         aria-haspopup="listbox"
         aria-invalid="true"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="Mui-error MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
         tabindex="0"
       >
@@ -342,8 +336,6 @@ exports[`WithError snapshot 1`] = `
         aria-hidden="true"
         aria-invalid="true"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-        id="option-select-"
-        name=""
         tabindex="-1"
         value="apple"
       />
@@ -361,6 +353,7 @@ exports[`WithError snapshot 1`] = `
     </div>
     <p
       class="Mui-error MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+      id="_r_XXXX_-helper-text"
     >
       bad value
     </p>
@@ -371,12 +364,13 @@ exports[`WithError snapshot 1`] = `
 exports[`WithValue snapshot 1`] = `
 <div>
   <div
-    class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="true"
-      for="option-select-"
+      for="_r_XXXX_"
+      id="_r_XXXX_-label"
     >
       Fruit
     </label>
@@ -386,7 +380,9 @@ exports[`WithValue snapshot 1`] = `
       <div
         aria-expanded="false"
         aria-haspopup="listbox"
+        aria-labelledby="_r_XXXX_-label _r_XXXX_"
         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+        id="_r_XXXX_"
         role="combobox"
         tabindex="0"
       >
@@ -407,8 +403,6 @@ exports[`WithValue snapshot 1`] = `
         aria-hidden="true"
         aria-invalid="false"
         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-        id="option-select-"
-        name=""
         tabindex="-1"
         value="apple"
       />
@@ -424,9 +418,6 @@ exports[`WithValue snapshot 1`] = `
         />
       </svg>
     </div>
-    <p
-      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-    />
   </div>
 </div>
 `;

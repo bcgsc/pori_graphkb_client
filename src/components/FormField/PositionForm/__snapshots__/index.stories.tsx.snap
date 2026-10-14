@@ -23,20 +23,17 @@ exports[`CdsPositionVariant snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -57,8 +54,6 @@ exports[`CdsPositionVariant snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="CdsPosition"
         />
@@ -74,9 +69,6 @@ exports[`CdsPositionVariant snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -277,20 +269,17 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -311,8 +300,6 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="CdsPosition"
         />
@@ -328,9 +315,6 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -436,20 +420,17 @@ exports[`CytobandPositionVariant snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -470,8 +451,6 @@ exports[`CytobandPositionVariant snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="CytobandPosition"
         />
@@ -487,9 +466,6 @@ exports[`CytobandPositionVariant snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -621,13 +597,8 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
@@ -635,7 +606,9 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
           aria-disabled="true"
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
         >
           <div
@@ -656,8 +629,6 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
           disabled=""
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="CytobandPosition"
         />
@@ -673,9 +644,6 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -915,20 +883,17 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -949,8 +914,6 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="CytobandPosition"
         />
@@ -966,9 +929,6 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -1151,20 +1111,17 @@ exports[`GenomicPositionVariant snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -1185,8 +1142,6 @@ exports[`GenomicPositionVariant snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="GenomicPosition"
         />
@@ -1202,9 +1157,6 @@ exports[`GenomicPositionVariant snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -1281,13 +1233,8 @@ exports[`GenomicPositionVariantDisabled snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
@@ -1295,7 +1242,9 @@ exports[`GenomicPositionVariantDisabled snapshot 1`] = `
           aria-disabled="true"
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
         >
           <div
@@ -1316,8 +1265,6 @@ exports[`GenomicPositionVariantDisabled snapshot 1`] = `
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
           disabled=""
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="GenomicPosition"
         />
@@ -1333,9 +1280,6 @@ exports[`GenomicPositionVariantDisabled snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -1455,20 +1399,17 @@ exports[`GenomicPositionVariantWithValue snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -1489,8 +1430,6 @@ exports[`GenomicPositionVariantWithValue snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="GenomicPosition"
         />
@@ -1506,9 +1445,6 @@ exports[`GenomicPositionVariantWithValue snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -1560,20 +1496,17 @@ exports[`NoVariantEmpty snapshot 1`] = `
     class="MuiFormControl-root css-XXXX-MuiFormControl-root position-form"
   >
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="false"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -1588,8 +1521,6 @@ exports[`NoVariantEmpty snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value=""
         />
@@ -1605,9 +1536,6 @@ exports[`NoVariantEmpty snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <p
       class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
@@ -1639,20 +1567,17 @@ exports[`ProteinPositionVariant snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -1673,8 +1598,6 @@ exports[`ProteinPositionVariant snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="ProteinPosition"
         />
@@ -1690,9 +1613,6 @@ exports[`ProteinPositionVariant snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -1798,13 +1718,8 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
@@ -1812,7 +1727,9 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
           aria-disabled="true"
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
         >
           <div
@@ -1833,8 +1750,6 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
           disabled=""
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="ProteinPosition"
         />
@@ -1850,9 +1765,6 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"
@@ -2032,20 +1944,17 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
       </svg>
     </button>
     <div
-      class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+      class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
     >
-      <label
-        class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-        data-shrink="true"
-        for="option-select-"
-      />
       <div
         class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
       >
         <div
           aria-expanded="false"
           aria-haspopup="listbox"
+          aria-labelledby="_r_XXXX_"
           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+          id="_r_XXXX_"
           role="combobox"
           tabindex="0"
         >
@@ -2066,8 +1975,6 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
           aria-hidden="true"
           aria-invalid="false"
           class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-          id="option-select-"
-          name=""
           tabindex="-1"
           value="ProteinPosition"
         />
@@ -2083,9 +1990,6 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
           />
         </svg>
       </div>
-      <p
-        class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-      />
     </div>
     <li
       class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field"

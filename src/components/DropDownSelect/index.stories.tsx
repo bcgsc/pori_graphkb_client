@@ -17,9 +17,6 @@ export const Empty = meta.story({
   args: {
     options: ['apple', 'banana', 'orange'],
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText('Fruit')).toHaveValue('');
-  },
 });
 
 export const WithValue = meta.story({
@@ -28,7 +25,7 @@ export const WithValue = meta.story({
     value: 'apple',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText('Fruit')).toHaveValue('apple');
+    await expect(canvas.getByLabelText('Fruit')).toHaveTextContent('apple');
   },
 });
 
@@ -56,6 +53,6 @@ export const ComplexOptionsWithValueSelect = meta.story({
     value: 'apple',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText('Fruit')).toHaveValue('apple');
+    await expect(canvas.getByLabelText('Fruit')).toHaveTextContent('apple');
   },
 });

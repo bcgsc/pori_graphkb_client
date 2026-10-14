@@ -1314,12 +1314,13 @@ exports[`EditStatement snapshot 1`] = `
                 class="filtered-record-autocomplete__content"
               >
                 <div
-                  class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                  class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
                 >
                   <label
                     class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="option-select-search-class"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
                   >
                     Filter (conditions) Search by Class
                   </label>
@@ -1329,9 +1330,9 @@ exports[`EditStatement snapshot 1`] = `
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      aria-labelledby="mui-component-select-search-class"
+                      aria-labelledby="_r_XXXX_-label _r_XXXX_"
                       class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                      id="mui-component-select-search-class"
+                      id="_r_XXXX_"
                       role="combobox"
                       tabindex="0"
                     >
@@ -1352,7 +1353,6 @@ exports[`EditStatement snapshot 1`] = `
                       aria-hidden="true"
                       aria-invalid="false"
                       class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                      id="option-select-search-class"
                       name="search-class"
                       tabindex="-1"
                       value="Variant"
@@ -1369,9 +1369,6 @@ exports[`EditStatement snapshot 1`] = `
                       />
                     </svg>
                   </div>
-                  <p
-                    class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  />
                 </div>
                 <div
                   class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -1556,12 +1553,13 @@ exports[`EditStatement snapshot 1`] = `
                 class="filtered-record-autocomplete__content"
               >
                 <div
-                  class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                  class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
                 >
                   <label
                     class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="option-select-search-class"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
                   >
                     Filter (evidence) Search by Class
                   </label>
@@ -1571,9 +1569,9 @@ exports[`EditStatement snapshot 1`] = `
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      aria-labelledby="mui-component-select-search-class"
+                      aria-labelledby="_r_XXXX_-label _r_XXXX_"
                       class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                      id="mui-component-select-search-class"
+                      id="_r_XXXX_"
                       role="combobox"
                       tabindex="0"
                     >
@@ -1594,7 +1592,6 @@ exports[`EditStatement snapshot 1`] = `
                       aria-hidden="true"
                       aria-invalid="false"
                       class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                      id="option-select-search-class"
                       name="search-class"
                       tabindex="-1"
                       value="Evidence"
@@ -1611,9 +1608,6 @@ exports[`EditStatement snapshot 1`] = `
                       />
                     </svg>
                   </div>
-                  <p
-                    class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  />
                 </div>
                 <div
                   class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -1869,12 +1863,13 @@ exports[`EditStatement snapshot 1`] = `
                   class="filtered-record-autocomplete__content"
                 >
                   <div
-                    class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
                   >
                     <label
                       class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="option-select-search-class"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
                     >
                       Filter (subject) Search by Class
                     </label>
@@ -1884,9 +1879,9 @@ exports[`EditStatement snapshot 1`] = `
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
-                        aria-labelledby="mui-component-select-search-class"
+                        aria-labelledby="_r_XXXX_-label _r_XXXX_"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                        id="mui-component-select-search-class"
+                        id="_r_XXXX_"
                         role="combobox"
                         tabindex="0"
                       >
@@ -1907,7 +1902,6 @@ exports[`EditStatement snapshot 1`] = `
                         aria-hidden="true"
                         aria-invalid="false"
                         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                        id="option-select-search-class"
                         name="search-class"
                         tabindex="-1"
                         value="Biomarker"
@@ -1924,9 +1918,6 @@ exports[`EditStatement snapshot 1`] = `
                         />
                       </svg>
                     </div>
-                    <p
-                      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    />
                   </div>
                   <div
                     class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -2256,12 +2247,13 @@ exports[`EditStatement snapshot 1`] = `
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
             >
               <div
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
               >
                 <label
                   class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
-                  for="option-select-reviewStatus"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
                   reviewStatus
                 </label>
@@ -2269,11 +2261,12 @@ exports[`EditStatement snapshot 1`] = `
                   class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
                 >
                   <div
+                    aria-describedby="_r_XXXX_-helper-text"
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby="mui-component-select-reviewStatus"
+                    aria-labelledby="_r_XXXX_-label _r_XXXX_"
                     class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                    id="mui-component-select-reviewStatus"
+                    id="_r_XXXX_"
                     role="combobox"
                     tabindex="0"
                   >
@@ -2294,7 +2287,6 @@ exports[`EditStatement snapshot 1`] = `
                     aria-hidden="true"
                     aria-invalid="false"
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                    id="option-select-reviewStatus"
                     name="reviewStatus"
                     tabindex="-1"
                     value="passed"
@@ -2313,6 +2305,7 @@ exports[`EditStatement snapshot 1`] = `
                 </div>
                 <p
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
                 >
                   The review status of the overall statement. The amalgemated status of all (or no) reviews (ex. pending)
                 </p>
@@ -2761,12 +2754,13 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                 class="filtered-record-autocomplete__content"
               >
                 <div
-                  class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                  class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
                 >
                   <label
                     class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="option-select-search-class"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
                   >
                     Filter (conditions) Search by Class
                   </label>
@@ -2776,9 +2770,9 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      aria-labelledby="mui-component-select-search-class"
+                      aria-labelledby="_r_XXXX_-label _r_XXXX_"
                       class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                      id="mui-component-select-search-class"
+                      id="_r_XXXX_"
                       role="combobox"
                       tabindex="0"
                     >
@@ -2799,7 +2793,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       aria-hidden="true"
                       aria-invalid="false"
                       class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                      id="option-select-search-class"
                       name="search-class"
                       tabindex="-1"
                       value="Variant"
@@ -2816,9 +2809,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       />
                     </svg>
                   </div>
-                  <p
-                    class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  />
                 </div>
                 <div
                   class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -3003,12 +2993,13 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                 class="filtered-record-autocomplete__content"
               >
                 <div
-                  class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                  class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
                 >
                   <label
                     class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="option-select-search-class"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
                   >
                     Filter (evidence) Search by Class
                   </label>
@@ -3018,9 +3009,9 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                     <div
                       aria-expanded="false"
                       aria-haspopup="listbox"
-                      aria-labelledby="mui-component-select-search-class"
+                      aria-labelledby="_r_XXXX_-label _r_XXXX_"
                       class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                      id="mui-component-select-search-class"
+                      id="_r_XXXX_"
                       role="combobox"
                       tabindex="0"
                     >
@@ -3041,7 +3032,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       aria-hidden="true"
                       aria-invalid="false"
                       class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                      id="option-select-search-class"
                       name="search-class"
                       tabindex="-1"
                       value="Evidence"
@@ -3058,9 +3048,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       />
                     </svg>
                   </div>
-                  <p
-                    class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                  />
                 </div>
                 <div
                   class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -3316,12 +3303,13 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                   class="filtered-record-autocomplete__content"
                 >
                   <div
-                    class="MuiFormControl-root css-XXXX-MuiFormControl-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
+                    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root filtered-record-autocomplete__select-search-class node-form__class-select option-select"
                   >
                     <label
                       class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="option-select-search-class"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
                     >
                       Filter (subject) Search by Class
                     </label>
@@ -3331,9 +3319,9 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
-                        aria-labelledby="mui-component-select-search-class"
+                        aria-labelledby="_r_XXXX_-label _r_XXXX_"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                        id="mui-component-select-search-class"
+                        id="_r_XXXX_"
                         role="combobox"
                         tabindex="0"
                       >
@@ -3354,7 +3342,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                         aria-hidden="true"
                         aria-invalid="false"
                         class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                        id="option-select-search-class"
                         name="search-class"
                         tabindex="-1"
                         value="Biomarker"
@@ -3371,9 +3358,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                         />
                       </svg>
                     </div>
-                    <p
-                      class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    />
                   </div>
                   <div
                     class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -3703,12 +3687,13 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
             >
               <div
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
               >
                 <label
                   class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
-                  for="option-select-reviewStatus"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
                   reviewStatus
                 </label>
@@ -3716,11 +3701,12 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                   class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
                 >
                   <div
+                    aria-describedby="_r_XXXX_-helper-text"
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby="mui-component-select-reviewStatus"
+                    aria-labelledby="_r_XXXX_-label _r_XXXX_"
                     class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                    id="mui-component-select-reviewStatus"
+                    id="_r_XXXX_"
                     role="combobox"
                     tabindex="0"
                   >
@@ -3741,7 +3727,6 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                     aria-hidden="true"
                     aria-invalid="false"
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                    id="option-select-reviewStatus"
                     name="reviewStatus"
                     tabindex="-1"
                     value="passed"
@@ -3760,6 +3745,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                 </div>
                 <p
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
                 >
                   The review status of the overall statement. The amalgemated status of all (or no) reviews (ex. pending)
                 </p>
@@ -8290,12 +8276,13 @@ exports[`ViewStatement snapshot 1`] = `
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
             >
               <div
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
               >
                 <label
                   class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
-                  for="option-select-reviewStatus"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
                   reviewStatus
                 </label>
@@ -8303,11 +8290,12 @@ exports[`ViewStatement snapshot 1`] = `
                   class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
                 >
                   <div
+                    aria-describedby="_r_XXXX_-helper-text"
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby="mui-component-select-reviewStatus"
+                    aria-labelledby="_r_XXXX_-label _r_XXXX_"
                     class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-readOnly MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                    id="mui-component-select-reviewStatus"
+                    id="_r_XXXX_"
                     role="combobox"
                     tabindex="0"
                   >
@@ -8328,7 +8316,6 @@ exports[`ViewStatement snapshot 1`] = `
                     aria-hidden="true"
                     aria-invalid="false"
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                    id="option-select-reviewStatus"
                     name="reviewStatus"
                     tabindex="-1"
                     value="passed"
@@ -8339,6 +8326,7 @@ exports[`ViewStatement snapshot 1`] = `
                 </div>
                 <p
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
                 >
                   The review status of the overall statement. The amalgemated status of all (or no) reviews
                 </p>
@@ -9133,12 +9121,13 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
             >
               <div
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root option-select"
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
               >
                 <label
                   class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                   data-shrink="true"
-                  for="option-select-reviewStatus"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
                   reviewStatus
                 </label>
@@ -9146,11 +9135,12 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
                 >
                   <div
+                    aria-describedby="_r_XXXX_-helper-text"
                     aria-expanded="false"
                     aria-haspopup="listbox"
-                    aria-labelledby="mui-component-select-reviewStatus"
+                    aria-labelledby="_r_XXXX_-label _r_XXXX_"
                     class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-readOnly MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                    id="mui-component-select-reviewStatus"
+                    id="_r_XXXX_"
                     role="combobox"
                     tabindex="0"
                   >
@@ -9171,7 +9161,6 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                     aria-hidden="true"
                     aria-invalid="false"
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                    id="option-select-reviewStatus"
                     name="reviewStatus"
                     tabindex="-1"
                     value="passed"
@@ -9182,6 +9171,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                 </div>
                 <p
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
                 >
                   The review status of the overall statement. The amalgemated status of all (or no) reviews
                 </p>

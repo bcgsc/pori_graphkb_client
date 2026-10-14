@@ -2686,12 +2686,13 @@ exports[`MatchingTabSigned snapshot 1`] = `
             Input a term below to display what terms it would match using the GraphKB python adapter.
           </h6>
           <div
-            class="MuiFormControl-root css-XXXX-MuiFormControl-root match-view__input option-select"
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root match-view__input option-select"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink="true"
-              for="option-select-"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
             >
               record class
             </label>
@@ -2701,7 +2702,9 @@ exports[`MatchingTabSigned snapshot 1`] = `
               <div
                 aria-expanded="false"
                 aria-haspopup="listbox"
+                aria-labelledby="_r_XXXX_-label _r_XXXX_"
                 class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
                 role="combobox"
                 tabindex="0"
               >
@@ -2722,8 +2725,6 @@ exports[`MatchingTabSigned snapshot 1`] = `
                 aria-hidden="true"
                 aria-invalid="false"
                 class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                id="option-select-"
-                name=""
                 tabindex="-1"
                 value="Vocabulary"
               />
@@ -2739,9 +2740,6 @@ exports[`MatchingTabSigned snapshot 1`] = `
                 />
               </svg>
             </div>
-            <p
-              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-            />
           </div>
           <div
             class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root match-view__input"

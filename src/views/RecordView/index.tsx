@@ -9,11 +9,11 @@ import React, { useCallback, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router';
 
+import VariantForm from '@/components/PositionalVariantForm';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT, navigateToGraph, tuple } from '@/components/util';
-import VariantForm from '@/components/VariantForm';
 import api from '@/services/api';
 import schema from '@/services/schema';
 

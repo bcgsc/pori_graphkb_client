@@ -3,11 +3,11 @@ import './index.scss';
 import React, { ReactNode, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
+import NewVariant from '@/components/PositionalVariantForm';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
-import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
 
 const VARIANT_CLASSES = ['Variant', 'PositionalVariant', 'CategoryVariant'];

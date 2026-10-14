@@ -32,7 +32,7 @@ function MockProvider({
     formVariant: formVariant ?? FORM_VARIANT.NEW,
     model: {
       properties: {
-        name: { name: 'comment', type: 'string' as const },
+        [name]: { name: 'comment', type: 'string' as const },
       },
     },
   }), [value, errorMessage, name, formVariant]);
@@ -45,17 +45,17 @@ const meta = preview.type<{ args: CustomArgs }>().meta({
   title: 'components/FormField/FreeText',
   render: (args) => {
     const {
-      value, errorMessage, model, formVariant, ...rest
+      value, errorMessage, name, formVariant, ...rest
     } = args;
     return (
       <MockProvider
         errorMessage={errorMessage}
         formVariant={formVariant}
-        name={model.name ?? ''}
+        name={name ?? ''}
         value={value}
       >
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <Component {...rest} model={model} />
+        <Component {...rest} name={name} />
       </MockProvider>
     );
   },
@@ -63,14 +63,14 @@ const meta = preview.type<{ args: CustomArgs }>().meta({
 
 export const FreeTextEmpty = meta.story({
   args: {
-    model: { name: 'comment', type: 'string' },
+    name: 'comment',
   },
 });
 
 export const FreeText = FreeTextEmpty.extend({
   args: {
     value: 'hello world',
-    model: { name: 'comment', type: 'string' },
+    name: 'comment',
   },
 });
 

@@ -70,13 +70,11 @@ const FieldGroup = ({
         </List>
       ));
     } else {
-      const prop = properties[item];
-      const { name } = prop;
       const wrapper = (
         <FormField
-          key={name}
+          key={item}
           disabled={disabled}
-          model={prop}
+          name={item}
         />
       );
       fields.push(wrapper);

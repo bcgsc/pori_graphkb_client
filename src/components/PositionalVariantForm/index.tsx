@@ -110,7 +110,10 @@ const VariantForm = ({
     name: PositionalVariant.name,
     properties: {
       ...PositionalVariant.properties,
-      break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution },
+      break1Start: { ...PositionalVariant.properties.break1Start, description: '' },
+      break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution, description: '' },
+      break1End: { ...PositionalVariant.properties.break1End, description: 'end of the breakpoint range' },
+      break2End: { ...PositionalVariant.properties.break2End, description: 'end of the breakpoint range' },
       reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
       refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
       untemplatedSeq: {
@@ -257,7 +260,6 @@ const VariantForm = ({
             coordinateType={coordinateType}
             end="break1End"
             label={`Input the ${(isFusion || !isSubstitution) ? 'First ' : ''}Breakpoint`}
-            model={model}
             reference="reference1"
             start="break1Start"
           />
@@ -266,7 +268,6 @@ const VariantForm = ({
               coordinateType={coordinateType}
               end="break2End"
               label="Input the Second Breakpoint"
-              model={model}
               reference="reference2"
               start="break2Start"
             />

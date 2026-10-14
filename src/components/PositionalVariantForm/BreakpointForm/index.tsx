@@ -7,18 +7,14 @@ import React, { ReactNode, useCallback, useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
-import { SchemaClassDefinition } from '@/services/schema';
 
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
-  model: Pick<SchemaClassDefinition, 'name' | 'properties'>;
   /** the field name of the reference element (ex. reference1) */
   reference: string;
   /** the field name of the end position (ex. break1End) */
   end: string;
-  /** flag to indicate this field is required */
-  required?: boolean;
   /** the field name of the start position (ex. break1Start) */
   start: string;
   label?: ReactNode;
@@ -31,7 +27,7 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start, end, required = true, model, label,
+  coordinateType, reference, start, end, label,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useFormContext();
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -49,7 +45,7 @@ const BreakpointForm = ({
       {label}
       <FormField
         label="reference"
-        model={{ ...model.properties.reference1, mandatory: required, name: reference }}
+        name={reference}
       />
       <FormControlLabel
         className="breakpoint-form__uncertain-checkbox"
@@ -65,25 +61,13 @@ const BreakpointForm = ({
       <FormField
         baseModel={coordinateType}
         label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
-        model={{
-          ...model.properties.break1Start,
-          name: start,
-          mandatory: required,
-          linkedClass: coordinateType,
-          description: '',
-        }}
+        name={start}
       />
       {uncertain && (
         <FormField
           baseModel={coordinateType}
           label={`end (${coordinateType})`}
-          model={{
-            ...model.properties.break1End,
-            name: end,
-            mandatory: required,
-            linkedClass: coordinateType,
-            description: 'end of the breakpoint range',
-          }}
+          name={end}
         />
       )}
     </Stack>

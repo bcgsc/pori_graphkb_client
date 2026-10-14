@@ -80,7 +80,7 @@ const AddReviewDialog = ({
         <DialogContent className="review-dialog__fields">
           <FormContext.Provider value={form}>
             <FormField
-              model={status}
+              name="status"
             />
             <FormField
               innerProps={{
@@ -88,7 +88,7 @@ const AddReviewDialog = ({
                 rows: 7,
                 variant: 'outlined',
               }}
-              model={comment}
+              name="comment"
             />
           </FormContext.Provider>
           <FormControlLabel

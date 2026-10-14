@@ -12,7 +12,7 @@ import { useFormContext } from '@/components/FormContext';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
-import schemaDefn, { SchemaPropertyDefinition } from '@/services/schema';
+import schemaDefn from '@/services/schema';
 
 import BooleanField from './BooleanField';
 import FieldWrapper from './FieldWrapper';
@@ -32,7 +32,7 @@ interface FormFieldProps {
   /**
    * the property model which defines the property type and other requirements
    */
-  model: Partial<SchemaPropertyDefinition> & Pick<SchemaPropertyDefinition, 'name' | 'type'>;
+  name: string;
   baseModel?: string;
   className?: string;
   disabled?: boolean;
@@ -53,16 +53,16 @@ interface FormFieldProps {
  */
 const FormField = ({
   className = '',
-  model,
+  name,
   disabled = false,
   label: labelProp,
   innerProps,
   helperText: defaultHelperText,
   baseModel = '',
 }: FormFieldProps) => {
-  const {
-    formIsDirty, formContent, formErrors, updateFieldEvent, formVariant,
-  } = useFormContext();
+  const form = useFormContext();
+
+  const model = form.model.properties[name] ?? {};
 
   const {
     choices,
@@ -70,7 +70,6 @@ const FormField = ({
     examples,
     linkedClass: linkedClassName,
     linkedType,
-    name,
     type = 'string',
     iterable,
     format,
@@ -80,18 +79,18 @@ const FormField = ({
   const example = examples?.[0];
   const linkedClass = schemaDefn.get(linkedClassName, false);
 
-  const value = formContent[name];
-  const generated = Boolean(model.generated && formVariant !== FORM_VARIANT.SEARCH);
-  const mandatory = Boolean(model.mandatory && formVariant !== FORM_VARIANT.SEARCH);
+  const value = form.formContent[name];
+  const generated = Boolean(model.generated && form.formVariant !== FORM_VARIANT.SEARCH);
+  const mandatory = Boolean(model.mandatory && form.formVariant !== FORM_VARIANT.SEARCH);
 
-  const errorFlag = Boolean(formErrors[name] && !generated && formIsDirty);
+  const errorFlag = Boolean(form.formErrors[name] && !generated && form.formIsDirty);
 
   let helperText = defaultHelperText;
 
   if (!helperText) {
     if (errorFlag) {
-      helperText = formErrors[name]!.message;
-    } else if (formVariant === FORM_VARIANT.EDIT && example !== undefined) {
+      helperText = form.formErrors[name]!.message;
+    } else if (form.formVariant === FORM_VARIANT.EDIT && example !== undefined) {
       if (!description) {
         helperText = `ex. ${example}`;
       } else {
@@ -107,22 +106,22 @@ const FormField = ({
   const sharedTableProps = {
     disabled: generated || disabled,
     name,
-    onChange: updateFieldEvent,
+    onChange: form.updateFieldEvent,
     value,
   } satisfies SharedProps<[
     React.ComponentProps<typeof StatementReviewsTable>,
     React.ComponentProps<typeof PermissionsTable>,
   ]>;
   const sharedProps = {
-    disabled: (generated || disabled) && formVariant !== FORM_VARIANT.VIEW,
+    disabled: (generated || disabled) && form.formVariant !== FORM_VARIANT.VIEW,
     error: errorFlag,
     helperText,
     label: label || name,
     name,
     required: mandatory,
-    onChange: updateFieldEvent,
+    onChange: form.updateFieldEvent,
     value,
-    readOnly: generated || formVariant === FORM_VARIANT.VIEW,
+    readOnly: generated || form.formVariant === FORM_VARIANT.VIEW,
   } satisfies SharedProps<[
     React.ComponentProps<typeof BooleanField>,
     React.ComponentProps<typeof Timestamp>,

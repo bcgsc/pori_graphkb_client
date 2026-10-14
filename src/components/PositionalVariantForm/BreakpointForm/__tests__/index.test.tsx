@@ -24,7 +24,7 @@ const CONTEXT_DEFAULTS: FormContextState = {
   formIsDirty: false,
   formErrors: {},
   additionalValidationError: '',
-  model: { properties: {} },
+  model: schemaDefn.get('PositionalVariant'),
 };
 
 describe('BreakpointForm', () => {
@@ -35,7 +35,6 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schemaDefn.get('PositionalVariant')}
             reference="reference1"
             start="break1Start"
           />
@@ -54,7 +53,6 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schemaDefn.get('PositionalVariant')}
             reference="reference1"
             start="break1Start"
           />
@@ -74,7 +72,6 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             coordinateType="GenomicPosition"
             end="break1End"
-            model={schemaDefn.get('PositionalVariant')}
             reference="reference1"
             start="break1Start"
           />

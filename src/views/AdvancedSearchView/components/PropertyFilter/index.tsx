@@ -103,7 +103,14 @@ const PropertyFilter = ({
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
   const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
-  const model = useMemo(() => ({ properties: { [property]: propertyModel } }), [property, propertyModel]);
+  const model = useMemo(() => {
+    let format = '';
+
+    if (DATE_FIELDS.includes(property)) {
+      format = 'date';
+    }
+    return ({ properties: { [property]: { ...propertyModel, format } } });
+  }, [property, propertyModel]);
 
   // use a schema form so that validation runs on the value based on the property selected
   const form = useSchemaForm(model, undefined, { variant: FORM_VARIANT.SEARCH });
@@ -302,12 +309,6 @@ const PropertyFilter = ({
     onSubmit(result);
   }, [formContent, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
 
-  let format = '';
-
-  if (DATE_FIELDS.includes(property)) {
-    format = 'date';
-  }
-
   return (
     <>
       <div className={`property-filter ${className}`}>
@@ -354,7 +355,7 @@ const PropertyFilter = ({
             <FormField
               className="property-filter__value"
               disabled={!property}
-              model={{ type: 'string', ...propertyModel, format }}
+              name={property}
             />
           </FormContext.Provider>
 

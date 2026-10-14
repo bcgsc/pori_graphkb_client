@@ -104,33 +104,18 @@ const RecordView = ({
     // wait for the content to load for existing records
     return (<CircularProgress />);
   }
+
+  let Form = RecordForm;
+
   if (
-    ['positionalvariant', 'categoryvariant', 'variant'].includes(model.name.toLowerCase())
-    && variant === FORM_VARIANT.EDIT
+    ['PositionalVariant', 'CategoryVariant', 'Variant'].includes(model.name)
   ) {
-    return (
-      <div className="edit-variant-view">
-        <VariantForm
-          formVariant={variant}
-          onSubmit={handleSubmit}
-          value={recordContent}
-        />
-      </div>
-    );
-  }
-  if (model.name.toLowerCase() === 'statement') {
-    return (
-      <StatementForm
-        onSubmit={handleSubmit}
-        onToggleState={handleToggleState}
-        title={DEFAULT_TITLES[variant]}
-        value={recordContent}
-        variant={variant}
-      />
-    );
+    Form = VariantForm;
+  } else if (model.name === 'Statement') {
+    Form = StatementForm;
   }
   return (
-    <RecordForm
+    <Form
       modelName={model.name}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}

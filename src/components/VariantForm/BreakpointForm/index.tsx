@@ -1,8 +1,9 @@
 import {
   Checkbox,
   FormControlLabel,
+  Stack,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 
 import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
@@ -20,6 +21,7 @@ interface BreakpointFormProps {
   required?: boolean;
   /** the field name of the start position (ex. break1Start) */
   start?: string;
+  label?: ReactNode;
 }
 
 /**
@@ -29,7 +31,7 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, reference, start = '', end = '', required = true, model,
+  coordinateType, reference, start = '', end = '', required = true, model, label,
 }: BreakpointFormProps) => {
   const { formContent, updateField } = useFormContext();
   const [uncertain, setUncertain] = useState(Boolean(formContent[end]));
@@ -43,7 +45,8 @@ const BreakpointForm = ({
   }, [end, updateField]);
 
   return (
-    <div className="breakpoint-form">
+    <Stack spacing={2}>
+      {label}
       {reference && (
         <FormField
           label="reference"
@@ -89,7 +92,7 @@ const BreakpointForm = ({
           )}
         </>
       )}
-    </div>
+    </Stack>
   );
 };
 

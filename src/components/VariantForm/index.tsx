@@ -1,7 +1,6 @@
-import './index.scss';
-
-import { List } from '@mui/material';
-import { omit } from 'lodash';
+import {
+  CircularProgress, Paper, Stack, Typography,
+} from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
@@ -11,57 +10,34 @@ import React, {
 } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
-import FieldGroup from '@/components/FormLayout/FieldGroup';
-import RadioSelect from '@/components/RadioSelect';
-import { cleanPayload, FORM_VARIANT, sortAndGroupFields } from '@/components/util';
+import ActionButton from '@/components/ActionButton';
+import { useAuth } from '@/components/Auth';
+import DropDownSelect from '@/components/DropDownSelect';
+import FormContext from '@/components/FormContext';
+import FormLayout from '@/components/FormLayout';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import RecordFormStateToggle from '@/components/RecordFormStateToggle';
+import { cleanPayload, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
 import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
-import FormStepWrapper from './FormStepWrapper';
-import SteppedForm from './SteppedForm';
 
 const PositionalVariant = schema.get('PositionalVariant');
 const CategoryVariant = schema.get('CategoryVariant');
 
-const leftoverPositionalProps = omit(
-  PositionalVariant.properties,
-  [
-    'break1Start',
-    'break1End',
-    'break2Start',
-    'break2End',
-    'reference1',
-    'reference2',
-    'type',
-    'refSeq',
-    'untemplatedSeq',
-    'untemplatedSeqSize',
-    'zygosity',
-    'displayName',
-  ],
-);
-const { fields: positionalFields } = sortAndGroupFields(
-  leftoverPositionalProps,
-  { collapseExtra: false },
-);
-
-const leftoverCategoryProps = omit(
-  CategoryVariant.properties,
-  [
-    'reference1',
-    'reference2',
-    'type',
-    'zygosity',
-    'displayName',
-  ],
-);
-const { fields: categoryFields } = sortAndGroupFields(
-  leftoverCategoryProps,
-  { collapseExtra: false },
-);
+const FIELD_EXCLUSIONS = [
+  'groupRestrictions',
+  // explicitly since we add them above
+  'break1Start',
+  'break1End',
+  'break2Start',
+  'break2End',
+  'reference1',
+  'reference2',
+];
 
 const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
   label: m, value: m, key: m, caption: schema.get(m).description,
@@ -93,18 +69,23 @@ const pickInputType = (record) => {
 };
 
 interface VariantFormProps {
-  /** the handler to be called when the form is submitted */
-  onSubmit: (record?: GeneralRecordType | null) => void;
-  formVariant?: FORM_VARIANT;
+  /** the title for this form */
+  title: string;
+  onSubmit?: (record?: GeneralRecordType) => void;
+  onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
+  /** values of individual properties of passed class model */
   value?: GeneralRecordType;
+  /** the type of NodeForm to create */
+  variant?: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
 }
 
 /**
  * Input form for new Variants
  */
 const VariantForm = ({
-  onSubmit, value, formVariant = FORM_VARIANT.NEW,
+  title, onSubmit, onToggleState, value, variant = FORM_VARIANT.NEW,
 }: VariantFormProps) => {
+  const auth = useAuth();
   let defaultCoordinateType;
 
   if (value?.break1Start) {
@@ -113,21 +94,21 @@ const VariantForm = ({
   const [coordinateType, setCoordinateType] = useState(defaultCoordinateType || 'GenomicPosition');
 
   const [inputType, setInputType] = useState(
-    formVariant === FORM_VARIANT.NEW
+    variant === FORM_VARIANT.NEW
       ? MAJOR_FORM_TYPES.SUB
       : pickInputType(value),
   );
   const snackbar = useSnackbar();
 
   useEffect(() => {
-    if (formVariant !== FORM_VARIANT.NEW && value) {
+    if (variant !== FORM_VARIANT.NEW && value) {
       setInputType(pickInputType(value));
 
       if (value?.break1Start) {
         setCoordinateType(value.break1Start['@class']);
       }
     }
-  }, [value, formVariant]);
+  }, [value, variant]);
 
   const hasPositions = inputType !== MAJOR_FORM_TYPES.OTHER && inputType !== MAJOR_FORM_TYPES.TRANS;
   const isSubstitution = inputType === MAJOR_FORM_TYPES.SUB;
@@ -159,11 +140,17 @@ const VariantForm = ({
     return newModel;
   }, [hasPositions, isSubstitution, isFusion]);
 
+  const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
+  const form = useSchemaForm(model, initialValue, { variant });
+  const {
+    formContent, formErrors, formHasErrors, formIsDirty,
+  } = form;
+
   /**
    * Mutation for submitting (creating or updating) a variant record
    */
   const submitMutation = useMutation({
-    mutationFn: async (content) => {
+    mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
 
       /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
@@ -175,14 +162,14 @@ const VariantForm = ({
 
       const { routeName } = schema.get(payload);
 
-      if (formVariant === FORM_VARIANT.NEW) {
+      if (variant === FORM_VARIANT.NEW) {
         return api.post(routeName, payload);
       }
       const { displayName: _, ...rest } = payload;
-      return api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, rest);
+      return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, rest);
     },
     onSuccess: (result) => {
-      const actionType = formVariant === FORM_VARIANT.NEW ? 'created' : 'edited';
+      const actionType = variant === FORM_VARIANT.NEW ? 'created' : 'edited';
 
       if (result['@rid']) {
         const { routeName } = schema.get(result);
@@ -204,133 +191,153 @@ const VariantForm = ({
       }
 
       snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit(result);
+      onSubmit?.(result);
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (content) => {
+    mutationFn: async (content: GeneralRecordType) => {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      return api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
+      return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries();
       snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit(null);
+      onSubmit?.();
     },
   });
 
-  const handleSubmitAction = useCallback((content) => {
-    submitMutation.mutate(content);
-  }, [submitMutation]);
+  const handleSubmitAction = useCallback(() => {
+    if (formHasErrors) {
+      // bring up the snackbar for errors
+      console.error(formErrors);
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
+    } else {
+      // ok to submit
+      submitMutation.mutate(formContent);
+    }
+  }, [formHasErrors, formErrors, snackbar, submitMutation, formContent]);
 
-  const handleDeleteAction = useCallback((content) => {
-    deleteMutation.mutate(content);
-  }, [deleteMutation]);
+  const handleDeleteAction = useCallback(() => {
+    deleteMutation.mutate(formContent);
+  }, [deleteMutation, formContent]);
 
-  return model && (
-    <SteppedForm
-      className="new-variant"
-      errors={(
-        <>
-          <ErrorMessage error={submitMutation.error}>An error occurred while creating/editing record.</ErrorMessage>
-          <ErrorMessage error={deleteMutation.error}>An error occurred while deleting record.</ErrorMessage>
-        </>
-      )}
-      formVariant={formVariant}
-      isLoading={submitMutation.isPending || deleteMutation.isPending}
-      model={model}
-      modelName={model.name}
-      onDelete={handleDeleteAction}
-      onSubmit={handleSubmitAction}
-      value={value}
-    >
-      <FormStepWrapper
-        label="Pick the Input Type"
-      >
-        <RadioSelect
-          onChange={({ target: { value: newValue } }) => setInputType(newValue)}
-          options={Object.values(MAJOR_FORM_TYPES)}
-          value={inputType}
-        />
-      </FormStepWrapper>
-      {hasPositions && (
-        <FormStepWrapper label="Pick the Position Coordinate System">
-          <RadioSelect
+  const actionInProgress = submitMutation.isPending || deleteMutation.isPending;
+
+  let pageTitle = title;
+
+  if (variant === FORM_VARIANT.VIEW && formContent) {
+    if (formContent.displayName) {
+      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+    } else {
+      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
+    }
+  }
+
+  return (
+    <Paper className="record-form__wrapper" elevation={4}>
+      <FormContext.Provider value={form}>
+        <div className="record-form__header">
+          <span className="title">
+            <Typography variant="h1">{pageTitle}</Typography>
+            {title !== pageTitle && (<Typography variant="subtitle1">{title}</Typography>)}
+          </span>
+          <div className={`header__actions header__actions--${variant}`}>
+            {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
+              <RecordFormStateToggle
+                allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
+                message="Are you sure? You will lose your changes."
+                onClick={onToggleState}
+                requireConfirm={variant === FORM_VARIANT.EDIT && formIsDirty}
+                value={variant}
+              />
+            )}
+          </div>
+        </div>
+        <Stack
+          className="new-variant"
+          spacing={2}
+        >
+          <DropDownSelect
+            label="Pick the Input Type"
+            onChange={({ target: { value: newValue } }) => setInputType(newValue)}
+            options={Object.values(MAJOR_FORM_TYPES)}
+            required
+            value={inputType}
+          />
+          {hasPositions && (
+          <DropDownSelect
+            label="Pick the Position Coordinate System"
             onChange={({ target: { value: newValue } }) => setCoordinateType(newValue)}
             options={coordinateOptions}
+            required
             value={coordinateType}
           />
-        </FormStepWrapper>
-      )}
-      <FormStepWrapper
-        fields={['break1Start', 'reference1', 'break1End']}
-        label={`Input the ${(isFusion || (hasPositions && !isSubstitution)) ? 'First ' : ''}${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
-      >
-        <BreakpointForm
-          coordinateType={coordinateType}
-          end={hasPositions ? 'break1End' : undefined}
-          model={model}
-          reference="reference1"
-          start={hasPositions ? 'break1Start' : undefined}
-        />
-      </FormStepWrapper>
-      {(!isSubstitution && (hasPositions || isFusion)) && (
-        <FormStepWrapper
-          fields={['break2Start', 'reference2', 'break2End']}
-          label={`Input the Second ${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
-        >
+          )}
+          <BreakpointForm
+            coordinateType={coordinateType}
+            end={hasPositions ? 'break1End' : undefined}
+            label={`Input the ${(isFusion || (hasPositions && !isSubstitution)) ? 'First ' : ''}${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
+            model={model}
+            reference="reference1"
+            start={hasPositions ? 'break1Start' : undefined}
+          />
+          {(!isSubstitution && (hasPositions || isFusion)) && (
           <BreakpointForm
             coordinateType={coordinateType}
             end={hasPositions ? 'break2End' : undefined}
+            label={`Input the Second ${hasPositions ? 'Breakpoint' : 'Reference Element'}`}
             model={model}
             reference={isFusion ? 'reference2' : undefined}
             start={hasPositions ? 'break2Start' : undefined}
           />
-        </FormStepWrapper>
-      )}
-      {hasPositions && (
-        <FormStepWrapper
-          fields={['refSeq', 'untemplatedSeq', 'untemplatedSeqSize']}
-          label="Input ref/alt Sequence"
-        >
-          <List className="form-layout__content--long">
-            <FieldGroup
-              disabled={false}
-              ordering={['refSeq', ['untemplatedSeq', 'untemplatedSeqSize']]}
-            />
-          </List>
-        </FormStepWrapper>
-      )}
-      <FormStepWrapper fields={['type', 'zygosity']} label="Select the Variant Type">
-        <FieldGroup
-          disabled={false}
-          ordering={['type', 'zygosity']}
+          )}
+        </Stack>
+        <FormLayout
+          collapseExtra
+          disabled={actionInProgress || form.formVariant === FORM_VARIANT.VIEW}
+          exclusions={FIELD_EXCLUSIONS}
         />
-      </FormStepWrapper>
-      <FormStepWrapper
-        fields={
-          Object.values(
-            hasPositions
-              ? leftoverPositionalProps
-              : leftoverCategoryProps,
-          ).map((p) => p.name)
-        }
-        label="Optional Information"
-      >
-        <List className="form-layout__content--long">
-          <FieldGroup
-            disabled={false}
-            ordering={
-            hasPositions
-              ? positionalFields
-              : categoryFields
-          }
-          />
-        </List>
-      </FormStepWrapper>
-    </SteppedForm>
+        <ErrorMessage error={submitMutation.error}>An error occurred while creating/editing record.</ErrorMessage>
+        <ErrorMessage error={deleteMutation.error}>An error occurred while deleting record.</ErrorMessage>
+        <div className="record-form__action-buttons">
+          {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+            ? (
+              <ActionButton
+                color="error"
+                disabled={actionInProgress}
+                message="Are you sure you want to delete this record?"
+                onClick={handleDeleteAction}
+                variant="outlined"
+              >
+                DELETE RECORD
+              </ActionButton>
+            )
+          // for spacing issues only
+            : (<div />)}
+          {actionInProgress && (
+          <CircularProgress size={50} />
+          )}
+          {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT)
+            ? (
+              <ActionButton
+                color="primary"
+                disabled={actionInProgress || (formHasErrors && formIsDirty)}
+                onClick={handleSubmitAction}
+                requireConfirm={false}
+                variant="contained"
+              >
+                {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+                  ? 'SUBMIT CHANGES'
+                  : 'SUBMIT'}
+              </ActionButton>
+            )
+          // for spacing issues only
+            : (<div />)}
+        </div>
+      </FormContext.Provider>
+    </Paper>
   );
 };
 

@@ -10,12 +10,12 @@ import { FORM_VARIANT } from '@/components/util';
 import NewVariant from '@/components/VariantForm';
 import schema from '@/services/schema';
 
-const VARIANT_CLASSES = ['variant', 'positionalvariant', 'categoryvariant'];
+const VARIANT_CLASSES = ['Variant', 'PositionalVariant', 'CategoryVariant'];
 
 const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) => {
   const navigate = useNavigate();
   const { modelName: paramsModelName } = useParams<{ modelName: string }>();
-  const modelName = (propsModelName || paramsModelName)!;
+  const model = schema.get((propsModelName || paramsModelName)!);
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -28,34 +28,22 @@ const NewRecordView = ({ modelName: propsModelName }: { modelName?: string }) =>
     }
   }, [navigate]);
 
-  let innerComponent: ReactNode = null;
+  let Form = RecordForm;
 
-  if (VARIANT_CLASSES.includes(modelName.toLowerCase())) {
-    innerComponent = (
-      <NewVariant
-        onSubmit={handleSubmit}
-      />
-    );
-  } else if (modelName.toLowerCase() === 'statement') {
-    innerComponent = (
-      <StatementForm
-        onSubmit={handleSubmit}
-        title="Create a new Statement Record"
-        variant={FORM_VARIANT.NEW}
-      />
-    );
-  } else {
-    innerComponent = (
-      <RecordForm
-        modelName={modelName}
-        onSubmit={handleSubmit}
-        title={`Create a new ${modelName} Record`}
-        variant={FORM_VARIANT.NEW}
-      />
-    );
+  if (VARIANT_CLASSES.includes(model.name)) {
+    Form = NewVariant;
+  } else if (model.name === 'Statement') {
+    Form = StatementForm;
   }
   return (
-    <div className="new-record-view">{innerComponent}</div>
+    <div className="new-record-view">
+      <Form
+        modelName={model.name}
+        onSubmit={handleSubmit}
+        title={`Create a new ${model.name} Record`}
+        variant={FORM_VARIANT.NEW}
+      />
+    </div>
   );
 };
 

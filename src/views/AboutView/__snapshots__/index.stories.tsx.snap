@@ -3658,8 +3658,7 @@ exports[`TermsTab snapshot 1`] = `
             class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           >
             page last updated
-            over 26 years
-             ago
+            XXXX XXXX ago
           </p>
         </div>
       </div>
@@ -3858,8 +3857,7 @@ exports[`TermsTabSigned snapshot 1`] = `
             class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           >
             page last updated
-            over 26 years
-             ago
+            XXXX XXXX ago
           </p>
         </div>
       </div>

@@ -403,6 +403,7 @@ type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
   label?: string;
   // missing from types
   generateDefault?: (record: Record<string, unknown>) => unknown;
+  deprecated?: boolean;
 };
 
 type SchemaClassDefinition = ClassDefinition & { properties: Record<string, SchemaPropertyDefinition> };
@@ -437,6 +438,10 @@ function prepareModels() {
         label: 'Source Record (out)',
         linkedClass: model.sourceModel || 'V',
       };
+    }
+
+    if (preparedModel.name === 'PositionalVariant' && preparedModel.properties.hgvsType) {
+      preparedModel.properties.hgvsType.deprecated = true;
     }
 
     prepared[model.name] = preparedModel;

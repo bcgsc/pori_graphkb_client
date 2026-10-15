@@ -90,7 +90,7 @@ const sortAndGroupFields = (
     fieldsMap[prop.name] = {
       fields: [prop.name],
       required,
-      aboveFold: required || !BELOW_FOLD.includes(prop.name) || !opt.collapseExtra,
+      aboveFold: required || !(BELOW_FOLD.includes(prop.name) || prop.deprecated) || !opt.collapseExtra,
     };
   });
 

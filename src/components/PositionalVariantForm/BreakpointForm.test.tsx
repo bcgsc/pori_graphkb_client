@@ -7,7 +7,7 @@ import {
   describe, expect, test, vi,
 } from 'vitest';
 
-import FormContext, { FormContextState } from '@/components/FormContext';
+import { FormContext, FormContextState } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';

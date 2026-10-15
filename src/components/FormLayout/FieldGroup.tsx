@@ -3,8 +3,8 @@ import './index.scss';
 import { List } from '@mui/material';
 import React, { ReactNode, useMemo } from 'react';
 
-import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
+import { useFormContext } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 
 interface FieldGroupProps {

@@ -2,18 +2,57 @@
  * Basic formContent and error management states
  */
 import { isEqual } from 'lodash';
-import {
+import React, {
   useCallback,
+  useContext,
   useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
 
-import schema from '@/services/schema';
+import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
-import { FormContextState, useFormContext } from '../FormContext';
 import { GeneralRecordType } from '../types';
 import { FORM_VARIANT } from '../util';
+
+export interface FormContextState {
+  /** the content/values by field names of the current form */
+  formContent: GeneralRecordType;
+  /** the form errors by field names */
+  formErrors: Partial<Record<string, { message: string } | null>>;
+  /** true when there are any errors in the form */
+  formHasErrors: boolean;
+  /** true when the form has been changed from the initial value */
+  formIsDirty: boolean;
+  additionalValidationError: string;
+  update: (updates: Record<string, unknown>) => void;
+  /** update a single field */
+  updateField: (name: string, value: unknown) => void;
+  /** update a single field using a synthetic event */
+  updateFieldEvent: (event: { target: { name: string; value: unknown } }) => void;
+  /** the variant of the form (ex. view) */
+  formVariant: FORM_VARIANT | '';
+  /** setter for setting the formIsDirty property */
+  setFormIsDirty: (dirty: boolean) => void;
+  model: {
+    name?: string;
+    properties: Record<string, Partial<SchemaPropertyDefinition> & {
+      name: string;
+    }>;
+    isEdge?: boolean;
+  }
+}
+
+export const FormContext = React.createContext<FormContextState | null>(null);
+
+export const useFormContext = () => {
+  const value = useContext(FormContext);
+
+  if (!value) {
+    throw new Error('missing FormContext provider');
+  }
+  return value;
+};
 
 interface UseSchemaFormOptions {
   /** the form type/variant (ex. view) */
@@ -95,7 +134,7 @@ function getInitialFormState(
  * @param initialValue the start value of the form content
  * @param props extra options
  *
- * @returns {FormContext} the form context values
+ * @returns {FormContextState} the form context values
  */
 const useSchemaForm = (
   model: FormContextState['model'],

@@ -12,10 +12,9 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import DropDownSelect from '@/components/DropDownSelect';
-import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import FieldWrapper from '@/components/FormField/FieldWrapper';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
+import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
 

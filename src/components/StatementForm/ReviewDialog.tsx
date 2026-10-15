@@ -10,9 +10,8 @@ import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
-import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
+import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import {
   FORM_VARIANT,
 } from '@/components/util';

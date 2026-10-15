@@ -8,7 +8,7 @@ import { omit } from 'lodash';
 import React from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
-import { useFormContext } from '@/components/FormContext';
+import { useFormContext } from '@/components/hooks/useSchemaForm';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';

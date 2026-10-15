@@ -16,9 +16,8 @@ import { Link, useNavigate, useParams } from 'react-router';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
-import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
+import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordType } from '@/components/types';
 import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';

@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { expect, fn } from 'storybook/test';
 
-import FormContext from '@/components/FormContext';
+import { FormContext } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
 import preview from '#.storybook/preview';

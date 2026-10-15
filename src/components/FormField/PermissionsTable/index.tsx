@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
-import { FormContextState } from '@/components/FormContext';
+import { FormContextState } from '@/components/hooks/useSchemaForm';
 import schemaDefn from '@/services/schema';
 
 /* eslint-disable no-bitwise */

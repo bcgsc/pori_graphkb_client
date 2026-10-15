@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 
-import { useFormContext } from '@/components/FormContext';
+import { useFormContext } from '@/components/hooks/useSchemaForm';
 import { sortAndGroupFields } from '@/components/util';
 
 import FieldGroup from './FieldGroup';

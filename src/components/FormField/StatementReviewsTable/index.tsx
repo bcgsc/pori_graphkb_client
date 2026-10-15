@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-import { FormContextState } from '@/components/FormContext';
+import { FormContextState } from '@/components/hooks/useSchemaForm';
 import { GeneralRecordType } from '@/components/types';
 
 import StatementReviewRow from './StatementReview';

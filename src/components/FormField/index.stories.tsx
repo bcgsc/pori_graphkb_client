@@ -4,7 +4,7 @@ import { fn } from 'storybook/test';
 import { SchemaPropertyDefinition } from '@/services/schema';
 import preview from '#.storybook/preview';
 
-import FormContext from '../FormContext';
+import { FormContext } from '../hooks/useSchemaForm';
 import { FORM_VARIANT } from '../util';
 import Component from '.';
 

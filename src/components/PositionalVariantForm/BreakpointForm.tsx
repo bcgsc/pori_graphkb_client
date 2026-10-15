@@ -5,8 +5,8 @@ import {
 } from '@mui/material';
 import React, { ReactNode, useCallback } from 'react';
 
-import { useFormContext } from '@/components/FormContext';
 import FormField from '@/components/FormField';
+import { useFormContext } from '@/components/hooks/useSchemaForm';
 
 interface BreakpointFormProps {
   /** the Position class */

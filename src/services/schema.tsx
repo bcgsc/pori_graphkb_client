@@ -12,6 +12,16 @@ import { getQueryFromSearch } from './api/search';
 
 const MAX_LABEL_LENGTH = 50;
 
+type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
+  name: string;
+  label?: string;
+  // missing from types
+  generateDefault?: (record: Record<string, unknown>) => unknown;
+  deprecated?: boolean;
+};
+
+type SchemaClassDefinition = ClassDefinition & { properties: Record<string, SchemaPropertyDefinition> };
+
 /**
  * Get a string representation of a record
  *
@@ -91,67 +101,69 @@ function getEdges<R extends GeneralRecordType>(node: R | null = null) {
   return list;
 }
 
+interface ValidationResult {
+  valid: boolean;
+  message?: string;
+  properties?: Record<string, ValidationResult>;
+  // if embeddedset or embeddedlist, separate result stored here
+  items?: ValidationResult[];
+}
+
+function validateEmbedded(
+  modelName: string,
+  value: Record<string, any>,
+) {
+  let valid = true;
+  const properties: Record<string, ValidationResult> = {};
+
+  if (value['@class']) {
+    if (value['@class'] !== modelName && !schemaDefn.inheritsFrom(value['@class'], modelName)) {
+      return {
+        valid: false,
+        properties: { '@class': { message: `Value "${value['@class']}" is invalid. Embedded record must be a type that inherits from type ${modelName}`, valid: false } },
+      };
+    }
+  }
+  const model = schemaDefn.get(value['@class'] ?? modelName);
+  Object.entries(model.properties).forEach(([propName, propModel]) => {
+    properties[propName] = validateValue(propModel, value[propName]);
+    valid &&= properties[propName].valid;
+  });
+  return { valid, properties };
+}
+
+function combineMessages(a: string | undefined, b: string | undefined): string | undefined {
+  if (!a) return b;
+  if (!b) return a;
+  if (!a.endsWith('.')) {
+    return `${a}. ${b}`;
+  }
+  return `${a} ${b}`;
+}
+
 /**
  * Validates a value against some property model and returns the new property tracking object
  */
-const validateValue = (propModel, value, { ignoreMandatory = false }) => {
+const validateValue = (propModel: SchemaPropertyDefinition, value: unknown): ValidationResult => {
+  let result: ValidationResult = { valid: true };
+
   if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
     if (propModel.mandatory
-      && !ignoreMandatory
       && !propModel.generated
       && propModel.default === undefined
       && !propModel.generateDefault
     ) {
-      return { message: 'Required Value' };
+      return { message: 'Required Value', valid: false };
     }
-  } else if (value === null && !propModel.nullable) {
-    return { message: 'Cannot be empty/null' };
-  } else if (value !== null) { // validate the new value using the schema model property
-    if (propModel.linkedClass && propModel.type.includes('embedded')) {
-      let subErrors = {};
-      let embeddedModel;
-
-      const valErrorCheck = (subPropModel, val, errors) => {
-        const { name } = subPropModel;
-        const error = validateValue(subPropModel, val[name], { ignoreMandatory });
-
-        const newErrors = { ...errors };
-
-        if (error) {
-          newErrors[name] = error;
-        }
-
-        return newErrors;
-      };
-
-      if (Array.isArray(value) && value.length) {
-        value.forEach((val) => {
-          embeddedModel = schemaDefn.get(val);
-
-          if (embeddedModel) {
-            Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
-              subErrors = valErrorCheck(subPropModel, val, subErrors);
-            });
-          }
-        });
-      } else {
-        try {
-          embeddedModel = schemaDefn.get(value);
-        } catch (err) { } // eslint-disable-line no-empty
-
-        if (!embeddedModel) {
-          return { '@class': { message: 'Required Value' } };
-        }
-
-        Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
-          subErrors = valErrorCheck(subPropModel, value, subErrors);
-        });
+  } else if (value === null) {
+    if (!propModel.nullable) {
+      return { message: 'Cannot be empty/null', valid: false };
+    }
+  } else { // validate the new value using the schema model property
+    if (propModel.type?.endsWith('set') || propModel.type?.endsWith('list')) {
+      if (!Array.isArray(value)) {
+        return { message: 'Value must be an array.', valid: false };
       }
-
-      if (Object.keys(subErrors).length) {
-        return subErrors;
-      }
-      return null;
     }
 
     try {
@@ -160,13 +172,41 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       if (propModel.type === 'link') {
         valueToValidate = value['@rid'] || value;
       }
-      validateProperty(propModel, valueToValidate);
-      return null;
+      validateProperty(propModel as PropertyDefinition, valueToValidate);
     } catch (err) {
-      return err;
+      result = { message: (err as Error).message || 'Field is invalid.', valid: false };
+    }
+
+    if (propModel.type?.includes('embedded') && propModel.linkedClass) {
+      let embedded = [value];
+
+      if (Array.isArray(value)) {
+        embedded = value;
+      }
+
+      const embeddedResults: ValidationResult[] = [];
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const embeddedValue of embedded) {
+        if (typeof embeddedValue !== 'object') {
+          embeddedResults.push({ message: 'Value is not an object.', valid: false });
+        } else {
+          embeddedResults.push(validateEmbedded(propModel.linkedClass || 'V', embeddedValue));
+        }
+      }
+
+      result.valid &&= embeddedResults.every((r) => r.valid);
+
+      if (propModel.type === 'embedded') {
+        // not an array, just a single embed
+        result.message = combineMessages(result.message, embeddedResults[0].message);
+        result.properties = embeddedResults[0].properties;
+      } else {
+        result.items = embeddedResults;
+      }
     }
   }
-  return null;
+  return result;
 };
 
 /**
@@ -397,16 +437,6 @@ const defineGridColumns = (search) => {
 
   return defns;
 };
-
-type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
-  name: string;
-  label?: string;
-  // missing from types
-  generateDefault?: (record: Record<string, unknown>) => unknown;
-  deprecated?: boolean;
-};
-
-type SchemaClassDefinition = ClassDefinition & { properties: Record<string, SchemaPropertyDefinition> };
 
 /**
  * return models with all properties (including inherited)

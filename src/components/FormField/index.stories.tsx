@@ -24,15 +24,16 @@ function MockProvider({
     update: fn(),
     updateFieldEvent: fn(),
     updateField: fn(),
-    setFormIsDirty: fn(),
-    formIsDirty: value !== undefined,
-    additionalValidationError: '',
-    formHasErrors: Boolean(errorMessage),
-    formErrors: { [name]: errorMessage ? { message: errorMessage } : undefined },
-    formContent: {
+    setDirty: fn(),
+    isDirty: value !== undefined,
+    validation: {
+      valid: !errorMessage,
+      properties: { [name]: { message: errorMessage ?? undefined, valid: !errorMessage } },
+    },
+    content: {
       [name]: value,
     },
-    formVariant: formVariant ?? FORM_VARIANT.NEW,
+    variant: formVariant ?? FORM_VARIANT.NEW,
     model: {
       properties: {
         [name]: { name, type: 'string' as const, ...model },

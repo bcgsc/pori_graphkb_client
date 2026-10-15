@@ -75,18 +75,18 @@ const FormField = ({
   const example = examples?.[0];
   const linkedClass = schemaDefn.get(linkedClassName, false);
 
-  const value = form.formContent[name];
-  const generated = Boolean(model.generated && form.formVariant !== FORM_VARIANT.SEARCH);
-  const mandatory = Boolean(model.mandatory && form.formVariant !== FORM_VARIANT.SEARCH);
-
-  const errorFlag = Boolean(form.formErrors[name] && !generated && form.formIsDirty);
+  const value = form.content[name];
+  const generated = Boolean(model.generated && form.variant !== FORM_VARIANT.SEARCH);
+  const mandatory = Boolean(model.mandatory && form.variant !== FORM_VARIANT.SEARCH);
+  const validation = form.validation.properties?.[name] ?? { valid: true };
+  const errorFlag = Boolean(!validation.valid && !generated && form.isDirty);
 
   let helperText = defaultHelperText;
 
   if (!helperText) {
     if (errorFlag) {
-      helperText = form.formErrors[name]!.message;
-    } else if (form.formVariant === FORM_VARIANT.EDIT && example !== undefined) {
+      helperText = validation.message;
+    } else if (form.variant === FORM_VARIANT.EDIT && example !== undefined) {
       if (!description) {
         helperText = `ex. ${example}`;
       } else {
@@ -100,13 +100,13 @@ const FormField = ({
   // ensure all components both get and support
   // the following props
   const sharedEmbedProps = {
-    disabled: (generated || disabled) && form.formVariant !== FORM_VARIANT.VIEW,
+    disabled: (generated || disabled) && form.variant !== FORM_VARIANT.VIEW,
     label: label || name,
     name,
     required: mandatory,
     onChange: form.updateFieldEvent,
     value,
-    readOnly: generated || form.formVariant === FORM_VARIANT.VIEW,
+    readOnly: generated || form.variant === FORM_VARIANT.VIEW,
   } satisfies SharedProps<[
     React.ComponentProps<typeof StatementReviewsTable>,
     React.ComponentProps<typeof PermissionsTable>,

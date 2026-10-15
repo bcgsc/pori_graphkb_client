@@ -108,15 +108,11 @@ const PropertyFilter = ({
     if (DATE_FIELDS.includes(property)) {
       format = 'date';
     }
-    return ({ properties: { [property]: { ...propertyModel, format } } });
+    return ({ properties: { [property]: { ...propertyModel, format, name: property } } });
   }, [property, propertyModel]);
 
   // use a schema form so that validation runs on the value based on the property selected
   const form = useSchemaForm(model, undefined, { variant: FORM_VARIANT.SEARCH });
-  const {
-    formContent,
-    formHasErrors,
-  } = form;
 
   // set the property options
   useEffect(() => {
@@ -221,7 +217,7 @@ const PropertyFilter = ({
     if (property) {
       const choices = constructOperatorOptions(
         originalPropertyModel,
-        formContent[property],
+        form.content[property],
         subqueryType,
       );
       setOperatorChoices(choices);
@@ -232,7 +228,7 @@ const PropertyFilter = ({
         setOperator('CONTAINSTEXT');
       }
     }
-  }, [formContent, modelName, property, subqueryType]);
+  }, [form.content, modelName, property, subqueryType]);
 
   useEffect(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
@@ -250,8 +246,8 @@ const PropertyFilter = ({
     const result = {
       attr: property,
       value: subProp
-        ? formContent[subProp]
-        : formContent[property],
+        ? form.content[subProp]
+        : form.content[property],
       operator,
       subqueryType,
       query: undefined as any,
@@ -270,7 +266,7 @@ const PropertyFilter = ({
           target: {
             target: keywordTarget || originalPropertyModel?.linkedClass || 'V',
             operator,
-            keyword: formContent[property],
+            keyword: form.content[property],
             queryType: 'keyword',
           },
         },
@@ -284,17 +280,17 @@ const PropertyFilter = ({
           queryType: 'similarTo',
           treeEdges: [],
           target: {
-            target: Array.isArray(formContent[property])
-              ? formContent[property]
-              : [formContent[property]],
+            target: Array.isArray(form.content[property])
+              ? form.content[property]
+              : [form.content[property]],
             queryType: 'ancestors',
           },
         },
       };
     } else {
       let value = subProp
-        ? formContent[subProp]
-        : formContent[property];
+        ? form.content[subProp]
+        : form.content[property];
 
       if (operator === 'CONTAINS' && value.length === 1) {
         // special case. CONTAINS is marked iterable for entry convenience for the user
@@ -306,7 +302,7 @@ const PropertyFilter = ({
       };
     }
     onSubmit(result);
-  }, [formContent, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
+  }, [form.content, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
 
   return (
     <>
@@ -362,7 +358,7 @@ const PropertyFilter = ({
       </div>
       <div className="property-filter__actions">
         <ActionButton
-          disabled={!property || formHasErrors || !operator}
+          disabled={!property || !form.validation.valid || !operator}
           onClick={handleAddFilter}
           requireConfirm={false}
           variant="outlined"

@@ -15,16 +15,14 @@ import schemaDefn from '@/services/schema';
 import BreakpointForm from './BreakpointForm';
 
 const CONTEXT_DEFAULTS: FormContextState = {
-  formContent: {},
-  formVariant: FORM_VARIANT.VIEW,
+  content: {},
+  variant: FORM_VARIANT.VIEW,
   update: () => {},
   updateField: () => {},
   updateFieldEvent: () => {},
-  setFormIsDirty: () => {},
-  formHasErrors: false,
-  formIsDirty: false,
-  formErrors: {},
-  additionalValidationError: '',
+  setDirty: () => {},
+  isDirty: false,
+  validation: { valid: true, properties: {} },
   model: schemaDefn.get('PositionalVariant'),
 };
 
@@ -32,7 +30,7 @@ describe('BreakpointForm', () => {
   test('displays start when given', () => {
     const { getByText, queryByText, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: {} }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, content: {} }}>
           <BreakpointForm
             breakpoint="1"
             coordinateType="GenomicPosition"
@@ -49,7 +47,7 @@ describe('BreakpointForm', () => {
   test('defaults to uncertain if end is filled in form', () => {
     const { getByText, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { break1End: {} } }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, content: { break1End: {} } }}>
           <BreakpointForm
             breakpoint="1"
             coordinateType="GenomicPosition"
@@ -64,7 +62,7 @@ describe('BreakpointForm', () => {
   });
 
   test('clears end from form when uncertain is unset', () => {
-    const form = { ...CONTEXT_DEFAULTS, formContent: { break1End: {} }, update: vi.fn() };
+    const form = { ...CONTEXT_DEFAULTS, content: { break1End: {} }, update: vi.fn() };
     const { getByText, getByTestId, getByLabelText } = render(
       <QueryClientProvider client={api.queryClient}>
         <FormContext.Provider value={form}>

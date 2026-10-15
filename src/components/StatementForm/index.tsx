@@ -150,13 +150,8 @@ const StatementForm = ({
     additionalValidationFn: checkLogicalStatement,
   });
   const {
-    formIsDirty,
-    setFormIsDirty,
-    formContent,
-    formErrors,
+    setDirty: setFormIsDirty,
     updateField,
-    formHasErrors,
-    additionalValidationError,
   } = form;
 
   useEffect(() => {
@@ -179,14 +174,14 @@ const StatementForm = ({
 
   const civicEvidenceId = useMemo(() => {
     try {
-      if (variant === FORM_VARIANT.VIEW && formContent.source?.name === 'civic' && formContent.sourceId) {
-        return formContent.sourceId;
+      if (variant === FORM_VARIANT.VIEW && form.content.source?.name === 'civic' && form.content.sourceId) {
+        return form.content.sourceId;
       }
     } catch (err) {
       // pass
     }
     return '';
-  }, [variant, formContent]);
+  }, [variant, form.content]);
 
   const statementReviewCheck = useCallback((currContent, content) => {
     const updatedContent = { ...content };
@@ -223,18 +218,18 @@ const StatementForm = ({
    * Handler for submission of a new record
    */
   const handleNewAction = useCallback(async () => {
-    if (formHasErrors) {
+    if (!form.validation.valid) {
       // bring up the snackbar for errors
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
     } else {
       // ok to POST
-      let content = { ...formContent, '@class': model.name };
-      content = statementReviewCheck(formContent, content);
+      let content = { ...form.content, '@class': model.name };
+      content = statementReviewCheck(form.content, content);
       addNewAction(content);
     }
-  }, [addNewAction, formContent, formErrors, formHasErrors, setFormIsDirty, snackbar, statementReviewCheck]);
+  }, [addNewAction, form.content, form.validation, setFormIsDirty, snackbar, statementReviewCheck]);
 
   const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -251,9 +246,9 @@ const StatementForm = ({
    * Handler for deleting an existing record
    */
   const handleDeleteAction = useCallback(async () => {
-    const content = { ...formContent, '@class': model.name };
+    const content = { ...form.content, '@class': model.name };
     deleteAction(content);
-  }, [deleteAction, formContent]);
+  }, [deleteAction, form.content]);
 
   const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -271,26 +266,26 @@ const StatementForm = ({
    * Handler for edits to an existing record
    */
   const handleEditAction = useCallback(async () => {
-    const content = { ...formContent, '@class': model.name };
+    const content = { ...form.content, '@class': model.name };
 
-    if (formHasErrors) {
+    if (!form.validation.valid) {
       // bring up the snackbar for errors
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
-    } else if (!formIsDirty) {
+    } else if (!form.isDirty) {
       snackbar.enqueueSnackbar('no changes to submit');
-      onSubmit?.(formContent);
+      onSubmit?.(form.content);
     } else {
       updateAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, onSubmit, setFormIsDirty, snackbar, updateAction]);
+  }, [form.content, form.validation, form.isDirty, onSubmit, setFormIsDirty, snackbar, updateAction]);
 
   const actionInProgress = isAdding || isDeleting || isUpdating;
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
-    const reviews = [...(formContent.reviews || []), content];
+    const reviews = [...(form.content.reviews || []), content];
     updateField('reviews', reviews);
 
     if (updateReviewStatus) {
@@ -298,15 +293,15 @@ const StatementForm = ({
     }
     setReviewDialogOpen(false);
     setFormIsDirty(true);
-  }, [formContent.reviews, setFormIsDirty, updateField]);
+  }, [form.content.reviews, setFormIsDirty, updateField]);
 
   let pageTitle = title;
 
-  if (variant === FORM_VARIANT.VIEW && formContent) {
-    if (formContent.displayName) {
-      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+  if (variant === FORM_VARIANT.VIEW && form.content) {
+    if (form.content.displayName) {
+      pageTitle = `${form.content.displayName} (${form.content['@rid']})`;
     } else {
-      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
+      pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
     }
   }
 
@@ -343,10 +338,10 @@ const StatementForm = ({
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
           {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
-              allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
+              allowEdit={auth.hasWriteAccess && !form.content.deletedAt}
               message="Are you sure? You will lose your changes."
               onClick={onToggleState}
-              requireConfirm={variant === 'edit' && formIsDirty}
+              requireConfirm={variant === 'edit' && form.isDirty}
               value={variant}
             />
           )}
@@ -360,7 +355,7 @@ const StatementForm = ({
         )}
       </div>
       <StatementSentence
-        content={form.formContent}
+        content={form.content}
       />
       <FormContext.Provider value={form}>
         <FormLayout
@@ -373,7 +368,7 @@ const StatementForm = ({
       <ErrorMessage error={errorDeleting}>An error occurred while deleting record.</ErrorMessage>
       <ErrorMessage error={errorUpdating}>An error occurred while updating record.</ErrorMessage>
       <div className="statement-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+        {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
           ? (
             <ActionButton
               color="error"
@@ -390,14 +385,14 @@ const StatementForm = ({
         {actionInProgress && (
         <CircularProgress size={50} />
         )}
-        {additionalValidationError && (
-          <Alert severity="error">{additionalValidationError}</Alert>
+        {form.validation.message && (
+          <Alert severity="error">{form.validation.message}</Alert>
         )}
-        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT && !form.content.deletedAt
           ? (
             <ActionButton
               color="primary"
-              disabled={actionInProgress || (formHasErrors && formIsDirty)}
+              disabled={actionInProgress || (!form.validation.valid && form.isDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
                 : handleNewAction}

@@ -22,7 +22,7 @@ interface FieldGroupProps {
 const FieldGroup = ({
   ordering, exclusions = [], disabled = false,
 }: FieldGroupProps) => {
-  const { formVariant, formContent, model } = useFormContext();
+  const { variant: formVariant, content: formContent, model } = useFormContext();
   const { properties } = model;
 
   // get the form content

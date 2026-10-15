@@ -25,7 +25,7 @@ interface BreakpointFormProps {
 const BreakpointForm = ({
   coordinateType, breakpoint, label, readOnly,
 }: BreakpointFormProps) => {
-  const { formContent, update } = useFormContext();
+  const { content: formContent, update } = useFormContext();
   const uncertain = Boolean(formContent[`break${breakpoint}End`]);
 
   const handleCheckUncertain = useCallback((checked) => {

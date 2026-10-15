@@ -1,13 +1,13 @@
 /**
  * Basic formContent and error management states
  */
-import { isEqual } from 'lodash';
+import { produce, setAutoFreeze } from 'immer';
 import React, {
   useCallback,
   useContext,
   useLayoutEffect,
   useMemo,
-  useState,
+  useReducer,
 } from 'react';
 
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
@@ -15,25 +15,17 @@ import schema, { SchemaPropertyDefinition } from '@/services/schema';
 import { GeneralRecordType } from '../types';
 import { FORM_VARIANT } from '../util';
 
-export interface FormContextState {
+setAutoFreeze(false);
+
+interface ReducerState {
   /** the content/values by field names of the current form */
-  formContent: GeneralRecordType;
+  content: GeneralRecordType;
   /** the form errors by field names */
-  formErrors: Partial<Record<string, { message: string } | null>>;
-  /** true when there are any errors in the form */
-  formHasErrors: boolean;
+  validation: ReturnType<typeof schema.validateValue>;
   /** true when the form has been changed from the initial value */
-  formIsDirty: boolean;
-  additionalValidationError: string;
-  update: (updates: Record<string, unknown>) => void;
-  /** update a single field */
-  updateField: (name: string, value: unknown) => void;
-  /** update a single field using a synthetic event */
-  updateFieldEvent: (event: { target: { name: string; value: unknown } }) => void;
+  isDirty: boolean;
   /** the variant of the form (ex. view) */
-  formVariant: FORM_VARIANT | '';
-  /** setter for setting the formIsDirty property */
-  setFormIsDirty: (dirty: boolean) => void;
+  variant: FORM_VARIANT;
   model: {
     name?: string;
     properties: Record<string, Partial<SchemaPropertyDefinition> & {
@@ -41,6 +33,16 @@ export interface FormContextState {
     }>;
     isEdge?: boolean;
   }
+}
+
+export interface FormContextState extends ReducerState {
+  update: (updates: Record<string, unknown>) => void;
+  /** update a single field */
+  updateField: (name: string, value: unknown) => void;
+  /** update a single field using a synthetic event */
+  updateFieldEvent: (event: { target: { name: string; value: unknown } }) => void;
+  /** setter for setting the formIsDirty property */
+  setDirty: (dirty: boolean) => void;
 }
 
 export const FormContext = React.createContext<FormContextState | null>(null);
@@ -56,9 +58,121 @@ export const useFormContext = () => {
 
 interface UseSchemaFormOptions {
   /** the form type/variant (ex. view) */
-  variant?: FORM_VARIANT | '';
+  variant?: FORM_VARIANT;
   /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
   additionalValidationFn?: ((content: unknown) => string) | null;
+}
+
+enum ACTION_TYPE {
+  UPDATE_FORM = 'UPDATE_FORM',
+  RESET_FORM = 'RESET_FORM',
+  SET_FORM_DIRTY = 'SET_FORM_DIRTY',
+}
+
+type PayloadMap = {
+  [ACTION_TYPE.RESET_FORM]: {
+    model: ReducerState['model'];
+    initialValue: GeneralRecordType | undefined;
+    variant: FORM_VARIANT;
+  };
+  [ACTION_TYPE.UPDATE_FORM]: Record<string, unknown>;
+};
+
+type Action<T extends ACTION_TYPE> = T extends keyof PayloadMap ? { type: T; payload: PayloadMap[T] } : { type: T };
+
+// eslint-disable-next-line consistent-return
+export function reducer<T extends ACTION_TYPE>(draft: ReducerState, action: Action<T>): ReducerState | void {
+  const propsToValidate: string[] = [];
+
+  if (action.type === ACTION_TYPE.RESET_FORM) {
+    const payload = action.payload as PayloadMap[ACTION_TYPE.RESET_FORM];
+
+    draft.model = payload.model;
+    draft.content = payload.initialValue ?? {};
+    draft.variant = payload.variant;
+    draft.isDirty = payload.variant === FORM_VARIANT.EDIT;
+    draft.validation = { valid: true, properties: {} };
+
+    if (payload.variant === FORM_VARIANT.VIEW) {
+      return;
+    }
+
+    Object.values(payload.model.properties).forEach((prop) => {
+      propsToValidate.push(prop.name);
+      let value = draft.content?.[prop.name];
+
+      if ((value === undefined || (value === null && !prop.nullable)) && payload.variant === FORM_VARIANT.NEW && !prop.readOnly && !prop.generated) {
+        if (prop.default !== undefined) {
+          value = prop.default;
+        } else if (prop.generateDefault) {
+          value = prop.generateDefault(draft.content);
+        } else if (!prop.nullable && prop.type === 'embedded' && prop.linkedClass) {
+          value = { '@class': prop.linkedClass };
+        }
+      } else if (value && prop.type === 'embedded' && prop.linkedClass) {
+        filterEmbeddedValue(prop, value);
+      }
+
+      draft.content[prop.name] = value;
+    });
+  }
+  if (action.type === ACTION_TYPE.SET_FORM_DIRTY || action.type === ACTION_TYPE.UPDATE_FORM) {
+    draft.isDirty = true;
+  }
+
+  if (action.type === ACTION_TYPE.UPDATE_FORM) {
+    const { model } = draft;
+    // fully update record, then validate
+    Object.entries(action.payload as PayloadMap[ACTION_TYPE.UPDATE_FORM]).forEach(([propPath, propValue]) => {
+      const [propName, subPropName] = propPath.split('.');
+      const propModel = model.properties[propName];
+
+      if (propModel) {
+        propsToValidate.push(propName);
+      }
+
+      if (subPropName) {
+        // embedded
+        draft.content[propName] ??= { '@class': propModel?.linkedClass };
+        draft.content[propName][subPropName] = propValue;
+      } else {
+        draft.content[propName] = propValue;
+      }
+    });
+
+    propsToValidate.forEach((propName) => {
+      // re-build the display name template for the statement
+      // TODO: add flag to property to auto regenerating defaults
+      if (
+        ['subject', 'conditions', 'relevance'].includes(propName)
+        && model.properties.displayNameTemplate
+        && model.properties.displayNameTemplate.generateDefault
+        && draft.content.displayNameTemplate
+      ) {
+        const { displayNameTemplate: _, ...rest } = draft.content;
+        draft.content.displayNameTemplate = model.properties.displayNameTemplate.generateDefault(rest) as string;
+      }
+
+      const propModel = model.properties[propName];
+
+      if (propModel?.type === 'embedded' && propModel.linkedClass) {
+        filterEmbeddedValue(propModel, draft.content[propName]);
+      }
+    });
+  }
+
+  propsToValidate.forEach((propName) => {
+    const result = schema.validateValue(draft.model.properties[propName], draft.content[propName]);
+    draft.validation.properties ??= {};
+    draft.validation.properties[propName] ??= { valid: true };
+    const prev = draft.validation.properties[propName];
+    prev.valid = result.valid;
+    prev.message = result.message;
+    prev.items = result.items;
+    prev.properties = result.properties;
+  });
+
+  draft.validation.valid = Object.values(draft.validation.properties ?? {}).every((r) => r?.valid !== false);
 }
 
 /**
@@ -66,65 +180,26 @@ interface UseSchemaFormOptions {
  *
  * if not an embedded property or no linked class, returns the value as is.
  */
-function filterEmbeddedValue(prop: FormContextState['model']['properties'][string], value: unknown) {
-  if (!value || !prop.linkedClass || prop.type !== 'embedded' || typeof value !== 'object') return value;
+function filterEmbeddedValue(prop: FormContextState['model']['properties'][string], value: unknown): void {
+  if (!value || !prop.linkedClass || prop.type !== 'embedded' || typeof value !== 'object') return;
   if (Array.isArray(value)) {
-    return value.map((v) => filterEmbeddedValue(prop, v));
+    value.forEach((v) => filterEmbeddedValue(prop, v));
+    return;
   }
-  if (typeof value !== 'object') return value;
 
   let model = schema.get(prop.linkedClass);
 
-  if (value['@class'] && schema.inheritsFrom(value['@class'], prop.linkedClass)) {
+  if (value['@class'] && (value['@class'] === prop.linkedClass || schema.inheritsFrom(value['@class'], prop.linkedClass))) {
     model = schema.get(value['@class']);
   }
 
-  const filteredValue = { '@class': model.name };
-  Object.entries(value).forEach(([key, value]) => {
-    if (key !== '@class' && model.properties[key]) {
-      filteredValue[key] = value;
+  value['@class'] = model.name;
+
+  Object.keys(value).forEach((key) => {
+    if (key !== '@class' && !model.properties[key]) {
+      delete value[key];
     }
   });
-
-  return filteredValue;
-}
-
-function getInitialFormState(
-  model: FormContextState['model'],
-  initialContent: FormContextState['formContent'] | undefined,
-  variant: FORM_VARIANT | '',
-) {
-  const nextState: Pick<FormContextState, 'formContent' | 'formErrors' | 'formIsDirty'> = {
-    formContent: { ...initialContent ?? {} },
-    formErrors: {},
-    formIsDirty: variant === FORM_VARIANT.EDIT,
-  };
-
-  if (variant === FORM_VARIANT.VIEW) {
-    return nextState;
-  }
-
-  Object.values(model.properties).forEach((prop) => {
-    let value = initialContent?.[prop.name];
-
-    if ((value === undefined || (value === null && !prop.nullable)) && variant === FORM_VARIANT.NEW && !prop.readOnly && !prop.generated) {
-      if (prop.default !== undefined) {
-        value = prop.default;
-      } else if (prop.generateDefault) {
-        value = prop.generateDefault(initialContent ?? {});
-      } else if (!prop.nullable && prop.type === 'embedded' && prop.linkedClass) {
-        value = { '@class': prop.linkedClass };
-      }
-    } else if (value && prop.type === 'embedded' && prop.linkedClass) {
-      value = filterEmbeddedValue(prop, value);
-    }
-    const error = schema.validateValue(prop, value, { ignoreMandatory: false });
-
-    nextState.formContent[prop.name] = value;
-    nextState.formErrors[prop.name] = error as Error | null;
-  });
-
-  return nextState;
 }
 
 /**
@@ -137,88 +212,28 @@ function getInitialFormState(
  * @returns {FormContextState} the form context values
  */
 const useSchemaForm = (
-  model: FormContextState['model'],
+  initialModel: FormContextState['model'],
   initialValue: GeneralRecordType | undefined,
-  { variant: formVariant = '', additionalValidationFn = null }: UseSchemaFormOptions = {},
+  { variant = FORM_VARIANT.VIEW, additionalValidationFn }: UseSchemaFormOptions = {},
 ): FormContextState => {
-  const [{ formContent, formErrors, formIsDirty }, setFormState] = useState<Pick<FormContextState, 'formContent' | 'formErrors' | 'formIsDirty'>>(getInitialFormState(model, initialValue, formVariant));
+  const [state, dispatch] = useReducer(produce(reducer), produce(reducer)({
+    model: initialModel,
+    content: initialValue ?? {},
+    variant,
+    isDirty: false,
+    validation: { valid: true, properties: {} },
+  }, { type: ACTION_TYPE.RESET_FORM, payload: { model: initialModel, initialValue, variant } }));
 
   // reset form state if any of initial value/model/variant change
   useLayoutEffect(() => {
-    setFormState(getInitialFormState(model, initialValue, formVariant));
-  }, [formVariant, initialValue, model]);
+    dispatch({ type: ACTION_TYPE.RESET_FORM, payload: { model: initialModel, initialValue, variant } });
+  }, [variant, initialValue, initialModel]);
 
-  const additionalValidationError = useMemo(() => additionalValidationFn?.(formContent) ?? '', [formContent, additionalValidationFn]);
-
-  const formHasErrors = useMemo(() => {
-    const errorState = Object.values(formErrors).some((err) => err);
-    return errorState || !!additionalValidationError;
-  }, [formErrors, additionalValidationError]);
+  const additionalValidationError = useMemo(() => additionalValidationFn?.(state.content) ?? '', [state.content, additionalValidationFn]);
 
   const update = useCallback((updates: Record<string, unknown>) => {
-    setFormState((prev) => {
-      const modified: string[] = [];
-      const next = {
-        formIsDirty: true,
-        formContent: { ...prev.formContent },
-        formErrors: { ...prev.formErrors },
-      };
-      // fully update record, then validate
-      Object.entries(updates).forEach(([propPath, propValue]) => {
-        const [propName, subPropName] = propPath.split('.');
-        const propModel = model.properties[propName];
-
-        let nextValue = propValue;
-
-        if (subPropName) {
-          // embedded
-          nextValue = {
-            ...(prev.formContent[propName] ?? { '@class': propModel?.linkedClass }),
-            [subPropName]: propValue,
-          };
-        }
-
-        const prevValue = prev.formContent[propName];
-
-        if (propModel && !isEqual(prevValue, nextValue)) {
-          modified.push(propName);
-          next.formContent[propName] = nextValue;
-        }
-      });
-
-      if (!modified.length) {
-        return prev;
-      }
-
-      modified.forEach((propName) => {
-        // re-build the display name template for the statement
-        // TODO: add flag to property to auto regenerating defaults
-        if (
-          ['subject', 'conditions', 'relevance'].includes(propName)
-        && model.properties.displayNameTemplate
-        && model.properties.displayNameTemplate.generateDefault
-        && next.formContent.displayNameTemplate
-        ) {
-          const { displayNameTemplate: _, ...rest } = next.formContent;
-          next.formContent = {
-            ...next.formContent,
-            displayNameTemplate: model.properties.displayNameTemplate.generateDefault(rest) as string,
-          };
-        }
-
-        const propModel = model.properties[propName];
-
-        if (propModel?.type === 'embedded' && propModel.linkedClass) {
-          next.formContent[propName] = filterEmbeddedValue(propModel, next.formContent[propName]);
-        }
-
-        const error = schema.validateValue(propModel, next.formContent[propName], { ignoreMandatory: false });
-        next.formErrors[propName] = error as Error | null;
-      });
-
-      return next;
-    });
-  }, [model]);
+    dispatch({ type: ACTION_TYPE.UPDATE_FORM, payload: updates });
+  }, []);
 
   // provide an update callback which includes the validation step
   const updateField = useCallback((propPath: string, propValue: unknown) => {
@@ -232,35 +247,34 @@ const useSchemaForm = (
     update({ [eventName]: eventValue });
   }, [update]);
 
-  const setFormIsDirty = useCallback(() => {
-    setFormState((prev) => ({
-      ...prev,
-      formIsDirty: true,
-    }));
+  const setDirty = useCallback(() => {
+    dispatch({ type: ACTION_TYPE.SET_FORM_DIRTY });
   }, []);
 
   return {
-    formContent,
-    formErrors,
-    formHasErrors,
-    formIsDirty,
-    formVariant,
-    additionalValidationError,
-    setFormIsDirty,
+    content: state.content,
+    validation: {
+      ...state.validation,
+      valid: state.validation.valid && !additionalValidationError,
+      message: additionalValidationError,
+    },
+    isDirty: state.isDirty,
+    variant,
+    setDirty,
     update,
     updateField,
     updateFieldEvent,
-    model,
+    model: state.model,
   };
 };
 
 export function useEmbeddedForm(propName: string, defaultLinkedClass: string | undefined): FormContextState {
   const form = useFormContext();
   const { updateField: updateParent, update: updateForm } = form;
-  const formContent = useMemo(() => form.formContent[propName] ?? {}, [form.formContent, propName]);
-  const formErrors = useMemo(() => (form.formErrors[propName] ?? {}) as unknown as Record<string, Error>, [form.formErrors, propName]);
+  const content = useMemo(() => form.content[propName] ?? {}, [form.content, propName]);
+  const validation = useMemo(() => form.validation.properties?.[propName] ?? { valid: true }, [form.validation.properties, propName]);
   const prop = form.model.properties[propName];
-  const propClass = schema.get(formContent['@class'] ?? defaultLinkedClass ?? prop.linkedClass);
+  const propClass = schema.get(content['@class'] ?? defaultLinkedClass ?? prop.linkedClass);
   const update = useCallback((updates: Record<string, unknown>) => {
     updateForm(Object.fromEntries(Object.entries(updates).map(([key, value]) => [`${propName}.${key}`, value])));
   }, [propName, updateForm]);
@@ -272,13 +286,11 @@ export function useEmbeddedForm(propName: string, defaultLinkedClass: string | u
   }, [updateParent, propName]);
 
   return {
-    formContent,
-    formErrors,
-    formHasErrors: form.formHasErrors,
-    formIsDirty: form.formIsDirty,
-    additionalValidationError: '',
-    formVariant: form.formVariant,
-    setFormIsDirty: form.setFormIsDirty,
+    content,
+    validation,
+    isDirty: form.isDirty,
+    variant: form.variant,
+    setDirty: form.setDirty,
     model: propClass,
     updateFieldEvent,
     updateField,

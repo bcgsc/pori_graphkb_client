@@ -44,24 +44,22 @@ const AddReviewDialog = ({
 
   // handle and store the form content
   const form = useSchemaForm(model, undefined, { variant: FORM_VARIANT.NEW });
-  const {
-    formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
-  } = form;
+  const { setDirty: setFormIsDirty } = form;
 
   /**
    * Handler for submission of a new record
    */
   const handleSubmit = useCallback(() => {
-    if (formHasErrors) {
+    if (!form.validation.valid) {
       // bring up the snackbar for errors
       setFormIsDirty(true);
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
     } else {
-      const content = { ...formContent, '@class': MODEL_NAME, createdBy: auth.user };
+      const content = { ...form.content, '@class': MODEL_NAME, createdBy: auth.user };
       onSubmit(content, updateAmalgamated);
     }
-  }, [auth, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
+  }, [auth, form.content, form.validation, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
   return (
     <Dialog
@@ -101,7 +99,7 @@ const AddReviewDialog = ({
         <div className="review-dialog__action-button">
           <ActionButton
             color="primary"
-            disabled={formHasErrors && formIsDirty}
+            disabled={!form.validation.valid && form.isDirty}
             onClick={handleSubmit}
             requireConfirm={false}
             variant="contained"

@@ -115,16 +115,14 @@ const VariantForm = ({
 
   const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
   const form = useSchemaForm(model, initialValue, { variant });
-  const {
-    formContent, formErrors, formIsDirty, update: updateForm,
-  } = form;
+  const { update: updateForm } = form;
 
   const otherValidation = useMemo(() => {
     if (variant === FORM_VARIANT.VIEW) {
       return null;
     }
-    const variantTypeName = (formContent as any)?.type?.displayName;
-    const coordinateTypeClass = (formContent as any)?.break1Start?.['@class'] ?? 'GenomicPosition';
+    const variantTypeName = (form.content as any)?.type?.displayName;
+    const coordinateTypeClass = (form.content as any)?.break1Start?.['@class'] ?? 'GenomicPosition';
 
     if (variantTypeName) {
       if (!allowedTypes.includes(variantTypeName)) {
@@ -136,28 +134,28 @@ const VariantForm = ({
       }
     }
     return null;
-  }, [variant, formContent]);
+  }, [variant, form.content]);
 
-  const formHasErrors = form.formHasErrors || Boolean(otherValidation);
+  const formHasErrors = !form.validation.valid || Boolean(otherValidation);
 
   const handleUpdateVariantType = useCallback((value: unknown) => {
     setVariantType((value as any)?.displayName ?? null);
     updateForm({ type: value });
   }, [updateForm]);
 
-  const coordinateType = formContent?.break1Start?.['@class'] || 'GenomicPosition';
+  const coordinateType = form.content?.break1Start?.['@class'] || 'GenomicPosition';
 
   const handleUpdateCoordinateType = useCallback((newCoordinateType: string) => {
     const updates: Record<string, unknown> = {};
 
     ['break1Start', 'break1End', 'break2Start', 'break2End'].forEach((prop) => {
-      if (formContent[prop]) {
+      if (form.content[prop]) {
         updates[`${prop}.@class`] = newCoordinateType;
       }
     });
 
     updateForm(updates);
-  }, [updateForm, formContent]);
+  }, [updateForm, form.content]);
 
   /**
    * Mutation for submitting (creating or updating) a variant record
@@ -224,27 +222,27 @@ const VariantForm = ({
   const handleSubmitAction = useCallback(() => {
     if (formHasErrors) {
       // bring up the snackbar for errors
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
     } else {
       // ok to submit
-      submitMutation.mutate(formContent);
+      submitMutation.mutate(form.content);
     }
-  }, [formHasErrors, formErrors, snackbar, submitMutation, formContent]);
+  }, [formHasErrors, form.validation, snackbar, submitMutation, form.content]);
 
   const handleDeleteAction = useCallback(() => {
-    deleteMutation.mutate(formContent);
-  }, [deleteMutation, formContent]);
+    deleteMutation.mutate(form.content);
+  }, [deleteMutation, form.content]);
 
   const actionInProgress = submitMutation.isPending || deleteMutation.isPending;
 
   let pageTitle = title;
 
-  if (variant === FORM_VARIANT.VIEW && formContent) {
-    if (formContent.displayName) {
-      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+  if (variant === FORM_VARIANT.VIEW && form.content) {
+    if (form.content.displayName) {
+      pageTitle = `${form.content.displayName} (${form.content['@rid']})`;
     } else {
-      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
+      pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
     }
   }
 
@@ -259,10 +257,10 @@ const VariantForm = ({
           <div className={`header__actions header__actions--${variant}`}>
             {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
               <RecordFormStateToggle
-                allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
+                allowEdit={auth.hasWriteAccess && !form.content.deletedAt}
                 message="Are you sure? You will lose your changes."
                 onClick={onToggleState}
-                requireConfirm={variant === FORM_VARIANT.EDIT && formIsDirty}
+                requireConfirm={variant === FORM_VARIANT.EDIT && form.isDirty}
                 value={variant}
               />
             )}
@@ -273,13 +271,13 @@ const VariantForm = ({
           spacing={2}
         >
           <RecordAutocomplete
-            error={Boolean((form.formErrors.type && form.formIsDirty) || otherValidation?.type)}
+            error={Boolean((!(form.validation.properties?.type?.valid ?? true) && form.isDirty) || otherValidation?.type)}
             getQueryBody={() => ({
               target: 'Vocabulary',
               orderBy: ['displayName'],
               filters: [{ operator: 'IN', displayName: allowedTypes }],
             })}
-            helperText={otherValidation?.type ?? form.formErrors.type?.message ?? form.model.properties.type.description}
+            helperText={otherValidation?.type ?? form.validation.properties?.type?.message ?? form.model.properties.type.description}
             isMulti={false}
             label="type"
             name="type"
@@ -287,7 +285,7 @@ const VariantForm = ({
             readOnly={variant === FORM_VARIANT.VIEW}
             required
             singleLoad
-            value={formContent.type ?? null}
+            value={form.content.type ?? null}
           />
           <DropDownSelect
             error={Boolean(otherValidation?.coordinateType)}
@@ -316,14 +314,14 @@ const VariantForm = ({
         </Stack>
         <FormLayout
           collapseExtra
-          disabled={actionInProgress || form.formVariant === FORM_VARIANT.VIEW}
+          disabled={actionInProgress || form.variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
           order={REMAINING_FIELD_ORDER}
         />
         <ErrorMessage error={submitMutation.error}>An error occurred while creating/editing record.</ErrorMessage>
         <ErrorMessage error={deleteMutation.error}>An error occurred while deleting record.</ErrorMessage>
         <div className="record-form__action-buttons">
-          {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+          {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
             ? (
               <ActionButton
                 color="error"
@@ -344,12 +342,12 @@ const VariantForm = ({
             ? (
               <ActionButton
                 color="primary"
-                disabled={actionInProgress || (formHasErrors && formIsDirty)}
+                disabled={actionInProgress || (formHasErrors && form.isDirty)}
                 onClick={handleSubmitAction}
                 requireConfirm={false}
                 variant="contained"
               >
-                {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+                {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
                   ? 'SUBMIT CHANGES'
                   : 'SUBMIT'}
               </ActionButton>

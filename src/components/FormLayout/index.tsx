@@ -37,15 +37,8 @@ const FormLayout = ({
   order,
   excludeFieldsNotInOrder = false,
 }: FormLayoutProps) => {
-  const {
-    formVariant,
-    model,
-  } = useFormContext();
+  const { model } = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
-
-  if (!formVariant) {
-    return null;
-  }
 
   const { extraFields, fields } = sortAndGroupFields(model.properties, {
     collapseExtra, order, excludeFieldsNotInOrder, exclude: exclusions,

@@ -1,7 +1,7 @@
 import { schema as SCHEMA_DEFN } from '@bcgsc-pori/graphkb-schema';
 import { describe, expect, test } from 'vitest';
 
-import testSchema from '../schema';
+import testSchema, { SchemaPropertyDefinition } from '../schema';
 
 describe('schema service', () => {
   describe('Retrieving classmodels and properties', () => {
@@ -156,4 +156,177 @@ describe('schema service', () => {
       expect(ridLabel).toEqual('22:0');
     });
   });
+});
+
+test.each(
+  [
+    [
+      {
+        type: 'string' as const,
+        mandatory: true,
+      },
+      undefined,
+      { valid: false, message: 'Required Value' },
+    ],
+    [
+      {
+        type: 'string' as const,
+        mandatory: true,
+      },
+      '',
+      { valid: false, message: 'Required Value' },
+    ],
+    [
+      {
+        type: 'string' as const,
+        mandatory: true,
+        default: 'default value',
+      },
+      undefined,
+      { valid: true },
+    ],
+    [
+      {
+        type: 'string' as const,
+        mandatory: true,
+        generated: true,
+      },
+      undefined,
+      { valid: true },
+    ],
+    [
+      {
+        type: 'string' as const,
+        mandatory: true,
+        generateDefault: () => 'generated value',
+      },
+      undefined,
+      { valid: true },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      'mock model',
+      {
+        valid: false,
+        message: 'Value is not an object.',
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      {},
+      {
+        valid: true,
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      {
+        '@class': 'Statement',
+      },
+      {
+        valid: false,
+        properties: { '@class': { message: 'Value "Statement" is invalid. Embedded record must be a type that inherits from type Position', valid: false } },
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      {
+        '@class': 'GenomicPosition',
+      },
+      {
+        valid: false,
+        properties: { pos: { message: 'Required Value', valid: false } },
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      null,
+      {
+        valid: false,
+        message: 'Cannot be empty/null',
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+        nullable: true,
+      },
+      null,
+      {
+        valid: true,
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      { '@class': 'GenomicPosition', pos: 10 },
+      {
+        valid: true,
+        properties: { pos: { valid: true } },
+      },
+    ],
+    [
+      {
+        type: 'embedded' as const,
+        linkedClass: 'Position',
+      },
+      { '@class': 'CytoBandPosition', pos: 10 },
+      {
+        valid: false,
+        properties: { arm: { valid: false, message: 'Required Value' }, majorBand: { valid: true }, minorBand: { valid: true } },
+      },
+    ],
+    [
+      {
+        type: 'embeddedset' as const,
+        linkedClass: 'Position',
+      },
+      [{ '@class': 'GenomicPosition', pos: 10 }, { '@class': 'GenomicPosition' }],
+      {
+        valid: false,
+        items: [
+          { valid: true, properties: { pos: { valid: true } } },
+          { valid: false, properties: { pos: { valid: false, message: 'Required Value' } } },
+        ],
+      },
+    ],
+    [
+      {
+        type: 'embeddedset' as const,
+      },
+      { hello: 'world' },
+      { valid: false, message: 'Value must be an array.' },
+    ],
+    [
+      {
+        type: 'embeddedset' as const,
+      },
+      ['hello', 'world'],
+      { valid: true },
+    ],
+  ],
+)('validates property %j with value %j as expected', (propModel: Partial<SchemaPropertyDefinition>, value: unknown, result) => {
+  const propName = 'thing';
+  const iterable = propModel.type?.endsWith('set') || propModel.type?.endsWith('list');
+  const errors = testSchema.validateValue({ ...propModel, iterable, name: propName }, value);
+
+  expect(errors).toEqual(result);
 });

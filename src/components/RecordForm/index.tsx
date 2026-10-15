@@ -26,10 +26,6 @@ import RelatedVariantsTable from './RelatedVariantsTable';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
-function getIsEdge(model: { isEdge?: boolean }, record: GeneralRecordType | undefined): record is EdgeType {
-  return Boolean(model && model.isEdge);
-}
-
 interface RecordFormProps {
   /** the title for this form */
   title: string;
@@ -60,9 +56,7 @@ const RecordForm = ({
   const model = schemaDefn.get(modelName);
 
   const form = useSchemaForm(model, initialValue, { variant });
-  const {
-    formIsDirty, setFormIsDirty, formContent, formErrors, formHasErrors,
-  } = form;
+  const { setDirty: setFormIsDirty } = form;
 
   const { mutate: addNewAction, isPending: isAdding, error: errorAdding } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -80,22 +74,22 @@ const RecordForm = ({
    * Handler for submission of a new record
    */
   const handleNewAction = useCallback(async () => {
-    if (formHasErrors) {
+    if (!form.validation.valid) {
       // bring up the snackbar for errors
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
     } else {
       // ok to POST
-      const content = { ...formContent };
+      const content = { ...form.content };
 
-      if (!formContent['@class']) {
+      if (!form.content['@class']) {
         content['@class'] = modelName;
       }
 
       addNewAction(content);
     }
-  }, [addNewAction, formContent, formErrors, formHasErrors, modelName, setFormIsDirty, snackbar]);
+  }, [addNewAction, form.content, form.validation, modelName, setFormIsDirty, snackbar]);
 
   const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -112,13 +106,13 @@ const RecordForm = ({
    * Handler for deleting an existing record
    */
   const handleDeleteAction = useCallback(async () => {
-    const content = { ...formContent };
+    const content = { ...form.content };
 
-    if (!formContent['@class']) {
+    if (!form.content['@class']) {
       content['@class'] = modelName;
     }
     deleteAction(content);
-  }, [deleteAction, formContent, modelName]);
+  }, [deleteAction, form.content, modelName]);
 
   const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
     mutationFn: async (content: GeneralRecordType) => {
@@ -136,38 +130,36 @@ const RecordForm = ({
    * Handler for edits to an existing record
    */
   const handleEditAction = useCallback(async () => {
-    const content = { ...formContent };
+    const content = { ...form.content };
 
-    if (!formContent['@class']) {
+    if (!form.content['@class']) {
       content['@class'] = modelName;
     }
 
-    if (formHasErrors) {
+    if (!form.validation.valid) {
       // bring up the snackbar for errors
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
       setFormIsDirty(true);
-    } else if (!formIsDirty) {
+    } else if (!form.isDirty) {
       snackbar.enqueueSnackbar('no changes to submit');
-      onSubmit?.(formContent);
+      onSubmit?.(form.content);
     } else {
       updateAction(content);
     }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, modelName, onSubmit, setFormIsDirty, snackbar, updateAction]);
+  }, [form.content, form.validation, form.isDirty, modelName, onSubmit, setFormIsDirty, snackbar, updateAction]);
 
   const actionInProgress = isAdding || isDeleting || isUpdating;
 
   let pageTitle = title;
 
-  if (variant === FORM_VARIANT.VIEW && formContent) {
-    if (formContent.displayName) {
-      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+  if (variant === FORM_VARIANT.VIEW && form.content) {
+    if (form.content.displayName) {
+      pageTitle = `${form.content.displayName} (${form.content['@rid']})`;
     } else {
-      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
+      pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
     }
   }
-
-  const isEdge = getIsEdge(model, formContent);
 
   return (
     <Paper className="record-form__wrapper" elevation={4}>
@@ -179,19 +171,19 @@ const RecordForm = ({
         <div className={`header__actions header__actions--${variant}`}>
           {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
-              allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
+              allowEdit={auth.hasWriteAccess && !form.content.deletedAt}
               message="Are you sure? You will lose your changes."
               onClick={onToggleState}
-              requireConfirm={variant === 'edit' && formIsDirty}
+              requireConfirm={variant === 'edit' && form.isDirty}
               value={variant}
             />
           )}
         </div>
       </div>
-      {isEdge && (
+      {form.model.isEdge && (
       <EdgeSentence
-        srcRecord={formContent.out}
-        tgtRecord={formContent.in}
+        srcRecord={(form.content as EdgeType).out}
+        tgtRecord={(form.content as EdgeType).in}
         type={model.name}
       />
       )}
@@ -204,10 +196,10 @@ const RecordForm = ({
       </FormContext.Provider>
       {modelName && variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (
         <>
-          <EdgeTable recordId={String(form.formContent['@rid'])} />
-          <RelatedStatementsTable recordId={String(form.formContent['@rid'])} />
+          <EdgeTable recordId={String(form.content['@rid'])} />
+          <RelatedStatementsTable recordId={String(form.content['@rid'])} />
           {schemaDefn.ancestors(modelName).includes('Ontology') && (
-            <RelatedVariantsTable recordId={String(form.formContent['@rid'])} />
+            <RelatedVariantsTable recordId={String(form.content['@rid'])} />
           )}
         </>
       )}
@@ -215,7 +207,7 @@ const RecordForm = ({
       <ErrorMessage error={errorDeleting}>An error occurred while deleting record.</ErrorMessage>
       <ErrorMessage error={errorUpdating}>An error occurred while updating record.</ErrorMessage>
       <div className="record-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+        {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
           ? (
             <ActionButton
               color="error"
@@ -236,14 +228,14 @@ const RecordForm = ({
           ? (
             <ActionButton
               color="primary"
-              disabled={actionInProgress || (formHasErrors && formIsDirty)}
+              disabled={actionInProgress || (!form.validation.valid && form.isDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
                 : handleNewAction}
               requireConfirm={false}
               variant="contained"
             >
-              {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+              {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
                 ? 'SUBMIT CHANGES'
                 : 'SUBMIT'}
             </ActionButton>

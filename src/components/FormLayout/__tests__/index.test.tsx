@@ -16,16 +16,14 @@ import schema from '@/services/schema';
 import FormLayout from '..';
 
 const CONTEXT_DEFAULTS: FormContextState = {
-  formContent: {},
-  formVariant: FORM_VARIANT.VIEW,
+  content: {},
+  variant: FORM_VARIANT.VIEW,
   update: () => {},
   updateField: () => {},
   updateFieldEvent: () => {},
-  setFormIsDirty: () => {},
-  formHasErrors: false,
-  formIsDirty: false,
-  formErrors: {},
-  additionalValidationError: '',
+  setDirty: () => {},
+  isDirty: false,
+  validation: { valid: true, properties: {} },
   model: schema.get('User'),
 };
 
@@ -37,7 +35,7 @@ describe('FormLayout', () => {
   test('new variant hides generated fields', { timeout: 10000 }, async () => {
     const { findByText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formVariant: FORM_VARIANT.NEW, updateFieldEvent: vi.fn() }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, variant: FORM_VARIANT.NEW, updateFieldEvent: vi.fn() }}>
           <FormLayout />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -50,7 +48,7 @@ describe('FormLayout', () => {
   test('view variant shows generated fields', async () => {
     const { findByText, findByLabelText, findByTestId } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { '@rid': '#3:4', name: 'name' }, updateFieldEvent: vi.fn() }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, content: { '@rid': '#3:4', name: 'name' }, updateFieldEvent: vi.fn() }}>
           <FormLayout />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -65,7 +63,7 @@ describe('FormLayout', () => {
   test('exclusion works', async () => {
     const { findByText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { '@rid': '#3:4', name: 'user' }, updateFieldEvent: vi.fn() }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, content: { '@rid': '#3:4', name: 'user' }, updateFieldEvent: vi.fn() }}>
           <FormLayout
             exclusions={['@rid']}
           />

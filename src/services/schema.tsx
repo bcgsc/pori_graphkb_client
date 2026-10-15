@@ -440,8 +440,12 @@ function prepareModels() {
       };
     }
 
-    if (preparedModel.name === 'PositionalVariant' && preparedModel.properties.hgvsType) {
-      preparedModel.properties.hgvsType.deprecated = true;
+    if (schemaDefn.inheritsFrom(preparedModel.name, 'Variant')) {
+      ['hgvsType', 'zygosity', 'germline'].forEach((propName) => {
+        if (preparedModel.properties[propName]) {
+          preparedModel.properties[propName].deprecated = true;
+        }
+      });
     }
 
     prepared[model.name] = preparedModel;

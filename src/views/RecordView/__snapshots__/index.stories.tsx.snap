@@ -1081,186 +1081,6 @@ exports[`EditCategoryVariant snapshot 1`] = `
               </p>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--boolean"
-          >
-            <div
-              class="form-templater-radio-wrapper"
-            >
-              <fieldset
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
-                >
-                  germline
-                </label>
-                <div
-                  class="MuiFormGroup-root MuiRadioGroup-root css-XXXX-MuiFormGroup-root"
-                  role="radiogroup"
-                >
-                  <label
-                    class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
-                  >
-                    <span
-                      class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
-                    >
-                      <input
-                        class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                        name="germline"
-                        type="radio"
-                        value="true"
-                      />
-                      <span
-                        class="css-XXXX-MuiRadioButtonIcon-root"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonUncheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonCheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                    <span
-                      class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-                    >
-                      Yes
-                    </span>
-                  </label>
-                  <label
-                    class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
-                  >
-                    <span
-                      class="Mui-checked MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
-                    >
-                      <input
-                        checked=""
-                        class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                        name="germline"
-                        type="radio"
-                        value="false"
-                      />
-                      <span
-                        class="css-XXXX-MuiRadioButtonIcon-root"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonUncheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonCheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                    <span
-                      class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-                    >
-                      No
-                    </span>
-                  </label>
-                </div>
-                <p
-                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                >
-                  Flag to indicate if the variant is germline (vs somatic)
-                </p>
-              </fieldset>
-            </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-          >
-            <div
-              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
-            >
-              <label
-                class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                data-shrink="false"
-                for="_r_XXXX_"
-                id="_r_XXXX_-label"
-              >
-                zygosity
-              </label>
-              <div
-                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
-              >
-                <div
-                  aria-describedby="_r_XXXX_-helper-text"
-                  aria-expanded="false"
-                  aria-haspopup="listbox"
-                  aria-labelledby="_r_XXXX_-label _r_XXXX_"
-                  class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                  id="_r_XXXX_"
-                  role="combobox"
-                  tabindex="0"
-                >
-                  <span
-                    aria-hidden="true"
-                    class="notranslate"
-                  >
-                    ​
-                  </span>
-                </div>
-                <input
-                  aria-hidden="true"
-                  aria-invalid="false"
-                  class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                  name="zygosity"
-                  tabindex="-1"
-                  value=""
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
-                  data-testid="ArrowDropDownIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="m7 10 5 5 5-5z"
-                  />
-                </svg>
-              </div>
-              <p
-                class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                id="_r_XXXX_-helper-text"
-              >
-                ex. heterozygous
-              </p>
-            </div>
-          </li>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
@@ -5521,126 +5341,6 @@ exports[`ViewCategoryVariant snapshot 1`] = `
               </p>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--boolean"
-          >
-            <div
-              class="form-templater-radio-wrapper"
-            >
-              <fieldset
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
-                >
-                  germline
-                </label>
-                <div
-                  class="MuiFormGroup-root MuiRadioGroup-root css-XXXX-MuiFormGroup-root"
-                  role="radiogroup"
-                >
-                  <label
-                    class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
-                  >
-                    <span
-                      class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
-                    >
-                      <input
-                        class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                        name="germline"
-                        readonly=""
-                        type="radio"
-                        value="true"
-                      />
-                      <span
-                        class="css-XXXX-MuiRadioButtonIcon-root"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonUncheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonCheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                    <span
-                      class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-                    >
-                      Yes
-                    </span>
-                  </label>
-                  <label
-                    class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
-                  >
-                    <span
-                      class="Mui-checked MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
-                    >
-                      <input
-                        checked=""
-                        class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                        name="germline"
-                        readonly=""
-                        type="radio"
-                        value="false"
-                      />
-                      <span
-                        class="css-XXXX-MuiRadioButtonIcon-root"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonUncheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonCheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                    <span
-                      class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-                    >
-                      No
-                    </span>
-                  </label>
-                </div>
-                <p
-                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                >
-                  Flag to indicate if the variant is germline (vs somatic)
-                </p>
-              </fieldset>
-            </div>
-          </li>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
@@ -5982,126 +5682,6 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
               </p>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--boolean"
-          >
-            <div
-              class="form-templater-radio-wrapper"
-            >
-              <fieldset
-                class="MuiFormControl-root css-XXXX-MuiFormControl-root"
-              >
-                <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
-                >
-                  germline
-                </label>
-                <div
-                  class="MuiFormGroup-root MuiRadioGroup-root css-XXXX-MuiFormGroup-root"
-                  role="radiogroup"
-                >
-                  <label
-                    class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
-                  >
-                    <span
-                      class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
-                    >
-                      <input
-                        class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                        name="germline"
-                        readonly=""
-                        type="radio"
-                        value="true"
-                      />
-                      <span
-                        class="css-XXXX-MuiRadioButtonIcon-root"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonUncheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonCheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                    <span
-                      class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-                    >
-                      Yes
-                    </span>
-                  </label>
-                  <label
-                    class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
-                  >
-                    <span
-                      class="Mui-checked MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
-                    >
-                      <input
-                        checked=""
-                        class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                        name="germline"
-                        readonly=""
-                        type="radio"
-                        value="false"
-                      />
-                      <span
-                        class="css-XXXX-MuiRadioButtonIcon-root"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonUncheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
-                          data-testid="RadioButtonCheckedIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                    <span
-                      class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-                    >
-                      No
-                    </span>
-                  </label>
-                </div>
-                <p
-                  class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                >
-                  Flag to indicate if the variant is germline (vs somatic)
-                </p>
-              </fieldset>
-            </div>
-          </li>
         </ul>
         <li
           class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
@@ -6416,6 +5996,126 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
                     </div>
                   </li>
                 </ul>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--boolean"
+                >
+                  <div
+                    class="form-templater-radio-wrapper"
+                  >
+                    <fieldset
+                      class="MuiFormControl-root css-XXXX-MuiFormControl-root"
+                    >
+                      <label
+                        class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+                      >
+                        germline
+                      </label>
+                      <div
+                        class="MuiFormGroup-root MuiRadioGroup-root css-XXXX-MuiFormGroup-root"
+                        role="radiogroup"
+                      >
+                        <label
+                          class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+                        >
+                          <span
+                            class="MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+                          >
+                            <input
+                              class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                              name="germline"
+                              readonly=""
+                              type="radio"
+                              value="true"
+                            />
+                            <span
+                              class="css-XXXX-MuiRadioButtonIcon-root"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+                                data-testid="RadioButtonUncheckedIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                                />
+                              </svg>
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+                                data-testid="RadioButtonCheckedIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                          <span
+                            class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            Yes
+                          </span>
+                        </label>
+                        <label
+                          class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+                        >
+                          <span
+                            class="Mui-checked MuiButtonBase-root MuiRadio-colorPrimary MuiRadio-root PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root"
+                          >
+                            <input
+                              checked=""
+                              class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                              name="germline"
+                              readonly=""
+                              type="radio"
+                              value="false"
+                            />
+                            <span
+                              class="css-XXXX-MuiRadioButtonIcon-root"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+                                data-testid="RadioButtonUncheckedIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                                />
+                              </svg>
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiRadioButtonIcon-root"
+                                data-testid="RadioButtonCheckedIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                          <span
+                            class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            No
+                          </span>
+                        </label>
+                      </div>
+                      <p
+                        class="MuiFormHelperText-contained MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      >
+                        Flag to indicate if the variant is germline (vs somatic)
+                      </p>
+                    </fieldset>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

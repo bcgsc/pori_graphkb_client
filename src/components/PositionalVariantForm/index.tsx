@@ -1,13 +1,11 @@
 import {
   CircularProgress, Paper, Stack, Typography,
 } from '@mui/material';
-import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
   useMemo,
   useState,
 } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
@@ -15,8 +13,7 @@ import DropDownSelect from '@/components/DropDownSelect';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { cleanPayload, FORM_VARIANT } from '@/components/util';
-import api from '@/services/api';
+import { FORM_VARIANT } from '@/components/util';
 import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
@@ -88,13 +85,10 @@ const VariantForm = ({
     break1Start: valueProp?.break1Start ?? { '@class': 'GenomicPosition' },
   }), [valueProp]);
 
-  const snackbar = useSnackbar();
-
   const [variantType, setVariantType] = useState((value?.type as any)?.displayName ?? 'substitution');
 
   const isSubstitution = ['substitution', 'missense mutation', 'nonsense mutation'].includes(variantType);
   const isFusion = ['fusion'].includes(variantType);
-  const queryClient = useQueryClient();
 
   const model = useMemo(() => ({
     name: PositionalVariant.name,
@@ -114,7 +108,7 @@ const VariantForm = ({
   }), [isSubstitution, isFusion]);
 
   const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
-  const form = useSchemaForm(model, initialValue, { variant });
+  const form = useSchemaForm(model, initialValue, { variant, onActionSuccess: onSubmit });
   const { update: updateForm } = form;
 
   const otherValidation = useMemo(() => {
@@ -156,85 +150,6 @@ const VariantForm = ({
 
     updateForm(updates);
   }, [updateForm, form.content]);
-
-  /**
-   * Mutation for submitting (creating or updating) a variant record
-   */
-  const submitMutation = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const payload = cleanPayload(content);
-
-      /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
-      Property has the same value as refSeq and should be hidden from users to avoid confusion. */
-      if (payload?.break1Start && payload?.break1Start['@class'] === 'ProteinPosition') {
-        const refAA = payload.refSeq ? payload.refSeq : '';
-        payload.break1Start = { ...payload.break1Start, refAA };
-      }
-
-      const { routeName } = schema.get(payload);
-
-      if (variant === FORM_VARIANT.NEW) {
-        return api.post(routeName, payload);
-      }
-      const { displayName: _, ...rest } = payload;
-      return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, rest);
-    },
-    onSuccess: (result) => {
-      const actionType = variant === FORM_VARIANT.NEW ? 'created' : 'edited';
-
-      if (result['@rid']) {
-        const { routeName } = schema.get(result);
-        const cleanRid = result['@rid'].replace(/^#/, '');
-
-        queryClient.invalidateQueries({
-          predicate: (query) => {
-            const queryString = String(query.queryKey[0]);
-            return queryString.includes(routeName) && queryString.includes(cleanRid);
-          },
-        });
-
-        queryClient.refetchQueries({
-          predicate: (query) => {
-            const queryString = String(query.queryKey[0]);
-            return queryString.includes(routeName) && queryString.includes(cleanRid);
-          },
-        });
-      }
-
-      snackbar.enqueueSnackbar(`Sucessfully ${actionType} the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit?.(result);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const payload = cleanPayload(content);
-      const { routeName } = schema.get(payload);
-      return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
-    },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries();
-      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit?.();
-    },
-  });
-
-  const handleSubmitAction = useCallback(() => {
-    if (formHasErrors) {
-      // bring up the snackbar for errors
-      console.error(form.validation);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
-    } else {
-      // ok to submit
-      submitMutation.mutate(form.content);
-    }
-  }, [formHasErrors, form.validation, snackbar, submitMutation, form.content]);
-
-  const handleDeleteAction = useCallback(() => {
-    deleteMutation.mutate(form.content);
-  }, [deleteMutation, form.content]);
-
-  const actionInProgress = submitMutation.isPending || deleteMutation.isPending;
 
   let pageTitle = title;
 
@@ -314,20 +229,19 @@ const VariantForm = ({
         </Stack>
         <FormLayout
           collapseExtra
-          disabled={actionInProgress || form.variant === FORM_VARIANT.VIEW}
+          disabled={form.action.inProgress || form.variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
           order={REMAINING_FIELD_ORDER}
         />
-        <ErrorMessage error={submitMutation.error}>An error occurred while creating/editing record.</ErrorMessage>
-        <ErrorMessage error={deleteMutation.error}>An error occurred while deleting record.</ErrorMessage>
+        <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>
         <div className="record-form__action-buttons">
           {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
             ? (
               <ActionButton
                 color="error"
-                disabled={actionInProgress}
+                disabled={form.action.inProgress}
                 message="Are you sure you want to delete this record?"
-                onClick={handleDeleteAction}
+                onClick={form.action.delete}
                 variant="outlined"
               >
                 DELETE RECORD
@@ -335,15 +249,15 @@ const VariantForm = ({
             )
           // for spacing issues only
             : (<div />)}
-          {actionInProgress && (
+          {form.action.inProgress && (
           <CircularProgress size={50} />
           )}
           {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT)
             ? (
               <ActionButton
                 color="primary"
-                disabled={actionInProgress || (formHasErrors && form.isDirty)}
-                onClick={handleSubmitAction}
+                disabled={form.action.inProgress || (formHasErrors && form.isDirty)}
+                onClick={form.action.submit}
                 requireConfirm={false}
                 variant="contained"
               >

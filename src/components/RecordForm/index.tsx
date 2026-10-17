@@ -4,17 +4,14 @@ import {
   CircularProgress,
   Paper, Typography,
 } from '@mui/material';
-import { useSnackbar } from 'notistack';
-import React, { useCallback } from 'react';
-import { useMutation } from 'react-query';
+import React from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { EdgeType, GeneralRecordType } from '@/components/types';
-import { cleanPayload, FORM_VARIANT } from '@/components/util';
-import api from '@/services/api';
+import { FORM_VARIANT } from '@/components/util';
 import { ErrorMessage } from '@/services/errors';
 import schemaDefn from '@/services/schema';
 
@@ -50,106 +47,11 @@ const RecordForm = ({
   onSubmit,
   variant = FORM_VARIANT.VIEW,
 }: RecordFormProps) => {
-  const snackbar = useSnackbar();
   const auth = useAuth();
 
   const model = schemaDefn.get(modelName);
 
-  const form = useSchemaForm(model, initialValue, { variant });
-  const { setDirty: setFormIsDirty } = form;
-
-  const { mutate: addNewAction, isPending: isAdding, error: errorAdding } = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
-      return api.post(routeName, payload);
-    },
-    onSuccess: (result) => {
-      snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit?.(result);
-    },
-  });
-
-  /**
-   * Handler for submission of a new record
-   */
-  const handleNewAction = useCallback(async () => {
-    if (!form.validation.valid) {
-      // bring up the snackbar for errors
-      console.error(form.validation);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
-      setFormIsDirty(true);
-    } else {
-      // ok to POST
-      const content = { ...form.content };
-
-      if (!form.content['@class']) {
-        content['@class'] = modelName;
-      }
-
-      addNewAction(content);
-    }
-  }, [addNewAction, form.content, form.validation, modelName, setFormIsDirty, snackbar]);
-
-  const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const { routeName } = schemaDefn.get(content);
-      return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
-    },
-    onSuccess: (_, content) => {
-      snackbar.enqueueSnackbar(`Successfully deleted the record ${content['@rid']}`, { variant: 'success' });
-      onSubmit?.();
-    },
-  });
-
-  /**
-   * Handler for deleting an existing record
-   */
-  const handleDeleteAction = useCallback(async () => {
-    const content = { ...form.content };
-
-    if (!form.content['@class']) {
-      content['@class'] = modelName;
-    }
-    deleteAction(content);
-  }, [deleteAction, form.content, modelName]);
-
-  const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
-      return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, payload);
-    },
-    onSuccess: (result) => {
-      snackbar.enqueueSnackbar(`Successfully edited the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit?.(result);
-    },
-  });
-
-  /**
-   * Handler for edits to an existing record
-   */
-  const handleEditAction = useCallback(async () => {
-    const content = { ...form.content };
-
-    if (!form.content['@class']) {
-      content['@class'] = modelName;
-    }
-
-    if (!form.validation.valid) {
-      // bring up the snackbar for errors
-      console.error(form.validation);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
-      setFormIsDirty(true);
-    } else if (!form.isDirty) {
-      snackbar.enqueueSnackbar('no changes to submit');
-      onSubmit?.(form.content);
-    } else {
-      updateAction(content);
-    }
-  }, [form.content, form.validation, form.isDirty, modelName, onSubmit, setFormIsDirty, snackbar, updateAction]);
-
-  const actionInProgress = isAdding || isDeleting || isUpdating;
+  const form = useSchemaForm(model, initialValue, { variant, onActionSuccess: onSubmit });
 
   let pageTitle = title;
 
@@ -190,7 +92,7 @@ const RecordForm = ({
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          disabled={actionInProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && model.isEdge)}
+          disabled={form.action.inProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && model.isEdge)}
           exclusions={FIELD_EXCLUSIONS}
         />
       </FormContext.Provider>
@@ -203,17 +105,15 @@ const RecordForm = ({
           )}
         </>
       )}
-      <ErrorMessage error={errorAdding}>An error occurred while creating record.</ErrorMessage>
-      <ErrorMessage error={errorDeleting}>An error occurred while deleting record.</ErrorMessage>
-      <ErrorMessage error={errorUpdating}>An error occurred while updating record.</ErrorMessage>
+      <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>
       <div className="record-form__action-buttons">
         {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
           ? (
             <ActionButton
               color="error"
-              disabled={actionInProgress}
+              disabled={form.action.inProgress}
               message="Are you sure you want to delete this record?"
-              onClick={handleDeleteAction}
+              onClick={form.action.delete}
               variant="outlined"
             >
               DELETE RECORD
@@ -221,17 +121,15 @@ const RecordForm = ({
           )
           // for spacing issues only
           : (<div />)}
-        {actionInProgress && (
-        <CircularProgress size={50} />
+        {form.action.inProgress && (
+          <CircularProgress size={50} />
         )}
         {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !model.isEdge)
           ? (
             <ActionButton
               color="primary"
-              disabled={actionInProgress || (!form.validation.valid && form.isDirty)}
-              onClick={variant === FORM_VARIANT.EDIT
-                ? handleEditAction
-                : handleNewAction}
+              disabled={form.action.inProgress || (!form.validation.valid && form.isDirty)}
+              onClick={form.action.submit}
               requireConfirm={false}
               variant="contained"
             >

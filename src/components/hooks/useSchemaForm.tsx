@@ -2,6 +2,7 @@
  * Basic formContent and error management states
  */
 import { produce, setAutoFreeze } from 'immer';
+import { useSnackbar } from 'notistack';
 import React, {
   useCallback,
   useContext,
@@ -9,11 +10,14 @@ import React, {
   useMemo,
   useReducer,
 } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 
+import api from '@/services/api';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
+import { useAuth } from '../Auth';
 import { GeneralRecordType } from '../types';
-import { FORM_VARIANT } from '../util';
+import { cleanPayload, FORM_VARIANT } from '../util';
 
 setAutoFreeze(false);
 
@@ -61,6 +65,7 @@ interface UseSchemaFormOptions {
   variant?: FORM_VARIANT;
   /** a function which should return an error message if failed and empty string if passed. Accepts the formContent as input */
   additionalValidationFn?: ((content: unknown) => string) | null;
+  onActionSuccess?: (result?: GeneralRecordType) => void;
 }
 
 enum ACTION_TYPE {
@@ -202,6 +207,17 @@ function filterEmbeddedValue(prop: FormContextState['model']['properties'][strin
   });
 }
 
+interface UseSchemaFormReturnType extends FormContextState {
+  action: {
+    error: Error | null;
+    inProgress: boolean,
+    errorMessage: string | undefined;
+    actionType: string | undefined;
+    submit: () => void;
+    delete: () => void;
+  }
+}
+
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
@@ -209,13 +225,15 @@ function filterEmbeddedValue(prop: FormContextState['model']['properties'][strin
  * @param initialValue the start value of the form content
  * @param props extra options
  *
- * @returns {FormContextState} the form context values
+ * @returns {UseSchemaFormReturnType} the form context values
  */
 const useSchemaForm = (
   initialModel: FormContextState['model'],
   initialValue: GeneralRecordType | undefined,
-  { variant = FORM_VARIANT.VIEW, additionalValidationFn }: UseSchemaFormOptions = {},
-): FormContextState => {
+  { variant = FORM_VARIANT.VIEW, additionalValidationFn, onActionSuccess }: UseSchemaFormOptions = {},
+): UseSchemaFormReturnType => {
+  const queryClient = useQueryClient();
+  const snackbar = useSnackbar();
   const [state, dispatch] = useReducer(produce(reducer), produce(reducer)({
     model: initialModel,
     content: initialValue ?? {},
@@ -230,6 +248,8 @@ const useSchemaForm = (
   }, [variant, initialValue, initialModel]);
 
   const additionalValidationError = useMemo(() => additionalValidationFn?.(state.content) ?? '', [state.content, additionalValidationFn]);
+
+  const hasErrors = Boolean(additionalValidationError || !state.validation.valid);
 
   const update = useCallback((updates: Record<string, unknown>) => {
     dispatch({ type: ACTION_TYPE.UPDATE_FORM, payload: updates });
@@ -251,11 +271,98 @@ const useSchemaForm = (
     dispatch({ type: ACTION_TYPE.SET_FORM_DIRTY });
   }, []);
 
+  const auth = useAuth();
+
+  const mutation = useMutation({
+    mutationFn: async ({ actionType }: { actionType: 'create' | 'update' | 'delete' }) => {
+      const payload = cleanPayload(state.content);
+      payload['@class'] ??= state.model.name;
+
+      if (actionType === 'update' && payload.displayName) {
+        delete payload.displayName;
+      }
+
+      if (state.model.name === 'PositionalVariant') {
+        /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
+        Property has the same value as refSeq and should be hidden from users to avoid confusion. */
+        if (payload?.break1Start && payload?.break1Start['@class'] === 'ProteinPosition') {
+          const refAA = payload.refSeq ? payload.refSeq : '';
+          payload.break1Start = { ...payload.break1Start, refAA };
+        }
+      } else if (state.model.name === 'Statement' && actionType === 'create') {
+        payload.reviewStatus ??= 'initial';
+
+        if (!payload.reviews) {
+          payload.reviews = [{
+            status: 'initial',
+            comment: '',
+            createdBy: auth.user?.['@rid'],
+          }];
+        }
+      }
+
+      const { routeName } = schema.get(state.model.name);
+      const rid = payload['@rid']?.replace(/^#/, '');
+
+      if (actionType === 'create') {
+        return api.post(routeName, payload);
+      } if (actionType === 'update') {
+        return api.patch(`${routeName}/${rid}`, payload);
+      }
+      return api.delete(`${routeName}/${rid}`);
+    },
+    onSuccess: (result, { actionType }) => {
+      if (result['@rid']) {
+        const { routeName } = schema.get(result);
+        const cleanRid = result['@rid'].replace(/^#/, '');
+
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const queryString = String(query.queryKey[0]);
+            return queryString.includes(routeName) && queryString.includes(cleanRid);
+          },
+        });
+
+        if (actionType !== 'delete') {
+          queryClient.refetchQueries({
+            predicate: (query) => {
+              const queryString = String(query.queryKey[0]);
+              return queryString.includes(routeName) && queryString.includes(cleanRid);
+            },
+          });
+        }
+      }
+
+      snackbar.enqueueSnackbar(`Successfully ${actionType}d the record ${result['@rid']}`, { variant: 'success' });
+      onActionSuccess?.(result);
+    },
+  });
+  const { mutate } = mutation;
+
+  const handleSubmit = useCallback(() => {
+    if (hasErrors) {
+      // bring up the snackbar for errors
+      console.error(state.validation);
+      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted.', { variant: 'error' });
+      dispatch({ type: ACTION_TYPE.SET_FORM_DIRTY });
+    } else if (variant === FORM_VARIANT.EDIT && !state.isDirty) {
+      snackbar.enqueueSnackbar('no changes to submit');
+      onActionSuccess?.();
+    } else {
+      // ok to submit
+      mutate({ actionType: variant === FORM_VARIANT.NEW ? 'create' : 'update' });
+    }
+  }, [hasErrors, variant, state.isDirty, state.validation, snackbar, onActionSuccess, mutate]);
+
+  const handleDelete = useCallback(() => {
+    mutate({ actionType: 'delete' });
+  }, [mutate]);
+
   return {
     content: state.content,
     validation: {
       ...state.validation,
-      valid: state.validation.valid && !additionalValidationError,
+      valid: !hasErrors,
       message: additionalValidationError,
     },
     isDirty: state.isDirty,
@@ -265,6 +372,14 @@ const useSchemaForm = (
     updateField,
     updateFieldEvent,
     model: state.model,
+    action: {
+      error: mutation.error,
+      inProgress: mutation.isPending,
+      errorMessage: mutation.error ? `An error occurred while ${mutation?.variables?.actionType.slice(0, -1) ?? 'submitt'}ing record.` : undefined,
+      actionType: mutation.variables?.actionType ?? undefined,
+      submit: handleSubmit,
+      delete: handleDelete,
+    },
   };
 };
 

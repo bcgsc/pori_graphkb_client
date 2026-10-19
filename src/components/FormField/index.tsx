@@ -5,7 +5,9 @@ import {
   TextField,
 } from '@mui/material';
 import { omit } from 'lodash';
-import React from 'react';
+import React, {
+  useCallback, useEffect, useState, useTransition,
+} from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import { useFormContext } from '@/components/hooks/useSchemaForm';
@@ -44,6 +46,7 @@ const FormField = ({
   defaultLinkedClass,
 }: FormFieldProps) => {
   const form = useFormContext();
+  const { updateFieldEvent } = form;
 
   const model = form.model.properties[name] ?? {};
 
@@ -62,7 +65,19 @@ const FormField = ({
   const example = examples?.[0];
   const linkedClass = schemaDefn.get(linkedClassName, false);
 
-  const value = form.content[name];
+  const formValue = form.content[name];
+  const [value, setValue] = useState(formValue);
+  useEffect(() => setValue(formValue), [formValue]);
+  const [_, startTransition] = useTransition();
+
+  const handleChange = useCallback((params: Parameters<typeof updateFieldEvent>[0]) => {
+    const newValue = params.target.value;
+    setValue(newValue);
+    startTransition(() => {
+      updateFieldEvent(params);
+    });
+  }, [updateFieldEvent]);
+
   const generated = Boolean(model.generated && form.variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && form.variant !== FORM_VARIANT.SEARCH);
   const validation = form.validation.properties?.[name] ?? { valid: true };
@@ -91,7 +106,7 @@ const FormField = ({
     label: label || name,
     name,
     required: mandatory,
-    onChange: form.updateFieldEvent,
+    onChange: handleChange,
     value,
     readOnly: model.readOnly || generated || form.variant === FORM_VARIANT.VIEW,
   } satisfies SharedProps<[

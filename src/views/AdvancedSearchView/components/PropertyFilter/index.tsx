@@ -348,7 +348,6 @@ const PropertyFilter = ({
             value={form}
           >
             <FormField
-              className="property-filter__value"
               disabled={!property}
               name={property}
             />

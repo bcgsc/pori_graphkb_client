@@ -255,7 +255,7 @@ exports[`FreeTextWithError snapshot 1`] = `
 </div>
 `;
 
-exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
+exports[`FreeTextWithLabel snapshot 1`] = `
 <div>
   <li
     class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
@@ -295,7 +295,12 @@ exports[`FreeTextWithHelperTextAndLabel snapshot 1`] = `
         class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
         id="_r_XXXX_-helper-text"
       >
-        this field is useful
+        <span
+          aria-hidden="true"
+          class="notranslate"
+        >
+          ​
+        </span>
       </p>
     </div>
   </li>

@@ -78,9 +78,8 @@ export const FreeText = FreeTextEmpty.extend({
   },
 });
 
-export const FreeTextWithHelperTextAndLabel = FreeText.extend({
+export const FreeTextWithLabel = FreeText.extend({
   args: {
-    helperText: 'this field is useful',
     label: 'User Comments',
   },
 });

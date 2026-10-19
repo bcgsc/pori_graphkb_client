@@ -80,11 +80,6 @@ const AddReviewDialog = ({
               name="status"
             />
             <FormField
-              innerProps={{
-                multiline: true,
-                rows: 7,
-                variant: 'outlined',
-              }}
               name="comment"
             />
           </FormContext.Provider>

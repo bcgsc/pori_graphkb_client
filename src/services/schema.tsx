@@ -18,6 +18,12 @@ type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
   // missing from types
   generateDefault?: (record: Record<string, unknown>) => unknown;
   deprecated?: boolean;
+  // pass input rendered by to FormField
+  componentProps?: {
+    multiline?: boolean;
+    filterOptions?: string[];
+    defaultFilterClassName?: string;
+  }
 };
 
 type SchemaClassDefinition = ClassDefinition & { properties: Record<string, SchemaPropertyDefinition> };
@@ -480,6 +486,25 @@ function prepareModels() {
 
     prepared[model.name] = preparedModel;
   });
+  prepared.StatementReview.properties.comment.componentProps = {
+    multiline: true,
+  };
+  prepared.PositionalVariant.properties.reference1.label = 'reference';
+  prepared.PositionalVariant.properties.reference2.label = 'reference';
+  // special case (KBDEV-790) to improve user inputs
+  prepared.Statement.properties.conditions.componentProps = {
+    filterOptions: [
+      ...schemaDefn.descendants('Variant', { excludeAbstract: false, includeSelf: true }),
+      'Disease',
+      'CatalogueVariant',
+    ],
+    defaultFilterClassName: 'Variant',
+  };
+  prepared.PositionalVariant.properties.reference1.componentProps = {
+    filterOptions: ['Signature', 'Feature'],
+    defaultFilterClassName: 'Feature',
+  };
+  prepared.CategoryVariant.properties.reference1.componentProps = prepared.PositionalVariant.properties.reference1.componentProps;
   return prepared;
 }
 

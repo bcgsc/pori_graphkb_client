@@ -30,16 +30,8 @@ interface FormFieldProps {
   name: string;
   /** for embedded where the linkedClass is abstract, specifies the default linked class to use */
   defaultLinkedClass?: string;
-  className?: string;
   disabled?: boolean;
-  helperText?: string;
-  /** props to pass to the inner form field element */
-  innerProps?: {
-    multiline?: boolean;
-    rows?: number;
-    variant?: 'outlined'
-  },
-  /** the label to use for the form field (defaults to the property model name) */
+  /** the label to use for the form field (defaults to label specified on property model) */
   label?: string;
 }
 
@@ -48,12 +40,9 @@ interface FormFieldProps {
  * the component type to render. Factory wrapper which standardized form fields.
  */
 const FormField = ({
-  className = '',
   name,
   disabled = false,
   label: labelProp,
-  innerProps,
-  helperText: defaultHelperText,
   defaultLinkedClass,
 }: FormFieldProps) => {
   const form = useFormContext();
@@ -81,7 +70,7 @@ const FormField = ({
   const validation = form.validation.properties?.[name] ?? { valid: true };
   const errorFlag = Boolean(!validation.valid && !generated && form.isDirty);
 
-  let helperText = defaultHelperText;
+  let helperText: string | undefined;
 
   if (!helperText) {
     if (errorFlag) {
@@ -175,30 +164,16 @@ const FormField = ({
     const autoProps = {
       ...sharedProps,
       isMulti: type === 'linkset',
-      className,
     } satisfies SharedProps<[React.ComponentProps<typeof FilteredRecordAutocomplete>, React.ComponentProps<typeof RecordAutocomplete>]>;
 
     if (linkedClass && linkedClass.isAbstract && !disabled) {
       const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
         ...autoProps,
         linkedClassName: linkedClass.name,
+        filterOptions: model.componentProps?.filterOptions,
+        defaultFilterClassName: model.componentProps?.defaultFilterClassName,
       };
 
-      // special case (KBDEV-790) to improve user inputs
-      if (name === 'conditions' && linkedClass.name === 'Biomarker') {
-        filteredAutoProps.filterOptions = [
-          ...schemaDefn.descendants('Variant', { excludeAbstract: false, includeSelf: true }),
-          'Disease',
-          'CatalogueVariant',
-        ];
-        filteredAutoProps.defaultFilterClassName = 'Variant';
-      } if (name === 'reference1') {
-        filteredAutoProps.filterOptions = [
-          'Signature',
-          'Feature',
-        ];
-        filteredAutoProps.defaultFilterClassName = 'Feature';
-      }
       propComponent = (
         <FilteredRecordAutocomplete
           {...filteredAutoProps}
@@ -243,21 +218,21 @@ const FormField = ({
         {...omit(sharedProps, 'readOnly')}
         className="text-field"
         helperText={sharedProps.helperText || ' '}
-        multiline={innerProps?.multiline ?? true}
-        rows={innerProps?.rows}
+        multiline={model.componentProps?.multiline ?? true}
+        rows={model.componentProps?.multiline ? 7 : undefined}
         slotProps={{
           inputLabel: { shrink: !!sharedProps.value },
           htmlInput: { 'data-testid': name },
           input: { readOnly: sharedProps.readOnly, disableUnderline: sharedProps.readOnly },
         }}
         value={sharedProps.value || ''}
-        variant={innerProps?.variant}
+        variant={model.componentProps?.multiline ? 'outlined' : undefined}
       />
     );
   }
 
   return (
-    <FieldWrapper key={name} className={className} type={type}>
+    <FieldWrapper key={name} type={type}>
       {propComponent}
     </FieldWrapper>
   );

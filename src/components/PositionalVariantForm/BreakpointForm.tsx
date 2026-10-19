@@ -41,7 +41,6 @@ const BreakpointForm = ({
     <Stack spacing={2}>
       {label}
       <FormField
-        label="reference"
         name={`reference${breakpoint}`}
       />
       {!readOnly && (

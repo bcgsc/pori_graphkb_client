@@ -1,134 +1,11 @@
-import { omit } from 'lodash';
 import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
-
-import schema, { SchemaPropertyDefinition } from '@/services/schema';
-
-const CLASS_MODEL_PROP = '@class';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 enum FORM_VARIANT {
   EDIT = 'edit', VIEW = 'view', DELETE = 'delete', NEW = 'new', SEARCH = 'search',
 }
-
-const BELOW_FOLD = Object.keys(schema.get('V').properties);
-
-const FIELD_GROUPS = [
-  ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-  ['relevance', 'subject'],
-  ['refSeq', 'untemplatedSeq'],
-  ['reviewStatus', 'reviews'],
-  ['reference1', 'break1Repr', 'break1Start', 'break1End', 'reference2', 'break2Repr', 'break2Start', 'break2End'],
-  ['source', 'sourceId', 'sourceIdVersion'],
-  ['startYear', 'completionYear'],
-  ['city', 'country'],
-  ['out', 'in'],
-];
-
-/**
- * Given some model and options, sort the form fields and return the ordering. The 'fold'
- * described here is the collapsible block. Elements above the fold are in the top non-collapsed block
- * whereas fields below the fold are put into the collapsible section
- *
- * @returns {Object.<string,Array.<(string|Array.<string>)>>} the nested grouping structure
- *
- * @example
- * > sortAndGroupFields(schemaDefn.getProperties(model.name), {
- *    aboveFold: ['@class', '@rid', 'createdAt'],
- *    groups: [['createdBy', 'createdAt']]
- * })
- * {fields: ['@class', '@rid', ['createdBy', 'createdAt']], extraFields: []}
- */
-const sortAndGroupFields = (
-  /** the current class model to base the form off of */
-  propertiesWithClass: Record<string, SchemaPropertyDefinition>,
-  opt: {
-    /** flag to indicate if a collaspible section should be created */
-    collapseExtra?: boolean;
-    order?: string[][];
-    excludeFieldsNotInOrder?: boolean;
-    exclude?: string[];
-  } = {},
-) => {
-  const mainFields: (string | string[])[] = [];
-  const extraFields: (string | string[])[] = [];
-
-  if (!propertiesWithClass) {
-    return { extraFields, fields: mainFields };
-  }
-
-  opt.order?.forEach((group) => {
-    const filtered = group.filter((field) => Boolean(propertiesWithClass[field]) && !opt.exclude?.includes(field));
-
-    if (filtered.length === 1) {
-      mainFields.push(filtered[0]);
-    } else if (filtered.length) {
-      mainFields.push(filtered);
-    }
-  });
-
-  if (opt.excludeFieldsNotInOrder) {
-    return { fields: mainFields, extraFields };
-  }
-
-  const exclude = [...opt.exclude || [], ...mainFields.flat()];
-  const { [CLASS_MODEL_PROP]: _, ...properties } = omit(propertiesWithClass, exclude) as typeof propertiesWithClass;
-  type Group = {
-    fields: string[];
-    aboveFold: boolean;
-    required: boolean;
-  };
-  const fieldsMap: Record<string, Group> = {};
-
-  Object.values(properties).forEach((prop) => {
-    const required = Boolean(
-      prop.mandatory
-      && prop.default === undefined
-      && !prop.generated,
-    );
-    fieldsMap[prop.name] = {
-      fields: [prop.name],
-      required,
-      aboveFold: required || !(BELOW_FOLD.includes(prop.name) || prop.deprecated) || !opt.collapseExtra,
-    };
-  });
-
-  FIELD_GROUPS?.forEach((group) => {
-    const filteredGroup = group.filter((key) => properties[key]);
-    if (!filteredGroup.length) return;
-    const first = filteredGroup[0];
-    let { aboveFold, required } = fieldsMap[first];
-    filteredGroup.slice(1).forEach((key) => {
-      aboveFold ||= fieldsMap[key].aboveFold;
-      required ||= fieldsMap[key].required;
-
-      delete fieldsMap[key];
-    });
-
-    fieldsMap[first] = {
-      fields: filteredGroup,
-      required,
-      aboveFold,
-    };
-  });
-
-  Object.values(fieldsMap).sort((groupA, groupB) => {
-    if (groupA.required === groupB.required) {
-      return groupA.fields[0].localeCompare(groupB.fields[0]);
-    }
-    return groupA.required ? -1 : 1;
-  }).forEach((group) => {
-    const fields = group.fields.length === 1 ? group.fields[0] : group.fields;
-
-    if (group.aboveFold) {
-      mainFields.push(fields);
-    } else {
-      extraFields.push(fields);
-    }
-  });
-  return { fields: mainFields, extraFields };
-};
 
 const cleanLinkedRecords = (content) => {
   const newContent = {};
@@ -244,12 +121,10 @@ function tuple<A1, A2, ARest>(a1: A1, a2: A2, ...rest: ARest[]): [A1, A2, ...ARe
 }
 
 export {
-  CLASS_MODEL_PROP,
   cleanLinkedRecords,
   cleanPayload,
   FORM_VARIANT,
   getNodeRIDsFromURL,
   navigateToGraph,
-  sortAndGroupFields,
   tuple,
 };

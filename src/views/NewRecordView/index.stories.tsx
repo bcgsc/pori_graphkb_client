@@ -28,7 +28,13 @@ export const NewSourceAsAdmin = meta.story({
 
 export const NewOntology = meta.story({
   args: {
-    path: '/new/e',
+    path: '/new/ontology',
+  },
+});
+
+export const NewFeature = meta.story({
+  args: {
+    path: '/new/Feature',
   },
 });
 

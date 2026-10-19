@@ -204,6 +204,8 @@ export const ViewStatement = meta.story({
                 '@class': 'CuratedContent',
               },
             ],
+            source: { '@rid': '#111:777', name: 'civic' },
+            sourceId: '12345',
             subject: {
               displayName: 'pembrolizumab [DB09037]',
               '@rid': '#122:30774',

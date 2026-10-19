@@ -38,7 +38,7 @@ const reset = (model: Model, variant: FORM_VARIANT, initialValue?: Record<string
   { type: 'RESET_FORM', payload: { model, initialValue, variant } },
 );
 
-const update = (state: State, updates: Record<string, unknown>) => run(state, { type: 'UPDATE_FORM', payload: updates });
+const update = (state: State, updates: Record<string, unknown>) => run(state, { type: 'UPDATE_FORM', payload: { updates } });
 
 describe('useSchemaForm reducer', () => {
   describe('RESET_FORM', () => {

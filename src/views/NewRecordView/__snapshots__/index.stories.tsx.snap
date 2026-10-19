@@ -1137,7 +1137,15 @@ exports[`NewPositionalVariant snapshot 1`] = `
           </span>
           <div
             class="header__actions header__actions--new"
-          />
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Prepopulate from HGVS Shorthand
+            </button>
+          </div>
         </div>
         <div
           class="MuiStack-root css-XXXX-MuiStack-root new-variant"
@@ -1900,7 +1908,15 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
           </span>
           <div
             class="header__actions header__actions--new"
-          />
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Prepopulate from HGVS Shorthand
+            </button>
+          </div>
         </div>
         <div
           class="MuiStack-root css-XXXX-MuiStack-root new-variant"
@@ -3053,7 +3069,15 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
           </span>
           <div
             class="header__actions header__actions--new"
-          />
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Prepopulate from HGVS Shorthand
+            </button>
+          </div>
         </div>
         <div
           class="MuiStack-root css-XXXX-MuiStack-root new-variant"
@@ -3912,7 +3936,15 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
           </span>
           <div
             class="header__actions header__actions--new"
-          />
+          >
+            <button
+              class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Prepopulate from HGVS Shorthand
+            </button>
+          </div>
         </div>
         <div
           class="MuiStack-root css-XXXX-MuiStack-root new-variant"
@@ -6150,7 +6182,7 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
             class="MuiAlert-message css-XXXX-MuiAlert-message"
           >
             An error occurred while creating record.
-            Unexpected Error [500]: Internal Server Error
+            Unexpected Error [500]: Internal Server Error. Failed unique constraint.
             Report this error in a
             <a
               href="https://www.bcgsc.ca/jira/projects/KBDEV"
@@ -6161,7 +6193,7 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
             </a>
              ticket or email us at 
             <a
-              href="mailto:graphkb@bcgsc.ca?subject=Error%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20Error%0Aerror%20text%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error"
+              href="mailto:graphkb@bcgsc.ca?subject=Error%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error.%20Failed%20unique%20constraint.&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20Error%0Aerror%20text%3A%20Unexpected%20Error%20%5B500%5D%3A%20Internal%20Server%20Error.%20Failed%20unique%20constraint."
             >
               graphkb@bcgsc.ca
             </a>

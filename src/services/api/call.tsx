@@ -104,7 +104,7 @@ async function request(
   if (status === 404) {
     throw new APIConnectionFailureError(error);
   }
-  throw new Error(`Unexpected Error [${status}]: ${statusText}`);
+  throw new Error(`Unexpected Error [${status}]: ${statusText}${error.message ? `. ${error.message}` : ''}`);
 }
 
 export { request };

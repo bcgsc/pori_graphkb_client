@@ -194,13 +194,13 @@ describe('useEmbeddedForm', () => {
         { wrapper: ({ children }) => <FormContext.Provider value={parent}>{children}</FormContext.Provider> },
       );
       act(() => result.current.update(updates));
-      const [payload] = (parent.update as ReturnType<typeof vi.fn>).mock.calls[0];
+      const [appliedUpdates] = (parent.update as ReturnType<typeof vi.fn>).mock.calls[0];
 
       return run(
         {
           model, content, variant: FORM_VARIANT.EDIT, isDirty: false, validation: { valid: true, properties: {} },
         },
-        { type: 'UPDATE_FORM', payload },
+        { type: 'UPDATE_FORM', payload: { updates: appliedUpdates } },
       );
     };
 

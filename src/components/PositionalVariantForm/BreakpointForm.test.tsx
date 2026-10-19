@@ -16,7 +16,7 @@ import BreakpointForm from './BreakpointForm';
 
 const CONTEXT_DEFAULTS: FormContextState = {
   content: {},
-  variant: FORM_VARIANT.VIEW,
+  variant: FORM_VARIANT.EDIT,
   update: () => {},
   updateField: () => {},
   updateFieldEvent: () => {},

@@ -35,6 +35,7 @@ function MockProvider({
     },
     variant: formVariant ?? FORM_VARIANT.NEW,
     model: {
+      name: 'Mock',
       properties: {
         [name]: { name, type: 'string' as const, ...model },
       },

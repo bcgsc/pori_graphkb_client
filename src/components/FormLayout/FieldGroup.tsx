@@ -4,8 +4,7 @@ import { List } from '@mui/material';
 import React, { ReactNode, useMemo } from 'react';
 
 import FormField from '@/components/FormField';
-import { useFormContext } from '@/components/hooks/useSchemaForm';
-import { FORM_VARIANT } from '@/components/util';
+import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
 
 interface FieldGroupProps {
   /** the property names in order to be rendered (array of array of strings for groups) */
@@ -31,13 +30,7 @@ const FieldGroup = ({
   const filteredOrdering = useMemo(() => {
     const toExclude = [...exclusions];
     Object.values(properties).forEach((prop) => {
-      const isEmpty = formContent[prop.name] === '' || formContent[prop.name] === null || formContent[prop.name] === undefined;
-
-      if (
-        (formVariant === FORM_VARIANT.NEW && prop.generated)
-        || (formVariant === FORM_VARIANT.EDIT && prop.generated && isEmpty)
-        || (formVariant === FORM_VARIANT.VIEW && isEmpty)
-      ) {
+      if (shouldHideField(formVariant, prop, formContent[prop.name])) {
         toExclude.push(prop.name);
       }
     });

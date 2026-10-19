@@ -6,13 +6,12 @@ import {
 import React, { ReactNode, useCallback } from 'react';
 
 import FormField from '@/components/FormField';
-import { useFormContext } from '@/components/hooks/useSchemaForm';
+import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
 
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
   breakpoint: '1' | '2';
-  label?: ReactNode;
   readOnly: boolean;
 }
 
@@ -23,26 +22,46 @@ interface BreakpointFormProps {
  * Used for inputting positional variants
  */
 const BreakpointForm = ({
-  coordinateType, breakpoint, label, readOnly,
+  coordinateType, breakpoint, readOnly,
 }: BreakpointFormProps) => {
-  const { content: formContent, update } = useFormContext();
-  const uncertain = Boolean(formContent[`break${breakpoint}End`]);
+  const form = useFormContext();
+  const reference = `reference${breakpoint}`;
+  const start = `break${breakpoint}Start`;
+  const end = `break${breakpoint}End`;
+  const uncertain = Boolean(form.content[end]);
+  const { update } = form;
+
+  const shouldHide = (name: string) => shouldHideField(form.variant, form.model.properties[name], form.content[name]);
 
   const handleCheckUncertain = useCallback((checked) => {
     if (!checked) {
       // unchecking
-      update({ [`break${breakpoint}End`]: null });
+      update({ [end]: null });
     } else {
-      update({ [`break${breakpoint}End.@class`]: coordinateType });
+      update({ [`${end}.@class`]: coordinateType });
     }
-  }, [breakpoint, coordinateType, update]);
+  }, [end, coordinateType, update]);
+
+  const hide = Object.fromEntries([reference, start, end].map((name) => [name, shouldHide(name)]));
+
+  let label = 'Breakpoint';
+
+  if (breakpoint === '1' && !shouldHide('break2Start')) {
+    label = 'First Breakpoint';
+  } else if (breakpoint === '2') {
+    label = 'Second Breakpoint';
+  }
+
+  if (hide[reference] && hide[start] && hide[end]) {
+    return null;
+  }
 
   return (
     <Stack spacing={2}>
       {label}
-      <FormField
-        name={`reference${breakpoint}`}
-      />
+      {!hide[reference] && (
+        <FormField name={reference} />
+      )}
       {!readOnly && (
         <FormControlLabel
           className="breakpoint-form__uncertain-checkbox"
@@ -55,18 +74,19 @@ const BreakpointForm = ({
               )}
           label="uncertain position"
         />
-
       )}
-      <FormField
-        defaultLinkedClass={coordinateType}
-        label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
-        name={`break${breakpoint}Start`}
-      />
-      {uncertain && (
+      {!hide[start] && (
+        <FormField
+          defaultLinkedClass={coordinateType}
+          label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
+          name={start}
+        />
+      )}
+      {uncertain && !hide[end] && (
         <FormField
           defaultLinkedClass={coordinateType}
           label={`end (${coordinateType})`}
-          name={`break${breakpoint}End`}
+          name={end}
         />
       )}
     </Stack>

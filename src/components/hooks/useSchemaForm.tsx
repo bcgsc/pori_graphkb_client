@@ -13,13 +13,20 @@ import React, {
 import { useMutation, useQueryClient } from 'react-query';
 
 import api from '@/services/api';
-import schema, { SchemaPropertyDefinition } from '@/services/schema';
+import schema, { SchemaClassDefinition } from '@/services/schema';
 
 import { useAuth } from '../Auth';
 import { GeneralRecordType } from '../types';
 import { cleanPayload, FORM_VARIANT } from '../util';
 
 setAutoFreeze(false);
+
+interface PartialSchemaClassDefinition extends Omit<Partial<SchemaClassDefinition>, 'name' | 'properties'> {
+  name: string;
+  properties: SchemaClassDefinition['properties'];
+  // used internally by reducer to keep a copy of the original properties before any modifications
+  _properties?: SchemaClassDefinition['properties'];
+}
 
 interface ReducerState {
   /** the content/values by field names of the current form */
@@ -30,13 +37,7 @@ interface ReducerState {
   isDirty: boolean;
   /** the variant of the form (ex. view) */
   variant: FORM_VARIANT;
-  model: {
-    name?: string;
-    properties: Record<string, Partial<SchemaPropertyDefinition> & {
-      name: string;
-    }>;
-    isEdge?: boolean;
-  }
+  model: PartialSchemaClassDefinition;
 }
 
 export interface FormContextState extends ReducerState {
@@ -166,8 +167,13 @@ export function reducer<T extends ACTION_TYPE>(draft: ReducerState, action: Acti
     });
   }
 
-  propsToValidate.forEach((propName) => {
-    const result = schema.validateValue(draft.model.properties[propName], draft.content[propName]);
+  draft.model._properties ??= draft.model.properties;
+  draft.model.properties = produce(draft.model._properties, (draftProps) => {
+    draft.model.conditional?.(draftProps, draft);
+  });
+
+  Object.entries(draft.model.properties).forEach(([propName, propModel]) => {
+    const result = schema.validateValue(propModel, draft.content[propName]);
     draft.validation.properties ??= {};
     draft.validation.properties[propName] ??= { valid: true };
     const prev = draft.validation.properties[propName];
@@ -205,6 +211,20 @@ function filterEmbeddedValue(prop: FormContextState['model']['properties'][strin
       delete value[key];
     }
   });
+}
+
+export function shouldHideField(
+  variant: FORM_VARIANT,
+  prop: FormContextState['model']['properties'][string],
+  value: unknown,
+): boolean {
+  const isEmpty = value === '' || value === null || value === undefined;
+
+  return prop.hide ?? (
+    (variant === FORM_VARIANT.NEW && prop.generated)
+    || (variant === FORM_VARIANT.EDIT && prop.generated && isEmpty)
+    || (variant === FORM_VARIANT.VIEW && isEmpty)
+  );
 }
 
 interface UseSchemaFormReturnType extends FormContextState {
@@ -275,6 +295,11 @@ const useSchemaForm = (
 
   const mutation = useMutation({
     mutationFn: async ({ actionType }: { actionType: 'create' | 'update' | 'delete' }) => {
+      const routeName = state.model.routeName;
+
+      if (!routeName) {
+        throw new Error(`actions are not supported for model of type ${state.model.name} due to missing routeName.`);
+      }
       const payload = cleanPayload(state.content);
       payload['@class'] ??= state.model.name;
 
@@ -301,7 +326,6 @@ const useSchemaForm = (
         }
       }
 
-      const { routeName } = schema.get(state.model.name);
       const rid = payload['@rid']?.replace(/^#/, '');
 
       if (actionType === 'create') {
@@ -312,8 +336,9 @@ const useSchemaForm = (
       return api.delete(`${routeName}/${rid}`);
     },
     onSuccess: (result, { actionType }) => {
-      if (result['@rid']) {
-        const { routeName } = schema.get(result);
+      const { routeName } = state.model;
+
+      if (result['@rid'] && routeName) {
         const cleanRid = result['@rid'].replace(/^#/, '');
 
         queryClient.invalidateQueries({

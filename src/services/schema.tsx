@@ -7,6 +7,7 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
 
 import { EdgeType, GeneralRecordType } from '@/components/types';
+import { FORM_VARIANT } from '@/components/util';
 
 import { getQueryFromSearch } from './api/search';
 
@@ -24,9 +25,18 @@ type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
     filterOptions?: string[];
     defaultFilterClassName?: string;
   }
+  hide?: boolean;
 };
 
-type SchemaClassDefinition = ClassDefinition & { properties: Record<string, SchemaPropertyDefinition> };
+type SchemaClassDefinition = Omit<ClassDefinition, 'properties'> & {
+  properties: Record<string, SchemaPropertyDefinition>;
+  /**
+   * allow for mutating the properties based on the current state
+   *
+   * ex. use for conditionally required fields.
+   */
+  conditional?: (properties: Record<string, SchemaPropertyDefinition>, state: { content: Record<string, any>; variant: FORM_VARIANT }) => void;
+};
 
 /**
  * Get a string representation of a record
@@ -504,6 +514,27 @@ function prepareModels() {
     filterOptions: ['Signature', 'Feature'],
     defaultFilterClassName: 'Feature',
   };
+  prepared.PositionalVariant.properties.break1Start.description = '';
+  prepared.PositionalVariant.properties.break2Start.description = '';
+  prepared.PositionalVariant.properties.break1End.description = 'end of the breakpoint range';
+  prepared.PositionalVariant.properties.break2End.description = 'end of the breakpoint range';
+
+  prepared.PositionalVariant.conditional = (draftProps, form) => {
+    if (form.variant === FORM_VARIANT.VIEW) return;
+    const variantTypeName = (form.content as any)?.type?.displayName;
+    const isSubstitution = ['substitution', 'missense mutation', 'nonsense mutation'].includes(variantTypeName);
+    draftProps.break2Start.mandatory = !isSubstitution;
+
+    if (isSubstitution) {
+      draftProps.reference2.hide = true;
+      draftProps.break2Start.hide = true;
+      draftProps.break2End.hide = true;
+    }
+    draftProps.refSeq.mandatory = isSubstitution;
+    draftProps.untemplatedSeq.mandatory = isSubstitution;
+    draftProps.reference2.mandatory = variantTypeName === 'fusion';
+  };
+
   prepared.CategoryVariant.properties.reference1.componentProps = prepared.PositionalVariant.properties.reference1.componentProps;
   return prepared;
 }

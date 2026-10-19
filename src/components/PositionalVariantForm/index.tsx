@@ -1,11 +1,7 @@
 import {
   CircularProgress, Paper, Stack, Typography,
 } from '@mui/material';
-import React, {
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
@@ -21,7 +17,7 @@ import RecordAutocomplete from '../RecordAutocomplete';
 import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 
-const PositionalVariant = schema.get('PositionalVariant');
+const MODEL = schema.get('PositionalVariant');
 
 const FIELD_EXCLUSIONS = [
   'groupRestrictions',
@@ -85,30 +81,8 @@ const VariantForm = ({
     break1Start: valueProp?.break1Start ?? { '@class': 'GenomicPosition' },
   }), [valueProp]);
 
-  const [variantType, setVariantType] = useState((value?.type as any)?.displayName ?? 'substitution');
-
-  const isSubstitution = ['substitution', 'missense mutation', 'nonsense mutation'].includes(variantType);
-  const isFusion = ['fusion'].includes(variantType);
-
-  const model = useMemo(() => ({
-    name: PositionalVariant.name,
-    properties: {
-      ...PositionalVariant.properties,
-      break1Start: { ...PositionalVariant.properties.break1Start, description: '' },
-      break2Start: { ...PositionalVariant.properties.break2Start, mandatory: !isSubstitution, description: '' },
-      break1End: { ...PositionalVariant.properties.break1End, description: 'end of the breakpoint range' },
-      break2End: { ...PositionalVariant.properties.break2End, description: 'end of the breakpoint range' },
-      reference2: { ...PositionalVariant.properties.reference2, mandatory: isFusion },
-      refSeq: { ...PositionalVariant.properties.refSeq, mandatory: isSubstitution },
-      untemplatedSeq: {
-        ...PositionalVariant.properties.untemplatedSeq,
-        mandatory: isSubstitution,
-      },
-    },
-  }), [isSubstitution, isFusion]);
-
-  const initialValue = useMemo(() => ({ '@class': model.name, ...value }), [model.name, value]);
-  const form = useSchemaForm(model, initialValue, { variant, onActionSuccess: onSubmit });
+  const initialValue = useMemo(() => ({ '@class': MODEL.name, ...value }), [value]);
+  const form = useSchemaForm(MODEL, initialValue, { variant, onActionSuccess: onSubmit });
   const { update: updateForm } = form;
 
   const otherValidation = useMemo(() => {
@@ -133,7 +107,6 @@ const VariantForm = ({
   const formHasErrors = !form.validation.valid || Boolean(otherValidation);
 
   const handleUpdateVariantType = useCallback((value: unknown) => {
-    setVariantType((value as any)?.displayName ?? null);
     updateForm({ type: value });
   }, [updateForm]);
 
@@ -215,17 +188,13 @@ const VariantForm = ({
           <BreakpointForm
             breakpoint="1"
             coordinateType={coordinateType}
-            label={`${!isSubstitution ? 'First ' : ''}Breakpoint`}
             readOnly={variant === FORM_VARIANT.VIEW}
           />
-          {!isSubstitution && (
-            <BreakpointForm
-              breakpoint="2"
-              coordinateType={coordinateType}
-              label="Second Breakpoint"
-              readOnly={variant === FORM_VARIANT.VIEW}
-            />
-          )}
+          <BreakpointForm
+            breakpoint="2"
+            coordinateType={coordinateType}
+            readOnly={variant === FORM_VARIANT.VIEW}
+          />
         </Stack>
         <FormLayout
           collapseExtra

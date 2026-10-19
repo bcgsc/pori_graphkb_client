@@ -52,6 +52,7 @@ export const NewPositionalVariant = meta.story({
           return [
             { '@rid': '111:111', '@class': 'Vocabulary', displayName: 'fusion' },
             { '@rid': '111:222', '@class': 'Vocabulary', displayName: 'substitution' },
+            { '@rid': '111:333', '@class': 'Vocabulary', displayName: 'deletion' },
           ];
         }
         return [];
@@ -60,7 +61,25 @@ export const NewPositionalVariant = meta.story({
   },
 });
 
-NewPositionalVariant.test('changing coordinate type affects position forms in later section', async ({ canvas, userEvent, step }) => {
+export const NewPositionalVariantFusion = NewPositionalVariant.extend({
+  play: async ({ canvas, userEvent, step }) => {
+    await hasFinishedLoading({ canvas, step });
+    await selectOption(canvas, userEvent, /^type/i, /^fusion/i);
+    await expect(canvas.findByText('First Breakpoint')).resolves.toBeInTheDocument();
+    await expect(canvas.findByText('Second Breakpoint')).resolves.toBeInTheDocument();
+  },
+});
+
+export const NewPositionalVariantSubstitution = NewPositionalVariant.extend({
+  play: async ({ canvas, userEvent, step }) => {
+    await hasFinishedLoading({ canvas, step });
+    await selectOption(canvas, userEvent, /^type/i, /^substitution/i);
+    await expect(canvas.findByText('Breakpoint')).resolves.toBeInTheDocument();
+    await expect(canvas.queryByText('Second Breakpoint')).not.toBeInTheDocument();
+  },
+});
+
+NewPositionalVariantSubstitution.test('changing coordinate type affects position forms in later section', async ({ canvas, userEvent, step }) => {
   await hasFinishedLoading({ canvas, step });
   await expect(canvas.findByText('position (GenomicPosition)')).resolves.toBeInTheDocument();
   await selectOption(canvas, userEvent, /coordinate system/i, /^CdsPosition/i);
@@ -68,11 +87,13 @@ NewPositionalVariant.test('changing coordinate type affects position forms in la
   await expect(canvas.findByLabelText(/offset/i)).resolves.toBeInTheDocument();
 });
 
-NewPositionalVariant.test('Fusion shows 2nd breakpoint', async ({ canvas, userEvent, step }) => {
-  await hasFinishedLoading({ canvas, step });
-  await selectOption(canvas, userEvent, /^type/i, /^fusion/i);
-  await expect(canvas.findByText('First Breakpoint')).resolves.toBeInTheDocument();
-  await expect(canvas.findByText('Second Breakpoint')).resolves.toBeInTheDocument();
+export const NewPositionalVariantOther = NewPositionalVariant.extend({
+  play: async ({ canvas, userEvent, step }) => {
+    await hasFinishedLoading({ canvas, step });
+    await selectOption(canvas, userEvent, /^type/i, /^deletion/i);
+    await expect(canvas.findByText('First Breakpoint')).resolves.toBeInTheDocument();
+    await expect(canvas.findByText('Second Breakpoint')).resolves.toBeInTheDocument();
+  },
 });
 
 export const NewStatement = meta.story({

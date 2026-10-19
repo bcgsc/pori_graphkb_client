@@ -108,7 +108,7 @@ const PropertyFilter = ({
     if (DATE_FIELDS.includes(property)) {
       format = 'date';
     }
-    return ({ properties: { [property]: { ...propertyModel, format, name: property } } });
+    return ({ name: 'PropertyFilter', properties: { [property]: { ...propertyModel, format, name: property } } });
   }, [property, propertyModel]);
 
   // use a schema form so that validation runs on the value based on the property selected

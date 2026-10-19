@@ -181,6 +181,10 @@ export const ViewPositionalVariantOptionalFieldsExpanded = ViewPositionalVariant
   },
 });
 
+export const EditPositionalVariant = ViewPositionalVariant.extend({
+  args: { path: '/edit/PositionalVariant/157:106045' },
+});
+
 export const ViewStatement = meta.story({
   args: {
     path: '/view/Statement/157:106045',

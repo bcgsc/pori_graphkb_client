@@ -21,6 +21,7 @@ const MODEL_NAME = 'StatementReview';
 const { comment, status } = schema.get(MODEL_NAME).properties;
 
 const model = {
+  name: 'StatementReview',
   properties: { comment, status },
 };
 

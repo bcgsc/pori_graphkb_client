@@ -42,6 +42,7 @@ function MockProvider({
         [name]: { name, type: 'string' as const, ...model },
       },
     },
+    disabled: false,
   }), [value, errorMessage, name, formVariant, model]);
 
   return <FormContext.Provider value={state}>{children}</FormContext.Provider>;

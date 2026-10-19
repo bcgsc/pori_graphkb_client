@@ -89,7 +89,7 @@ interface RecordAutocompleteProps {
 const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   const {
     className = '',
-    disabled = false,
+    disabled: disabledProp = false,
     error,
     isMulti = false,
     label = '',
@@ -103,6 +103,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     value,
     readOnly,
   } = props;
+  const disabled = disabledProp && !readOnly;
 
   const [searchTerm, setSearchTerm] = useState('');
   const selectedValues = useMemo(() => getAsArray(value), [value]);

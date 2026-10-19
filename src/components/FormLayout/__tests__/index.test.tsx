@@ -25,6 +25,7 @@ const CONTEXT_DEFAULTS: FormContextState = {
   isDirty: false,
   validation: { valid: true, properties: {} },
   model: schema.get('User'),
+  disabled: false,
 };
 
 describe('FormLayout', () => {

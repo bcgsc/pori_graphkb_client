@@ -259,7 +259,6 @@ const StatementForm = ({
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          disabled={form.action.inProgress || variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
         />
       </FormContext.Provider>

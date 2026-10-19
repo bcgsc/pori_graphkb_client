@@ -9,8 +9,6 @@ import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaFor
 interface FieldGroupProps {
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
-  /** if field should be disabled */
-  disabled?: boolean;
   /** fields to be excluded from rendering */
   exclusions?: string[];
 }
@@ -18,10 +16,9 @@ interface FieldGroupProps {
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
  */
-const FieldGroup = ({
-  ordering, exclusions = [], disabled = false,
-}: FieldGroupProps) => {
-  const { variant: formVariant, content: formContent, model } = useFormContext();
+const FieldGroup = ({ ordering, exclusions = [] }: FieldGroupProps) => {
+  const form = useFormContext();
+  const { variant: formVariant, content: formContent, model } = form;
   const { properties } = model;
 
   // get the form content
@@ -57,7 +54,6 @@ const FieldGroup = ({
       fields.push((
         <List key={key} className="form-layout__content-subgroup">
           <FieldGroup
-            disabled={disabled}
             ordering={item}
           />
         </List>
@@ -66,7 +62,6 @@ const FieldGroup = ({
       const wrapper = (
         <FormField
           key={item}
-          disabled={disabled}
           name={item}
         />
       );

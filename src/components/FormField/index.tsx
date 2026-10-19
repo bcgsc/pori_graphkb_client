@@ -30,7 +30,6 @@ interface FormFieldProps {
   name: string;
   /** for embedded where the linkedClass is abstract, specifies the default linked class to use */
   defaultLinkedClass?: string;
-  disabled?: boolean;
   /** the label to use for the form field (defaults to label specified on property model) */
   label?: string;
 }
@@ -41,7 +40,6 @@ interface FormFieldProps {
  */
 const FormField = ({
   name,
-  disabled = false,
   label: labelProp,
   defaultLinkedClass,
 }: FormFieldProps) => {
@@ -89,13 +87,13 @@ const FormField = ({
   // ensure all components both get and support
   // the following props
   const sharedEmbedProps = {
-    disabled: (generated || disabled) && form.variant !== FORM_VARIANT.VIEW,
+    disabled: (model.readOnly || generated || form.disabled || (form.model.isEdge && form.variant === FORM_VARIANT.EDIT)) && form.variant !== FORM_VARIANT.VIEW,
     label: label || name,
     name,
     required: mandatory,
     onChange: form.updateFieldEvent,
     value,
-    readOnly: generated || form.variant === FORM_VARIANT.VIEW,
+    readOnly: model.readOnly || generated || form.variant === FORM_VARIANT.VIEW,
   } satisfies SharedProps<[
     React.ComponentProps<typeof StatementReviewsTable>,
     React.ComponentProps<typeof PermissionsTable>,
@@ -166,7 +164,7 @@ const FormField = ({
       isMulti: type === 'linkset',
     } satisfies SharedProps<[React.ComponentProps<typeof FilteredRecordAutocomplete>, React.ComponentProps<typeof RecordAutocomplete>]>;
 
-    if (linkedClass && linkedClass.isAbstract && !disabled) {
+    if (linkedClass && linkedClass.isAbstract && !(sharedEmbedProps.readOnly || sharedEmbedProps.disabled)) {
       const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
         ...autoProps,
         linkedClassName: linkedClass.name,

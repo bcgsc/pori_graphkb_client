@@ -43,7 +43,7 @@ const EmbeddedForm = ({
 }: EmbeddedFormProps) => {
   const parentForm = useFormContext();
   const propModel = parentForm.model.properties[name];
-  const embeddedForm = useEmbeddedForm(name, defaultLinkedClass);
+  const embeddedForm = useEmbeddedForm(name, defaultLinkedClass, { disabled, readOnly });
 
   let content: ReactNode = null;
 
@@ -61,7 +61,6 @@ const EmbeddedForm = ({
       <FormContext.Provider value={embeddedForm}>
         <FormLayout
           collapseExtra={false}
-          disabled={disabled}
         />
       </FormContext.Provider>
     );

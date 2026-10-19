@@ -140,8 +140,6 @@ interface FormLayoutProps {
   className?: string;
   /** flag to indicate a collapsible section should be created */
   collapseExtra?: boolean;
-  /** flag to indicated form fields are disabled */
-  disabled?: boolean;
   /** an array of fields not to display */
   exclusions?: string[];
   /** properties that should be grouped together */
@@ -151,26 +149,24 @@ interface FormLayoutProps {
 
 const FormLayout = ({
   exclusions = [],
-  disabled = false,
   className = '',
   collapseExtra = false,
   order,
   excludeFieldsNotInOrder = false,
 }: FormLayoutProps) => {
-  const { model } = useFormContext();
+  const form = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { extraFields, fields } = sortAndGroupFields(model.properties, {
+  const { extraFields, fields } = sortAndGroupFields(form.model.properties, {
     collapseExtra, order, excludeFieldsNotInOrder, exclude: exclusions,
   });
 
   return (
     <div className={`form-layout ${className}`}>
-      {model && (
+      {form.model && (
         <>
           <List className="form-layout__content">
             <FieldGroup
-              disabled={disabled}
               exclusions={exclusions}
               ordering={fields}
             />
@@ -190,7 +186,6 @@ const FormLayout = ({
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <List className="form-layout__content">
                   <FieldGroup
-                    disabled={disabled}
                     exclusions={exclusions}
                     ordering={extraFields}
                   />

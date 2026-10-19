@@ -24,6 +24,7 @@ const CONTEXT_DEFAULTS: FormContextState = {
   isDirty: false,
   validation: { valid: true, properties: {} },
   model: schemaDefn.get('PositionalVariant'),
+  disabled: false,
 };
 
 describe('BreakpointForm', () => {
@@ -34,7 +35,6 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             breakpoint="1"
             coordinateType="GenomicPosition"
-            readOnly={false}
           />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -51,7 +51,6 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             breakpoint="1"
             coordinateType="GenomicPosition"
-            readOnly={false}
           />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -69,7 +68,6 @@ describe('BreakpointForm', () => {
           <BreakpointForm
             breakpoint="1"
             coordinateType="GenomicPosition"
-            readOnly={false}
           />
         </FormContext.Provider>
       </QueryClientProvider>,

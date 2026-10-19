@@ -3,16 +3,17 @@ import {
   FormControlLabel,
   Stack,
 } from '@mui/material';
-import React, { ReactNode, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import FormField from '@/components/FormField';
 import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
+
+import { FORM_VARIANT } from '../util';
 
 interface BreakpointFormProps {
   /** the Position class */
   coordinateType: string;
   breakpoint: '1' | '2';
-  readOnly: boolean;
 }
 
 /**
@@ -21,9 +22,7 @@ interface BreakpointFormProps {
  *
  * Used for inputting positional variants
  */
-const BreakpointForm = ({
-  coordinateType, breakpoint, readOnly,
-}: BreakpointFormProps) => {
+const BreakpointForm = ({ coordinateType, breakpoint }: BreakpointFormProps) => {
   const form = useFormContext();
   const reference = `reference${breakpoint}`;
   const start = `break${breakpoint}Start`;
@@ -62,7 +61,7 @@ const BreakpointForm = ({
       {!hide[reference] && (
         <FormField name={reference} />
       )}
-      {!readOnly && (
+      {form.variant !== FORM_VARIANT.VIEW && (
         <FormControlLabel
           className="breakpoint-form__uncertain-checkbox"
           control={(
@@ -72,6 +71,7 @@ const BreakpointForm = ({
               onChange={() => handleCheckUncertain(!uncertain)}
             />
               )}
+          disabled={form.disabled}
           label="uncertain position"
         />
       )}

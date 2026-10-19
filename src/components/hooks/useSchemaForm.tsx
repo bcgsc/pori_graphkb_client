@@ -48,6 +48,7 @@ export interface FormContextState extends ReducerState {
   updateFieldEvent: (event: { target: { name: string; value: unknown } }) => void;
   /** setter for setting the formIsDirty property */
   setDirty: (dirty: boolean) => void;
+  disabled: boolean;
 }
 
 export const FormContext = React.createContext<FormContextState | null>(null);
@@ -397,6 +398,7 @@ const useSchemaForm = (
     updateField,
     updateFieldEvent,
     model: state.model,
+    disabled: mutation.isPending && variant !== FORM_VARIANT.VIEW,
     action: {
       error: mutation.error,
       inProgress: mutation.isPending,
@@ -408,7 +410,11 @@ const useSchemaForm = (
   };
 };
 
-export function useEmbeddedForm(propName: string, defaultLinkedClass: string | undefined): FormContextState {
+export function useEmbeddedForm(
+  propName: string,
+  defaultLinkedClass: string | undefined,
+  args: { disabled?: boolean, readOnly?: boolean },
+): FormContextState {
   const form = useFormContext();
   const { updateField: updateParent, update: updateForm } = form;
   const content = useMemo(() => form.content[propName] ?? {}, [form.content, propName]);
@@ -429,7 +435,8 @@ export function useEmbeddedForm(propName: string, defaultLinkedClass: string | u
     content,
     validation,
     isDirty: form.isDirty,
-    variant: form.variant,
+    variant: args.readOnly ? FORM_VARIANT.VIEW : form.variant,
+    disabled: args.disabled || form.disabled,
     setDirty: form.setDirty,
     model: propClass,
     updateFieldEvent,

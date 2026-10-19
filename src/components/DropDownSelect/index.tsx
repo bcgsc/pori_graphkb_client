@@ -94,10 +94,11 @@ function DropDownSelect(props: DropDownSelectProps) {
     error = false,
     helperText = '',
     className = '',
-    disabled = false,
+    disabled: disabledProp = false,
     IconComponent = ArrowDropDownIcon,
     readOnly,
   } = props;
+  const disabled = disabledProp && !readOnly;
 
   const id = idProp;
   let valueIsOption = false;

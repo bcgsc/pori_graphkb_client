@@ -40,6 +40,7 @@ function MockProvider({
         [name]: { name, type: 'string' as const, ...model },
       },
     },
+    disabled: false,
   }), [value, errorMessage, name, formVariant, model]);
 
   return <FormContext.Provider value={state}>{children}</FormContext.Provider>;
@@ -82,12 +83,6 @@ export const FreeText = FreeTextEmpty.extend({
 export const FreeTextWithLabel = FreeText.extend({
   args: {
     label: 'User Comments',
-  },
-});
-
-export const FreeTextDisabled = FreeText.extend({
-  args: {
-    disabled: true,
   },
 });
 

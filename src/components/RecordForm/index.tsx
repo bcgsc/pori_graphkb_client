@@ -83,16 +83,15 @@ const RecordForm = ({
         </div>
       </div>
       {form.model.isEdge && (
-      <EdgeSentence
-        srcRecord={(form.content as EdgeType).out}
-        tgtRecord={(form.content as EdgeType).in}
-        type={model.name}
-      />
+        <EdgeSentence
+          srcRecord={(form.content as EdgeType).out}
+          tgtRecord={(form.content as EdgeType).in}
+          type={model.name}
+        />
       )}
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          disabled={form.action.inProgress || variant === FORM_VARIANT.VIEW || (variant === FORM_VARIANT.EDIT && model.isEdge)}
           exclusions={FIELD_EXCLUSIONS}
         />
       </FormContext.Provider>

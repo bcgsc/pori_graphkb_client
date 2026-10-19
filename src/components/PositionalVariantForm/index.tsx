@@ -159,6 +159,7 @@ const VariantForm = ({
           spacing={2}
         >
           <RecordAutocomplete
+            disabled={form.disabled}
             error={Boolean((!(form.validation.properties?.type?.valid ?? true) && form.isDirty) || otherValidation?.type)}
             getQueryBody={() => ({
               target: 'Vocabulary',
@@ -176,6 +177,7 @@ const VariantForm = ({
             value={form.content.type ?? null}
           />
           <DropDownSelect
+            disabled={form.disabled}
             error={Boolean(otherValidation?.coordinateType)}
             helperText={otherValidation?.coordinateType}
             label="Position Coordinate System"
@@ -188,17 +190,14 @@ const VariantForm = ({
           <BreakpointForm
             breakpoint="1"
             coordinateType={coordinateType}
-            readOnly={variant === FORM_VARIANT.VIEW}
           />
           <BreakpointForm
             breakpoint="2"
             coordinateType={coordinateType}
-            readOnly={variant === FORM_VARIANT.VIEW}
           />
         </Stack>
         <FormLayout
           collapseExtra
-          disabled={form.action.inProgress || form.variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
           order={REMAINING_FIELD_ORDER}
         />

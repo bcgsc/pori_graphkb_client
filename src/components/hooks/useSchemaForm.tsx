@@ -94,7 +94,7 @@ export function reducer<T extends ACTION_TYPE>(draft: ReducerState, action: Acti
   if (action.type === ACTION_TYPE.RESET_FORM) {
     const payload = action.payload as PayloadMap[ACTION_TYPE.RESET_FORM];
 
-    draft.model = payload.model;
+    draft.model = { ...payload.model };
     draft.content = payload.initialValue ?? {};
     draft.variant = payload.variant;
     draft.isDirty = payload.variant === FORM_VARIANT.EDIT;
@@ -204,6 +204,8 @@ function filterEmbeddedValue(prop: FormContextState['model']['properties'][strin
   if (value['@class'] && (value['@class'] === prop.linkedClass || schema.inheritsFrom(value['@class'], prop.linkedClass))) {
     model = schema.get(value['@class']);
   }
+
+  if (model.isAbstract) return;
 
   value['@class'] = model.name;
 
@@ -416,20 +418,26 @@ export function useEmbeddedForm(
   args: { disabled?: boolean, readOnly?: boolean },
 ): FormContextState {
   const form = useFormContext();
-  const { updateField: updateParent, update: updateForm } = form;
+  const { update: updateParentForm } = form;
   const content = useMemo(() => form.content[propName] ?? {}, [form.content, propName]);
   const validation = useMemo(() => form.validation.properties?.[propName] ?? { valid: true }, [form.validation.properties, propName]);
   const prop = form.model.properties[propName];
   const propClass = schema.get(content['@class'] ?? defaultLinkedClass ?? prop.linkedClass);
   const update = useCallback((updates: Record<string, unknown>) => {
-    updateForm(Object.fromEntries(Object.entries(updates).map(([key, value]) => [`${propName}.${key}`, value])));
-  }, [propName, updateForm]);
+    const parentUpdates: Record<string, unknown> = {
+      [`${propName}.@class`]: propClass.name,
+    };
+    Object.entries(updates).forEach(([key, value]) => {
+      parentUpdates[`${propName}.${key}`] = value;
+    });
+    updateParentForm(parentUpdates);
+  }, [propName, updateParentForm, propClass]);
   const updateFieldEvent = useCallback((e) => {
-    updateParent(`${propName}.${e.target.name}`, e.target.value);
-  }, [updateParent, propName]);
+    update({ [e.target.name]: e.target.value });
+  }, [update]);
   const updateField = useCallback((name, value) => {
-    updateParent(`${propName}.${name}`, value);
-  }, [updateParent, propName]);
+    update({ [name]: value });
+  }, [update]);
 
   return {
     content,

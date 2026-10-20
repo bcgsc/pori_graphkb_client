@@ -84,7 +84,7 @@ const RecordView = ({
 
   useEffect(() => {
     if (recordContent?.['@class'] && recordContent['@class'] !== model.name) {
-      navigate(`/${variant}/${recordContent['@class']}/${rid}`);
+      navigate(`/${variant}/${recordContent['@class']}/${rid}`, { replace: true });
     }
   }, [model.name, navigate, recordContent, rid, variant]);
 

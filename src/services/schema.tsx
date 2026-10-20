@@ -568,7 +568,7 @@ function prepareModels() {
 
   prepared.CategoryVariant.properties.reference1.componentProps = prepared.PositionalVariant.properties.reference1.componentProps;
   prepared.CategoryVariant.fieldOrder = {
-    groups: [['reference1', 'reference2']],
+    order: ['type', ['reference1', 'reference2']],
   };
   prepared.ClinicalTrial.fieldOrder = {
     groups: [

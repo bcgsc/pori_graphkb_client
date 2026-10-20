@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 
 import preview from '#.storybook/preview';
 
@@ -67,6 +67,37 @@ export const WithValue = meta.story({
   },
 });
 
+WithValue.test('clicking checkbox does not call onChange', async ({ args, canvas, userEvent }) => {
+  const row = (await canvas.findByText('Disease:')).closest('tr') as HTMLElement;
+  const [checkbox] = within(row).getAllByRole('checkbox');
+
+  await userEvent.click(checkbox);
+
+  await expect(args.onChange).toHaveBeenCalledWith({
+    target: { name: args.name, value: { ...args.value, Disease: 7 } },
+  });
+});
+
 export const Disabled = WithValue.extend({
   args: { disabled: true },
+});
+
+Disabled.test('checkboxes are disabled', async ({ canvas }) => {
+  const row = (await canvas.findByText('Disease:')).closest('tr') as HTMLElement;
+  const [checkbox] = within(row).getAllByRole('checkbox');
+
+  await expect(checkbox).toBeDisabled();
+});
+
+export const ReadOnly = WithValue.extend({
+  args: { readOnly: true },
+});
+
+ReadOnly.test('clicking checkbox does not call onChange', async ({ args, canvas, userEvent }) => {
+  const row = (await canvas.findByText('Disease:')).closest('tr') as HTMLElement;
+  const [checkbox] = within(row).getAllByRole('checkbox');
+
+  await userEvent.click(checkbox);
+
+  await expect(args.onChange).not.toHaveBeenCalled();
 });

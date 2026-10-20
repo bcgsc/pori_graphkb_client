@@ -21,8 +21,6 @@ import EdgeTable from './EdgeTable';
 import RelatedStatementsTable from './RelatedStatementsTable';
 import RelatedVariantsTable from './RelatedVariantsTable';
 
-const FIELD_EXCLUSIONS = ['groupRestrictions'];
-
 interface RecordFormProps {
   /** the title for this form */
   title: string;
@@ -92,7 +90,6 @@ const RecordForm = ({
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          exclusions={FIELD_EXCLUSIONS}
         />
       </FormContext.Provider>
       {modelName && variant === FORM_VARIANT.VIEW && schemaDefn.ancestors(modelName).includes('V') && (

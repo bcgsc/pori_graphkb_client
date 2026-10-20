@@ -27,19 +27,16 @@ import BreakpointForm from './BreakpointForm';
 const MODEL = schema.get('PositionalVariant');
 
 const FIELD_EXCLUSIONS = [
-  'groupRestrictions',
   // explicitly since we add them above
+  'break1Repr',
   'break1Start',
   'break1End',
+  'break2Repr',
   'break2Start',
   'break2End',
   'reference1',
   'reference2',
   'type',
-];
-
-const REMAINING_FIELD_ORDER = [
-  ['refSeq', 'untemplatedSeq', 'truncation', 'untemplatedSeqSize'],
 ];
 
 const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
@@ -298,7 +295,6 @@ const VariantForm = ({
         <FormLayout
           collapseExtra
           exclusions={FIELD_EXCLUSIONS}
-          order={REMAINING_FIELD_ORDER}
         />
         {variant === FORM_VARIANT.VIEW && (
           <>

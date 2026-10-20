@@ -12,24 +12,13 @@ import { omit } from 'lodash';
 import React, { useState } from 'react';
 
 import { useFormContext } from '@/components/hooks/useSchemaForm';
-import schema, { SchemaPropertyDefinition } from '@/services/schema';
+import schema, { SchemaClassDefinition } from '@/services/schema';
 
 import FieldGroup from './FieldGroup';
 
-const CLASS_MODEL_PROP = '@class';
 const BELOW_FOLD = Object.keys(schema.get('V').properties);
 
-const FIELD_GROUPS = [
-  ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-  ['relevance', 'subject'],
-  ['refSeq', 'untemplatedSeq'],
-  ['reviewStatus', 'reviews'],
-  ['reference1', 'break1Repr', 'break1Start', 'break1End', 'reference2', 'break2Repr', 'break2Start', 'break2End'],
-  ['source', 'sourceId', 'sourceIdVersion'],
-  ['startYear', 'completionYear'],
-  ['city', 'country'],
-  ['out', 'in'],
-];
+const BELOW_FOLD_ORDER = ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history'];
 
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'
@@ -47,24 +36,19 @@ const FIELD_GROUPS = [
  */
 export const sortAndGroupFields = (
   /** the current class model to base the form off of */
-  propertiesWithClass: Record<string, SchemaPropertyDefinition>,
+  model: Pick<SchemaClassDefinition, 'properties' | 'fieldOrder'>,
   opt: {
     /** flag to indicate if a collaspible section should be created */
     collapseExtra?: boolean;
-    order?: string[][];
-    excludeFieldsNotInOrder?: boolean;
     exclude?: string[];
   } = {},
 ) => {
   const mainFields: (string | string[])[] = [];
   const extraFields: (string | string[])[] = [];
 
-  if (!propertiesWithClass) {
-    return { extraFields, fields: mainFields };
-  }
-
-  opt.order?.forEach((group) => {
-    const filtered = group.filter((field) => Boolean(propertiesWithClass[field]) && !opt.exclude?.includes(field));
+  model.fieldOrder?.order?.forEach((groupOrItem) => {
+    const group = Array.isArray(groupOrItem) ? groupOrItem : [groupOrItem];
+    const filtered = group.filter((field) => Boolean(model.properties[field]) && !model.properties[field].hide && !opt.exclude?.includes(field));
 
     if (filtered.length === 1) {
       mainFields.push(filtered[0]);
@@ -73,12 +57,8 @@ export const sortAndGroupFields = (
     }
   });
 
-  if (opt.excludeFieldsNotInOrder) {
-    return { fields: mainFields, extraFields };
-  }
-
   const exclude = [...opt.exclude || [], ...mainFields.flat()];
-  const { [CLASS_MODEL_PROP]: _, ...properties } = omit(propertiesWithClass, exclude) as typeof propertiesWithClass;
+  const properties = omit(model.properties, exclude) as typeof model.properties;
   type Group = {
     fields: string[];
     aboveFold: boolean;
@@ -87,6 +67,7 @@ export const sortAndGroupFields = (
   const fieldsMap: Record<string, Group> = {};
 
   Object.values(properties).forEach((prop) => {
+    if (prop.hide) return;
     const required = Boolean(
       prop.mandatory
       && prop.default === undefined
@@ -99,8 +80,8 @@ export const sortAndGroupFields = (
     };
   });
 
-  FIELD_GROUPS?.forEach((group) => {
-    const filteredGroup = group.filter((key) => properties[key]);
+  [BELOW_FOLD_ORDER, ...model.fieldOrder?.groups ?? []].forEach((group) => {
+    const filteredGroup = group.filter((key) => properties[key] && !properties[key].hide);
     if (!filteredGroup.length) return;
     const first = filteredGroup[0];
     let { aboveFold, required } = fieldsMap[first];
@@ -142,23 +123,18 @@ interface FormLayoutProps {
   collapseExtra?: boolean;
   /** an array of fields not to display */
   exclusions?: string[];
-  /** properties that should be grouped together */
-  order?: string[][];
-  excludeFieldsNotInOrder?: boolean;
 }
 
 const FormLayout = ({
   exclusions = [],
   className = '',
   collapseExtra = false,
-  order,
-  excludeFieldsNotInOrder = false,
 }: FormLayoutProps) => {
   const form = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { extraFields, fields } = sortAndGroupFields(form.model.properties, {
-    collapseExtra, order, excludeFieldsNotInOrder, exclude: exclusions,
+  const { extraFields, fields } = sortAndGroupFields(form.model, {
+    collapseExtra, exclude: exclusions,
   });
 
   return (

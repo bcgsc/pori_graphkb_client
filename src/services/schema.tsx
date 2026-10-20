@@ -36,6 +36,12 @@ type SchemaClassDefinition = Omit<ClassDefinition, 'properties'> & {
    * ex. use for conditionally required fields.
    */
   conditional?: (properties: Record<string, SchemaPropertyDefinition>, state: { content: Record<string, any>; variant: FORM_VARIANT }) => void;
+  fieldOrder?: {
+    /** if provided, these will be the first fields shown in form in given order and groups */
+    order?: (string | string[])[];
+    /** if providered will determine how fields are grouped in the form (for those not in order) and order within each group but not overall position of group in form */
+    groups?: string[][];
+  };
 };
 
 /**
@@ -469,7 +475,13 @@ function prepareModels() {
       // schemaDefn.getProperties differs from model.properties in that it includes
       // all inherited properties
       properties: Object.fromEntries(Object.entries(schemaDefn.getProperties(model.name)).map(([name, prop]) => [name, { ...prop }])) as SchemaClassDefinition['properties'],
-    };
+    } as SchemaClassDefinition;
+
+    ['@class', 'groupRestrictions'].forEach((propName) => {
+      if (preparedModel.properties[propName]) {
+        preparedModel.properties[propName].hide = true;
+      }
+    });
 
     if (model.isEdge && model.name !== 'E') {
       preparedModel.properties.in = {
@@ -484,6 +496,7 @@ function prepareModels() {
         label: 'Source Record (out)',
         linkedClass: model.sourceModel || 'V',
       };
+      preparedModel.fieldOrder = { order: [['out', 'in']] };
     }
 
     if (schemaDefn.inheritsFrom(preparedModel.name, 'Variant')) {
@@ -493,6 +506,10 @@ function prepareModels() {
           preparedModel.properties[propName].readOnly = true;
         }
       });
+    }
+
+    if (schemaDefn.inheritsFrom(preparedModel.name, 'Ontology')) {
+      preparedModel.fieldOrder = { groups: [['source', 'sourceId', 'sourceIdVersion']] };
     }
 
     prepared[model.name] = preparedModel;
@@ -510,6 +527,10 @@ function prepareModels() {
       'CatalogueVariant',
     ],
     defaultFilterClassName: 'Variant',
+  };
+  prepared.Statement.fieldOrder = {
+    order: ['conditions', 'evidence', ['relevance', 'subject']],
+    groups: [['reviewStatus', 'reviews'], ['source', 'sourceId']],
   };
   prepared.PositionalVariant.properties.reference1.componentProps = {
     filterOptions: ['Signature', 'Feature'],
@@ -536,8 +557,26 @@ function prepareModels() {
     draftProps.reference2.mandatory = variantTypeName === 'fusion';
     draftProps.reference2.hide = variantTypeName !== 'fusion';
   };
+  prepared.PositionalVariant.fieldOrder = {
+    order: [
+      'type',
+      ['reference1', 'break1Repr', 'break1Start', 'break1End'],
+      ['reference2', 'break2Repr', 'break2Start', 'break2End'],
+      ['refSeq', 'untemplatedSeq', 'truncation', 'untemplatedSeqSize'],
+    ],
+  };
 
   prepared.CategoryVariant.properties.reference1.componentProps = prepared.PositionalVariant.properties.reference1.componentProps;
+  prepared.CategoryVariant.fieldOrder = {
+    groups: [['reference1', 'reference2']],
+  };
+  prepared.ClinicalTrial.fieldOrder = {
+    groups: [
+      ['city', 'country'],
+      ['source', 'sourceId', 'sourceIdVersion'],
+    ],
+  };
+
   return prepared;
 }
 

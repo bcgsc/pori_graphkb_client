@@ -28,7 +28,6 @@ import StatementSentence from '../SentencePreview/StatementSentence';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
-const FIELD_EXCLUSIONS = ['groupRestrictions'];
 const model = schema.get('Statement');
 
 interface StatementFormProps {
@@ -259,7 +258,6 @@ const StatementForm = ({
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          exclusions={FIELD_EXCLUSIONS}
         />
       </FormContext.Provider>
       <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>

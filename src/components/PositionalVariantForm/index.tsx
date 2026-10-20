@@ -14,6 +14,8 @@ import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
 import RecordAutocomplete from '../RecordAutocomplete';
+import EdgeTable from '../RecordForm/EdgeTable';
+import RelatedStatementsTable from '../RecordForm/RelatedStatementsTable';
 import { GeneralRecordType } from '../types';
 import BreakpointForm from './BreakpointForm';
 
@@ -201,6 +203,12 @@ const VariantForm = ({
           exclusions={FIELD_EXCLUSIONS}
           order={REMAINING_FIELD_ORDER}
         />
+        {variant === FORM_VARIANT.VIEW && (
+          <>
+            <EdgeTable recordId={String(form.content['@rid'])} />
+            <RelatedStatementsTable recordId={String(form.content['@rid'])} />
+          </>
+        )}
         <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>
         <div className="record-form__action-buttons">
           {variant === FORM_VARIANT.EDIT && !form.content.deletedAt

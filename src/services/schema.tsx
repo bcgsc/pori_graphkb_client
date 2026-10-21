@@ -533,6 +533,7 @@ function prepareModels() {
     draftProps.refSeq.mandatory = isSubstitution;
     draftProps.untemplatedSeq.mandatory = isSubstitution;
     draftProps.reference2.mandatory = variantTypeName === 'fusion';
+    draftProps.reference2.hide = variantTypeName !== 'fusion';
   };
 
   prepared.CategoryVariant.properties.reference1.componentProps = prepared.PositionalVariant.properties.reference1.componentProps;

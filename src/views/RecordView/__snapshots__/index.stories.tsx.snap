@@ -6234,80 +6234,76 @@ exports[`ViewCategoryVariant snapshot 1`] = `
               </div>
             </div>
           </li>
-          <ul
-            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            <div
+              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
             >
               <div
-                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
               >
-                <div
-                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
-                  <label
-                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="true"
-                    for="_r_XXXX_"
-                    id="_r_XXXX_-label"
+                  reference1
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                   >
-                    reference1
-                    <span
-                      aria-hidden="true"
-                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                    >
-                       
-                      *
-                    </span>
-                  </label>
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
                   <div
-                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    class="detail-chip"
                   >
                     <div
-                      class="detail-chip"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
                     >
-                      <div
-                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                        data-item-index="0"
-                        role="button"
-                        tabindex="-1"
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                       >
-                        <span
-                          class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
-                        >
-                          NOTCH4 (#128:91665)
-                        </span>
-                      </div>
+                        NOTCH4 (#128:91665)
+                      </span>
                     </div>
-                    <input
-                      aria-autocomplete="list"
-                      aria-describedby="_r_XXXX_-helper-text"
-                      aria-expanded="false"
-                      aria-invalid="false"
-                      autocapitalize="none"
-                      autocomplete="off"
-                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                      id="_r_XXXX_"
-                      placeholder=""
-                      readonly=""
-                      required=""
-                      role="combobox"
-                      spellcheck="false"
-                      type="text"
-                      value=""
-                    />
                   </div>
-                  <p
-                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    id="_r_XXXX_-helper-text"
-                  >
-                    Generally this is the gene which a mutation or variant is defined with respect to
-                  </p>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    readonly=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
                 </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  Generally this is the gene which a mutation or variant is defined with respect to
+                </p>
               </div>
-            </li>
-          </ul>
+            </div>
+          </li>
           <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
           >
@@ -6575,80 +6571,76 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
               </div>
             </div>
           </li>
-          <ul
-            class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            <div
+              class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
             >
               <div
-                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
               >
-                <div
-                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
-                  <label
-                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="true"
-                    for="_r_XXXX_"
-                    id="_r_XXXX_-label"
+                  reference1
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                   >
-                    reference1
-                    <span
-                      aria-hidden="true"
-                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                    >
-                       
-                      *
-                    </span>
-                  </label>
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
                   <div
-                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    class="detail-chip"
                   >
                     <div
-                      class="detail-chip"
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
                     >
-                      <div
-                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                        data-item-index="0"
-                        role="button"
-                        tabindex="-1"
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                       >
-                        <span
-                          class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
-                        >
-                          NOTCH4 (#128:91665)
-                        </span>
-                      </div>
+                        NOTCH4 (#128:91665)
+                      </span>
                     </div>
-                    <input
-                      aria-autocomplete="list"
-                      aria-describedby="_r_XXXX_-helper-text"
-                      aria-expanded="false"
-                      aria-invalid="false"
-                      autocapitalize="none"
-                      autocomplete="off"
-                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                      id="_r_XXXX_"
-                      placeholder=""
-                      readonly=""
-                      required=""
-                      role="combobox"
-                      spellcheck="false"
-                      type="text"
-                      value=""
-                    />
                   </div>
-                  <p
-                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    id="_r_XXXX_-helper-text"
-                  >
-                    Generally this is the gene which a mutation or variant is defined with respect to
-                  </p>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    readonly=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
                 </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  Generally this is the gene which a mutation or variant is defined with respect to
+                </p>
               </div>
-            </li>
-          </ul>
+            </div>
+          </li>
           <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
           >

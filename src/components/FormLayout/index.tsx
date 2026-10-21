@@ -11,10 +11,9 @@ import {
 import { omit } from 'lodash';
 import React, { useState } from 'react';
 
-import { useFormContext } from '@/components/hooks/useSchemaForm';
+import FormField from '@/components/FormField';
+import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
 import schema, { SchemaClassDefinition } from '@/services/schema';
-
-import FieldGroup from './FieldGroup';
 
 const BELOW_FOLD = Object.keys(schema.get('V').properties);
 
@@ -116,6 +115,29 @@ export const sortAndGroupFields = (
   return { fields: mainFields, extraFields };
 };
 
+interface FieldGroupProps {
+  /** the property names in order to be rendered (array of array of strings for groups) */
+  ordering: (string | string[])[];
+}
+
+/**
+ * Given some ordering of fields (possibly grouped) return the set of fields
+ */
+const FieldGroup = ({ ordering }: FieldGroupProps) => ordering.map((itemOrGroup) => {
+  if (Array.isArray(itemOrGroup)) {
+    return (
+      <List key={itemOrGroup.join('--')} className="form-layout__content-subgroup">
+        {itemOrGroup.map((item) => (
+          <FormField key={item} name={item} />
+        ))}
+      </List>
+    );
+  }
+  return (
+    <FormField key={itemOrGroup} name={itemOrGroup} />
+  );
+});
+
 interface FormLayoutProps {
   /** css class to add to main element */
   className?: string;
@@ -133,42 +155,34 @@ const FormLayout = ({
   const form = useFormContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const hidden = Object.keys(form.model.properties).filter((name) => shouldHideField(form.variant, form.model.properties[name], form.content[name]));
+
   const { extraFields, fields } = sortAndGroupFields(form.model, {
-    collapseExtra, exclude: exclusions,
+    collapseExtra, exclude: [...exclusions, ...hidden],
   });
 
   return (
     <div className={`form-layout ${className}`}>
-      {form.model && (
+      <List className="form-layout__content">
+        <FieldGroup ordering={fields} />
+      </List>
+      {extraFields.length > 0 && (
         <>
-          <List className="form-layout__content">
-            <FieldGroup
-              exclusions={exclusions}
-              ordering={fields}
+          <ListItem onClick={() => setIsExpanded(!isExpanded)}>
+            <ListItemText
+              primary={
+                isExpanded
+                  ? 'Close to hide optional fields'
+                  : 'Expand to see all optional fields'
+              }
             />
-          </List>
-          {extraFields.length > 0 && (
-            <>
-              <ListItem onClick={() => setIsExpanded(!isExpanded)}>
-                <ListItemText
-                  primary={
-                    isExpanded
-                      ? 'Close to hide optional fields'
-                      : 'Expand to see all optional fields'
-                  }
-                />
-                {isExpanded ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                <List className="form-layout__content">
-                  <FieldGroup
-                    exclusions={exclusions}
-                    ordering={extraFields}
-                  />
-                </List>
-              </Collapse>
-            </>
-          )}
+            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+            <List className="form-layout__content">
+              <FieldGroup ordering={extraFields} />
+            </List>
+          </Collapse>
         </>
       )}
     </div>

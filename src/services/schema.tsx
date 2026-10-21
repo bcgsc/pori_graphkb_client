@@ -490,6 +490,7 @@ function prepareModels() {
       ['hgvsType', 'zygosity', 'germline'].forEach((propName) => {
         if (preparedModel.properties[propName]) {
           preparedModel.properties[propName].deprecated = true;
+          preparedModel.properties[propName].readOnly = true;
         }
       });
     }

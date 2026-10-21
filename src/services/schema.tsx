@@ -140,7 +140,7 @@ function validateEmbedded(
       };
     }
   }
-  const model = schemaDefn.get(value['@class'] ?? modelName);
+  const model = getModel(value['@class'] ?? modelName);
   Object.entries(model.properties).forEach(([propName, propModel]) => {
     properties[propName] = validateValue(propModel, value[propName]);
     valid &&= properties[propName].valid;

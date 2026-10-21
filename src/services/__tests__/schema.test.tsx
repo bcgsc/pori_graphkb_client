@@ -247,7 +247,7 @@ test.each(
       },
       {
         valid: false,
-        properties: { pos: { message: 'Required Value', valid: false } },
+        properties: { pos: { message: 'Required Value', valid: false }, '@class': { valid: true } },
       },
     ],
     [
@@ -280,7 +280,7 @@ test.each(
       { '@class': 'GenomicPosition', pos: 10 },
       {
         valid: true,
-        properties: { pos: { valid: true } },
+        properties: { pos: { valid: true }, '@class': { valid: true } },
       },
     ],
     [
@@ -291,7 +291,9 @@ test.each(
       { '@class': 'CytoBandPosition', pos: 10 },
       {
         valid: false,
-        properties: { arm: { valid: false, message: 'Required Value' }, majorBand: { valid: true }, minorBand: { valid: true } },
+        properties: {
+          arm: { valid: false, message: 'Required Value' }, majorBand: { valid: true }, minorBand: { valid: true }, '@class': { valid: true },
+        },
       },
     ],
     [
@@ -303,8 +305,8 @@ test.each(
       {
         valid: false,
         items: [
-          { valid: true, properties: { pos: { valid: true } } },
-          { valid: false, properties: { pos: { valid: false, message: 'Required Value' } } },
+          { valid: true, properties: { pos: { valid: true }, '@class': { valid: true } } },
+          { valid: false, properties: { pos: { valid: false, message: 'Required Value' }, '@class': { valid: true } } },
         ],
       },
     ],

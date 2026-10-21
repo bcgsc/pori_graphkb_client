@@ -76,6 +76,7 @@ interface DropDownSelectProps {
   /** Parent property to bind output data to. */
   value?: string;
   readOnly?: boolean;
+  'aria-label'?: string;
 }
 
 /**
@@ -97,6 +98,7 @@ function DropDownSelect(props: DropDownSelectProps) {
     disabled: disabledProp = false,
     IconComponent = ArrowDropDownIcon,
     readOnly,
+    'aria-label': ariaLabel,
   } = props;
   const disabled = disabledProp && !readOnly;
 
@@ -147,7 +149,7 @@ function DropDownSelect(props: DropDownSelectProps) {
           disableUnderline: readOnly,
           readOnly,
         },
-        htmlInput: innerProps,
+        htmlInput: { 'aria-label': ariaLabel, ...innerProps },
       }}
       value={value || ''}
     >{optionsDisplay}

@@ -6312,22 +6312,14 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
             class="action-button"
           >
             <button
-              class="Mui-focusVisible MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+              class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
               SUBMIT
               <span
                 class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
-              >
-                <span
-                  class="MuiTouchRipple-ripple MuiTouchRipple-ripplePulsate MuiTouchRipple-rippleVisible css-XXXX-MuiTouchRipple-ripple"
-                >
-                  <span
-                    class="MuiTouchRipple-child MuiTouchRipple-childPulsate"
-                  />
-                </span>
-              </span>
+              />
             </button>
           </div>
         </div>

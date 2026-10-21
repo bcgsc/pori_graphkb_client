@@ -172,8 +172,8 @@ const FormLayout = ({
             <ListItemText
               primary={
                 isExpanded
-                  ? 'Close to hide optional fields'
-                  : 'Expand to see all optional fields'
+                  ? 'Close to hide additional fields'
+                  : 'Expand to see additional fields'
               }
             />
             {isExpanded ? <ExpandLess /> : <ExpandMore />}

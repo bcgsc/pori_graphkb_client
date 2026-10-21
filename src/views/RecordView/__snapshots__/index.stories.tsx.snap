@@ -448,7 +448,7 @@ exports[`EditAliasOf snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -1059,7 +1059,7 @@ exports[`EditCategoryVariant snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -2100,7 +2100,7 @@ exports[`EditPositionalVariant snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -3541,7 +3541,7 @@ exports[`EditStatement snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -4981,7 +4981,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -5417,7 +5417,7 @@ exports[`ViewAliasOf snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -5842,7 +5842,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Close to hide optional fields
+              Close to hide additional fields
             </span>
           </div>
           <svg
@@ -6357,7 +6357,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -6694,7 +6694,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Close to hide optional fields
+              Close to hide additional fields
             </span>
           </div>
           <svg
@@ -7720,7 +7720,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -8333,7 +8333,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Close to hide optional fields
+              Close to hide additional fields
             </span>
           </div>
           <svg
@@ -9538,7 +9538,7 @@ exports[`ViewStatement snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Expand to see all optional fields
+              Expand to see additional fields
             </span>
           </div>
           <svg
@@ -10503,7 +10503,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
             <span
               class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
             >
-              Close to hide optional fields
+              Close to hide additional fields
             </span>
           </div>
           <svg

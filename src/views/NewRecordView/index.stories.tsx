@@ -235,7 +235,7 @@ export const NewStatement = meta.story({
 export const NewStatementOptionalFieldsExpanded = NewStatement.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
+    await userEvent.click(await canvas.findByText('Expand to see additional fields'));
     await expect(canvas.findByText('displayNameTemplate')).resolves.toBeInTheDocument();
   },
 });

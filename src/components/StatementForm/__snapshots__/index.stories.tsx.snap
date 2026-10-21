@@ -885,7 +885,7 @@ exports[`Editing snapshot 1`] = `
           <span
             class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
           >
-            Expand to see all optional fields
+            Expand to see additional fields
           </span>
         </div>
         <svg
@@ -1800,7 +1800,7 @@ exports[`New snapshot 1`] = `
           <span
             class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
           >
-            Expand to see all optional fields
+            Expand to see additional fields
           </span>
         </div>
         <svg

@@ -91,20 +91,6 @@
   }
 }
 
-.detail-closed {
-  width: 0;
-
-  @media (max-width: globals.$breakpoint-sm) {
-    min-width: 0;
-  }
-}
-
 .nested-spacer {
   width: 1rem;
-}
-
-.detail-important,
-.detail-other,
-.detail-relationships {
-  @include globals.paper;
 }

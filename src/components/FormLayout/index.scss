@@ -2,8 +2,7 @@
 
 .form-layout {
   &__content,
-  &__content-subgroup,
-  &__content--long {
+  &__content-subgroup {
     float: left;
     max-width: 100%;
     width: 100%;
@@ -26,10 +25,6 @@
     > :not(:last-child) {
       margin-bottom: 10px;
     }
-  }
-
-  &__content--long {
-    display: block;
   }
 
   & &__content-subgroup {

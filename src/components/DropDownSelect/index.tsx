@@ -2,15 +2,10 @@ import './index.scss';
 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
-  FilledInput,
-  FormControl,
-  FormHelperText,
-  Input,
-  InputLabel,
   ListItemText,
   MenuItem,
-  OutlinedInput,
   Select,
+  TextField,
 } from '@mui/material';
 import React, { ReactNode } from 'react';
 
@@ -21,34 +16,33 @@ interface SelectOption {
   caption?: string;
 }
 
-const DefaultOptionComponent = (option, disabled) => {
-  const key = option.key === undefined
-    ? option
-    : option.key;
+function getOption(option: SelectOption | string): SelectOption {
+  if (typeof option === 'string') {
+    return { value: option, label: option, key: option };
+  }
+  return option;
+}
 
-  const value = option.value === undefined
-    ? option
-    : option.value;
-
-  const label = option.label === undefined
-    ? option || 'None'
-    : option.label;
+const getOptionNode = (props: { key: string; disabled: boolean; } & SelectOption): ReactNode => {
+  const {
+    key, value, label, caption, disabled,
+  } = props;
 
   return (
     <MenuItem
       key={key}
       className="option-select__option"
       component="li"
-      value={value}
+      value={value as string}
     >
       <ListItemText
         classes={{
           primary: disabled ? 'disabled-text' : '',
-          multiline: option.caption ? 'margin-reset' : '',
-          root: option.caption ? 'margin-reset' : '',
+          multiline: caption ? 'margin-reset' : '',
+          root: caption ? 'margin-reset' : '',
         }}
         primary={label}
-        secondary={option.caption || ''}
+        secondary={caption || ''}
         slotProps={{
           secondary: { className: 'option-select__option-description' },
         }}
@@ -61,11 +55,7 @@ type SelectProps = React.ComponentProps<typeof Select>;
 
 interface DropDownSelectProps {
   IconComponent?: SelectProps['IconComponent'];
-  /** Function to produce list items. */
-  children?: (option: SelectOption | string, disabled: boolean | undefined) => ReactNode;
   className?: string;
-  /** Flag for dense variant, which has smaller font size. */
-  dense?: boolean;
   disabled?: boolean;
   /** Error flag for input component. */
   error?: boolean;
@@ -85,9 +75,8 @@ interface DropDownSelectProps {
   required?: boolean;
   /** Parent property to bind output data to. */
   value?: string;
-  /** Material UI Select variant (outlined, filled, standard) */
-  variant?: React.ComponentProps<typeof FormControl>['variant'];
   readOnly?: boolean;
+  'aria-label'?: string;
 }
 
 /**
@@ -98,67 +87,73 @@ function DropDownSelect(props: DropDownSelectProps) {
     options = [],
     value,
     onChange,
-    name = '',
+    name,
     label = '',
-    children = DefaultOptionComponent,
     required = false,
-    id,
+    id: idProp,
     innerProps = {},
     error = false,
     helperText = '',
-    dense = false,
-    variant = 'standard',
     className = '',
-    disabled = false,
+    disabled: disabledProp = false,
     IconComponent = ArrowDropDownIcon,
     readOnly,
+    'aria-label': ariaLabel,
   } = props;
+  const disabled = disabledProp && !readOnly;
 
-  const optionsDisplay = options.map((option) => children(option, disabled));
+  const id = idProp;
+  let valueIsOption = false;
+  const optionsDisplay: ReactNode[] = [];
+  options.forEach((option) => {
+    const opt = getOption(option);
 
-  let InputComponent = Input;
+    if (opt.value === value) {
+      valueIsOption = true;
+    }
+    optionsDisplay.push(
+      getOptionNode({
+        key: opt.key ?? String(opt.value),
+        caption: opt.caption,
+        disabled,
+        label: opt.label,
+        value: opt.value,
+      }),
+    );
+  });
 
-  if (variant === 'outlined') {
-    InputComponent = OutlinedInput;
+  // show the invalid value if readOnly
+  if (readOnly && !valueIsOption && value) {
+    optionsDisplay.push(getOptionNode({
+      key: '_invalid_option', disabled, label: value, value,
+    }));
   }
-  if (variant === 'filled') {
-    InputComponent = FilledInput;
-  }
+
   return (
-    <FormControl
+    <TextField
       className={`option-select ${className}`}
       disabled={disabled}
       error={error}
+      helperText={helperText}
       id={id}
-      variant={variant}
-    >
-      <InputLabel
-        htmlFor={`option-select-${name}`}
-        required={required}
-        style={{
-          fontSize: dense ? '0.8125rem' : '',
-        }}
-      >
-        {label}
-      </InputLabel>
-      <Select
-        disableUnderline={readOnly}
-        IconComponent={readOnly
-          ? 'span'
-          : IconComponent}
-        input={<InputComponent id={`option-select-${name}`} name={name} />}
-        inputProps={innerProps}
-        onChange={!readOnly ? onChange : undefined}
-        readOnly={readOnly}
-        style={{
-          fontSize: dense ? '0.8125rem' : '',
-        }}
-        value={value || ''}
-      >
-        {optionsDisplay}
-      </Select>
-      <FormHelperText>{helperText}</FormHelperText>
-    </FormControl>
+      label={label}
+      name={name}
+      onChange={!readOnly ? onChange : undefined}
+      required={required}
+      select
+      slotProps={{
+        select: {
+          IconComponent: readOnly
+            ? 'span'
+            : IconComponent,
+          disableUnderline: readOnly,
+          readOnly,
+        },
+        htmlInput: { 'aria-label': ariaLabel, ...innerProps },
+      }}
+      value={value || ''}
+    >{optionsDisplay}
+    </TextField>
   );
 }
 

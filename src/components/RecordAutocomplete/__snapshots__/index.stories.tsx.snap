@@ -577,7 +577,7 @@ exports[`MultiWithValueAfterFocus snapshot 1`] = `
         class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
         id="_r_XXXX_-helper-text"
       >
-        May take more than one value
+        May take more than one value.
       </p>
     </div>
   </div>

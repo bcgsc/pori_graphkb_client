@@ -1,0 +1,1880 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CdsPositionVariant snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              offset
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="offset"
+                id="_r_XXXX_"
+                name="offset"
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`CdsPositionVariantReadOnly snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                readonly=""
+                required=""
+              >
+                49
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              offset
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="offset"
+                id="_r_XXXX_"
+                name="offset"
+                readonly=""
+              />
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`CdsPositionVariantWithValue snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              >
+                49
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              offset
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="offset"
+                id="_r_XXXX_"
+                name="offset"
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`CytobandPositionVariant snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              arm
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                aria-required="true"
+                class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                role="combobox"
+                tabindex="0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="notranslate"
+                >
+                  ​
+                </span>
+              </div>
+              <input
+                aria-hidden="true"
+                aria-invalid="false"
+                class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                name="arm"
+                required=""
+                tabindex="-1"
+                value=""
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                data-testid="ArrowDropDownIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="m7 10 5 5 5-5z"
+                />
+              </svg>
+            </div>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              majorBand
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="majorBand"
+                id="_r_XXXX_"
+                name="majorBand"
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              minorBand
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="minorBand"
+                id="_r_XXXX_"
+                name="minorBand"
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`CytobandPositionVariantDisabled snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+          >
+            <label
+              class="Mui-disabled Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              arm
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                aria-disabled="true"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                aria-required="true"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                role="combobox"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                  >
+                    p
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                  />
+                </div>
+              </div>
+              <input
+                aria-hidden="true"
+                aria-invalid="false"
+                class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                disabled=""
+                name="arm"
+                required=""
+                tabindex="-1"
+                value="p"
+              />
+              <svg
+                aria-hidden="true"
+                class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                data-testid="ArrowDropDownIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="m7 10 5 5 5-5z"
+                />
+              </svg>
+            </div>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              majorBand
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="majorBand"
+                disabled=""
+                id="_r_XXXX_"
+                name="majorBand"
+              >
+                1
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              minorBand
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="minorBand"
+                disabled=""
+                id="_r_XXXX_"
+                name="minorBand"
+              >
+                2
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              arm
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                aria-required="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-readOnly MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                role="combobox"
+                tabindex="0"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    p
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                  />
+                </div>
+              </div>
+              <input
+                aria-hidden="true"
+                aria-invalid="false"
+                class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                name="arm"
+                required=""
+                tabindex="-1"
+                value="p"
+              />
+              <span
+                class="MuiSelect-icon MuiSelect-iconStandard css-XXXX-MuiNativeSelect-root-MuiSelect-icon"
+              />
+            </div>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              majorBand
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="majorBand"
+                id="_r_XXXX_"
+                name="majorBand"
+                readonly=""
+              >
+                1
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              minorBand
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="minorBand"
+                id="_r_XXXX_"
+                name="minorBand"
+                readonly=""
+              >
+                2
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`CytobandPositionVariantWithValue snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              arm
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                aria-required="true"
+                class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                role="combobox"
+                tabindex="0"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    p
+                  </span>
+                  <p
+                    class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                  />
+                </div>
+              </div>
+              <input
+                aria-hidden="true"
+                aria-invalid="false"
+                class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                name="arm"
+                required=""
+                tabindex="-1"
+                value="p"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                data-testid="ArrowDropDownIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="m7 10 5 5 5-5z"
+                />
+              </svg>
+            </div>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              majorBand
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="majorBand"
+                id="_r_XXXX_"
+                name="majorBand"
+              >
+                1
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              minorBand
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="minorBand"
+                id="_r_XXXX_"
+                name="minorBand"
+              >
+                2
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              <span
+                aria-hidden="true"
+                class="notranslate"
+              >
+                ​
+              </span>
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`GenomicPositionVariant snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The genomic/nucleotide number
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`GenomicPositionVariantDisabled snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-disabled Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                disabled=""
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              >
+                400
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-disabled Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The genomic/nucleotide number
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`GenomicPositionVariantReadOnly snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                readonly=""
+                required=""
+              >
+                400
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The genomic/nucleotide number
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`GenomicPositionVariantWithValue snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              >
+                400
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The genomic/nucleotide number
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`NoVariantEmpty snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The genomic/nucleotide number
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`ProteinPositionVariant snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The Amino Acid number
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="false"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              refAA
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="refAA"
+                id="_r_XXXX_"
+                name="refAA"
+              />
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The reference Amino Acid (single letter notation)
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`ProteinPositionVariantDisabled snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-disabled Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                disabled=""
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              >
+                255
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-disabled Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The Amino Acid number
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              refAA
+            </label>
+            <div
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="refAA"
+                disabled=""
+                id="_r_XXXX_"
+                name="refAA"
+              >
+                D
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-disabled MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The reference Amino Acid (single letter notation)
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                readonly=""
+                required=""
+              >
+                255
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The Amino Acid number
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              refAA
+            </label>
+            <div
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="refAA"
+                id="_r_XXXX_"
+                name="refAA"
+                readonly=""
+              >
+                D
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The reference Amino Acid (single letter notation)
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;
+
+exports[`ProteinPositionVariantWithValue snapshot 1`] = `
+<div>
+  <ul
+    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  >
+    <label
+      class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+    />
+    <div
+      class="form-layout"
+    >
+      <ul
+        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      >
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              pos
+              <span
+                aria-hidden="true"
+                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+              >
+                 
+                *
+              </span>
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="pos"
+                id="_r_XXXX_"
+                name="pos"
+                required=""
+              >
+                255
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The Amino Acid number
+            </p>
+          </div>
+        </li>
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              refAA
+            </label>
+            <div
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <textarea
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-invalid="false"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                data-testid="refAA"
+                id="_r_XXXX_"
+                name="refAA"
+              >
+                D
+              </textarea>
+              <textarea
+                aria-hidden="true"
+                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                readonly=""
+                tabindex="-1"
+              />
+            </div>
+            <p
+              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              The reference Amino Acid (single letter notation)
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ul>
+</div>
+`;

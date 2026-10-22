@@ -1,14 +1,77 @@
+import React, { ReactNode, useMemo } from 'react';
 import { expect, fn } from 'storybook/test';
 
+import { FormContext } from '@/components/hooks/useSchemaForm';
+import { FORM_VARIANT } from '@/components/util';
+import schema, { SchemaPropertyDefinition } from '@/services/schema';
 import preview from '#.storybook/preview';
 
-import Component from '.';
+import Component from './EmbeddedForm';
 
-const meta = preview.meta({
+type FormContextArgs = {
+  value?: any;
+  errorMessage?: string | null | undefined;
+  formVariant?: FORM_VARIANT;
+  model?: Partial<SchemaPropertyDefinition>
+};
+
+type CustomArgs = React.ComponentProps<typeof Component> & FormContextArgs;
+
+const break1StartModel = schema.get('PositionalVariant').properties.break1Start;
+
+function MockProvider({
+  children, value, name, errorMessage, formVariant, model,
+}: { children: ReactNode; name: string } & FormContextArgs) {
+  const state = useMemo(() => ({
+    update: fn(),
+    updateFieldEvent: fn(),
+    updateField: fn(),
+    setDirty: fn(),
+    isDirty: value !== undefined,
+    validation: {
+      valid: !errorMessage,
+      properties: errorMessage ? { [name]: { message: errorMessage, valid: false } } : {},
+    },
+    content: {
+      [name]: value,
+    },
+    variant: formVariant ?? FORM_VARIANT.NEW,
+    model: {
+      name: 'Mock',
+      properties: {
+        [name]: { name, type: 'string' as const, ...model },
+      },
+    },
+    disabled: false,
+  }), [value, errorMessage, name, formVariant, model]);
+
+  return <FormContext.Provider value={state}>{children}</FormContext.Provider>;
+}
+
+const meta = preview.type<{ args: CustomArgs }>().meta({
   component: Component,
   args: {
     onChange: fn(),
     name: 'break1Start',
+    defaultLinkedClass: 'GenomicPosition',
+    model: break1StartModel,
+  },
+  render: (args) => {
+    const {
+      value, errorMessage, name, formVariant, model, ...rest
+    } = args;
+    return (
+      <MockProvider
+        errorMessage={errorMessage}
+        formVariant={formVariant}
+        model={model}
+        name={name ?? ''}
+        value={value}
+      >
+        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+        <Component {...rest} name={name} />
+      </MockProvider>
+    );
   },
 });
 
@@ -17,7 +80,6 @@ export const NoVariantEmpty = meta.story();
 export const GenomicPositionVariant = meta.story({
   args: {
     value: { '@class': 'GenomicPosition' },
-    variant: 'GenomicPosition',
   },
 });
 
@@ -32,7 +94,7 @@ export const GenomicPositionVariantDisabled = GenomicPositionVariantWithValue.ex
 });
 
 export const GenomicPositionVariantReadOnly = GenomicPositionVariantWithValue.extend({
-  args: { readOnly: true },
+  args: { formVariant: FORM_VARIANT.VIEW, readOnly: true },
 });
 
 export const ProteinPositionVariant = meta.story({
@@ -41,7 +103,7 @@ export const ProteinPositionVariant = meta.story({
     variant: 'ProteinPosition',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/position/)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/^pos/)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/refAA/)).toBeInTheDocument();
     await expect(canvas.queryByLabelText(/arm/i)).not.toBeInTheDocument();
   },
@@ -58,7 +120,7 @@ export const ProteinPositionVariantDisabled = ProteinPositionVariantWithValue.ex
 });
 
 export const ProteinPositionVariantReadOnly = ProteinPositionVariantWithValue.extend({
-  args: { readOnly: true },
+  args: { formVariant: FORM_VARIANT.VIEW, readOnly: true },
 });
 
 export const CytobandPositionVariant = meta.story({
@@ -70,23 +132,8 @@ export const CytobandPositionVariant = meta.story({
     await expect(canvas.getByLabelText(/arm/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/majorBand/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/minorBand/i)).toBeInTheDocument();
-    await expect(canvas.queryByLabelText(/position/i)).not.toBeInTheDocument();
+    await expect(canvas.queryByLabelText(/^pos/i)).not.toBeInTheDocument();
   },
-});
-
-CytobandPositionVariant.test('handler is called when user changes fields', async ({ canvas, userEvent, args }) => {
-  await userEvent.type(await canvas.findByLabelText(/arm/i), 'p');
-  await userEvent.type(await canvas.findByLabelText(/majorBand/i), '1');
-  await userEvent.type(await canvas.findByLabelText(/minorBand/i), '2');
-
-  expect(args.onChange).toHaveBeenLastCalledWith({
-    target: {
-      name: 'break1Start',
-      value: {
-        '@class': 'CytobandPosition', arm: 'p', majorBand: '1', minorBand: '2',
-      },
-    },
-  });
 });
 
 export const CytobandPositionVariantWithValue = CytobandPositionVariant.extend({
@@ -102,7 +149,7 @@ export const CytobandPositionVariantDisabled = CytobandPositionVariantWithValue.
 });
 
 export const CytobandPositionVariantReadOnly = CytobandPositionVariantWithValue.extend({
-  args: { readOnly: true },
+  args: { formVariant: FORM_VARIANT.VIEW, readOnly: true },
 });
 
 export const CdsPositionVariant = meta.story({
@@ -111,7 +158,7 @@ export const CdsPositionVariant = meta.story({
     variant: 'CdsPosition',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/position/i)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/^pos/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/offset/i)).toBeInTheDocument();
   },
 });
@@ -125,15 +172,5 @@ export const CdsPositionVariantWithValue = CdsPositionVariant.extend({
 });
 
 export const CdsPositionVariantReadOnly = CdsPositionVariantWithValue.extend({
-  args: { readOnly: true },
-});
-
-export const GenomicPositionBaseVariant = meta.story({
-  args: {
-    baseVariant: 'GenomicPosition',
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/position/i)).toBeInTheDocument();
-    await expect(canvas.queryByLabelText(/offset/i)).not.toBeInTheDocument();
-  },
+  args: { formVariant: FORM_VARIANT.VIEW, readOnly: true },
 });

@@ -1,5 +1,5 @@
 import './preview.css';
-
+import type { UserEventObject } from 'storybook/test';
 import React, { Suspense } from 'react';
 import ThemeProvider from '../src/theme';
 import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
@@ -10,14 +10,21 @@ import { GeneralRecordType, QueryBody } from '../src/components/types';
 import { Decorator, definePreview, StoryObj } from '@storybook/react-vite';
 import addonTest from '@storybook/addon-vitest';
 import { MswParameters } from 'msw-storybook-addon'
-import { PreviewAddon } from 'storybook/internal/csf';
+import { Canvas, PreviewAddon } from 'storybook/internal/csf';
 import { AppRoutes } from '../src/views/MainView';
 import { MemoryRouter } from 'react-router';
 import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
-import { expect, waitFor } from 'storybook/test';
+import { expect, waitFor, screen } from 'storybook/test';
 import { CircularProgress } from '@mui/material';
 import ErrorView from '../src/views/ErrorView';
+
+export async function selectOption(canvas: Canvas, userEvent: UserEventObject, label: string | RegExp, optionValue: string | RegExp) {
+  const dropdown = await canvas.findByRole('combobox', { name: label });
+  await userEvent.click(dropdown);
+  const option = await screen.findByRole('option', { name: optionValue });
+  await userEvent.click(option);
+}
 
 function wrapAsResponse<T extends Record<string, any> | any[]>(maybeResponse: T | HttpResponse<T>): HttpResponse<T> {
   if (maybeResponse instanceof Response) {

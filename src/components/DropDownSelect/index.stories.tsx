@@ -17,9 +17,6 @@ export const Empty = meta.story({
   args: {
     options: ['apple', 'banana', 'orange'],
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText('Fruit')).toHaveValue('');
-  },
 });
 
 export const WithValue = meta.story({
@@ -28,7 +25,7 @@ export const WithValue = meta.story({
     value: 'apple',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText('Fruit')).toHaveValue('apple');
+    await expect(canvas.getByLabelText('Fruit')).toHaveTextContent('apple');
   },
 });
 
@@ -38,6 +35,13 @@ export const Disabled = WithValue.extend({
 
 export const ReadOnly = WithValue.extend({
   args: { readOnly: true },
+});
+
+export const ReadOnlyWithInvalidValue = Empty.extend({
+  args: { readOnly: true, value: 'invalid' },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByLabelText('Fruit')).toHaveTextContent('invalid');
+  },
 });
 
 export const WithError = WithValue.extend({
@@ -56,6 +60,6 @@ export const ComplexOptionsWithValueSelect = meta.story({
     value: 'apple',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText('Fruit')).toHaveValue('apple');
+    await expect(canvas.getByLabelText('Fruit')).toHaveTextContent('apple');
   },
 });

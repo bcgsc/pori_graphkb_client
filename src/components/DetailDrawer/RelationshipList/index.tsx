@@ -1,4 +1,3 @@
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinkIcon from '@mui/icons-material/Link';
@@ -79,7 +78,7 @@ function RelationshipList(props: RelationshipListProps) {
               <ListItemText
                 className="detail-li-text"
                 primary={<Typography variant="subtitle1">{preview}</Typography>}
-                secondary={schemaDefn.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
+                secondary={schema.get(edge['@class'])?.[isIn ? 'reverseName' : 'name']}
               />
               {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>

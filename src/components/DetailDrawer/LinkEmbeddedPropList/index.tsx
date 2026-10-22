@@ -1,4 +1,3 @@
-import { PropertyDefinition as PropDefinition } from '@bcgsc-pori/graphkb-schema';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
@@ -13,7 +12,7 @@ import React, { ReactNode } from 'react';
 
 import RecordIdLink from '@/components/RecordIdLink';
 import { GeneralRecordType } from '@/components/types';
-import schema from '@/services/schema';
+import schema, { SchemaPropertyDefinition } from '@/services/schema';
 import util from '@/services/util';
 
 interface LinkEmbeddedPropListProps {
@@ -28,7 +27,7 @@ interface LinkEmbeddedPropListProps {
   /** opened dropdowns in drawer */
   opened?: string[];
   /** link/embedded property model */
-  prop: PropDefinition;
+  prop: SchemaPropertyDefinition;
   /** contains link/embedded records */
   value: GeneralRecordType;
 }

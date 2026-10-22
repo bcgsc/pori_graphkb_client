@@ -1,13 +1,14 @@
 /**
  * Wrapper for api, handles all requests and special functions.
  */
-import { schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
+import { util } from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
 
 import { GeneralRecordType, QueryBody } from '@/components/types';
 
+import schema from '../schema';
 import { request, RequestCallOptions } from './call';
 import {
   getQueryFromSearch, getSearchFromQuery,
@@ -124,7 +125,7 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
     neighbors: 1,
   };
 
-  if ((model?.name && schemaDefn.inheritsFrom(model.name, 'Ontology')) || model?.name === 'Ontology') {
+  if ((model?.name && schema.inheritsFrom(model.name, 'Ontology')) || model?.name === 'Ontology') {
     body.orderBy = ['source.sort', 'name', 'sourceId'];
   }
   return body;

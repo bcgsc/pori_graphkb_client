@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
   Checkbox,
@@ -11,14 +10,20 @@ import React, { useCallback, useState } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
-import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
+import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import {
   FORM_VARIANT,
 } from '@/components/util';
+import schema from '@/services/schema';
 
 const MODEL_NAME = 'StatementReview';
+const { comment, status } = schema.get(MODEL_NAME).properties;
+
+const model = {
+  name: 'StatementReview',
+  properties: { comment, status },
+};
 
 interface AddReviewDialogProps {
   /** parent handler */
@@ -35,30 +40,27 @@ const AddReviewDialog = ({
 }: AddReviewDialogProps) => {
   const snackbar = useSnackbar();
   const auth = useAuth();
-  const { comment, status } = schemaDefn.getProperties(MODEL_NAME);
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
   // handle and store the form content
-  const form = useSchemaForm({ comment, status }, {}, {}, { variant: FORM_VARIANT.NEW });
-  const {
-    formContent, formErrors, formHasErrors, formIsDirty, setFormIsDirty,
-  } = form;
+  const form = useSchemaForm(model, undefined, { variant: FORM_VARIANT.NEW });
+  const { setDirty: setFormIsDirty } = form;
 
   /**
    * Handler for submission of a new record
    */
   const handleSubmit = useCallback(() => {
-    if (formHasErrors) {
+    if (!form.validation.valid) {
       // bring up the snackbar for errors
       setFormIsDirty(true);
-      console.error(formErrors);
+      console.error(form.validation);
       snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
     } else {
-      const content = { ...formContent, '@class': MODEL_NAME, createdBy: auth.user };
+      const content = { ...form.content, '@class': MODEL_NAME, createdBy: auth.user };
       onSubmit(content, updateAmalgamated);
     }
-  }, [auth, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
+  }, [auth, form.content, form.validation, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
   return (
     <Dialog
@@ -76,15 +78,10 @@ const AddReviewDialog = ({
         <DialogContent className="review-dialog__fields">
           <FormContext.Provider value={form}>
             <FormField
-              model={status}
+              name="status"
             />
             <FormField
-              innerProps={{
-                multiline: true,
-                rows: 7,
-                variant: 'outlined',
-              }}
-              model={comment}
+              name="comment"
             />
           </FormContext.Provider>
           <FormControlLabel
@@ -98,7 +95,7 @@ const AddReviewDialog = ({
         <div className="review-dialog__action-button">
           <ActionButton
             color="primary"
-            disabled={formHasErrors && formIsDirty}
+            disabled={!form.validation.valid && form.isDirty}
             onClick={handleSubmit}
             requireConfirm={false}
             variant="contained"

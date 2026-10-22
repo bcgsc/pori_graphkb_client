@@ -1,4 +1,4 @@
-import isObject from 'lodash.isobject';
+import { isObject } from 'lodash';
 
 import { EdgeType, GeneralRecordType } from '@/components/types';
 import config from '@/static/config';

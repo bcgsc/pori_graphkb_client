@@ -8,24 +8,24 @@ import {
   describe, expect, test, vi,
 } from 'vitest';
 
-import FormContext, { FormContextState } from '@/components/FormContext';
+import { FormContext, FormContextState } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
+import schema from '@/services/schema';
 
-import FormLayout from '..';
+import FormLayout, { sortAndGroupFields } from '..';
 
 const CONTEXT_DEFAULTS: FormContextState = {
-  formContent: {},
-  formVariant: FORM_VARIANT.VIEW,
+  content: {},
+  variant: FORM_VARIANT.VIEW,
   update: () => {},
-  replaceContent: () => {},
   updateField: () => {},
   updateFieldEvent: () => {},
-  setFormIsDirty: () => {},
-  formHasErrors: false,
-  formIsDirty: false,
-  formErrors: {},
-  additionalValidationError: '',
+  setDirty: () => {},
+  isDirty: false,
+  validation: { valid: true, properties: {} },
+  model: schema.get('User'),
+  disabled: false,
 };
 
 describe('FormLayout', () => {
@@ -36,10 +36,8 @@ describe('FormLayout', () => {
   test('new variant hides generated fields', { timeout: 10000 }, async () => {
     const { findByText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formVariant: FORM_VARIANT.NEW, updateFieldEvent: vi.fn() }}>
-          <FormLayout
-            modelName="User"
-          />
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, variant: FORM_VARIANT.NEW, updateFieldEvent: vi.fn() }}>
+          <FormLayout />
         </FormContext.Provider>
       </QueryClientProvider>,
     );
@@ -51,10 +49,8 @@ describe('FormLayout', () => {
   test('view variant shows generated fields', async () => {
     const { findByText, findByLabelText, findByTestId } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { '@rid': '#3:4', name: 'name' }, updateFieldEvent: vi.fn() }}>
-          <FormLayout
-            modelName="User"
-          />
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, content: { '@rid': '#3:4', name: 'name' }, updateFieldEvent: vi.fn() }}>
+          <FormLayout />
         </FormContext.Provider>
       </QueryClientProvider>,
     );
@@ -68,10 +64,9 @@ describe('FormLayout', () => {
   test('exclusion works', async () => {
     const { findByText, queryByText } = render(
       <QueryClientProvider client={api.queryClient}>
-        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, formContent: { '@rid': '#3:4', name: 'user' }, updateFieldEvent: vi.fn() }}>
+        <FormContext.Provider value={{ ...CONTEXT_DEFAULTS, content: { '@rid': '#3:4', name: 'user' }, updateFieldEvent: vi.fn() }}>
           <FormLayout
             exclusions={['@rid']}
-            modelName="User"
           />
         </FormContext.Provider>
       </QueryClientProvider>,
@@ -79,5 +74,55 @@ describe('FormLayout', () => {
 
     await expect(findByText('The username')).resolves.toBeInTheDocument();
     expect(queryByText('@rid')).toBe(null);
+  });
+});
+
+describe('util', () => {
+  describe('sortAndGroupFields', () => {
+    const testModel = {
+      properties: {
+        name: { name: 'name', mandatory: true },
+        address: { name: 'address' },
+        gender: { name: 'gender', default: null, mandatory: true },
+        comment: schema.get('V').properties.comment,
+      },
+    };
+
+    test('no order or collapse', () => {
+      const grouping = sortAndGroupFields(testModel.properties);
+      expect(grouping).toEqual({
+        fields: ['name', 'address', 'comment', 'gender'],
+        extraFields: [],
+      });
+    });
+
+    test('collapse flag given', () => {
+      const grouping = sortAndGroupFields(testModel.properties, { collapseExtra: true });
+      expect(grouping).toEqual({
+        fields: ['name', 'address', 'gender'],
+        extraFields: ['comment'],
+      });
+    });
+
+    test('co-require name and address', () => {
+      const grouping = sortAndGroupFields(testModel.properties, {
+        collapseExtra: true,
+        order: [['name', 'address']],
+      });
+      expect(grouping).toEqual({
+        fields: [['name', 'address'], 'gender'],
+        extraFields: ['comment'],
+      });
+    });
+
+    test('promote field above the fold', () => {
+      const grouping = sortAndGroupFields(testModel.properties, {
+        collapseExtra: true,
+      });
+      expect(grouping).toEqual({
+        fields: ['name', 'address', 'gender'],
+        extraFields: ['comment'],
+      });
+    });
   });
 });

@@ -1,23 +1,22 @@
 import './index.scss';
 
-import { PropertyDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Typography,
 } from '@mui/material';
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import DropDownSelect from '@/components/DropDownSelect';
-import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
 import FieldWrapper from '@/components/FormField/FieldWrapper';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
+import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
-import schema from '@/services/schema';
+import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
@@ -40,7 +39,7 @@ const propertySort = ({ label: label1 }, { label: label2 }) => {
   return prop1.localeCompare(prop2);
 };
 
-const constructOperatorOptions = ({ iterable, type, name }: Partial<PropertyDefinition> | undefined = {}, currentVal, subqueryType = '') => {
+const constructOperatorOptions = ({ iterable, type, name }: Partial<SchemaPropertyDefinition> | undefined = {}, currentVal, subqueryType = '') => {
   if (subqueryType === 'keyword') {
     return OPERATORS.filter((op) => ['CONTAINSTEXT', '='].includes(op.label));
   }
@@ -103,13 +102,18 @@ const PropertyFilter = ({
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
   const [keywordTargetOptions, setKeywordTargetOptions] = useState<any>([]);
+  const fieldName = property.split('.').pop() ?? property;
+  const model = useMemo(() => {
+    let format = '';
+
+    if (DATE_FIELDS.includes(property)) {
+      format = 'date';
+    }
+    return ({ name: 'PropertyFilter', properties: { [fieldName]: { ...propertyModel, format, name: fieldName } } });
+  }, [fieldName, property, propertyModel]);
 
   // use a schema form so that validation runs on the value based on the property selected
-  const form = useSchemaForm({ [property]: propertyModel }, {}, { variant: FORM_VARIANT.SEARCH });
-  const {
-    formContent,
-    formHasErrors,
-  } = form;
+  const form = useSchemaForm(model, undefined, { variant: FORM_VARIANT.SEARCH });
 
   // set the property options
   useEffect(() => {
@@ -119,7 +123,7 @@ const PropertyFilter = ({
       .forEach((prop) => {
         if (prop.type.includes('embedded')) {
           if (prop.linkedClass) {
-            Object.values(schemaDefn.getProperties(prop.linkedClass)).forEach((subProp) => {
+            Object.values(schema.get(prop.linkedClass).properties).forEach((subProp) => {
               const key = `${prop.name}.${subProp.name}`;
               choices.push({
                 label: key, value: key, key, caption: subProp.description,
@@ -153,21 +157,21 @@ const PropertyFilter = ({
   useEffect(() => {
     if (property) {
       const [prop, subProp] = property.split('.');
-      let newPropertyModel: PropertyDefinition | null;
-      newPropertyModel = { ...schemaDefn.queryableProperties(modelName)[prop], mandatory: true };
+      let newPropertyModel: SchemaPropertyDefinition | null;
+      newPropertyModel = { ...schema.queryableProperties(modelName)[prop], mandatory: true };
 
       if (subqueryType === 'keyword') {
         setPropertyModel({ name: property, type: 'string', mandatory: true });
       } else {
         if (subProp && newPropertyModel) {
-          if (newPropertyModel.linkedClass && schemaDefn.getProperty(newPropertyModel.linkedClass, 'embedded')) {
+          if (newPropertyModel.linkedClass && schema.get(newPropertyModel.linkedClass).properties.embedded) {
             const parentPropModel = newPropertyModel;
-            newPropertyModel = schemaDefn.getProperty(newPropertyModel.linkedClass, subProp);
+            newPropertyModel = schema.get(newPropertyModel.linkedClass).properties[subProp];
 
             if (subProp === '@class' && parentPropModel.linkedClass) {
-              const choices = schemaDefn.children(parentPropModel.linkedClass);
+              const choices = schema.children(parentPropModel.linkedClass);
 
-              if (!schemaDefn.get(parentPropModel.linkedClass).isAbstract) {
+              if (!schema.get(parentPropModel.linkedClass).isAbstract) {
                 choices.push(parentPropModel.linkedClass);
               }
               newPropertyModel.choices = choices;
@@ -214,7 +218,7 @@ const PropertyFilter = ({
     if (property) {
       const choices = constructOperatorOptions(
         originalPropertyModel,
-        formContent[property],
+        form.content[fieldName],
         subqueryType,
       );
       setOperatorChoices(choices);
@@ -225,26 +229,23 @@ const PropertyFilter = ({
         setOperator('CONTAINSTEXT');
       }
     }
-  }, [formContent, modelName, property, subqueryType]);
+  }, [fieldName, form.content, modelName, property, subqueryType]);
 
   useEffect(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
 
     if (property && subqueryType === 'keyword') {
-      const linkedModel = schemaDefn.get(originalPropertyModel?.linkedClass || 'V');
-      setKeywordTargetOptions(schemaDefn.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
+      const linkedModel = schema.get(originalPropertyModel?.linkedClass || 'V');
+      setKeywordTargetOptions(schema.descendants(linkedModel.name, { excludeAbstract: false, includeSelf: true }).sort());
       setKeywordTarget(linkedModel.name);
     }
   }, [modelName, property, subqueryType]);
 
   const handleAddFilter = useCallback(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
-    const [, subProp] = property.split('.');
     const result = {
       attr: property,
-      value: subProp
-        ? formContent[subProp]
-        : formContent[property],
+      value: form.content[fieldName],
       operator,
       subqueryType,
       query: undefined as any,
@@ -263,7 +264,7 @@ const PropertyFilter = ({
           target: {
             target: keywordTarget || originalPropertyModel?.linkedClass || 'V',
             operator,
-            keyword: formContent[property],
+            keyword: form.content[fieldName],
             queryType: 'keyword',
           },
         },
@@ -277,17 +278,15 @@ const PropertyFilter = ({
           queryType: 'similarTo',
           treeEdges: [],
           target: {
-            target: Array.isArray(formContent[property])
-              ? formContent[property]
-              : [formContent[property]],
+            target: Array.isArray(form.content[fieldName])
+              ? form.content[fieldName]
+              : [form.content[fieldName]],
             queryType: 'ancestors',
           },
         },
       };
     } else {
-      let value = subProp
-        ? formContent[subProp]
-        : formContent[property];
+      let value = form.content[fieldName];
 
       if (operator === 'CONTAINS' && value.length === 1) {
         // special case. CONTAINS is marked iterable for entry convenience for the user
@@ -299,13 +298,7 @@ const PropertyFilter = ({
       };
     }
     onSubmit(result);
-  }, [formContent, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
-
-  let format = '';
-
-  if (DATE_FIELDS.includes(property)) {
-    format = 'date';
-  }
+  }, [fieldName, form.content, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
 
   return (
     <>
@@ -316,6 +309,7 @@ const PropertyFilter = ({
         <div className="property-filter__content">
           <FieldWrapper className="property-filter__property">
             <DropDownSelect
+              aria-label="Property"
               innerProps={{ 'data-testid': 'prop-select' }}
               onChange={({ target: { value: newValue } }) => setProperty(newValue)}
               options={propertyChoices}
@@ -331,6 +325,7 @@ const PropertyFilter = ({
           </FieldWrapper>
           <FieldWrapper className="property-filter__operator">
             <DropDownSelect
+              aria-label="Operator"
               disabled={!property || operatorChoices.length < 2}
               onChange={({ target: { value: newValue } }) => setOperator(newValue)}
               options={operatorChoices}
@@ -340,6 +335,7 @@ const PropertyFilter = ({
           {property && subqueryType === 'keyword' && (
           <FieldWrapper className="property-filter__keyword-target">
             <DropDownSelect
+              aria-label="Keyword Target"
               disabled={keywordTargetOptions.length < 2}
               onChange={({ target: { value: newValue } }) => setKeywordTarget(newValue)}
               options={keywordTargetOptions}
@@ -351,9 +347,7 @@ const PropertyFilter = ({
             value={form}
           >
             <FormField
-              className="property-filter__value"
-              disabled={!property}
-              model={{ type: 'string', ...propertyModel, format }}
+              name={fieldName}
             />
           </FormContext.Provider>
 
@@ -361,7 +355,7 @@ const PropertyFilter = ({
       </div>
       <div className="property-filter__actions">
         <ActionButton
-          disabled={!property || formHasErrors || !operator}
+          disabled={!property || !form.validation.valid || !operator}
           onClick={handleAddFilter}
           requireConfirm={false}
           variant="outlined"

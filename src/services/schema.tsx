@@ -1,14 +1,42 @@
 import {
-  PropertyDefinition, schema as schemaDefn, validateProperty,
+  ClassDefinition,
+  PropertyDefinition, schema as schemaDefn,
+  validateProperty,
 } from '@bcgsc-pori/graphkb-schema';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { titleCase } from 'change-case';
 
 import { EdgeType, GeneralRecordType } from '@/components/types';
+import { FORM_VARIANT } from '@/components/util';
 
 import { getQueryFromSearch } from './api/search';
 
 const MAX_LABEL_LENGTH = 50;
+
+type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
+  name: string;
+  label?: string;
+  // missing from types
+  generateDefault?: (record: Record<string, unknown>) => unknown;
+  deprecated?: boolean;
+  // pass input rendered by to FormField
+  componentProps?: {
+    multiline?: boolean;
+    filterOptions?: string[];
+    defaultFilterClassName?: string;
+  }
+  hide?: boolean;
+};
+
+type SchemaClassDefinition = Omit<ClassDefinition, 'properties'> & {
+  properties: Record<string, SchemaPropertyDefinition>;
+  /**
+   * allow for mutating the properties based on the current state
+   *
+   * ex. use for conditionally required fields.
+   */
+  conditional?: (properties: Record<string, SchemaPropertyDefinition>, state: { content: Record<string, any>; variant: FORM_VARIANT }) => void;
+};
 
 /**
  * Get a string representation of a record
@@ -45,25 +73,6 @@ const getLink = (obj) => {
  * Returns record metadata fields
  */
 const getMetadata = () => Object.values(schemaDefn.getProperties('V'));
-
-/**
- * Returns route and properties of a certain knowledgebase class
- * (most useful data).
- * @param {Object|string} obj - Knowledgebase Record.
- * class properties list.
- */
-const getProperties = (obj) => {
-  const VPropKeys = schemaDefn.getProperties('V');
-  let objname;
-
-  if (typeof obj === 'string') {
-    objname = obj;
-  } else if (obj['@class']) {
-    objname = obj['@class'];
-  }
-  return Object.values(schemaDefn.getProperties(objname) ?? {})
-    .filter((prop: PropertyDefinition) => !VPropKeys[prop.name]);
-};
 
 /**
  * Returns route and query properties of a certain knowledgebase class
@@ -108,70 +117,69 @@ function getEdges<R extends GeneralRecordType>(node: R | null = null) {
   return list;
 }
 
-const isEdge = (cls) => !!(schemaDefn.get(cls)
-  && schemaDefn.ancestors(cls).some((inherited) => inherited === 'E'));
+interface ValidationResult {
+  valid: boolean;
+  message?: string;
+  properties?: Record<string, ValidationResult>;
+  // if embeddedset or embeddedlist, separate result stored here
+  items?: ValidationResult[];
+}
+
+function validateEmbedded(
+  modelName: string,
+  value: Record<string, any>,
+) {
+  let valid = true;
+  const properties: Record<string, ValidationResult> = {};
+
+  if (value['@class']) {
+    if (value['@class'] !== modelName && !schemaDefn.inheritsFrom(value['@class'], modelName)) {
+      return {
+        valid: false,
+        properties: { '@class': { message: `Value "${value['@class']}" is invalid. Embedded record must be a type that inherits from type ${modelName}`, valid: false } },
+      };
+    }
+  }
+  const model = getModel(value['@class'] ?? modelName);
+  Object.entries(model.properties).forEach(([propName, propModel]) => {
+    properties[propName] = validateValue(propModel, value[propName]);
+    valid &&= properties[propName].valid;
+  });
+  return { valid, properties };
+}
+
+function combineMessages(a: string | undefined, b: string | undefined): string | undefined {
+  if (!a) return b;
+  if (!b) return a;
+  if (!a.endsWith('.')) {
+    return `${a}. ${b}`;
+  }
+  return `${a} ${b}`;
+}
 
 /**
  * Validates a value against some property model and returns the new property tracking object
  */
-const validateValue = (propModel, value, { ignoreMandatory = false }) => {
+const validateValue = (propModel: SchemaPropertyDefinition, value: unknown): ValidationResult => {
+  let result: ValidationResult = { valid: true };
+
   if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
     if (propModel.mandatory
-      && !ignoreMandatory
       && !propModel.generated
       && propModel.default === undefined
       && !propModel.generateDefault
     ) {
-      return { error: { message: 'Required Value' }, value };
+      return { message: 'Required Value', valid: false };
     }
-  } else if (value === null && !propModel.nullable) {
-    return { error: { message: 'Cannot be empty/null' }, value };
-  } else if (value !== null) { // validate the new value using the schema model property
-    if (propModel.linkedClass && propModel.type.includes('embedded')) {
-      let subErrors = {};
-      let embeddedModel;
-
-      const valErrorCheck = (subPropModel, val, errors) => {
-        const { name } = subPropModel;
-        const { error } = validateValue(subPropModel, val[name], { ignoreMandatory });
-
-        const newErrors = { ...errors };
-
-        if (error) {
-          newErrors[name] = error;
-        }
-
-        return newErrors;
-      };
-
-      if (Array.isArray(value) && value.length) {
-        value.forEach((val) => {
-          embeddedModel = schemaDefn.get(val);
-
-          if (embeddedModel) {
-            Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
-              subErrors = valErrorCheck(subPropModel, val, subErrors);
-            });
-          }
-        });
-      } else {
-        try {
-          embeddedModel = schemaDefn.get(value);
-        } catch (err) { } // eslint-disable-line no-empty
-
-        if (!embeddedModel) {
-          return { error: { '@class': { message: 'Required Value' } } };
-        }
-
-        Object.values(schemaDefn.getProperties(embeddedModel.name)).forEach((subPropModel) => {
-          subErrors = valErrorCheck(subPropModel, value, subErrors);
-        });
+  } else if (value === null) {
+    if (!propModel.nullable) {
+      return { message: 'Cannot be empty/null', valid: false };
+    }
+  } else { // validate the new value using the schema model property
+    if (propModel.type?.endsWith('set') || propModel.type?.endsWith('list')) {
+      if (!Array.isArray(value)) {
+        return { message: 'Value must be an array.', valid: false };
       }
-
-      if (Object.keys(subErrors).length) {
-        return { error: subErrors, value };
-      }
-      return { value };
     }
 
     try {
@@ -180,13 +188,41 @@ const validateValue = (propModel, value, { ignoreMandatory = false }) => {
       if (propModel.type === 'link') {
         valueToValidate = value['@rid'] || value;
       }
-      validateProperty(propModel, valueToValidate);
-      return { value };
+      validateProperty(propModel as PropertyDefinition, valueToValidate);
     } catch (err) {
-      return { error: err, value };
+      result = { message: (err as Error).message || 'Field is invalid.', valid: false };
+    }
+
+    if (propModel.type?.includes('embedded') && propModel.linkedClass) {
+      let embedded = [value];
+
+      if (Array.isArray(value)) {
+        embedded = value;
+      }
+
+      const embeddedResults: ValidationResult[] = [];
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const embeddedValue of embedded) {
+        if (typeof embeddedValue !== 'object') {
+          embeddedResults.push({ message: 'Value is not an object.', valid: false });
+        } else {
+          embeddedResults.push(validateEmbedded(propModel.linkedClass || 'V', embeddedValue));
+        }
+      }
+
+      result.valid &&= embeddedResults.every((r) => r.valid);
+
+      if (propModel.type === 'embedded') {
+        // not an array, just a single embed
+        result.message = combineMessages(result.message, embeddedResults[0].message);
+        result.properties = embeddedResults[0].properties;
+      } else {
+        result.items = embeddedResults;
+      }
     }
   }
-  return { value };
+  return result;
 };
 
 /**
@@ -418,16 +454,122 @@ const defineGridColumns = (search) => {
   return defns;
 };
 
+/**
+ * return models with all properties (including inherited)
+ * and adds any labels we want for anywhere we use that property
+ *
+ * preparing them all and generating once so that the models
+ * are stable in render without having to wrap in useMemo
+ */
+function prepareModels() {
+  const prepared: Record<string, SchemaClassDefinition> = {};
+  schemaDefn.getModels().forEach((model) => {
+    const preparedModel = {
+      ...model,
+      // schemaDefn.getProperties differs from model.properties in that it includes
+      // all inherited properties
+      properties: Object.fromEntries(Object.entries(schemaDefn.getProperties(model.name)).map(([name, prop]) => [name, { ...prop }])) as SchemaClassDefinition['properties'],
+    };
+
+    if (model.isEdge && model.name !== 'E') {
+      preparedModel.properties.in = {
+        ...preparedModel.properties.in,
+        description: 'The target record for the relationship',
+        label: 'Target Record (in)',
+        linkedClass: model.targetModel || 'V',
+      };
+      preparedModel.properties.out = {
+        ...preparedModel.properties.out,
+        description: 'The source record for the relationship',
+        label: 'Source Record (out)',
+        linkedClass: model.sourceModel || 'V',
+      };
+    }
+
+    if (schemaDefn.inheritsFrom(preparedModel.name, 'Variant')) {
+      ['hgvsType', 'zygosity', 'germline'].forEach((propName) => {
+        if (preparedModel.properties[propName]) {
+          preparedModel.properties[propName].deprecated = true;
+          preparedModel.properties[propName].readOnly = true;
+        }
+      });
+    }
+
+    prepared[model.name] = preparedModel;
+  });
+  prepared.StatementReview.properties.comment.componentProps = {
+    multiline: true,
+  };
+  prepared.PositionalVariant.properties.reference1.label = 'reference';
+  prepared.PositionalVariant.properties.reference2.label = 'reference';
+  // special case (KBDEV-790) to improve user inputs
+  prepared.Statement.properties.conditions.componentProps = {
+    filterOptions: [
+      ...schemaDefn.descendants('Variant', { excludeAbstract: false, includeSelf: true }),
+      'Disease',
+      'CatalogueVariant',
+    ],
+    defaultFilterClassName: 'Variant',
+  };
+  prepared.PositionalVariant.properties.reference1.componentProps = {
+    filterOptions: ['Signature', 'Feature'],
+    defaultFilterClassName: 'Feature',
+  };
+  prepared.PositionalVariant.properties.break1Start.description = '';
+  prepared.PositionalVariant.properties.break2Start.description = '';
+  prepared.PositionalVariant.properties.break1End.description = 'end of the breakpoint range';
+  prepared.PositionalVariant.properties.break2End.description = 'end of the breakpoint range';
+
+  prepared.PositionalVariant.conditional = (draftProps, form) => {
+    if (form.variant === FORM_VARIANT.VIEW) return;
+    const variantTypeName = (form.content as any)?.type?.displayName;
+    const isSubstitution = ['substitution', 'missense mutation', 'nonsense mutation'].includes(variantTypeName);
+    draftProps.break2Start.mandatory = !isSubstitution;
+
+    if (isSubstitution) {
+      draftProps.reference2.hide = true;
+      draftProps.break2Start.hide = true;
+      draftProps.break2End.hide = true;
+    }
+    draftProps.refSeq.mandatory = isSubstitution;
+    draftProps.untemplatedSeq.mandatory = isSubstitution;
+    draftProps.reference2.mandatory = variantTypeName === 'fusion';
+    draftProps.reference2.hide = variantTypeName !== 'fusion';
+  };
+
+  prepared.CategoryVariant.properties.reference1.componentProps = prepared.PositionalVariant.properties.reference1.componentProps;
+  return prepared;
+}
+
+const models = prepareModels();
+
+function getModel(valueOrName: unknown): SchemaClassDefinition;
+function getModel(valueOrName: unknown, strict: false): SchemaClassDefinition | null;
+function getModel(valueOrName: unknown, strict: true): SchemaClassDefinition;
+function getModel(valueOrName: unknown, strict = true): SchemaClassDefinition | null {
+  const name = schemaDefn.get(valueOrName, strict as true)?.name;
+  return models[name];
+}
+
 const schema = {
+  models,
+  get: getModel,
   defineGridColumns,
   validateValue,
-  isEdge,
   getEdges,
-  getProperties,
   getQueryProperties,
   getMetadata,
   getLabel,
   getLink,
+  has: schemaDefn.has.bind(schemaDefn),
+  getPreview: schemaDefn.getPreview.bind(schemaDefn) as (value: unknown) => string,
+  descendants: schemaDefn.descendants.bind(schemaDefn),
+  ancestors: schemaDefn.ancestors.bind(schemaDefn),
+  inheritsFrom: schemaDefn.inheritsFrom.bind(schemaDefn),
+  queryableProperties: schemaDefn.queryableProperties.bind(schemaDefn),
+  children: schemaDefn.children.bind(schemaDefn),
 };
+
+export type { SchemaClassDefinition, SchemaPropertyDefinition };
 
 export default schema;

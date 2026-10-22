@@ -1,0 +1,1704 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Default snapshot 1`] = `
+<div>
+  <div
+    class="property-filter"
+  >
+    <h5
+      class="MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root property-filter__title"
+    >
+      Add New Filter
+    </h5>
+    <div
+      class="property-filter__content"
+    >
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__property"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Property"
+              aria-labelledby="_r_XXXX_"
+              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+              tabindex="0"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  relevance
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  Adds meaning to a statement and applies to the "subject" element
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              data-testid="prop-select"
+              tabindex="-1"
+              value="relevance"
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__subquery"
+      >
+        <div>
+          <div
+            aria-label="subquery toggle"
+            class="MuiToggleButtonGroup-horizontal MuiToggleButtonGroup-root css-XXXX-MuiToggleButtonGroup-root subquery-toggle"
+            role="group"
+          >
+            <button
+              aria-label="exact"
+              aria-pressed="true"
+              class="Mui-selected MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-firstButton MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              data-testid="graph-view"
+              tabindex="0"
+              type="button"
+              value=""
+            >
+              <span
+                class="toggle-option__backup-icon"
+              >
+                E
+              </span>
+              <span
+                class="toggle-option__text"
+              >
+                exact match
+              </span>
+            </button>
+            <button
+              aria-label="keyword"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-middleButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="keyword"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ShareIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                keyword
+              </span>
+            </button>
+            <button
+              aria-label="tree"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-lastButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="tree"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="AccountTreeIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                Subclass Tree
+              </span>
+            </button>
+          </div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="HelpOutlineIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 18h2v-2h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__operator"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Operator"
+              aria-labelledby="_r_XXXX_"
+              class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                >
+                  =
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  Equals to (Ex. relevance = sensitivity)
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              disabled=""
+              tabindex="-1"
+              value="="
+            />
+            <svg
+              aria-hidden="true"
+              class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+      >
+        <div
+          class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+        >
+          <div
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              relevance
+            </label>
+            <div
+              class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <input
+                aria-autocomplete="list"
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-expanded="false"
+                aria-invalid="false"
+                autocapitalize="none"
+                autocomplete="off"
+                class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                placeholder="Search Records by Name or ID"
+                role="combobox"
+                spellcheck="false"
+                type="text"
+                value=""
+              />
+              <span
+                class="MuiCircularProgress-colorInherit MuiCircularProgress-indeterminate MuiCircularProgress-root css-XXXX-MuiCircularProgress-root"
+                role="progressbar"
+              >
+                <svg
+                  class="MuiCircularProgress-svg css-XXXX-MuiCircularProgress-svg"
+                  viewBox="22 22 44 44"
+                >
+                  <circle
+                    class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-XXXX-MuiCircularProgress-circle"
+                    cx="44"
+                    cy="44"
+                    fill="none"
+                    r="20.2"
+                    stroke-width="3.6"
+                  />
+                </svg>
+              </span>
+              <div
+                class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+              >
+                <button
+                  aria-label="Open"
+                  class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                  tabindex="-1"
+                  title="Open"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="SearchIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              Adds meaning to a statement and applies to the "subject" element
+            </p>
+          </div>
+        </div>
+      </li>
+    </div>
+  </div>
+  <div
+    class="property-filter__actions"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="Mui-disabled MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        disabled=""
+        tabindex="-1"
+        type="button"
+      >
+        add to selected group
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EmbeddedProperty snapshot 1`] = `
+<div>
+  <div
+    class="property-filter"
+  >
+    <h5
+      class="MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root property-filter__title"
+    >
+      Add New Filter
+    </h5>
+    <div
+      class="property-filter__content"
+    >
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__property"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Property"
+              aria-labelledby="_r_XXXX_"
+              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+              tabindex="0"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  break1Start.@class
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  The database class this record belongs to
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              data-testid="prop-select"
+              tabindex="-1"
+              value="break1Start.@class"
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__subquery"
+      >
+        <div>
+          <div
+            aria-label="subquery toggle"
+            class="MuiToggleButtonGroup-horizontal MuiToggleButtonGroup-root css-XXXX-MuiToggleButtonGroup-root subquery-toggle"
+            role="group"
+          >
+            <button
+              aria-label="exact"
+              aria-pressed="true"
+              class="Mui-disabled Mui-selected MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-firstButton MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              data-testid="graph-view"
+              disabled=""
+              tabindex="-1"
+              type="button"
+              value=""
+            >
+              <span
+                class="toggle-option__backup-icon"
+              >
+                E
+              </span>
+              <span
+                class="toggle-option__text"
+              >
+                exact match
+              </span>
+            </button>
+            <button
+              aria-label="keyword"
+              aria-pressed="false"
+              class="Mui-disabled MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-middleButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              disabled=""
+              tabindex="-1"
+              type="button"
+              value="keyword"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ShareIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                keyword
+              </span>
+            </button>
+            <button
+              aria-label="tree"
+              aria-pressed="false"
+              class="Mui-disabled MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-lastButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              disabled=""
+              tabindex="-1"
+              type="button"
+              value="tree"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="AccountTreeIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                Subclass Tree
+              </span>
+            </button>
+          </div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="HelpOutlineIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 18h2v-2h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__operator"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Operator"
+              aria-labelledby="_r_XXXX_"
+              class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                >
+                  =
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  Equals to (Ex. relevance = sensitivity)
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              disabled=""
+              tabindex="-1"
+              value="="
+            />
+            <svg
+              aria-hidden="true"
+              class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+        >
+          <label
+            class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="true"
+            for="_r_XXXX_"
+            id="_r_XXXX_-label"
+          >
+            @class
+          </label>
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <textarea
+              aria-describedby="_r_XXXX_-helper-text"
+              aria-invalid="false"
+              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+              data-testid="@class"
+              id="_r_XXXX_"
+              name="@class"
+            >
+              ProteinPosition
+            </textarea>
+            <textarea
+              aria-hidden="true"
+              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+              readonly=""
+              tabindex="-1"
+            />
+          </div>
+          <p
+            class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+            id="_r_XXXX_-helper-text"
+          >
+            <span
+              aria-hidden="true"
+              class="notranslate"
+            >
+              ​
+            </span>
+          </p>
+        </div>
+      </li>
+    </div>
+  </div>
+  <div
+    class="property-filter__actions"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        add to selected group
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExactMatchLinkProperty snapshot 1`] = `
+<div>
+  <div
+    class="property-filter"
+  >
+    <h5
+      class="MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root property-filter__title"
+    >
+      Add New Filter
+    </h5>
+    <div
+      class="property-filter__content"
+    >
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__property"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Property"
+              aria-labelledby="_r_XXXX_"
+              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+              tabindex="0"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  relevance
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  Adds meaning to a statement and applies to the "subject" element
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              data-testid="prop-select"
+              tabindex="-1"
+              value="relevance"
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__subquery"
+      >
+        <div>
+          <div
+            aria-label="subquery toggle"
+            class="MuiToggleButtonGroup-horizontal MuiToggleButtonGroup-root css-XXXX-MuiToggleButtonGroup-root subquery-toggle"
+            role="group"
+          >
+            <button
+              aria-label="exact"
+              aria-pressed="true"
+              class="Mui-selected MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-firstButton MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              data-testid="graph-view"
+              tabindex="0"
+              type="button"
+              value=""
+            >
+              <span
+                class="toggle-option__backup-icon"
+              >
+                E
+              </span>
+              <span
+                class="toggle-option__text"
+              >
+                exact match
+              </span>
+            </button>
+            <button
+              aria-label="keyword"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-middleButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="keyword"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ShareIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                keyword
+              </span>
+            </button>
+            <button
+              aria-label="tree"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-lastButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="tree"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="AccountTreeIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                Subclass Tree
+              </span>
+            </button>
+          </div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="HelpOutlineIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 18h2v-2h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__operator"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Operator"
+              aria-labelledby="_r_XXXX_"
+              class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                >
+                  IN
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  If the queried record's property is in any of the property value conditions selected
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              disabled=""
+              tabindex="-1"
+              value="IN"
+            />
+            <svg
+              aria-hidden="true"
+              class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+      >
+        <div
+          class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+        >
+          <div
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              relevance
+            </label>
+            <div
+              class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                  data-item-index="0"
+                  role="button"
+                  tabindex="-1"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    immunotherapy (#111:111)
+                  </span>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CancelIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <input
+                aria-autocomplete="list"
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-expanded="false"
+                aria-invalid="false"
+                autocapitalize="none"
+                autocomplete="off"
+                class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                placeholder=""
+                role="combobox"
+                spellcheck="false"
+                type="text"
+                value=""
+              />
+              <div
+                class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+              >
+                <button
+                  aria-label="Clear"
+                  class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                  tabindex="-1"
+                  title="Clear"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CloseIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  aria-label="Open"
+                  class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                  tabindex="-1"
+                  title="Open"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="SearchIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              May take more than one value. Adds meaning to a statement and applies to the "subject" element
+            </p>
+          </div>
+        </div>
+      </li>
+    </div>
+  </div>
+  <div
+    class="property-filter__actions"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        add to selected group
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`KeywordLinkProperty snapshot 1`] = `
+<div>
+  <div
+    class="property-filter"
+  >
+    <h5
+      class="MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root property-filter__title"
+    >
+      Add New Filter
+    </h5>
+    <div
+      class="property-filter__content"
+    >
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__property"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Property"
+              aria-labelledby="_r_XXXX_"
+              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+              tabindex="0"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  relevance
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  Adds meaning to a statement and applies to the "subject" element
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              data-testid="prop-select"
+              tabindex="-1"
+              value="relevance"
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__subquery"
+      >
+        <div>
+          <div
+            aria-label="subquery toggle"
+            class="MuiToggleButtonGroup-horizontal MuiToggleButtonGroup-root css-XXXX-MuiToggleButtonGroup-root subquery-toggle"
+            role="group"
+          >
+            <button
+              aria-label="exact"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-firstButton MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              data-testid="graph-view"
+              tabindex="0"
+              type="button"
+              value=""
+            >
+              <span
+                class="toggle-option__backup-icon"
+              >
+                E
+              </span>
+              <span
+                class="toggle-option__text"
+              >
+                exact match
+              </span>
+            </button>
+            <button
+              aria-label="keyword"
+              aria-pressed="true"
+              class="Mui-selected MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-middleButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="keyword"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ShareIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                keyword
+              </span>
+              <span
+                class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+              />
+            </button>
+            <button
+              aria-label="tree"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-lastButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="tree"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="AccountTreeIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                Subclass Tree
+              </span>
+            </button>
+          </div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="HelpOutlineIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 18h2v-2h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__operator"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Operator"
+              aria-labelledby="_r_XXXX_"
+              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+              tabindex="0"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  CONTAINSTEXT
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  contains your inputted substring
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              tabindex="-1"
+              value="CONTAINSTEXT"
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__keyword-target"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Keyword Target"
+              aria-labelledby="_r_XXXX_"
+              class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                >
+                  Vocabulary
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                />
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              disabled=""
+              tabindex="-1"
+              value="Vocabulary"
+            />
+            <svg
+              aria-hidden="true"
+              class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+        >
+          <label
+            class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="true"
+            for="_r_XXXX_"
+            id="_r_XXXX_-label"
+          >
+            relevance
+          </label>
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <textarea
+              aria-describedby="_r_XXXX_-helper-text"
+              aria-invalid="false"
+              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+              data-testid="relevance"
+              id="_r_XXXX_"
+              name="relevance"
+            >
+              something
+            </textarea>
+            <textarea
+              aria-hidden="true"
+              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+              readonly=""
+              tabindex="-1"
+            />
+          </div>
+          <p
+            class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+            id="_r_XXXX_-helper-text"
+          >
+            <span
+              aria-hidden="true"
+              class="notranslate"
+            >
+              ​
+            </span>
+          </p>
+        </div>
+      </li>
+    </div>
+  </div>
+  <div
+    class="property-filter__actions"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        add to selected group
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SubclassTreeLinkProperty snapshot 1`] = `
+<div>
+  <div
+    class="property-filter"
+  >
+    <h5
+      class="MuiTypography-h5 MuiTypography-root css-XXXX-MuiTypography-root property-filter__title"
+    >
+      Add New Filter
+    </h5>
+    <div
+      class="property-filter__content"
+    >
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__property"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Property"
+              aria-labelledby="_r_XXXX_"
+              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+              tabindex="0"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  relevance
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  Adds meaning to a statement and applies to the "subject" element
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              data-testid="prop-select"
+              tabindex="-1"
+              value="relevance"
+            />
+            <svg
+              aria-hidden="true"
+              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__subquery"
+      >
+        <div>
+          <div
+            aria-label="subquery toggle"
+            class="MuiToggleButtonGroup-horizontal MuiToggleButtonGroup-root css-XXXX-MuiToggleButtonGroup-root subquery-toggle"
+            role="group"
+          >
+            <button
+              aria-label="exact"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-firstButton MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              data-testid="graph-view"
+              tabindex="0"
+              type="button"
+              value=""
+            >
+              <span
+                class="toggle-option__backup-icon"
+              >
+                E
+              </span>
+              <span
+                class="toggle-option__text"
+              >
+                exact match
+              </span>
+            </button>
+            <button
+              aria-label="keyword"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-middleButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="keyword"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ShareIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                keyword
+              </span>
+            </button>
+            <button
+              aria-label="tree"
+              aria-pressed="true"
+              class="Mui-selected MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-lastButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="tree"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="AccountTreeIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                Subclass Tree
+              </span>
+              <span
+                class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="HelpOutlineIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 18h2v-2h-2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field property-filter__operator"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+        >
+          <div
+            class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+          >
+            <div
+              aria-disabled="true"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Operator"
+              aria-labelledby="_r_XXXX_"
+              class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              id="_r_XXXX_"
+              role="combobox"
+            >
+              <div
+                class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root margin-reset"
+              >
+                <span
+                  class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                >
+                  IN
+                </span>
+                <p
+                  class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                >
+                  If the queried record's property is in any of the property value conditions selected
+                </p>
+              </div>
+            </div>
+            <input
+              aria-hidden="true"
+              aria-invalid="false"
+              class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              disabled=""
+              tabindex="-1"
+              value="IN"
+            />
+            <svg
+              aria-hidden="true"
+              class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              data-testid="ArrowDropDownIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m7 10 5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </li>
+      <li
+        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+      >
+        <div
+          class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+        >
+          <div
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+          >
+            <label
+              class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for="_r_XXXX_"
+              id="_r_XXXX_-label"
+            >
+              relevance
+            </label>
+            <div
+              class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+            >
+              <div
+                class="detail-chip"
+              >
+                <div
+                  class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                  data-item-index="0"
+                  role="button"
+                  tabindex="-1"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                  >
+                    immunotherapy (#111:111)
+                  </span>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CancelIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <input
+                aria-autocomplete="list"
+                aria-describedby="_r_XXXX_-helper-text"
+                aria-expanded="false"
+                aria-invalid="false"
+                autocapitalize="none"
+                autocomplete="off"
+                class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                id="_r_XXXX_"
+                placeholder=""
+                role="combobox"
+                spellcheck="false"
+                type="text"
+                value=""
+              />
+              <div
+                class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+              >
+                <button
+                  aria-label="Clear"
+                  class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                  tabindex="-1"
+                  title="Clear"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CloseIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  aria-label="Open"
+                  class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                  tabindex="-1"
+                  title="Open"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="SearchIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p
+              class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+              id="_r_XXXX_-helper-text"
+            >
+              May take more than one value. Adds meaning to a statement and applies to the "subject" element
+            </p>
+          </div>
+        </div>
+      </li>
+    </div>
+  </div>
+  <div
+    class="property-filter__actions"
+  >
+    <div
+      class="action-button"
+    >
+      <button
+        class="MuiButton-colorPrimary MuiButton-outlined MuiButton-outlinedPrimary MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        add to selected group
+        <span
+          class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;

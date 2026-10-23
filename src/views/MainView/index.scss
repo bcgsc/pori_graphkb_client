@@ -63,10 +63,6 @@
     transition-property: width, margin-left;
     width: 100%;
 
-    > .form-field {
-      margin-top: 8px;
-    }
-
     @media (min-width: globals.$breakpoint-med) {
       margin-left: globals.$closed-drawer-width;
       width: calc(100% - #{globals.$closed-drawer-width});

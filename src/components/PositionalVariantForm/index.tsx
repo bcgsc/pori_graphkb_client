@@ -1,5 +1,5 @@
 import {
-  Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Stack, TextField, Typography,
+  Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Paper, TextField, Typography,
 } from '@mui/material';
 import React, {
   useCallback, useEffect, useMemo, useState,
@@ -10,7 +10,7 @@ import { Link } from 'react-router';
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
 import DropDownSelect from '@/components/DropDownSelect';
-import FormLayout from '@/components/FormLayout';
+import FormLayout, { LayoutItem } from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { FORM_VARIANT, tuple } from '@/components/util';
@@ -250,47 +250,49 @@ const VariantForm = ({
             )}
           </div>
         </div>
-        <Stack
-          className="new-variant"
-          spacing={2}
-        >
-          <RecordAutocomplete
-            disabled={form.disabled}
-            error={Boolean((!(form.validation.properties?.type?.valid ?? true) && form.isDirty) || otherValidation?.type)}
-            getQueryBody={() => ({
-              target: 'Vocabulary',
-              orderBy: ['displayName'],
-              filters: [{ operator: 'IN', displayName: allowedTypes }],
-            })}
-            helperText={otherValidation?.type ?? form.validation.properties?.type?.message ?? form.model.properties.type.description}
-            isMulti={false}
-            label="type"
-            name="type"
-            onChange={(e) => handleUpdateVariantType(e.target.value)}
-            readOnly={variant === FORM_VARIANT.VIEW}
-            required
-            singleLoad
-            value={form.content.type ?? null}
-          />
-          <DropDownSelect
-            disabled={form.disabled}
-            error={Boolean(otherValidation?.coordinateType)}
-            helperText={otherValidation?.coordinateType}
-            label="Position Coordinate System"
-            onChange={({ target: { value: newValue } }) => handleUpdateCoordinateType(newValue)}
-            options={coordinateOptions}
-            readOnly={variant === FORM_VARIANT.VIEW}
-            required
-            value={coordinateType}
-          />
-          <BreakpointsForm
-            coordinateType={coordinateType}
-          />
-        </Stack>
         <FormLayout
           collapseExtra
           exclusions={FIELD_EXCLUSIONS}
-        />
+        >
+          <LayoutItem fullWidth>
+            <RecordAutocomplete
+              disabled={form.disabled}
+              error={Boolean((!(form.validation.properties?.type?.valid ?? true) && form.isDirty) || otherValidation?.type)}
+              getQueryBody={() => ({
+                target: 'Vocabulary',
+                orderBy: ['displayName'],
+                filters: [{ operator: 'IN', displayName: allowedTypes }],
+              })}
+              helperText={otherValidation?.type ?? form.validation.properties?.type?.message ?? form.model.properties.type.description}
+              isMulti={false}
+              label="type"
+              name="type"
+              onChange={(e) => handleUpdateVariantType(e.target.value)}
+              readOnly={variant === FORM_VARIANT.VIEW}
+              required
+              singleLoad
+              value={form.content.type ?? null}
+            />
+          </LayoutItem>
+          <LayoutItem fullWidth>
+            <DropDownSelect
+              disabled={form.disabled}
+              error={Boolean(otherValidation?.coordinateType)}
+              helperText={otherValidation?.coordinateType}
+              label="Position Coordinate System"
+              onChange={({ target: { value: newValue } }) => handleUpdateCoordinateType(newValue)}
+              options={coordinateOptions}
+              readOnly={variant === FORM_VARIANT.VIEW}
+              required
+              value={coordinateType}
+            />
+          </LayoutItem>
+          <LayoutItem fullWidth>
+            <BreakpointsForm
+              coordinateType={coordinateType}
+            />
+          </LayoutItem>
+        </FormLayout>
         {variant === FORM_VARIANT.VIEW && (
           <>
             <EdgeTable recordId={String(form.content['@rid'])} />
@@ -311,10 +313,10 @@ const VariantForm = ({
                 DELETE RECORD
               </ActionButton>
             )
-          // for spacing issues only
+            // for spacing issues only
             : (<div />)}
           {form.action.inProgress && (
-          <CircularProgress size={50} />
+            <CircularProgress size={50} />
           )}
           {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT)
             ? (
@@ -330,7 +332,7 @@ const VariantForm = ({
                   : 'SUBMIT'}
               </ActionButton>
             )
-          // for spacing issues only
+            // for spacing issues only
             : (<div />)}
         </div>
       </FormContext.Provider>

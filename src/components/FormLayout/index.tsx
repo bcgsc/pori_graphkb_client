@@ -1,19 +1,57 @@
 import './index.scss';
 
-import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
-  Collapse,
-  List,
-  ListItem,
-  ListItemText,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { omit } from 'lodash';
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 
 import FormField from '@/components/FormField';
 import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
 import schema, { SchemaClassDefinition } from '@/services/schema';
+
+interface ColumnLayoutProps {
+  children: React.ReactNode;
+}
+
+const ColumnLayout = ({ children }: ColumnLayoutProps) => (
+  <div className="column-layout-container">
+    <div className="column-layout">
+      {children}
+    </div>
+  </div>
+);
+
+interface LayoutGroupProps {
+  children: React.ReactNode;
+  outlined?: boolean;
+}
+
+const LayoutGroup = ({ children, outlined }: LayoutGroupProps) => (
+  <div className={`column-layout__group${outlined ? ' column-layout__group--outlined' : ''}`}>
+    {children}
+  </div>
+);
+
+interface LayoutItemProps {
+  children: React.ReactNode;
+  fullWidth?: boolean;
+  outlined?: boolean;
+}
+
+/**
+ * optional wrapper for an item in the column layout, allowing full width and outlined styles.
+ */
+const LayoutItem = ({ children, fullWidth, outlined }: LayoutItemProps) => (
+  <div className={`column-layout__item${fullWidth ? ' column-layout__item--full-width' : ''}${outlined ? ' column-layout__item--outlined' : ''}`}>
+    {children}
+  </div>
+);
 
 const BELOW_FOLD = Object.keys(schema.get('V').properties);
 
@@ -124,13 +162,21 @@ interface FieldGroupProps {
  * Given some ordering of fields (possibly grouped) return the set of fields
  */
 const FieldGroup = ({ ordering }: FieldGroupProps) => ordering.map((itemOrGroup) => {
+  // if only 1 item, make it full width
+  if (ordering.length === 1 && !Array.isArray(ordering[0])) {
+    return (
+      <LayoutItem key={ordering[0]} fullWidth>
+        <FormField name={ordering[0]} />
+      </LayoutItem>
+    );
+  }
   if (Array.isArray(itemOrGroup)) {
     return (
-      <List key={itemOrGroup.join('--')} className="form-layout__content-subgroup">
+      <LayoutGroup key={itemOrGroup.join('-')} outlined>
         {itemOrGroup.map((item) => (
           <FormField key={item} name={item} />
         ))}
-      </List>
+      </LayoutGroup>
     );
   }
   return (
@@ -138,23 +184,61 @@ const FieldGroup = ({ ordering }: FieldGroupProps) => ordering.map((itemOrGroup)
   );
 });
 
+function CollapsibleSection({ children }: { children: React.ReactNode }) {
+  const id = useId();
+  const [isExpanded, setIsExpanded] = useState(false);
+  return (
+    <Accordion
+      disableGutters
+      elevation={0}
+      expanded={isExpanded}
+      onChange={() => setIsExpanded(!isExpanded)}
+      square
+      sx={{
+        background: 'transparent',
+        '&::before': {
+          display: 'none',
+        },
+        '& .MuiAccordionDetails-root': {
+          padding: 0,
+        },
+        '& .MuiAccordion-heading button': {
+          padding: 0,
+        },
+      }}
+    >
+      <AccordionSummary
+        aria-controls={`${id}-content`}
+        expandIcon={<ExpandMore />}
+        id={`${id}-header`}
+      >
+        <Typography component="span">
+          {isExpanded
+            ? 'Close to hide additional fields'
+            : 'Expand to see additional fields'}
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        {children}
+      </AccordionDetails>
+    </Accordion>
+  );
+}
+
 interface FormLayoutProps {
-  /** css class to add to main element */
-  className?: string;
   /** flag to indicate a collapsible section should be created */
   collapseExtra?: boolean;
   /** an array of fields not to display */
   exclusions?: string[];
+  children?: React.ReactNode;
 }
 
 const FormLayout = ({
   exclusions = [],
-  className = '',
   collapseExtra = false,
+  children,
 }: FormLayoutProps) => {
   const form = useFormContext();
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const hidden = Object.keys(form.model.properties).filter((name) => shouldHideField(form.variant, form.model.properties[name], form.content[name]));
 
   const { extraFields, fields } = sortAndGroupFields(form.model, {
@@ -162,31 +246,21 @@ const FormLayout = ({
   });
 
   return (
-    <div className={`form-layout ${className}`}>
-      <List className="form-layout__content">
+    <Stack spacing={1}>
+      <ColumnLayout>
+        {children}
         <FieldGroup ordering={fields} />
-      </List>
+      </ColumnLayout>
       {extraFields.length > 0 && (
-        <>
-          <ListItem onClick={() => setIsExpanded(!isExpanded)}>
-            <ListItemText
-              primary={
-                isExpanded
-                  ? 'Close to hide additional fields'
-                  : 'Expand to see additional fields'
-              }
-            />
-            {isExpanded ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-            <List className="form-layout__content">
-              <FieldGroup ordering={extraFields} />
-            </List>
-          </Collapse>
-        </>
+        <CollapsibleSection>
+          <ColumnLayout>
+            <FieldGroup ordering={extraFields} />
+          </ColumnLayout>
+        </CollapsibleSection>
       )}
-    </div>
+    </Stack>
   );
 };
 
 export default FormLayout;
+export { LayoutGroup, LayoutItem };

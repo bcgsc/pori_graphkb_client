@@ -50,13 +50,13 @@ exports[`Editing snapshot 1`] = `
       </span>
     </p>
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+        <div
+          class="column-layout"
         >
           <div
             class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
@@ -177,10 +177,6 @@ exports[`Editing snapshot 1`] = `
               </p>
             </div>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
-        >
           <div
             class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
           >
@@ -300,12 +296,8 @@ exports[`Editing snapshot 1`] = `
               </p>
             </div>
           </div>
-        </li>
-        <ul
-          class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-        >
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+          <div
+            class="column-layout__group column-layout__group--outlined"
           >
             <div
               class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -379,10 +371,6 @@ exports[`Editing snapshot 1`] = `
                 </p>
               </div>
             </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
-          >
             <div
               class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
             >
@@ -502,13 +490,9 @@ exports[`Editing snapshot 1`] = `
                 </p>
               </div>
             </div>
-          </li>
-        </ul>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
+          </div>
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -519,7 +503,7 @@ exports[`Editing snapshot 1`] = `
               description
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -548,12 +532,8 @@ exports[`Editing snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -564,7 +544,7 @@ exports[`Editing snapshot 1`] = `
               displayNameTemplate
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -588,10 +568,6 @@ exports[`Editing snapshot 1`] = `
               The template used in building the display name
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
-        >
           <div
             class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
           >
@@ -656,12 +632,8 @@ exports[`Editing snapshot 1`] = `
               </p>
             </div>
           </div>
-        </li>
-        <ul
-          class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-        >
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+          <div
+            class="column-layout__group column-layout__group--outlined"
           >
             <div
               class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
@@ -721,10 +693,6 @@ exports[`Editing snapshot 1`] = `
                 The review status of the overall statement. The amalgemated status of all (or no) reviews (ex. pending)
               </p>
             </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embeddedlist"
-          >
             <div
               class="embedded-list-table"
             >
@@ -761,13 +729,9 @@ exports[`Editing snapshot 1`] = `
                 />
               </table>
             </div>
-          </li>
-        </ul>
-        <ul
-          class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-        >
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+          </div>
+          <div
+            class="column-layout__group column-layout__group--outlined"
           >
             <div
               class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -833,12 +797,8 @@ exports[`Editing snapshot 1`] = `
                 </p>
               </div>
             </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-          >
             <div
-              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
               <label
                 class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -849,7 +809,7 @@ exports[`Editing snapshot 1`] = `
                 sourceId
               </label>
               <div
-                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
               >
                 <textarea
                   aria-describedby="_r_XXXX_-helper-text"
@@ -873,33 +833,126 @@ exports[`Editing snapshot 1`] = `
                 If the statement is imported from an external source, this is used to track the statement. This is not used for manually entered statements
               </p>
             </div>
-          </li>
-        </ul>
-      </ul>
-      <li
-        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
-      >
-        <div
-          class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
-        >
-          <span
-            class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            Expand to see additional fields
-          </span>
+          </div>
         </div>
-        <svg
-          aria-hidden="true"
-          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-          data-testid="ExpandMoreIcon"
-          focusable="false"
-          viewBox="0 0 24 24"
+      </div>
+      <div
+        class="MuiAccordion-root MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiAccordion-root"
+      >
+        <h3
+          class="MuiAccordion-heading css-XXXX-MuiAccordion-heading"
         >
-          <path
-            d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
-          />
-        </svg>
-      </li>
+          <button
+            aria-controls="_r_XXXX_-content"
+            aria-expanded="false"
+            class="MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+            id="_r_XXXX_-header"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiAccordionSummary-content css-XXXX-MuiAccordionSummary-content"
+            >
+              <span
+                class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                Expand to see additional fields
+              </span>
+            </span>
+            <span
+              class="MuiAccordionSummary-expandIconWrapper css-XXXX-MuiAccordionSummary-expandIconWrapper"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ExpandMoreIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                />
+              </svg>
+            </span>
+          </button>
+        </h3>
+        <div
+          class="MuiCollapse-hidden MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <div
+                aria-labelledby="_r_XXXX_-header"
+                class="MuiAccordion-region css-XXXX-MuiAccordion-region"
+                id="_r_XXXX_-content"
+                role="region"
+              >
+                <div
+                  class="MuiAccordionDetails-root css-XXXX-MuiAccordionDetails-root"
+                >
+                  <div
+                    class="column-layout-container"
+                  >
+                    <div
+                      class="column-layout"
+                    >
+                      <div
+                        class="column-layout__item column-layout__item--full-width"
+                      >
+                        <div
+                          class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                        >
+                          <label
+                            class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                            data-shrink="false"
+                            for="_r_XXXX_"
+                            id="_r_XXXX_-label"
+                          >
+                            comment
+                          </label>
+                          <div
+                            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                          >
+                            <textarea
+                              aria-describedby="_r_XXXX_-helper-text"
+                              aria-invalid="false"
+                              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                              data-testid="comment"
+                              id="_r_XXXX_"
+                              name="comment"
+                            />
+                            <textarea
+                              aria-hidden="true"
+                              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                              readonly=""
+                              tabindex="-1"
+                            />
+                          </div>
+                          <p
+                            class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                            id="_r_XXXX_-helper-text"
+                          >
+                            <span
+                              aria-hidden="true"
+                              class="notranslate"
+                            >
+                              ​
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="statement-form__action-buttons"
@@ -963,13 +1016,13 @@ exports[`New snapshot 1`] = `
       </span>
     </p>
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
+        <div
+          class="column-layout"
         >
           <div
             class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
@@ -1090,10 +1143,6 @@ exports[`New snapshot 1`] = `
               </p>
             </div>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
-        >
           <div
             class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
           >
@@ -1213,12 +1262,8 @@ exports[`New snapshot 1`] = `
               </p>
             </div>
           </div>
-        </li>
-        <ul
-          class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-        >
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+          <div
+            class="column-layout__group column-layout__group--outlined"
           >
             <div
               class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -1292,10 +1337,6 @@ exports[`New snapshot 1`] = `
                 </p>
               </div>
             </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
-          >
             <div
               class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
             >
@@ -1415,13 +1456,9 @@ exports[`New snapshot 1`] = `
                 </p>
               </div>
             </div>
-          </li>
-        </ul>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
+          </div>
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1432,7 +1469,7 @@ exports[`New snapshot 1`] = `
               description
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1461,12 +1498,8 @@ exports[`New snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1477,7 +1510,7 @@ exports[`New snapshot 1`] = `
               displayNameTemplate
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1503,10 +1536,6 @@ exports[`New snapshot 1`] = `
               The template used in building the display name
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
-        >
           <div
             class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
           >
@@ -1571,12 +1600,8 @@ exports[`New snapshot 1`] = `
               </p>
             </div>
           </div>
-        </li>
-        <ul
-          class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-        >
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+          <div
+            class="column-layout__group column-layout__group--outlined"
           >
             <div
               class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
@@ -1636,10 +1661,6 @@ exports[`New snapshot 1`] = `
                 The review status of the overall statement. The amalgemated status of all (or no) reviews
               </p>
             </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embeddedlist"
-          >
             <div
               class="embedded-list-table"
             >
@@ -1676,13 +1697,9 @@ exports[`New snapshot 1`] = `
                 />
               </table>
             </div>
-          </li>
-        </ul>
-        <ul
-          class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
-        >
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+          </div>
+          <div
+            class="column-layout__group column-layout__group--outlined"
           >
             <div
               class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
@@ -1748,12 +1765,8 @@ exports[`New snapshot 1`] = `
                 </p>
               </div>
             </div>
-          </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-          >
             <div
-              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
               <label
                 class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1764,7 +1777,7 @@ exports[`New snapshot 1`] = `
                 sourceId
               </label>
               <div
-                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
               >
                 <textarea
                   aria-describedby="_r_XXXX_-helper-text"
@@ -1788,33 +1801,126 @@ exports[`New snapshot 1`] = `
                 If the statement is imported from an external source, this is used to track the statement. This is not used for manually entered statements
               </p>
             </div>
-          </li>
-        </ul>
-      </ul>
-      <li
-        class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
-      >
-        <div
-          class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
-        >
-          <span
-            class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            Expand to see additional fields
-          </span>
+          </div>
         </div>
-        <svg
-          aria-hidden="true"
-          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-          data-testid="ExpandMoreIcon"
-          focusable="false"
-          viewBox="0 0 24 24"
+      </div>
+      <div
+        class="MuiAccordion-root MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiAccordion-root"
+      >
+        <h3
+          class="MuiAccordion-heading css-XXXX-MuiAccordion-heading"
         >
-          <path
-            d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
-          />
-        </svg>
-      </li>
+          <button
+            aria-controls="_r_XXXX_-content"
+            aria-expanded="false"
+            class="MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+            id="_r_XXXX_-header"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiAccordionSummary-content css-XXXX-MuiAccordionSummary-content"
+            >
+              <span
+                class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                Expand to see additional fields
+              </span>
+            </span>
+            <span
+              class="MuiAccordionSummary-expandIconWrapper css-XXXX-MuiAccordionSummary-expandIconWrapper"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="ExpandMoreIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                />
+              </svg>
+            </span>
+          </button>
+        </h3>
+        <div
+          class="MuiCollapse-hidden MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <div
+                aria-labelledby="_r_XXXX_-header"
+                class="MuiAccordion-region css-XXXX-MuiAccordion-region"
+                id="_r_XXXX_-content"
+                role="region"
+              >
+                <div
+                  class="MuiAccordionDetails-root css-XXXX-MuiAccordionDetails-root"
+                >
+                  <div
+                    class="column-layout-container"
+                  >
+                    <div
+                      class="column-layout"
+                    >
+                      <div
+                        class="column-layout__item column-layout__item--full-width"
+                      >
+                        <div
+                          class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                        >
+                          <label
+                            class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                            data-shrink="false"
+                            for="_r_XXXX_"
+                            id="_r_XXXX_-label"
+                          >
+                            comment
+                          </label>
+                          <div
+                            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                          >
+                            <textarea
+                              aria-describedby="_r_XXXX_-helper-text"
+                              aria-invalid="false"
+                              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                              data-testid="comment"
+                              id="_r_XXXX_"
+                              name="comment"
+                            />
+                            <textarea
+                              aria-hidden="true"
+                              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                              readonly=""
+                              tabindex="-1"
+                            />
+                          </div>
+                          <p
+                            class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                            id="_r_XXXX_-helper-text"
+                          >
+                            <span
+                              aria-hidden="true"
+                              class="notranslate"
+                            >
+                              ​
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="statement-form__action-buttons"

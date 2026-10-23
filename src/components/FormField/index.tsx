@@ -16,9 +16,9 @@ import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';
 
+import { LayoutItem } from '../FormLayout';
 import BooleanField from './BooleanField';
 import EmbeddedForm from './EmbeddedForm';
-import FieldWrapper from './FieldWrapper';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 import PermissionsTable from './PermissionsTable';
 import StatementReviewsTable from './StatementReviewsTable';
@@ -179,16 +179,20 @@ const FormField = ({
     } else if (linkedClass.name === 'Permissions') {
       // permissions table of checkboxes
       propComponent = (
-        <PermissionsTable
-          {...field.props}
-        />
+        <LayoutItem fullWidth>
+          <PermissionsTable
+            {...field.props}
+          />
+        </LayoutItem>
       );
     } else {
       propComponent = (
-        <EmbeddedForm
-          {...sharedProps}
-          defaultLinkedClass={defaultLinkedClass}
-        />
+        <LayoutItem outlined>
+          <EmbeddedForm
+            {...sharedProps}
+            defaultLinkedClass={defaultLinkedClass}
+          />
+        </LayoutItem>
       );
     }
   } else if (choices) {
@@ -256,6 +260,7 @@ const FormField = ({
       <TextField
         {...omit(sharedProps, 'readOnly')}
         className="text-field"
+        fullWidth
         helperText={sharedProps.helperText || ' '}
         multiline={field.model.componentProps?.multiline ?? true}
         rows={field.model.componentProps?.multiline ? 7 : undefined}
@@ -270,11 +275,7 @@ const FormField = ({
     );
   }
 
-  return (
-    <FieldWrapper key={name} type={type}>
-      {propComponent}
-    </FieldWrapper>
-  );
+  return propComponent;
 };
 
 export default FormField;

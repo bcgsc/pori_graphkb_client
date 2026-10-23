@@ -6,14 +6,10 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 0;
-    max-width: calc(#{globals.$readable-max} + 40px);
+    width: 100%;
     min-height: 100%;
     padding: 20px;
-
-    @media (min-width: #{globals.$breakpoint-med}) {
-      // allow 2 columns for large dislays
-      max-width: calc(#{globals.$readable-max} * 2 + 40px);
-    }
+    max-width: calc(#{globals.$readable-max} * 2 + 40px);
   }
 
   &__header {

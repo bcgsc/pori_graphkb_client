@@ -1,43 +1,34 @@
 @use '../../../../globals';
 
-.advanced-search {
-  .property-filter {
+.property-filter {
+
+  &__content {
     border: 1px solid globals.$palette__primary--light;
     border-radius: 15px;
     max-width: 100%;
+    padding: 10px 15px;
+  }
 
-    &__title {
-      margin: 10px;
-      position: relative;
-      top: 5px;
-    }
+  > .action-button {
+    align-self: center;
+  }
 
-    &__actions {
-      align-items: center;
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
+  &__operators {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 
-      > * {
-        margin-left: 10px;
-      }
-    }
+  &__subquery {
+    flex-shrink: 0;
+  }
 
-    @media (min-width: globals.$breakpoint-lg) {
-      &__content {
-        display: flex;
-        flex-flow: wrap;
-        justify-content: space-between;
-      }
-
-      &__operator {
-        width: calc(100% - 515px);
-      }
-
-      &__subquery {
-        max-width: 515px;
-        width: fit-content;
-      }
-    }
+  &__operator {
+    min-width: 400px;
+    width: max-content;
+    flex-grow: 1;
   }
 }
+

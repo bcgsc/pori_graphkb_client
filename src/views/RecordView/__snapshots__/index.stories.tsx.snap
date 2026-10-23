@@ -3422,10 +3422,10 @@ exports[`EditStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root statement-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
     >
       <div
-        class="statement-form__header"
+        class="record-form__header"
       >
         <span
           class="title"
@@ -5196,7 +5196,7 @@ exports[`EditStatement snapshot 1`] = `
         </div>
       </div>
       <div
-        class="statement-form__action-buttons"
+        class="record-form__action-buttons"
       >
         <div
           class="action-button"
@@ -5231,10 +5231,10 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root statement-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
     >
       <div
-        class="statement-form__header"
+        class="record-form__header"
       >
         <span
           class="title"
@@ -7046,7 +7046,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
         </div>
       </div>
       <div
-        class="statement-form__action-buttons"
+        class="record-form__action-buttons"
       >
         <div
           class="action-button"
@@ -11585,10 +11585,10 @@ exports[`ViewStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root statement-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
     >
       <div
-        class="statement-form__header"
+        class="record-form__header"
       >
         <span
           class="title"
@@ -11598,11 +11598,11 @@ exports[`ViewStatement snapshot 1`] = `
           >
             Statement #153:14338
           </h1>
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          <h6
+            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
           >
             Record Contents
-          </p>
+          </h6>
         </span>
         <div
           class="header__actions header__actions--view"
@@ -12853,7 +12853,7 @@ exports[`ViewStatement snapshot 1`] = `
         </div>
       </div>
       <div
-        class="statement-form__action-buttons"
+        class="record-form__action-buttons"
       >
         <div />
         <div />
@@ -12921,10 +12921,10 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root statement-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
     >
       <div
-        class="statement-form__header"
+        class="record-form__header"
       >
         <span
           class="title"
@@ -12934,11 +12934,11 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
           >
             Statement #153:14338
           </h1>
-          <p
-            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+          <h6
+            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
           >
             Record Contents
-          </p>
+          </h6>
         </span>
         <div
           class="header__actions header__actions--view"
@@ -14189,7 +14189,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
         </div>
       </div>
       <div
-        class="statement-form__action-buttons"
+        class="record-form__action-buttons"
       >
         <div />
         <div />

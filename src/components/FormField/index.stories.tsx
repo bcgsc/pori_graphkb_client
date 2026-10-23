@@ -41,6 +41,14 @@ function MockProvider({
       },
     },
     disabled: false,
+    action: {
+      inProgress: false,
+      error: null,
+      errorMessage: undefined,
+      actionType: undefined,
+      submit: fn(),
+      delete: fn(),
+    },
   }), [value, errorMessage, name, formVariant, model]);
 
   return <FormContext.Provider value={state}>{children}</FormContext.Provider>;

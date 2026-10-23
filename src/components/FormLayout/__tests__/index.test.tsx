@@ -26,6 +26,9 @@ const CONTEXT_DEFAULTS: FormContextState = {
   validation: { valid: true, properties: {} },
   model: schema.get('User'),
   disabled: false,
+  action: {
+    inProgress: false, error: null, errorMessage: undefined, actionType: undefined, submit: () => {}, delete: () => {},
+  },
 };
 
 describe('FormLayout', () => {

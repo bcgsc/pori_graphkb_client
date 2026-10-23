@@ -14,26 +14,25 @@
 
   &__header {
     margin-bottom: 10px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
 
-    @media (min-width: #{globals.$breakpoint-med}) {
-      align-items: center;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
+    & .title {
+      flex-grow: 1;
+      flex-shrink: 0;
     }
 
     & .header__actions {
       display: flex;
+      gap: 10px;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       margin: 10px;
       margin-top: 10px;
-
-      @media (min-width: #{globals.$breakpoint-med}) {
-        float: right;
-      }
-
     }
   }
 
@@ -45,8 +44,4 @@
     justify-content: space-between;
     margin-top: 20px;
   }
-}
-
-.custom-positionFixed {
-  position: static;
 }

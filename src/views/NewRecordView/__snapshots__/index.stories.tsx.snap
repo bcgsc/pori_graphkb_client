@@ -2430,9 +2430,8 @@ exports[`NewPositionalVariant snapshot 1`] = `
             </div>
           </div>
           <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
+            class="MuiBox-root breakpoints-form css-XXXX"
           >
-            First Breakpoint
             <li
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
             >
@@ -2509,39 +2508,41 @@ exports[`NewPositionalVariant snapshot 1`] = `
                 </div>
               </div>
             </li>
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+            <div
+              class="column"
             >
-              <span
-                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              <div>
+                First Breakpoint
+              </div>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxOutlineBlankIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                <span
+                  class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                 >
-                  <path
-                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
                   />
-                </svg>
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxOutlineBlankIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -2614,45 +2615,44 @@ exports[`NewPositionalVariant snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
-          </div>
-          <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
-          >
-            Second Breakpoint
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+            </div>
+            <div
+              class="column"
             >
-              <span
-                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              <div
+                id="break2"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxOutlineBlankIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                Second Breakpoint
+              </div>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+              >
+                <span
+                  class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                 >
-                  <path
-                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
                   />
-                </svg>
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxOutlineBlankIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -2725,7 +2725,7 @@ exports[`NewPositionalVariant snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
+            </div>
           </div>
         </div>
         <div
@@ -3247,167 +3247,168 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
             </div>
           </div>
           <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
+            class="MuiBox-root breakpoints-form css-XXXX"
           >
-            First Breakpoint
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            <div
+              class="column"
             >
-              <div
-                class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+              <div>
+                First Breakpoint
+              </div>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
               >
                 <div
-                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                  class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
                 >
-                  <label
-                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="true"
-                    for="_r_XXXX_"
-                    id="_r_XXXX_-label"
-                  >
-                    reference
-                    <span
-                      aria-hidden="true"
-                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                    >
-                       
-                      *
-                    </span>
-                  </label>
                   <div
-                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                   >
+                    <label
+                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="true"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
+                    >
+                      reference
+                      <span
+                        aria-hidden="true"
+                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                      >
+                         
+                        *
+                      </span>
+                    </label>
                     <div
-                      class="detail-chip"
+                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                     >
                       <div
-                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                        data-item-index="0"
-                        role="button"
-                        tabindex="-1"
+                        class="detail-chip"
                       >
-                        <span
-                          class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                        <div
+                          class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          data-item-index="0"
+                          role="button"
+                          tabindex="-1"
                         >
-                          KRAS (21:1)
-                        </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
+                          <span
+                            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                          >
+                            KRAS (21:1)
+                          </span>
+                          <svg
+                            aria-hidden="true"
+                            class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                            data-testid="CancelIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <input
+                        aria-autocomplete="list"
+                        aria-describedby="_r_XXXX_-helper-text"
+                        aria-expanded="false"
+                        aria-invalid="false"
+                        autocapitalize="none"
+                        autocomplete="off"
+                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                        id="_r_XXXX_"
+                        placeholder=""
+                        required=""
+                        role="combobox"
+                        spellcheck="false"
+                        type="text"
+                        value=""
+                      />
+                      <div
+                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                      >
+                        <button
+                          aria-label="Clear"
+                          class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                          tabindex="-1"
+                          title="Clear"
+                          type="button"
                         >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                            data-testid="CloseIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          aria-label="Open"
+                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                          tabindex="-1"
+                          title="Open"
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                            data-testid="SearchIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </div>
-                    <input
-                      aria-autocomplete="list"
-                      aria-describedby="_r_XXXX_-helper-text"
-                      aria-expanded="false"
-                      aria-invalid="false"
-                      autocapitalize="none"
-                      autocomplete="off"
-                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                      id="_r_XXXX_"
-                      placeholder=""
-                      required=""
-                      role="combobox"
-                      spellcheck="false"
-                      type="text"
-                      value=""
-                    />
-                    <div
-                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                    <p
+                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      id="_r_XXXX_-helper-text"
                     >
-                      <button
-                        aria-label="Clear"
-                        class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
-                        tabindex="-1"
-                        title="Clear"
-                        type="button"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CloseIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        aria-label="Open"
-                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                        tabindex="-1"
-                        title="Open"
-                        type="button"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="SearchIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                      Generally this is the gene which a mutation or variant is defined with respect to
+                    </p>
                   </div>
-                  <p
-                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    id="_r_XXXX_-helper-text"
-                  >
-                    Generally this is the gene which a mutation or variant is defined with respect to
-                  </p>
                 </div>
-              </div>
-            </li>
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
-            >
-              <span
-                class="Mui-checked MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              </li>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                  />
-                </svg>
                 <span
-                  class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
-                />
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  class="Mui-checked MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
+                >
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+                  />
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -3482,17 +3483,20 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
                 <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
                 >
                   end (GenomicPosition)
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
                 </label>
                 <p
                   class="MuiFormHelperText-root css-XXXX-MuiFormHelperText-root"
@@ -3557,178 +3561,170 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                     </li>
                   </ul>
                 </div>
-                <button
-                  class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-                  tabindex="0"
-                  type="button"
-                >
-                  Remove
-                </button>
               </ul>
-            </li>
-          </div>
-          <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
-          >
-            Second Breakpoint
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
+            </div>
+            <div
+              class="column"
             >
               <div
-                class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                id="break2"
+              >
+                Second Breakpoint
+              </div>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
               >
                 <div
-                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                  class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
                 >
-                  <label
-                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="true"
-                    for="_r_XXXX_"
-                    id="_r_XXXX_-label"
-                  >
-                    reference
-                    <span
-                      aria-hidden="true"
-                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                    >
-                       
-                      *
-                    </span>
-                  </label>
                   <div
-                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                   >
+                    <label
+                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="true"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
+                    >
+                      reference
+                      <span
+                        aria-hidden="true"
+                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                      >
+                         
+                        *
+                      </span>
+                    </label>
                     <div
-                      class="detail-chip"
+                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                     >
                       <div
-                        class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
-                        data-item-index="0"
-                        role="button"
-                        tabindex="-1"
+                        class="detail-chip"
                       >
-                        <span
-                          class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                        <div
+                          class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                          data-item-index="0"
+                          role="button"
+                          tabindex="-1"
                         >
-                          NTRK1 (21:2)
-                        </span>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CancelIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
+                          <span
+                            class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                          >
+                            NTRK1 (21:2)
+                          </span>
+                          <svg
+                            aria-hidden="true"
+                            class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                            data-testid="CancelIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <input
+                        aria-autocomplete="list"
+                        aria-describedby="_r_XXXX_-helper-text"
+                        aria-expanded="false"
+                        aria-invalid="false"
+                        autocapitalize="none"
+                        autocomplete="off"
+                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                        id="_r_XXXX_"
+                        placeholder=""
+                        required=""
+                        role="combobox"
+                        spellcheck="false"
+                        type="text"
+                        value=""
+                      />
+                      <div
+                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                      >
+                        <button
+                          aria-label="Clear"
+                          class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                          tabindex="-1"
+                          title="Clear"
+                          type="button"
                         >
-                          <path
-                            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-                          />
-                        </svg>
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                            data-testid="CloseIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          aria-label="Open"
+                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                          tabindex="-1"
+                          title="Open"
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                            data-testid="SearchIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </div>
-                    <input
-                      aria-autocomplete="list"
-                      aria-describedby="_r_XXXX_-helper-text"
-                      aria-expanded="false"
-                      aria-invalid="false"
-                      autocapitalize="none"
-                      autocomplete="off"
-                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                      id="_r_XXXX_"
-                      placeholder=""
-                      required=""
-                      role="combobox"
-                      spellcheck="false"
-                      type="text"
-                      value=""
-                    />
-                    <div
-                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                    <p
+                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      id="_r_XXXX_-helper-text"
                     >
-                      <button
-                        aria-label="Clear"
-                        class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
-                        tabindex="-1"
-                        title="Clear"
-                        type="button"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="CloseIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        aria-label="Open"
-                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                        tabindex="-1"
-                        title="Open"
-                        type="button"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                          data-testid="SearchIcon"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                      This is only used for variants involving more than one feature (ex. fusions)
+                    </p>
                   </div>
-                  <p
-                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    id="_r_XXXX_-helper-text"
-                  >
-                    This is only used for variants involving more than one feature (ex. fusions)
-                  </p>
                 </div>
-              </div>
-            </li>
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
-            >
-              <span
-                class="Mui-checked MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              </li>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                  />
-                </svg>
                 <span
-                  class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
-                />
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  class="Mui-checked MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
+                >
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                    />
+                  </svg>
+                  <span
+                    class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+                  />
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -3803,17 +3799,20 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
                 <label
-                  class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
                 >
                   end (GenomicPosition)
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
                 </label>
                 <p
                   class="MuiFormHelperText-root css-XXXX-MuiFormHelperText-root"
@@ -3878,15 +3877,8 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                     </li>
                   </ul>
                 </div>
-                <button
-                  class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-                  tabindex="0"
-                  type="button"
-                >
-                  Remove
-                </button>
               </ul>
-            </li>
+            </div>
           </div>
         </div>
         <div
@@ -4408,9 +4400,8 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
             </div>
           </div>
           <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
+            class="MuiBox-root breakpoints-form css-XXXX"
           >
-            First Breakpoint
             <li
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
             >
@@ -4533,39 +4524,41 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
                 </div>
               </div>
             </li>
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+            <div
+              class="column"
             >
-              <span
-                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              <div>
+                First Breakpoint
+              </div>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxOutlineBlankIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                <span
+                  class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                 >
-                  <path
-                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
                   />
-                </svg>
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxOutlineBlankIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -4640,45 +4633,44 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
-          </div>
-          <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
-          >
-            Second Breakpoint
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+            </div>
+            <div
+              class="column"
             >
-              <span
-                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              <div
+                id="break2"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxOutlineBlankIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                Second Breakpoint
+              </div>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+              >
+                <span
+                  class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                 >
-                  <path
-                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
                   />
-                </svg>
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxOutlineBlankIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -4753,7 +4745,7 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
+            </div>
           </div>
         </div>
         <div
@@ -5275,9 +5267,8 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
             </div>
           </div>
           <div
-            class="MuiStack-root css-XXXX-MuiStack-root"
+            class="MuiBox-root breakpoints-form css-XXXX"
           >
-            Breakpoint
             <li
               class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
             >
@@ -5354,39 +5345,41 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
                 </div>
               </div>
             </li>
-            <label
-              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+            <div
+              class="column"
             >
-              <span
-                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-                data-testid="breakpoint-form__uncertain-checkbox"
+              <div>
+                Breakpoint
+              </div>
+              <label
+                class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
               >
-                <input
-                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                  data-indeterminate="false"
-                  type="checkbox"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                  data-testid="CheckBoxOutlineBlankIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                <span
+                  class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                 >
-                  <path
-                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  <input
+                    class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                    data-indeterminate="false"
+                    type="checkbox"
                   />
-                </svg>
-              </span>
-              <span
-                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-              >
-                uncertain position
-              </span>
-            </label>
-            <li
-              class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-            >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                    data-testid="CheckBoxOutlineBlankIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  uncertain position
+                </span>
+              </label>
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
               >
@@ -5459,7 +5452,7 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
                   </ul>
                 </div>
               </ul>
-            </li>
+            </div>
           </div>
         </div>
         <div
@@ -7286,14 +7279,22 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
             class="action-button"
           >
             <button
-              class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+              class="Mui-focusVisible MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
               SUBMIT
               <span
                 class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
-              />
+              >
+                <span
+                  class="MuiTouchRipple-ripple MuiTouchRipple-ripplePulsate MuiTouchRipple-rippleVisible css-XXXX-MuiTouchRipple-ripple"
+                >
+                  <span
+                    class="MuiTouchRipple-child MuiTouchRipple-childPulsate"
+                  />
+                </span>
+              </span>
             </button>
           </div>
         </div>

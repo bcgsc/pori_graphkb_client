@@ -1401,9 +1401,8 @@ exports[`EditPositionalVariant snapshot 1`] = `
           </div>
         </div>
         <div
-          class="MuiStack-root css-XXXX-MuiStack-root"
+          class="MuiBox-root breakpoints-form css-XXXX"
         >
-          First Breakpoint
           <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
@@ -1526,39 +1525,41 @@ exports[`EditPositionalVariant snapshot 1`] = `
               </div>
             </div>
           </li>
-          <label
-            class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+          <div
+            class="column"
           >
-            <span
-              class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-              data-testid="breakpoint-form__uncertain-checkbox"
+            <div>
+              First Breakpoint
+            </div>
+            <label
+              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
             >
-              <input
-                class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                data-indeterminate="false"
-                type="checkbox"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                data-testid="CheckBoxOutlineBlankIcon"
-                focusable="false"
-                viewBox="0 0 24 24"
+              <span
+                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
               >
-                <path
-                  d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                <input
+                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                  data-indeterminate="false"
+                  type="checkbox"
                 />
-              </svg>
-            </span>
-            <span
-              class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-            >
-              uncertain position
-            </span>
-          </label>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-          >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="CheckBoxOutlineBlankIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                uncertain position
+              </span>
+            </label>
             <ul
               class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
             >
@@ -1675,45 +1676,44 @@ exports[`EditPositionalVariant snapshot 1`] = `
                 </ul>
               </div>
             </ul>
-          </li>
-        </div>
-        <div
-          class="MuiStack-root css-XXXX-MuiStack-root"
-        >
-          Second Breakpoint
-          <label
-            class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root breakpoint-form__uncertain-checkbox css-XXXX-MuiFormControlLabel-root"
+          </div>
+          <div
+            class="column"
           >
-            <span
-              class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
-              data-testid="breakpoint-form__uncertain-checkbox"
+            <div
+              id="break2"
             >
-              <input
-                class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-                data-indeterminate="false"
-                type="checkbox"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                data-testid="CheckBoxOutlineBlankIcon"
-                focusable="false"
-                viewBox="0 0 24 24"
+              Second Breakpoint
+            </div>
+            <label
+              class="MuiFormControlLabel-labelPlacementEnd MuiFormControlLabel-root css-XXXX-MuiFormControlLabel-root"
+            >
+              <span
+                class="MuiButtonBase-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-sizeMedium PrivateSwitchBase-root css-XXXX-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
               >
-                <path
-                  d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                <input
+                  class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
+                  data-indeterminate="false"
+                  type="checkbox"
                 />
-              </svg>
-            </span>
-            <span
-              class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
-            >
-              uncertain position
-            </span>
-          </label>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
-          >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeMedium MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="CheckBoxOutlineBlankIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiFormControlLabel-label MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                uncertain position
+              </span>
+            </label>
             <ul
               class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
             >
@@ -1831,7 +1831,7 @@ exports[`EditPositionalVariant snapshot 1`] = `
                 </ul>
               </div>
             </ul>
-          </li>
+          </div>
         </div>
       </div>
       <div
@@ -7374,9 +7374,8 @@ exports[`ViewPositionalVariant snapshot 1`] = `
           </div>
         </div>
         <div
-          class="MuiStack-root css-XXXX-MuiStack-root"
+          class="MuiBox-root breakpoints-form css-XXXX"
         >
-          Breakpoint
           <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
@@ -7447,9 +7446,12 @@ exports[`ViewPositionalVariant snapshot 1`] = `
               </div>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
+          <div
+            class="column"
           >
+            <div>
+              Breakpoint
+            </div>
             <ul
               class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
             >
@@ -7568,7 +7570,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
                 </ul>
               </div>
             </ul>
-          </li>
+          </div>
         </div>
       </div>
       <div
@@ -7987,9 +7989,8 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
           </div>
         </div>
         <div
-          class="MuiStack-root css-XXXX-MuiStack-root"
+          class="MuiBox-root breakpoints-form css-XXXX"
         >
-          Breakpoint
           <li
             class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--link"
           >
@@ -8060,9 +8061,12 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
               </div>
             </div>
           </li>
-          <li
-            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--embedded"
+          <div
+            class="column"
           >
+            <div>
+              Breakpoint
+            </div>
             <ul
               class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
             >
@@ -8181,7 +8185,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
                 </ul>
               </div>
             </ul>
-          </li>
+          </div>
         </div>
       </div>
       <div

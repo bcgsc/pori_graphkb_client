@@ -22,7 +22,7 @@ import RecordAutocomplete from '../RecordAutocomplete';
 import EdgeTable from '../RecordForm/EdgeTable';
 import RelatedStatementsTable from '../RecordForm/RelatedStatementsTable';
 import { GeneralRecordType } from '../types';
-import BreakpointForm from './BreakpointForm';
+import BreakpointsForm from './BreakpointForm';
 
 const MODEL = schema.get('PositionalVariant');
 
@@ -283,12 +283,7 @@ const VariantForm = ({
             required
             value={coordinateType}
           />
-          <BreakpointForm
-            breakpoint="1"
-            coordinateType={coordinateType}
-          />
-          <BreakpointForm
-            breakpoint="2"
+          <BreakpointsForm
             coordinateType={coordinateType}
           />
         </Stack>

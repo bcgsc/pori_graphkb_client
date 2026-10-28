@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { PERMISSIONS, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
+import { PERMISSIONS } from '@bcgsc-pori/graphkb-schema';
 import {
   Checkbox,
   Table,
@@ -11,7 +11,8 @@ import {
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
-import { FormContextState } from '@/components/FormContext';
+import { FormContextState } from '@/components/hooks/useSchemaForm';
+import schemaDefn from '@/services/schema';
 
 /* eslint-disable no-bitwise */
 
@@ -64,13 +65,16 @@ interface PermissionsTableProps {
   disabled?: boolean;
   /** the current permissions set */
   value?: Record<string, number>;
+  label?: string;
+  required?: boolean;
+  readOnly?: boolean;
 }
 
 /**
  * Table to display permissions state for a certain user group.
  */
 const PermissionsTable = ({
-  value = {}, disabled = false, onChange, name,
+  value = {}, disabled = false, onChange, name, readOnly, label: _, required: __,
 }: PermissionsTableProps) => {
   const [content, setContent] = useState<Record<string, number>>(value || {});
   const [topBoxes, setTopboxes] = useState({});
@@ -142,6 +146,7 @@ const PermissionsTable = ({
                   checked={topBoxes[operation]}
                   disabled={disabled}
                   onChange={() => handleClick(operation, null)}
+                  readOnly={readOnly}
                 />
               </TableCell>
             ))}
@@ -160,6 +165,7 @@ const PermissionsTable = ({
                         checked={permission[operation] !== 0}
                         disabled={disabled}
                         onChange={() => handleClick(operation, modelName)}
+                        readOnly={readOnly}
                       />
                     )}
                   </TableCell>

@@ -145,6 +145,16 @@
                 },
                 "leadingUnderscore": "allowSingleOrDouble",
                 "trailingUnderscore": "allowSingleOrDouble"
+            },
+            {
+                // Target properties that require quotes (e.g., "content-type", "user id")
+                "selector": [
+                    "classProperty",
+                    "objectLiteralProperty",
+                    "typeProperty"
+                ],
+                "modifiers": ["requiresQuotes"],
+                "format": null
             }
         ]
     }

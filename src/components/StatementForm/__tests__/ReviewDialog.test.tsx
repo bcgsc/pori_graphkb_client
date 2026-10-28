@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/vitest';
 import { render } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
+import { QueryClientProvider } from 'react-query';
 import {
   afterEach,
   beforeEach,
@@ -10,6 +11,7 @@ import {
 } from 'vitest';
 
 import { AuthContext } from '@/components/Auth';
+import api from '@/services/api';
 
 import ReviewDialog from '../ReviewDialog';
 
@@ -28,18 +30,20 @@ describe('ReviewDialog', () => {
 
   beforeEach(() => {
     const auth = {
-      user: { '@rid': '#20:0', name: 'name', groups: [] }, hasWriteAccess: true, login: () => {}, logout: () => {}, isAuthenticated: true, error: undefined, isAuthenticating: false,
+      user: { '@rid': '#20:0', name: 'name', groups: [] }, hasWriteAccess: true, login: () => { }, logout: () => { }, isAuthenticated: true, error: undefined, isAuthenticating: false,
     };
     ({ getByText, queryByText, getAllByText } = render(
-      <AuthContext.Provider value={auth}>
-        <SnackbarProvider onEnter={snackbarSpy}>
-          <ReviewDialog
-            isOpen
-            onClose={onCancelSpy}
-            onSubmit={onSubmitSpy}
-          />
-        </SnackbarProvider>
-      </AuthContext.Provider>,
+      <QueryClientProvider client={api.queryClient}>
+        <AuthContext.Provider value={auth}>
+          <SnackbarProvider onEnter={snackbarSpy}>
+            <ReviewDialog
+              isOpen
+              onClose={onCancelSpy}
+              onSubmit={onSubmitSpy}
+            />
+          </SnackbarProvider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
     ));
   });
 

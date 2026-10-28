@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { Typography } from '@mui/material';
 import { themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
@@ -12,6 +11,7 @@ import RecordIdLink from '@/components/RecordIdLink';
 import { EdgeType } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
+import schema from '@/services/schema';
 
 const isReversed = (nodeId, { out: src, in: tgt }) => {
   if (src && tgt) {
@@ -50,7 +50,7 @@ const EdgeTable = ({ recordId }: EdgeTableProps) => {
       Object.entries(record).forEach(([propName, value]) => {
         if ((propName.startsWith('out_') || propName.startsWith('in_')) && Array.isArray(value)) {
           (value as EdgeType[]).forEach((edge) => {
-            const model = schemaDefn.get(edge);
+            const model = schema.get(edge);
             const reversed = isReversed(recordId, edge);
 
             newEdges.push({

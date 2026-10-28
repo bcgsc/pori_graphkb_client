@@ -2,139 +2,10 @@ import { useSnackbar } from 'notistack';
 import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
 
-const CLASS_MODEL_PROP = '@class';
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 enum FORM_VARIANT {
   EDIT = 'edit', VIEW = 'view', DELETE = 'delete', NEW = 'new', SEARCH = 'search',
 }
-
-/**
- * Given some model and options, sort the form fields and return the ordering. The 'fold'
- * described here is the collapsible block. Elements above the fold are in the top non-collapsed block
- * whereas fields below the fold are put into the collapsible section
- *
- * @returns {Object.<string,Array.<(string|Array.<string>)>>} the nested grouping structure
- *
- * @example
- * > sortAndGroupFields(schemaDefn.getProperties(model.name), {
- *    aboveFold: ['@class', '@rid', 'createdAt'],
- *    groups: [['createdBy', 'createdAt']]
- * })
- * {fields: ['@class', '@rid', ['createdBy', 'createdAt']], extraFields: []}
- */
-const sortAndGroupFields = (
-  /** the current class model to base the form off of */
-  properties: unknown,
-  opt: {
-    /** names of properties that should fall below the fold */
-    belowFold?: string[];
-    /** names of properties that should be promoted above the fold */
-    aboveFold?: string[];
-    /** flag to indicate if a collaspible section should be created */
-    collapseExtra?: boolean;
-    /** properties that should co-occur */
-    groups?: string[][],
-    /** the form variant this is being grouped for */
-    variant?: FORM_VARIANT,
-  } = {},
-) => {
-  const {
-    belowFold = [],
-    aboveFold = [],
-    collapseExtra = false,
-    groups = [],
-    variant = FORM_VARIANT.VIEW,
-  } = opt;
-
-  const groupMap = {};
-
-  if (!properties) {
-    return { extraFields: [], fields: [] };
-  }
-
-  groups.forEach((groupItems) => {
-    // assume each field only can belong to a single group, overwrite others
-    const key = groupItems.slice().sort((p1, p2) => p1.localeCompare(p2)).join('-');
-    const groupDefn = {
-      fields: groupItems.filter((fname) => properties[fname]),
-      mandatory: false,
-      generated: true,
-      name: key,
-    };
-
-    if (groupDefn.fields.length > 1) {
-      groupDefn.fields.forEach((name) => {
-        const { mandatory, generated } = properties[name];
-        groupDefn.mandatory = groupDefn.mandatory || mandatory;
-        groupDefn.generated = groupDefn.generated && generated;
-        groupMap[name] = groupDefn;
-      });
-    }
-  });
-
-  const mainFields: (string | string[])[] = [];
-  const extraFields: (string | string[])[] = [];
-
-  const visited = new Set();
-
-  const sortedPropModels = Object.values(properties)
-    .sort((p1, p2) => {
-      if (p1.mandatory === p2.mandatory || variant === FORM_VARIANT.VIEW) {
-        return p1.name.localeCompare(p2.name);
-      } if (p1.mandatory) {
-        return -1;
-      }
-      return 1;
-    });
-
-  // get the form content
-  for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
-    if (prop.name === CLASS_MODEL_PROP
-      || (variant === FORM_VARIANT.NEW && prop.generated)
-    ) {
-      continue; // eslint-disable-line no-continue
-    }
-    const {
-      name, mandatory, generated, fields,
-    } = (groupMap[prop.name] || prop);
-
-    const isAboveFold = fields
-      ? fields.some((fname) => aboveFold.includes(fname))
-      : aboveFold.includes(name);
-
-    const isBelowFold = fields
-      ? fields.some((fname) => belowFold.includes(fname))
-      : belowFold.includes(name);
-
-    const mustBeFilled = (
-      prop.mandatory
-      && variant === FORM_VARIANT.NEW
-      && prop.default === undefined
-      && !prop.generated
-    );
-
-    if (!visited.has(name)) {
-      if (!collapseExtra || isAboveFold || mustBeFilled) {
-        mainFields.push(fields || name);
-      } else if (isBelowFold) {
-        extraFields.push(fields || name);
-      } else if (mandatory && !generated && prop.default === undefined) {
-        mainFields.push(fields || name);
-      } else {
-        extraFields.push(fields || name);
-      }
-    }
-    visited.add(name);
-
-    if (fields) {
-      fields.forEach((field) => {
-        visited.add(field);
-      });
-    }
-  }
-  return { fields: mainFields, extraFields };
-};
 
 const cleanLinkedRecords = (content) => {
   const newContent = {};
@@ -250,12 +121,10 @@ function tuple<A1, A2, ARest>(a1: A1, a2: A2, ...rest: ARest[]): [A1, A2, ...ARe
 }
 
 export {
-  CLASS_MODEL_PROP,
   cleanLinkedRecords,
   cleanPayload,
   FORM_VARIANT,
   getNodeRIDsFromURL,
   navigateToGraph,
-  sortAndGroupFields,
   tuple,
 };

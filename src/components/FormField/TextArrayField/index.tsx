@@ -9,8 +9,7 @@ import {
   IconButton,
   TextField,
 } from '@mui/material';
-import uniq from 'lodash.uniq';
-import without from 'lodash.without';
+import { uniq, without } from 'lodash';
 import React, { useState } from 'react';
 
 interface TextArrayFieldProps {

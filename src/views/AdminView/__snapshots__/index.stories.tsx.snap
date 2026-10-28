@@ -2659,9 +2659,6 @@ exports[`AddNewGroup snapshot 1`] = `
             <div
               class="form-layout"
             >
-              <div
-                class="form-layout__content form-layout__content--long"
-              />
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
               >
@@ -6152,6 +6149,30 @@ exports[`AddNewGroup snapshot 1`] = `
                   </div>
                 </li>
               </ul>
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Expand to see all optional fields
+                  </span>
+                </div>
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="ExpandMoreIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  />
+                </svg>
+              </li>
             </div>
             <div
               class="record-form__action-buttons"
@@ -8840,9 +8861,6 @@ exports[`AddNewUser snapshot 1`] = `
             <div
               class="form-layout"
             >
-              <div
-                class="form-layout__content form-layout__content--long"
-              />
               <ul
                 class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
               >
@@ -8935,6 +8953,46 @@ exports[`AddNewUser snapshot 1`] = `
                   </div>
                 </li>
                 <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--long"
+                >
+                  <div
+                    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                  >
+                    <label
+                      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="false"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
+                    >
+                      firstLoginAt
+                    </label>
+                    <div
+                      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    >
+                      <textarea
+                        aria-describedby="_r_XXXX_-helper-text"
+                        aria-invalid="false"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        data-testid="firstLoginAt"
+                        id="_r_XXXX_"
+                        name="firstLoginAt"
+                      />
+                      <textarea
+                        aria-hidden="true"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        readonly=""
+                        tabindex="-1"
+                      />
+                    </div>
+                    <p
+                      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      id="_r_XXXX_-helper-text"
+                    >
+                      The timestamp at which the user first logged in
+                    </p>
+                  </div>
+                </li>
+                <li
                   class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--linkset"
                 >
                   <div
@@ -9000,6 +9058,126 @@ exports[`AddNewUser snapshot 1`] = `
                         Groups this user belongs to. Defines permissions for the user
                       </p>
                     </div>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--long"
+                >
+                  <div
+                    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                  >
+                    <label
+                      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="false"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
+                    >
+                      lastLoginAt
+                    </label>
+                    <div
+                      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    >
+                      <textarea
+                        aria-describedby="_r_XXXX_-helper-text"
+                        aria-invalid="false"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        data-testid="lastLoginAt"
+                        id="_r_XXXX_"
+                        name="lastLoginAt"
+                      />
+                      <textarea
+                        aria-hidden="true"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        readonly=""
+                        tabindex="-1"
+                      />
+                    </div>
+                    <p
+                      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      id="_r_XXXX_-helper-text"
+                    >
+                      The timestamp at which the user last logged in
+                    </p>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+                >
+                  <div
+                    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                  >
+                    <label
+                      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="false"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
+                    >
+                      loginCount
+                    </label>
+                    <div
+                      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    >
+                      <textarea
+                        aria-describedby="_r_XXXX_-helper-text"
+                        aria-invalid="false"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        data-testid="loginCount"
+                        id="_r_XXXX_"
+                        name="loginCount"
+                      />
+                      <textarea
+                        aria-hidden="true"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        readonly=""
+                        tabindex="-1"
+                      />
+                    </div>
+                    <p
+                      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      id="_r_XXXX_-helper-text"
+                    >
+                      The number of times this user has logged in
+                    </p>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--long"
+                >
+                  <div
+                    class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                  >
+                    <label
+                      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="false"
+                      for="_r_XXXX_"
+                      id="_r_XXXX_-label"
+                    >
+                      signedLicenseAt
+                    </label>
+                    <div
+                      class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    >
+                      <textarea
+                        aria-describedby="_r_XXXX_-helper-text"
+                        aria-invalid="false"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        data-testid="signedLicenseAt"
+                        id="_r_XXXX_"
+                        name="signedLicenseAt"
+                      />
+                      <textarea
+                        aria-hidden="true"
+                        class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                        readonly=""
+                        tabindex="-1"
+                      />
+                    </div>
+                    <p
+                      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                      id="_r_XXXX_-helper-text"
+                    >
+                      This user has read and acknowledged the terms of use as of this date
+                    </p>
                   </div>
                 </li>
               </ul>

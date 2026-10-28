@@ -1,35 +1,35 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import {
   Alert, Button, CircularProgress,
   Paper, Typography,
 } from '@mui/material';
-import isempty from 'lodash.isempty';
-import { useSnackbar } from 'notistack';
+import { isEmpty } from 'lodash';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
-import FormContext from '@/components/FormContext';
 import FormLayout from '@/components/FormLayout';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
+import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordType } from '@/components/types';
-import { cleanPayload, FORM_VARIANT, tuple } from '@/components/util';
+import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
+import schema from '@/services/schema';
 
+import StatementSentence from '../SentencePreview/StatementSentence';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
 const FIELD_EXCLUSIONS = ['groupRestrictions'];
+const model = schema.get('Statement');
 
 interface StatementFormProps {
   /** the title for this form */
@@ -46,7 +46,7 @@ interface StatementFormProps {
  * Form/View that displays the contents of a single node
  */
 const StatementForm = ({
-  value: initialValue = {},
+  value: initialValue,
   title,
   onToggleState,
   onSubmit,
@@ -107,14 +107,11 @@ const StatementForm = ({
   const statementQuery = useQuery({
     queryKey: [`/statements/${params.rid}?neighbors=1`],
     queryFn: async ({ queryKey: [route] }) => api.get(route),
-    enabled: (isempty(initialValue) && Boolean(params.rid)),
+    enabled: (isEmpty(initialValue) && Boolean(params.rid)),
     throwOnError: true,
   });
 
-  const snackbar = useSnackbar();
   const auth = useAuth();
-  const model = schemaDefn.get('Statement');
-  const fieldDefs = schemaDefn.getProperties('Statement');
 
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
@@ -146,18 +143,14 @@ const StatementForm = ({
     return '';
   }, [diagnosticData, prognosticData, therapeuticData]);
 
-  const form = useSchemaForm(fieldDefs, initialValue, {}, {
+  const form = useSchemaForm(model, initialValue, {
     variant,
     additionalValidationFn: checkLogicalStatement,
+    onActionSuccess: onSubmit,
   });
   const {
-    formIsDirty,
-    setFormIsDirty,
-    formContent,
-    formErrors,
+    setDirty: setFormIsDirty,
     updateField,
-    formHasErrors,
-    additionalValidationError,
   } = form;
 
   useEffect(() => {
@@ -180,118 +173,18 @@ const StatementForm = ({
 
   const civicEvidenceId = useMemo(() => {
     try {
-      if (variant === FORM_VARIANT.VIEW && formContent.source?.name === 'civic' && formContent.sourceId) {
-        return formContent.sourceId;
+      if (variant === FORM_VARIANT.VIEW && form.content.source?.name === 'civic' && form.content.sourceId) {
+        return form.content.sourceId;
       }
     } catch (err) {
       // pass
     }
     return '';
-  }, [variant, formContent]);
-
-  const statementReviewCheck = useCallback((currContent, content) => {
-    const updatedContent = { ...content };
-
-    if (!currContent.reviewStatus) {
-      updatedContent.reviewStatus = 'initial';
-    }
-
-    if (!currContent.reviews) {
-      const createdBy = auth.user;
-      updatedContent.reviews = [{
-        status: 'initial',
-        comment: '',
-        createdBy,
-      }];
-    }
-
-    return updatedContent;
-  }, [auth]);
-
-  const { mutate: addNewAction, isPending: isAdding, error: errorAdding } = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
-      return api.post(routeName, payload);
-    },
-    onSuccess: (result) => {
-      snackbar.enqueueSnackbar(`Sucessfully created the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit?.(result);
-    },
-  });
-
-  /**
-   * Handler for submission of a new record
-   */
-  const handleNewAction = useCallback(async () => {
-    if (formHasErrors) {
-      // bring up the snackbar for errors
-      console.error(formErrors);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
-      setFormIsDirty(true);
-    } else {
-      // ok to POST
-      let content = { ...formContent, '@class': model.name };
-      content = statementReviewCheck(formContent, content);
-      addNewAction(content);
-    }
-  }, [addNewAction, formContent, formErrors, formHasErrors, model.name, setFormIsDirty, snackbar, statementReviewCheck]);
-
-  const { mutate: deleteAction, isPending: isDeleting, error: errorDeleting } = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const { routeName } = schemaDefn.get(content);
-      return api.delete(`${routeName}/${content['@rid']!.replace(/^#/, '')}`);
-    },
-    onSuccess: (_, content) => {
-      snackbar.enqueueSnackbar(`Sucessfully deleted the record ${content['@rid']}`, { variant: 'success' });
-      onSubmit?.();
-    },
-  });
-
-  /**
-   * Handler for deleting an existing record
-   */
-  const handleDeleteAction = useCallback(async () => {
-    const content = { ...formContent, '@class': model.name };
-    deleteAction(content);
-  }, [deleteAction, formContent, model.name]);
-
-  const { mutate: updateAction, isPending: isUpdating, error: errorUpdating } = useMutation({
-    mutationFn: async (content: GeneralRecordType) => {
-      const payload = cleanPayload(content);
-      const { routeName } = schemaDefn.get(payload);
-      return api.patch(`${routeName}/${content['@rid']!.replace(/^#/, '')}`, payload);
-    },
-    onSuccess: (result) => {
-      snackbar.enqueueSnackbar(`Sucessfully edited the record ${result['@rid']}`, { variant: 'success' });
-      onSubmit?.(result);
-    },
-  });
-
-  /**
-   * Handler for edits to an existing record
-   */
-  const handleEditAction = useCallback(async () => {
-    const content = { ...formContent, '@class': model.name };
-
-    if (formHasErrors) {
-      // bring up the snackbar for errors
-      console.error(formErrors);
-      snackbar.enqueueSnackbar('There are errors in the form which must be resolved before it can be submitted', { variant: 'error' });
-      setFormIsDirty(true);
-    } else if (!formIsDirty) {
-      snackbar.enqueueSnackbar('no changes to submit');
-      onSubmit?.(formContent);
-    } else {
-      updateAction(content);
-    }
-  }, [formContent, formErrors, formHasErrors, formIsDirty, model.name, onSubmit, setFormIsDirty, snackbar, updateAction]);
-
-  const actionInProgress = isAdding || isDeleting || isUpdating;
+  }, [variant, form.content]);
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
-    const reviews = [...(formContent.reviews || []), content];
+    const reviews = [...(form.content.reviews || []), content];
     updateField('reviews', reviews);
 
     if (updateReviewStatus) {
@@ -299,15 +192,15 @@ const StatementForm = ({
     }
     setReviewDialogOpen(false);
     setFormIsDirty(true);
-  }, [formContent.reviews, setFormIsDirty, updateField]);
+  }, [form.content.reviews, setFormIsDirty, updateField]);
 
   let pageTitle = title;
 
-  if (variant === FORM_VARIANT.VIEW && formContent) {
-    if (formContent.displayName) {
-      pageTitle = `${formContent.displayName} (${formContent['@rid']})`;
+  if (variant === FORM_VARIANT.VIEW && form.content) {
+    if (form.content.displayName) {
+      pageTitle = `${form.content.displayName} (${form.content['@rid']})`;
     } else {
-      pageTitle = `${formContent['@class']} ${formContent['@rid']}`;
+      pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
     }
   }
 
@@ -322,7 +215,7 @@ const StatementForm = ({
           {variant === FORM_VARIANT.EDIT && (
             <Button
               className="header__review-action"
-              disabled={actionInProgress}
+              disabled={form.action.inProgress}
               onClick={() => setReviewDialogOpen(true)}
               variant="outlined"
             >
@@ -335,7 +228,7 @@ const StatementForm = ({
               className="header__review-action"
               component={Link}
               target="_blank"
-              to={!isempty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
+              to={!isEmpty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
               variant="outlined"
             >
               <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy
@@ -344,10 +237,10 @@ const StatementForm = ({
           {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
           {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
             <RecordFormStateToggle
-              allowEdit={auth.hasWriteAccess && !formContent.deletedAt}
+              allowEdit={auth.hasWriteAccess && !form.content.deletedAt}
               message="Are you sure? You will lose your changes."
               onClick={onToggleState}
-              requireConfirm={variant === 'edit' && formIsDirty}
+              requireConfirm={variant === 'edit' && form.isDirty}
               value={variant}
             />
           )}
@@ -360,25 +253,24 @@ const StatementForm = ({
           />
         )}
       </div>
+      <StatementSentence
+        content={form.content}
+      />
       <FormContext.Provider value={form}>
         <FormLayout
           collapseExtra
-          disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
           exclusions={FIELD_EXCLUSIONS}
-          modelName={model.name}
         />
       </FormContext.Provider>
-      <ErrorMessage error={errorAdding}>An error occurred while creating record.</ErrorMessage>
-      <ErrorMessage error={errorDeleting}>An error occurred while deleting record.</ErrorMessage>
-      <ErrorMessage error={errorUpdating}>An error occurred while updating record.</ErrorMessage>
+      <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>
       <div className="statement-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+        {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
           ? (
             <ActionButton
               color="error"
-              disabled={actionInProgress}
+              disabled={form.action.inProgress}
               message="Are you sure you want to delete this record?"
-              onClick={handleDeleteAction}
+              onClick={form.action.delete}
               variant="outlined"
             >
               DELETE RECORD
@@ -386,20 +278,18 @@ const StatementForm = ({
           )
           // for spacing issues only
           : (<div />)}
-        {actionInProgress && (
+        {form.action.inProgress && (
         <CircularProgress size={50} />
         )}
-        {additionalValidationError && (
-          <Alert severity="error">{additionalValidationError}</Alert>
+        {form.validation.message && (
+          <Alert severity="error">{form.validation.message}</Alert>
         )}
-        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT && !formContent.deletedAt
+        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT && !form.content.deletedAt
           ? (
             <ActionButton
               color="primary"
-              disabled={actionInProgress || (formHasErrors && formIsDirty)}
-              onClick={variant === FORM_VARIANT.EDIT
-                ? handleEditAction
-                : handleNewAction}
+              disabled={form.action.inProgress || (!form.validation.valid && form.isDirty)}
+              onClick={form.action.submit}
               requireConfirm={false}
               variant="contained"
             >

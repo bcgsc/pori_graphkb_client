@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { GraphRecord, schema as schemaDefn, util } from '@bcgsc-pori/graphkb-schema';
+import { util } from '@bcgsc-pori/graphkb-schema';
 import CopyIcon from '@mui/icons-material/FileCopyOutlined';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
@@ -23,6 +23,7 @@ import { useQuery } from 'react-query';
 
 import { tuple } from '@/components/util';
 import api from '@/services/api';
+import schema from '@/services/schema';
 
 import JSONView from './JSONView';
 
@@ -66,7 +67,7 @@ const ActiveFilters = ({ search }: { search: string; }) => {
         if (rec['@class'] === 'Statement') {
           hash[rec['@rid']] = 'Statement';
         } else {
-          hash[rec['@rid']] = schemaDefn.getPreview(rec as GraphRecord);
+          hash[rec['@rid']] = schema.getPreview(rec);
         }
       });
       return hash;

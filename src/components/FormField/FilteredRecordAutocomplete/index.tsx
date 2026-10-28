@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import FilterIcon from '@mui/icons-material/FilterList';
 import { FormControl, FormHelperText } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -8,6 +7,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
+import schemaDefn from '@/services/schema';
 
 interface FilteredRecordAutocompleteProps extends Pick<React.ComponentProps<typeof RecordAutocomplete>, 'disabled' | 'isMulti' | 'helperText' | 'label' | 'className' | 'onChange' | 'required' | 'value' | 'readOnly'> {
   /** the base class for creating the class filter for the paired autocomplete component */

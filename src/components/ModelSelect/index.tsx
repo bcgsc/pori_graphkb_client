@@ -1,8 +1,8 @@
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import React, { useEffect, useMemo } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import RadioSelect from '@/components/RadioSelect';
+import schema from '@/services/schema';
 
 interface ModelSelectProps {
   /** the parent onChange handler */
@@ -29,8 +29,8 @@ const ModelSelect = ({
 }: ModelSelectProps) => {
   const model = value || '';
 
-  const choices = useMemo(() => schemaDefn.descendants(baseModel || '', { excludeAbstract: !includeAbstract, includeSelf: true }).map((m) => ({
-    label: m, value: m, caption: schemaDefn.get(m).description, key: m,
+  const choices = useMemo(() => schema.descendants(baseModel || '', { excludeAbstract: !includeAbstract, includeSelf: true }).map((m) => ({
+    label: m, value: m, caption: schema.get(m).description, key: m,
   })).sort((m1, m2) => m1.label.localeCompare(m2.label)), [baseModel, includeAbstract]);
 
   useEffect(() => {

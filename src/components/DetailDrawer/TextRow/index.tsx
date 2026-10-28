@@ -1,4 +1,3 @@
-import { GraphRecord, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
@@ -63,7 +62,7 @@ function TextRow(props: TextRowProps) {
           <ListItem dense>
             {isNested && <div className="nested-spacer" />}
             <ListItemText className="detail-li-text">
-              {util.formatStr(schemaDefn.getPreview(value as GraphRecord))}
+              {util.formatStr(schema.getPreview(value))}
             </ListItemText>
           </ListItem>
         </Collapse>

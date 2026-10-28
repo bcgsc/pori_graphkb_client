@@ -1,6 +1,5 @@
 import './GraphExpansionDialog.scss';
 
-import { GraphRecord, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   Button,
   Checkbox,
@@ -136,7 +135,7 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
               || links.find((l) => l.getId() === edge['@rid'])) {
               return null;
             }
-            const classLabel = schemaDefn.get(edge['@class'])[inRid === node['@rid'] ? 'reverseName' : 'name'];
+            const classLabel = schema.get(edge['@class'])[inRid === node['@rid'] ? 'reverseName' : 'name'];
             return (
               <ListItem
                 key={edge['@rid']}
@@ -145,7 +144,7 @@ function GraphExpansionDialog(props: GraphExpansionDialogProps) {
               >
                 <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                 <ListItemText>
-                  <Typography variant="body1">{schemaDefn.getPreview(target as GraphRecord)}</Typography>
+                  <Typography variant="body1">{schema.getPreview(target)}</Typography>
                   <Typography variant="caption">{classLabel}</Typography>
                 </ListItemText>
               </ListItem>

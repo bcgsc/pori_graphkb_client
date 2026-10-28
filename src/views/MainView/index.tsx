@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@mui/material';
@@ -12,6 +11,7 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { AuthenticatedLayout } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
+import schema from '@/services/schema';
 import ErrorBoundary from '@/views/ErrorView';
 
 import MainAppBar from './components/MainAppBar';
@@ -37,8 +37,8 @@ const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-const ABSTRACT_CLASSES = Object.values(schemaDefn.models)
-  .filter((m) => m.isAbstract && m.name !== 'Variant')
+const ABSTRACT_CLASSES = Object.values(schema.models)
+  .filter((m) => m.isAbstract)
   .map((m) => m.name);
 
 export function AppRoutes() {

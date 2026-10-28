@@ -2,7 +2,7 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 
-import { FormContextState } from '@/components/FormContext';
+import { FormContextState } from '@/components/hooks/useSchemaForm';
 
 interface TimestampProps extends Pick<TextFieldProps, 'disabled' | 'error' | 'helperText' | 'label' | 'required'> {
   name: string;

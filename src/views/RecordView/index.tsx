@@ -1,28 +1,19 @@
 import './index.scss';
 
-import { schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import {
   CircularProgress,
 } from '@mui/material';
 import { Buffer } from 'buffer';
 import { useSnackbar } from 'notistack';
-import * as qs from 'qs';
-import React, {
-  useCallback, useEffect, useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import {
-  useLocation, useNavigate, useParams,
-} from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
+import PositionalVariantForm from '@/components/PositionalVariantForm';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
-import {
-  cleanLinkedRecords, FORM_VARIANT, navigateToGraph, tuple,
-} from '@/components/util';
-import VariantForm from '@/components/VariantForm';
+import { FORM_VARIANT, navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -33,31 +24,21 @@ const DEFAULT_TITLES = {
   [FORM_VARIANT.VIEW]: 'Record Contents',
 };
 
-const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
-  let defaultModelName = modelName;
-
+const getModelFromName = (modelName: string | undefined, variant = FORM_VARIANT.VIEW) => {
   if (modelName) {
-    const model = schemaDefn.get(modelName) ?? schemaDefn.getFromRoute(modelName);
-    defaultModelName = model.name;
+    const model = schema.get(modelName);
 
     if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
       throw new Error(`Page Not Found. '${modelName}' is not a valid model`);
     }
-  } else if (path.includes('/user/')) {
-    defaultModelName = 'User';
-  } else if (path.includes('/usergroup/')) {
-    defaultModelName = 'UserGroup';
-  } else if (path.includes('/e/')) {
-    defaultModelName = 'E';
+    return model;
   }
-  return schemaDefn.get(defaultModelName || 'V').name;
+  return schema.get('V');
 };
 
-type ModelNamesType = 'Source' | 'source' | 'User' | 'user' | 'UserGroup' | 'usergroup';
-
 type RouteParams = {
-  variant: FORM_VARIANT;
-  modelName: ModelNamesType;
+  variant: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
+  modelName: string;
   rid: string;
 };
 
@@ -65,8 +46,8 @@ const RecordView = ({
   modelName: modelNameParamProp,
   variant,
 }: {
-  modelName?: ModelNamesType;
-  variant: FORM_VARIANT;
+  modelName?: string;
+  variant: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
 }) => {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
@@ -76,17 +57,7 @@ const RecordView = ({
   } = useParams<RouteParams>();
 
   // Use props over params
-  const modelNameParam = modelNameParamProp ?? modelNameParams;
-
-  const { pathname: path } = useLocation();
-  const [modelName, setModelName] = useState(modelNameParam || '');
-
-  useEffect(() => {
-    if (path) {
-      const name = getModelFromName(path, modelNameParam, variant);
-      setModelName(name as ModelNamesType);
-    }
-  }, [path, modelNameParam, variant, navigate]);
+  const model = getModelFromName((modelNameParamProp ?? modelNameParams) || 'V');
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -94,37 +65,28 @@ const RecordView = ({
   const handleSubmit = useCallback((result: GeneralRecordType | null = null) => {
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
       navigate(schema.getLink(result));
-    } else if (result && variant === FORM_VARIANT.SEARCH) {
-      // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(result));
-      navigate({
-        pathname: '/data/table',
-        search,
-      }, { state: { content: result } });
     } else {
       navigate('/');
     }
   }, [navigate, variant]);
 
-  const model = useMemo(() => schemaDefn.get(modelName || 'V'), [modelName]);
-
-  const { data: recordContent } = useQuery({
-    queryKey: tuple(`${model?.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
+  const { data: recordContent, isPending } = useQuery({
+    queryKey: tuple(`${model.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
     queryFn: async ({ queryKey: [route, options] }) => {
       const result = await api.get(route, options);
 
       return { ...result[0] };
     },
-    enabled: Boolean(variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid),
+    enabled: Boolean(variant !== FORM_VARIANT.NEW && rid),
     refetchOnMount: 'always',
     throwOnError: true,
   });
 
   useEffect(() => {
-    if (recordContent) {
-      setModelName(recordContent['@class']);
+    if (recordContent?.['@class'] && recordContent['@class'] !== model.name) {
+      navigate(`/${variant}/${recordContent['@class']}/${rid}`, { replace: true });
     }
-  }, [recordContent]);
+  }, [model.name, navigate, recordContent, rid, variant]);
 
   // redirect when the user clicks the top right button
   const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {
@@ -138,42 +100,24 @@ const RecordView = ({
     }
   }, [snackbar, navigate, model.name, recordContent, rid]);
 
-  if (!modelName || (variant !== FORM_VARIANT.NEW && (!recordContent || !recordContent['@rid']))) {
-    // wait for the model to be set for new Records
+  if (isPending && Boolean(variant !== FORM_VARIANT.NEW && rid)) {
     // wait for the content to load for existing records
     return (<CircularProgress />);
   }
-  if (
-    ['positionalvariant', 'categoryvariant', 'variant'].includes(modelName.toLowerCase())
-    && variant === FORM_VARIANT.EDIT
-  ) {
-    return (
-      <div className="edit-variant-view">
-        <VariantForm
-          formVariant={variant}
-          onSubmit={handleSubmit}
-          value={recordContent}
-        />
-      </div>
-    );
-  }
-  if (modelName.toLowerCase() === 'statement') {
-    return (
-      <StatementForm
-        onSubmit={handleSubmit}
-        onToggleState={handleToggleState}
-        title={DEFAULT_TITLES[variant].replace(':modelName', 'Statement')}
-        value={recordContent}
-        variant={variant}
-      />
-    );
+
+  let Form = RecordForm;
+
+  if (model.name === 'PositionalVariant') {
+    Form = PositionalVariantForm;
+  } else if (model.name === 'Statement') {
+    Form = StatementForm;
   }
   return (
-    <RecordForm
-      modelName={modelName}
+    <Form
+      modelName={model.name}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
-      title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+      title={DEFAULT_TITLES[variant]}
       value={recordContent}
       variant={variant}
     />

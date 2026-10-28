@@ -6,12 +6,30 @@ import {
   screen,
 } from '@testing-library/react';
 import React, { useEffect } from 'react';
+import { QueryClientProvider } from 'react-query';
 import { BrowserRouter, useLocation } from 'react-router';
 import {
   afterEach, describe, expect, test, vi,
 } from 'vitest';
 
+import { AuthContext } from '@/components/Auth';
+import api from '@/services/api';
+
 import AdvancedSearchView from '..';
+
+const auth = {
+  user: { '@rid': '23:9', name: 'name', groups: [] }, hasWriteAccess: true, login: () => { }, logout: () => { }, isAuthenticated: true, error: undefined, isAuthenticating: false,
+};
+
+const Providers = ({ children }) => (  // eslint-disable-line
+  <BrowserRouter>
+    <QueryClientProvider client={api.queryClient}>
+      <AuthContext.Provider value={auth}>
+        {children}
+      </AuthContext.Provider>
+    </QueryClientProvider>
+  </BrowserRouter>
+);
 
 function LocationSpy({ onChange }) {
   const location = useLocation();
@@ -74,10 +92,10 @@ describe('AdvancedSearchView', () => {
     const navigate = vi.fn();
 
     render(
-      <BrowserRouter>
+      <Providers>
         <LocationSpy onChange={navigate} />
         <AdvancedSearchView />
-      </BrowserRouter>,
+      </Providers>,
     );
 
     fireEvent.click(screen.getByText('Search'));
@@ -99,9 +117,9 @@ describe('AdvancedSearchView', () => {
 
   test('renders new filter group correctly', async () => {
     render(
-      <BrowserRouter>
+      <Providers>
         <AdvancedSearchView />
-      </BrowserRouter>,
+      </Providers>,
     );
 
     fireEvent.change(screen.getByTestId('prop-select'), { target: { value: 'relevance' } });
@@ -116,10 +134,10 @@ describe('AdvancedSearchView', () => {
     const navigate = vi.fn();
 
     render(
-      <BrowserRouter>
+      <Providers>
         <LocationSpy onChange={navigate} />
         <AdvancedSearchView />
-      </BrowserRouter>,
+      </Providers>,
     );
     fireEvent.change(screen.getByTestId('prop-select'), { target: { value: 'relevance' } });
     fireEvent.change(screen.getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }], name: 'value' } });

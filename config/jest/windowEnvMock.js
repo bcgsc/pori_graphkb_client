@@ -22,13 +22,15 @@ const today = format(new Date(), 'yyyy-MM-dd');
  *
  * for that reason this helper will replace any generated classnames, ids, uuids,
  * relative dates, current dates etc. and omit style attributes entirely
+ * 
+ * @param {string} value - the string to normalize
  */
 function replaceNonDeterministicValues(value) {
   let fixed = value;
   // uuids
   fixed = fixed.replace(/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}/g, ':uuid:');
   // react useId
-  fixed = fixed.replace(/"\_r\_[0-9a-z]+_/g, '"_r_XXXX_')
+  fixed = fixed.replace(/\_r\_[0-9a-z]+_/g, '_r_XXXX_');
 
   // aria-live description from ag-grid that doesn't always update the same
   fixed = fixed.replace(/<div[^>]*aria-relevant="additions text"[^>\/]*(>[^/]*<\/div>|\/>)/g, '');
@@ -46,7 +48,7 @@ function replaceNonDeterministicValues(value) {
   fixed = fixed.replaceAll(/[ ]*style="([^"]+)"\n?/g, '');
 
   fixed = fixed.replaceAll(new RegExp(`"${today}"`, 'g'), '":today:"');
-  fixed = fixed.replace(/\d+ [a-z]+ ago/g, 'XXXX XXXX ago');
+  fixed = fixed.replace(/(almost|over|about)?[\n\s]*\d+[\n\s]+[a-z]+[\n\s]+ago/g, 'XXXX XXXX ago');
 
   // remove html comments
   fixed = fixed.replace(/<!--[ a-zA-Z0-9_-]+-->/g, '');

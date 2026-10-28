@@ -11,7 +11,7 @@ import { D3DragEvent } from 'd3-drag';
 import * as d3Force from 'd3-force';
 import * as d3Select from 'd3-selection';
 import * as d3Zoom from 'd3-zoom';
-import isObject from 'lodash.isobject';
+import { isObject } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, {
   useCallback,

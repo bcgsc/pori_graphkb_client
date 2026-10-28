@@ -1,50 +1,14 @@
 import './index.scss';
 
-import { ClassDefinition, schema as schemaDefn } from '@bcgsc-pori/graphkb-schema';
 import { List } from '@mui/material';
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
-import FormContext from '@/components/FormContext';
 import FormField from '@/components/FormField';
-import { FORM_VARIANT } from '@/components/util';
-
-/**
- * returns an array of strings without any of the indicated exclusion values
- *
- * @param orderingList specifies property display ordering
- * @param exclusions fields that should not be rendered
- */
-const exclusionFilter = (orderingList: (string | string[])[], exclusionList: string[]) => {
-  const newOrdering: (string | string[])[] = [];
-  orderingList.forEach((filter) => {
-    if (Array.isArray(filter)) {
-      newOrdering.push(exclusionFilter(filter, exclusionList) as string[]);
-    } else if (!exclusionList.includes(filter)) {
-      newOrdering.push(filter);
-    }
-  });
-  return newOrdering;
-};
-
-const filterNullFields = (orderingList: (string | string[])[], formContent) => {
-  const newOrdering: (string | string[])[] = [];
-  orderingList.forEach((field) => {
-    if (Array.isArray(field)) {
-      newOrdering.push(filterNullFields(field, formContent) as string[]);
-    } else if (formContent[field] === 0 || formContent[field]) {
-      newOrdering.push(field);
-    }
-  });
-  return newOrdering;
-};
+import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
 
 interface FieldGroupProps {
-  /** ClassModel */
-  model: Partial<Pick<ClassDefinition, 'properties' | 'isEdge' | 'name'>>;
   /** the property names in order to be rendered (array of array of strings for groups) */
   ordering: (string | string[])[];
-  /** if field should be disabled */
-  disabled?: boolean;
   /** fields to be excluded from rendering */
   exclusions?: string[];
 }
@@ -52,48 +16,36 @@ interface FieldGroupProps {
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
  */
-const FieldGroup = ({
-  model, ordering, exclusions = [], disabled = false,
-}: FieldGroupProps) => {
-  const { formVariant, formContent } = useContext(FormContext);
-  let properties;
-
-  if (model.name) {
-    properties = schemaDefn.getProperties(model.name);
-  } else {
-    properties = model.properties; // Field Group is used by passing props in some cases
-  }
+const FieldGroup = ({ ordering, exclusions = [] }: FieldGroupProps) => {
+  const form = useFormContext();
+  const { variant: formVariant, content: formContent, model } = form;
+  const { properties } = model;
 
   // get the form content
   const fields: ReactNode[] = [];
 
-  function filterGeneratedFields(order: (string | string[])[]): (string | string[])[] {
-    const newOrder: typeof order = [];
-
-    order.forEach((item) => {
-      if (Array.isArray(item)) {
-        const subgroup = filterGeneratedFields(item) as string[];
-
-        if (subgroup.length) {
-          newOrder.push(subgroup);
-        }
-      } else if (!properties[item] || !properties[item].generated) {
-        if (!model.isEdge || !['out', 'in'].includes(item)) {
-          newOrder.push(item);
-        }
+  const filteredOrdering = useMemo(() => {
+    const toExclude = [...exclusions];
+    Object.values(properties).forEach((prop) => {
+      if (shouldHideField(formVariant, prop, formContent[prop.name])) {
+        toExclude.push(prop.name);
       }
     });
-    return newOrder;
-  }
 
-  let filteredOrdering = ordering;
+    const next: typeof ordering = [];
+    ordering.forEach((item) => {
+      if (Array.isArray(item)) {
+        const nextItem = item.filter((name) => !toExclude.includes(name) && Boolean(properties[name]));
 
-  if ((formVariant === FORM_VARIANT.EDIT || formVariant === FORM_VARIANT.NEW)) {
-    filteredOrdering = filterGeneratedFields(ordering);
-  } else if (formVariant === FORM_VARIANT.VIEW) {
-    filteredOrdering = filterNullFields(filteredOrdering, formContent);
-  }
-  filteredOrdering = exclusionFilter(filteredOrdering, exclusions ?? []);
+        if (nextItem.length) {
+          next.push(nextItem);
+        }
+      } else if (!toExclude.includes(item) && properties[item]) {
+        next.push(item);
+      }
+    });
+    return next;
+  }, [exclusions, formContent, formVariant, ordering, properties]);
 
   filteredOrdering.forEach((item) => {
     if (Array.isArray(item)) { // subgrouping
@@ -102,20 +54,15 @@ const FieldGroup = ({
       fields.push((
         <List key={key} className="form-layout__content-subgroup">
           <FieldGroup
-            disabled={disabled}
-            model={model}
             ordering={item}
           />
         </List>
       ));
-    } else if (properties[item]) {
-      const prop = properties[item];
-      const { name } = prop;
+    } else {
       const wrapper = (
         <FormField
-          key={name}
-          disabled={disabled}
-          model={prop}
+          key={item}
+          name={item}
         />
       );
       fields.push(wrapper);

@@ -8023,7 +8023,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
             <button
               aria-controls="_r_XXXX_-content"
               aria-expanded="true"
-              class="Mui-expanded Mui-focusVisible MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+              class="Mui-expanded MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
               id="_r_XXXX_-header"
               tabindex="0"
               type="button"
@@ -9300,7 +9300,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
             <button
               aria-controls="_r_XXXX_-content"
               aria-expanded="true"
-              class="Mui-expanded Mui-focusVisible MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+              class="Mui-expanded MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
               id="_r_XXXX_-header"
               tabindex="0"
               type="button"
@@ -11240,7 +11240,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
             <button
               aria-controls="_r_XXXX_-content"
               aria-expanded="true"
-              class="Mui-expanded Mui-focusVisible MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+              class="Mui-expanded MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
               id="_r_XXXX_-header"
               tabindex="0"
               type="button"
@@ -13749,7 +13749,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
             <button
               aria-controls="_r_XXXX_-content"
               aria-expanded="true"
-              class="Mui-expanded Mui-focusVisible MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+              class="Mui-expanded MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
               id="_r_XXXX_-header"
               tabindex="0"
               type="button"

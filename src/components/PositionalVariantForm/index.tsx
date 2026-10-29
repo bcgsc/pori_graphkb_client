@@ -1,7 +1,11 @@
 import {
-  CircularProgress, Paper, Stack, Typography,
+  Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Stack, TextField, Typography,
 } from '@mui/material';
-import React, { useCallback, useMemo } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
+import { useQuery } from 'react-query';
+import { Link } from 'react-router';
 
 import ActionButton from '@/components/ActionButton';
 import { useAuth } from '@/components/Auth';
@@ -9,7 +13,8 @@ import DropDownSelect from '@/components/DropDownSelect';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import RecordFormStateToggle from '@/components/RecordFormStateToggle';
-import { FORM_VARIANT } from '@/components/util';
+import { FORM_VARIANT, tuple } from '@/components/util';
+import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
@@ -56,6 +61,95 @@ const typeToAllowedCoordinates = {
   methylation: ['ProteinPosition'],
   phosphorylation: ['ProteinPosition'],
   ubiquitination: ['ProteinPosition'],
+};
+
+interface PrepopulateVariantButtonProps {
+  onSubmit: (content: Record<string, unknown>) => void;
+}
+
+/**
+ * Lets users paste positional variant notation
+ * (ex. KRAS:p.G12D) and prepopulates the variant form fields
+ * based on the notation
+ */
+const PrepopulateVariantButton = ({ onSubmit }: PrepopulateVariantButtonProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [prepopulateRequested, setPrepopulateRequested] = useState(false);
+
+  const query = useQuery({
+    queryKey: ['/upload/hgvs', inputValue],
+    queryFn: async ({ client }) => {
+      const result = await api.post('/upload/hgvs', { notation: inputValue, upload: false });
+      const rids = ['reference1', 'reference2', 'type'].map((key) => result[key]).filter(Boolean);
+
+      // get records instead of just rids
+      if (rids.length) {
+        const records = await client.fetchQuery({
+          queryKey: tuple('/query', { target: rids }),
+          queryFn: async ({ queryKey: [, body] }) => api.query(body),
+          staleTime: Infinity,
+        });
+        const recordsByRid = Object.fromEntries(records.map((r) => [r['@rid'], r]));
+        ['reference1', 'reference2', 'type'].forEach((key) => {
+          if (result[key]) {
+            result[key] = recordsByRid[result[key]];
+          }
+        });
+      }
+      return result;
+    },
+    enabled: prepopulateRequested && Boolean(inputValue),
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (query.data && prepopulateRequested) {
+      setInputValue('');
+      setIsOpen(false);
+      setPrepopulateRequested(false);
+      onSubmit(query.data);
+    }
+  }, [query.data, onSubmit, prepopulateRequested]);
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)} variant="outlined">Prepopulate from HGVS Shorthand</Button>
+      {isOpen && (
+        <Dialog onClose={() => setIsOpen(false)} open>
+          <DialogTitle>Prepopulate from HGVS Shorthand</DialogTitle>
+          <DialogContent>
+            <Typography>
+              Positional variants in GraphKB use notation that is an extended form of HGVS. See
+              {' '}
+              <Link to="/about/notation">notation</Link>
+              {' '}
+              for more information about syntax.
+            </Typography>
+            <TextField
+              aria-label="Positional Variant Notation"
+              error={Boolean(query.error)}
+              fullWidth
+              helperText={query.error ? String(query.error) : undefined}
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsOpen(false)} variant="outlined">Cancel</Button>
+            <Button
+              disabled={query.isFetching || !inputValue}
+              loading={query.isFetching}
+              onClick={() => setPrepopulateRequested(true)}
+              variant="contained"
+            >
+              Prepopulate
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </>
+  );
 };
 
 const allowedTypes = Object.keys(typeToAllowedCoordinates).sort();
@@ -145,6 +239,9 @@ const VariantForm = ({
             {title !== pageTitle && (<Typography variant="subtitle1">{title}</Typography>)}
           </span>
           <div className={`header__actions header__actions--${variant}`}>
+            {variant === FORM_VARIANT.NEW && (
+              <PrepopulateVariantButton onSubmit={(content) => updateForm(content, { replace: true })} />
+            )}
             {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
               <RecordFormStateToggle
                 allowEdit={auth.hasWriteAccess && !form.content.deletedAt}

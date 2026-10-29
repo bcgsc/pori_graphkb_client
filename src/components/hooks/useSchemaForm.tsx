@@ -41,7 +41,7 @@ interface ReducerState {
 }
 
 export interface FormContextState extends ReducerState {
-  update: (updates: Record<string, unknown>) => void;
+  update: (updates: Record<string, unknown>, options?: { replace?: boolean }) => void;
   /** update a single field */
   updateField: (name: string, value: unknown) => void;
   /** update a single field using a synthetic event */
@@ -82,7 +82,7 @@ type PayloadMap = {
     initialValue: GeneralRecordType | undefined;
     variant: FORM_VARIANT;
   };
-  [ACTION_TYPE.UPDATE_FORM]: Record<string, unknown>;
+  [ACTION_TYPE.UPDATE_FORM]: { updates: Record<string, unknown>; replace?: boolean };
 };
 
 type Action<T extends ACTION_TYPE> = T extends keyof PayloadMap ? { type: T; payload: PayloadMap[T] } : { type: T };
@@ -129,8 +129,12 @@ export function reducer<T extends ACTION_TYPE>(draft: ReducerState, action: Acti
 
   if (action.type === ACTION_TYPE.UPDATE_FORM) {
     const { model } = draft;
-    // fully update record, then validate
-    Object.entries(action.payload as PayloadMap[ACTION_TYPE.UPDATE_FORM]).forEach(([propPath, propValue]) => {
+    const { updates, replace } = action.payload as PayloadMap[ACTION_TYPE.UPDATE_FORM];
+
+    if (replace) {
+      draft.content = {};
+    }
+    Object.entries(updates).forEach(([propPath, propValue]) => {
       const [propName, subPropName] = propPath.split('.');
       const propModel = model.properties[propName];
 
@@ -274,8 +278,8 @@ const useSchemaForm = (
 
   const hasErrors = Boolean(additionalValidationError || !state.validation.valid);
 
-  const update = useCallback((updates: Record<string, unknown>) => {
-    dispatch({ type: ACTION_TYPE.UPDATE_FORM, payload: updates });
+  const update = useCallback((updates: Record<string, unknown>, opts?: { replace?: boolean }) => {
+    dispatch({ type: ACTION_TYPE.UPDATE_FORM, payload: { updates, replace: opts?.replace } });
   }, []);
 
   // provide an update callback which includes the validation step

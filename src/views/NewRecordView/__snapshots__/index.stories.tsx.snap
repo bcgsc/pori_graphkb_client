@@ -9754,198 +9754,194 @@ exports[`NewStatement snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="column-layout__group column-layout__group--outlined"
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
               >
                 <div
-                  class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                 >
-                  <div
-                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                  <label
+                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
                   >
-                    <label
-                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                      data-shrink="true"
-                      for="_r_XXXX_"
-                      id="_r_XXXX_-label"
+                    relevance
+                    <span
+                      aria-hidden="true"
+                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                     >
-                      relevance
-                      <span
-                        aria-hidden="true"
-                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                      >
-                         
-                        *
-                      </span>
-                    </label>
-                    <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                    >
-                      <input
-                        aria-autocomplete="list"
-                        aria-describedby="_r_XXXX_-helper-text"
-                        aria-expanded="false"
-                        aria-invalid="false"
-                        autocapitalize="none"
-                        autocomplete="off"
-                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
-                        id="_r_XXXX_"
-                        placeholder="Search Records by Name or ID"
-                        required=""
-                        role="combobox"
-                        spellcheck="false"
-                        type="text"
-                        value=""
-                      />
-                      <div
-                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
-                      >
-                        <button
-                          aria-label="Open"
-                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                          tabindex="-1"
-                          title="Open"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                            data-testid="SearchIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <p
-                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                      id="_r_XXXX_-helper-text"
-                    >
-                      Adds meaning to a statement and applies to the "subject" element
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
-                >
+                       
+                      *
+                    </span>
+                  </label>
                   <div
-                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                   >
-                    <label
-                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                      data-shrink="true"
-                      for="_r_XXXX_"
-                      id="_r_XXXX_-label"
-                    >
-                      subject
-                      <span
-                        aria-hidden="true"
-                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                      >
-                         
-                        *
-                      </span>
-                    </label>
+                    <input
+                      aria-autocomplete="list"
+                      aria-describedby="_r_XXXX_-helper-text"
+                      aria-expanded="false"
+                      aria-invalid="false"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
+                      id="_r_XXXX_"
+                      placeholder="Search Records by Name or ID"
+                      required=""
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
+                    />
                     <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                     >
-                      <div
-                        class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
                       >
-                        <span
+                        <svg
                           aria-hidden="true"
-                          class="notranslate"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
                         >
-                          ​
-                        </span>
-                        <div
-                          aria-label="Filter (subject) Search by Class"
-                          class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
-                        >
-                          <div
-                            aria-expanded="false"
-                            aria-haspopup="listbox"
-                            aria-labelledby="mui-component-select-search-class"
-                            class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                            id="mui-component-select-search-class"
-                            role="combobox"
-                            tabindex="0"
-                          >
-                            Biomarker
-                          </div>
-                          <input
-                            aria-hidden="true"
-                            aria-invalid="false"
-                            class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                            name="search-class"
-                            tabindex="-1"
-                            value="Biomarker"
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
                           />
-                          <svg
-                            aria-hidden="true"
-                            aria-label="Filter records search by selected Class"
-                            class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
-                            data-mui-internal-clone-element="true"
-                            data-testid="FilterListIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      <input
-                        aria-autocomplete="list"
-                        aria-describedby="_r_XXXX_-helper-text"
-                        aria-expanded="false"
-                        aria-invalid="false"
-                        autocapitalize="none"
-                        autocomplete="off"
-                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                        id="_r_XXXX_"
-                        placeholder="Search for an Existing Biomarker Record"
-                        required=""
-                        role="combobox"
-                        spellcheck="false"
-                        type="text"
-                        value=""
-                      />
-                      <div
-                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <p
+                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    id="_r_XXXX_-helper-text"
+                  >
+                    Adds meaning to a statement and applies to the "subject" element
+                  </p>
+                </div>
+              </div>
+              <div
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
+              >
+                <div
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
+                  >
+                    subject
+                    <span
+                      aria-hidden="true"
+                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
+                  <div
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                  >
+                    <div
+                      class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                    >
+                      <span
+                        aria-hidden="true"
+                        class="notranslate"
                       >
-                        <button
-                          aria-label="Open"
-                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                          tabindex="-1"
-                          title="Open"
-                          type="button"
+                        ​
+                      </span>
+                      <div
+                        aria-label="Filter (subject) Search by Class"
+                        class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
+                      >
+                        <div
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="mui-component-select-search-class"
+                          class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                          id="mui-component-select-search-class"
+                          role="combobox"
+                          tabindex="0"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                            data-testid="SearchIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                            />
-                          </svg>
-                        </button>
+                          Biomarker
+                        </div>
+                        <input
+                          aria-hidden="true"
+                          aria-invalid="false"
+                          class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                          name="search-class"
+                          tabindex="-1"
+                          value="Biomarker"
+                        />
+                        <svg
+                          aria-hidden="true"
+                          aria-label="Filter records search by selected Class"
+                          class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                          data-mui-internal-clone-element="true"
+                          data-testid="FilterListIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                          />
+                        </svg>
                       </div>
                     </div>
-                    <p
-                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                      id="_r_XXXX_-helper-text"
+                    <input
+                      aria-autocomplete="list"
+                      aria-describedby="_r_XXXX_-helper-text"
+                      aria-expanded="false"
+                      aria-invalid="false"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                      id="_r_XXXX_"
+                      placeholder="Search for an Existing Biomarker Record"
+                      required=""
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
+                    />
+                    <div
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                     >
-                      The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
-                    </p>
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
+                  <p
+                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    id="_r_XXXX_-helper-text"
+                  >
+                    The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
+                  </p>
                 </div>
               </div>
               <div
@@ -10092,204 +10088,124 @@ exports[`NewStatement snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="column-layout__group column-layout__group--outlined"
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
               >
-                <div
-                  class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="false"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
-                  <label
-                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="false"
-                    for="_r_XXXX_"
-                    id="_r_XXXX_-label"
-                  >
-                    reviewStatus
-                  </label>
+                  reviewStatus
+                </label>
+                <div
+                  class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
                   <div
-                    class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                    class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    role="combobox"
+                    tabindex="0"
                   >
-                    <div
-                      aria-describedby="_r_XXXX_-helper-text"
-                      aria-expanded="false"
-                      aria-haspopup="listbox"
-                      aria-labelledby="_r_XXXX_-label _r_XXXX_"
-                      class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                      id="_r_XXXX_"
-                      role="combobox"
-                      tabindex="0"
-                    >
-                      <span
-                        aria-hidden="true"
-                        class="notranslate"
-                      >
-                        ​
-                      </span>
-                    </div>
-                    <input
+                    <span
                       aria-hidden="true"
-                      aria-invalid="false"
-                      class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                      name="reviewStatus"
-                      tabindex="-1"
-                      value=""
-                    />
-                    <svg
-                      aria-hidden="true"
-                      class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
-                      data-testid="ArrowDropDownIcon"
-                      focusable="false"
-                      viewBox="0 0 24 24"
+                      class="notranslate"
                     >
-                      <path
-                        d="M7 10l5 5 5-5z"
-                      />
-                    </svg>
+                      ​
+                    </span>
                   </div>
-                  <p
-                    class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    id="_r_XXXX_-helper-text"
+                  <input
+                    aria-hidden="true"
+                    aria-invalid="false"
+                    class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                    name="reviewStatus"
+                    tabindex="-1"
+                    value=""
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                    data-testid="ArrowDropDownIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
                   >
-                    The review status of the overall statement. The amalgemated status of all (or no) reviews
-                  </p>
-                </div>
-                <div
-                  class="embedded-list-table"
-                >
-                  <h6
-                    class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
-                  >
-                    Reviews
-                  </h6>
-                  <table
-                    class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
-                  >
-                    <thead
-                      class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
-                    >
-                      <tr
-                        class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
-                      >
-                        <th
-                          class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
-                          scope="col"
-                        >
-                          Review Status
-                        </th>
-                        <th
-                          class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
-                          scope="col"
-                        >
-                          Reviewer
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody
-                      class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+                    <path
+                      d="M7 10l5 5 5-5z"
                     />
-                  </table>
+                  </svg>
                 </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  The review status of the overall statement. The amalgemated status of all (or no) reviews
+                </p>
               </div>
               <div
-                class="column-layout__group column-layout__group--outlined"
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
               >
                 <div
-                  class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
-                >
-                  <div
-                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
-                  >
-                    <label
-                      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                      data-shrink="true"
-                      for="_r_XXXX_"
-                      id="_r_XXXX_-label"
-                    >
-                      source
-                    </label>
-                    <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                    >
-                      <input
-                        aria-autocomplete="list"
-                        aria-describedby="_r_XXXX_-helper-text"
-                        aria-expanded="false"
-                        aria-invalid="false"
-                        autocapitalize="none"
-                        autocomplete="off"
-                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
-                        id="_r_XXXX_"
-                        placeholder="Search Records by Name or ID"
-                        role="combobox"
-                        spellcheck="false"
-                        type="text"
-                        value=""
-                      />
-                      <div
-                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
-                      >
-                        <button
-                          aria-label="Open"
-                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                          tabindex="-1"
-                          title="Open"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                            data-testid="SearchIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <p
-                      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                      id="_r_XXXX_-helper-text"
-                    >
-                      If the statement is imported from an external source, it is linked here
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                 >
                   <label
-                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="false"
+                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
                     for="_r_XXXX_"
                     id="_r_XXXX_-label"
                   >
-                    sourceId
+                    source
                   </label>
                   <div
-                    class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                   >
-                    <textarea
+                    <input
+                      aria-autocomplete="list"
                       aria-describedby="_r_XXXX_-helper-text"
+                      aria-expanded="false"
                       aria-invalid="false"
-                      class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                      data-testid="sourceId"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
                       id="_r_XXXX_"
-                      name="sourceId"
+                      placeholder="Search Records by Name or ID"
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
                     />
-                    <textarea
-                      aria-hidden="true"
-                      class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                      readonly=""
-                      tabindex="-1"
-                    />
+                    <div
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                    >
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                   <p
                     class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                     id="_r_XXXX_-helper-text"
                   >
-                    If the statement is imported from an external source, this is used to track the statement. This is not used for manually entered statements
+                    If the statement is imported from an external source, it is linked here
                   </p>
                 </div>
               </div>
@@ -10718,198 +10634,194 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="column-layout__group column-layout__group--outlined"
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
               >
                 <div
-                  class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                 >
-                  <div
-                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                  <label
+                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
                   >
-                    <label
-                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                      data-shrink="true"
-                      for="_r_XXXX_"
-                      id="_r_XXXX_-label"
+                    relevance
+                    <span
+                      aria-hidden="true"
+                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
                     >
-                      relevance
-                      <span
-                        aria-hidden="true"
-                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                      >
-                         
-                        *
-                      </span>
-                    </label>
-                    <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                    >
-                      <input
-                        aria-autocomplete="list"
-                        aria-describedby="_r_XXXX_-helper-text"
-                        aria-expanded="false"
-                        aria-invalid="false"
-                        autocapitalize="none"
-                        autocomplete="off"
-                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
-                        id="_r_XXXX_"
-                        placeholder="Search Records by Name or ID"
-                        required=""
-                        role="combobox"
-                        spellcheck="false"
-                        type="text"
-                        value=""
-                      />
-                      <div
-                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
-                      >
-                        <button
-                          aria-label="Open"
-                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                          tabindex="-1"
-                          title="Open"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                            data-testid="SearchIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <p
-                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                      id="_r_XXXX_-helper-text"
-                    >
-                      Adds meaning to a statement and applies to the "subject" element
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
-                >
+                       
+                      *
+                    </span>
+                  </label>
                   <div
-                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                   >
-                    <label
-                      class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                      data-shrink="true"
-                      for="_r_XXXX_"
-                      id="_r_XXXX_-label"
-                    >
-                      subject
-                      <span
-                        aria-hidden="true"
-                        class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-                      >
-                         
-                        *
-                      </span>
-                    </label>
+                    <input
+                      aria-autocomplete="list"
+                      aria-describedby="_r_XXXX_-helper-text"
+                      aria-expanded="false"
+                      aria-invalid="false"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
+                      id="_r_XXXX_"
+                      placeholder="Search Records by Name or ID"
+                      required=""
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
+                    />
                     <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                     >
-                      <div
-                        class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
                       >
-                        <span
+                        <svg
                           aria-hidden="true"
-                          class="notranslate"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
                         >
-                          ​
-                        </span>
-                        <div
-                          aria-label="Filter (subject) Search by Class"
-                          class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
-                        >
-                          <div
-                            aria-expanded="false"
-                            aria-haspopup="listbox"
-                            aria-labelledby="mui-component-select-search-class"
-                            class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                            id="mui-component-select-search-class"
-                            role="combobox"
-                            tabindex="0"
-                          >
-                            Biomarker
-                          </div>
-                          <input
-                            aria-hidden="true"
-                            aria-invalid="false"
-                            class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                            name="search-class"
-                            tabindex="-1"
-                            value="Biomarker"
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
                           />
-                          <svg
-                            aria-hidden="true"
-                            aria-label="Filter records search by selected Class"
-                            class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
-                            data-mui-internal-clone-element="true"
-                            data-testid="FilterListIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      <input
-                        aria-autocomplete="list"
-                        aria-describedby="_r_XXXX_-helper-text"
-                        aria-expanded="false"
-                        aria-invalid="false"
-                        autocapitalize="none"
-                        autocomplete="off"
-                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
-                        id="_r_XXXX_"
-                        placeholder="Search for an Existing Biomarker Record"
-                        required=""
-                        role="combobox"
-                        spellcheck="false"
-                        type="text"
-                        value=""
-                      />
-                      <div
-                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <p
+                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    id="_r_XXXX_-helper-text"
+                  >
+                    Adds meaning to a statement and applies to the "subject" element
+                  </p>
+                </div>
+              </div>
+              <div
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
+              >
+                <div
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="_r_XXXX_"
+                    id="_r_XXXX_-label"
+                  >
+                    subject
+                    <span
+                      aria-hidden="true"
+                      class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                    >
+                       
+                      *
+                    </span>
+                  </label>
+                  <div
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                  >
+                    <div
+                      class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                    >
+                      <span
+                        aria-hidden="true"
+                        class="notranslate"
                       >
-                        <button
-                          aria-label="Open"
-                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                          tabindex="-1"
-                          title="Open"
-                          type="button"
+                        ​
+                      </span>
+                      <div
+                        aria-label="Filter (subject) Search by Class"
+                        class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
+                      >
+                        <div
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="mui-component-select-search-class"
+                          class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                          id="mui-component-select-search-class"
+                          role="combobox"
+                          tabindex="0"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                            data-testid="SearchIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                            />
-                          </svg>
-                        </button>
+                          Biomarker
+                        </div>
+                        <input
+                          aria-hidden="true"
+                          aria-invalid="false"
+                          class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                          name="search-class"
+                          tabindex="-1"
+                          value="Biomarker"
+                        />
+                        <svg
+                          aria-hidden="true"
+                          aria-label="Filter records search by selected Class"
+                          class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                          data-mui-internal-clone-element="true"
+                          data-testid="FilterListIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                          />
+                        </svg>
                       </div>
                     </div>
-                    <p
-                      class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                      id="_r_XXXX_-helper-text"
+                    <input
+                      aria-autocomplete="list"
+                      aria-describedby="_r_XXXX_-helper-text"
+                      aria-expanded="false"
+                      aria-invalid="false"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                      id="_r_XXXX_"
+                      placeholder="Search for an Existing Biomarker Record"
+                      required=""
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
+                    />
+                    <div
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
                     >
-                      The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
-                    </p>
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
+                  <p
+                    class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                    id="_r_XXXX_-helper-text"
+                  >
+                    The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
+                  </p>
                 </div>
               </div>
               <div
@@ -11056,204 +10968,124 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="column-layout__group column-layout__group--outlined"
+                class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
               >
-                <div
-                  class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="false"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
                 >
-                  <label
-                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="false"
-                    for="_r_XXXX_"
-                    id="_r_XXXX_-label"
-                  >
-                    reviewStatus
-                  </label>
+                  reviewStatus
+                </label>
+                <div
+                  class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
                   <div
-                    class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                    class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    role="combobox"
+                    tabindex="0"
                   >
-                    <div
-                      aria-describedby="_r_XXXX_-helper-text"
-                      aria-expanded="false"
-                      aria-haspopup="listbox"
-                      aria-labelledby="_r_XXXX_-label _r_XXXX_"
-                      class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
-                      id="_r_XXXX_"
-                      role="combobox"
-                      tabindex="0"
-                    >
-                      <span
-                        aria-hidden="true"
-                        class="notranslate"
-                      >
-                        ​
-                      </span>
-                    </div>
-                    <input
+                    <span
                       aria-hidden="true"
-                      aria-invalid="false"
-                      class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
-                      name="reviewStatus"
-                      tabindex="-1"
-                      value=""
-                    />
-                    <svg
-                      aria-hidden="true"
-                      class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
-                      data-testid="ArrowDropDownIcon"
-                      focusable="false"
-                      viewBox="0 0 24 24"
+                      class="notranslate"
                     >
-                      <path
-                        d="M7 10l5 5 5-5z"
-                      />
-                    </svg>
+                      ​
+                    </span>
                   </div>
-                  <p
-                    class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                    id="_r_XXXX_-helper-text"
+                  <input
+                    aria-hidden="true"
+                    aria-invalid="false"
+                    class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                    name="reviewStatus"
+                    tabindex="-1"
+                    value=""
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                    data-testid="ArrowDropDownIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
                   >
-                    The review status of the overall statement. The amalgemated status of all (or no) reviews
-                  </p>
-                </div>
-                <div
-                  class="embedded-list-table"
-                >
-                  <h6
-                    class="MuiTypography-alignCenter MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
-                  >
-                    Reviews
-                  </h6>
-                  <table
-                    class="MuiTable-root css-XXXX-MuiTable-root embedded-list-table__table"
-                  >
-                    <thead
-                      class="MuiTableHead-root css-XXXX-MuiTableHead-root embedded-list-table__table-header"
-                    >
-                      <tr
-                        class="MuiTableRow-head MuiTableRow-root css-XXXX-MuiTableRow-root"
-                      >
-                        <th
-                          class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
-                          scope="col"
-                        >
-                          Review Status
-                        </th>
-                        <th
-                          class="MuiTableCell-head MuiTableCell-root MuiTableCell-sizeSmall css-XXXX-MuiTableCell-root"
-                          scope="col"
-                        >
-                          Reviewer
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody
-                      class="MuiTableBody-root css-XXXX-MuiTableBody-root"
+                    <path
+                      d="M7 10l5 5 5-5z"
                     />
-                  </table>
+                  </svg>
                 </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  The review status of the overall statement. The amalgemated status of all (or no) reviews
+                </p>
               </div>
               <div
-                class="column-layout__group column-layout__group--outlined"
+                class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
               >
                 <div
-                  class="MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
-                >
-                  <div
-                    class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
-                  >
-                    <label
-                      class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                      data-shrink="true"
-                      for="_r_XXXX_"
-                      id="_r_XXXX_-label"
-                    >
-                      source
-                    </label>
-                    <div
-                      class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-                    >
-                      <input
-                        aria-autocomplete="list"
-                        aria-describedby="_r_XXXX_-helper-text"
-                        aria-expanded="false"
-                        aria-invalid="false"
-                        autocapitalize="none"
-                        autocomplete="off"
-                        class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
-                        id="_r_XXXX_"
-                        placeholder="Search Records by Name or ID"
-                        role="combobox"
-                        spellcheck="false"
-                        type="text"
-                        value=""
-                      />
-                      <div
-                        class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
-                      >
-                        <button
-                          aria-label="Open"
-                          class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
-                          tabindex="-1"
-                          title="Open"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
-                            data-testid="SearchIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <p
-                      class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                      id="_r_XXXX_-helper-text"
-                    >
-                      If the statement is imported from an external source, it is linked here
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                  class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
                 >
                   <label
-                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="false"
+                    class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
                     for="_r_XXXX_"
                     id="_r_XXXX_-label"
                   >
-                    sourceId
+                    source
                   </label>
                   <div
-                    class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                    class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
                   >
-                    <textarea
+                    <input
+                      aria-autocomplete="list"
                       aria-describedby="_r_XXXX_-helper-text"
+                      aria-expanded="false"
                       aria-invalid="false"
-                      class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                      data-testid="sourceId"
+                      autocapitalize="none"
+                      autocomplete="off"
+                      class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-XXXX-MuiInputBase-input-MuiInput-input"
                       id="_r_XXXX_"
-                      name="sourceId"
+                      placeholder="Search Records by Name or ID"
+                      role="combobox"
+                      spellcheck="false"
+                      type="text"
+                      value=""
                     />
-                    <textarea
-                      aria-hidden="true"
-                      class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                      readonly=""
-                      tabindex="-1"
-                    />
+                    <div
+                      class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                    >
+                      <button
+                        aria-label="Open"
+                        class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                        tabindex="-1"
+                        title="Open"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                          data-testid="SearchIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                   <p
                     class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                     id="_r_XXXX_-helper-text"
                   >
-                    If the statement is imported from an external source, this is used to track the statement. This is not used for manually entered statements
+                    If the statement is imported from an external source, it is linked here
                   </p>
                 </div>
               </div>

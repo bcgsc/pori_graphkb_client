@@ -529,8 +529,15 @@ function prepareModels() {
     defaultFilterClassName: 'Variant',
   };
   prepared.Statement.fieldOrder = {
-    order: ['conditions', 'evidence', ['relevance', 'subject']],
+    order: ['conditions', 'evidence', 'relevance', 'subject'],
     groups: [['reviewStatus', 'reviews'], ['source', 'sourceId']],
+  };
+
+  prepared.Statement.conditional = (draftProps, form) => {
+    if (form.variant === FORM_VARIANT.NEW) {
+      draftProps.reviews.hide = true;
+      draftProps.sourceId.hide = true;
+    }
   };
   prepared.PositionalVariant.properties.reference1.componentProps = {
     filterOptions: ['Signature', 'Feature'],

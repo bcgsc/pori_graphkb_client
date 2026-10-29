@@ -271,6 +271,7 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
     await userEvent.type(canvas.getByLabelText(/target record \(in\)/i), '222');
     await userEvent.click(await screen.findByText('Ontology (222:222)'));
     await userEvent.click(canvas.getByText(/submit/i));
+    await userEvent.tab();
     await canvas.findByText(/Internal Server Error/, { exact: false });
   },
 });

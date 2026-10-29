@@ -63,7 +63,7 @@ exports[`Default snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -218,7 +218,7 @@ exports[`Default snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -394,7 +394,7 @@ exports[`EmbeddedProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -552,7 +552,7 @@ exports[`EmbeddedProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -691,7 +691,7 @@ exports[`ExactMatchLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -846,7 +846,7 @@ exports[`ExactMatchLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -1052,7 +1052,7 @@ exports[`KeywordLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -1209,7 +1209,7 @@ exports[`KeywordLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -1263,7 +1263,7 @@ exports[`KeywordLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -1402,7 +1402,7 @@ exports[`SubclassTreeLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>
@@ -1560,7 +1560,7 @@ exports[`SubclassTreeLinkProperty snapshot 1`] = `
               viewBox="0 0 24 24"
             >
               <path
-                d="m7 10 5 5 5-5z"
+                d="M7 10l5 5 5-5z"
               />
             </svg>
           </div>

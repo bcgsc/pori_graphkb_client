@@ -1,39 +1,72 @@
 @use '../../globals';
 
-.form-layout {
-  &__content,
-  &__content-subgroup,
-  &__content--long {
-    float: left;
-    max-width: 100%;
+.column-layout-container {
+  height: 100%;
+  container-type: inline-size;
+  container-name: column-layout-container;
+  width: 100%;
+}
+
+.column-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  & > *, &__item, &__group {
     width: 100%;
   }
 
-  &__content,
-  &__content-subgroup {
-    margin: 0;
+  &__group {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    grid-auto-rows: min-content;
+    row-gap: 16px;
+  }
 
-    > .form-field {
-      @media (min-width: #{globals.$breakpoint-med}) {
-        margin-right: 20px;
-        width: calc(50% - 20px);
+  &__item--full-width {
+    grid-column: 1 / -1;
+  }
+
+  @container column-layout-container (width > 650px) {
+    grid-template-columns: repeat(2, 1fr);
+
+    &__group--outlined, &__item--outlined {
+      @include globals.field-set;
+      padding: 10px;
+    }
+  }
+
+  @container column-layout-container (650px < width <= 800px) {
+    // minor improvement but these fields look better full width on smaller containers
+    // where most other fields are still fine as 2 columns
+    & > .record-autocomplete,  
+    & > *:has(.record-autocomplete),
+    &__group > *:has(.record-autocomplete),
+    &__group > .record-autocomplete
+     {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @container column-layout-container (width > 800px) {
+    column-gap: 32px;
+  }
+
+  // fallback styles for if container queries are not supported
+  @supports not (container-type: inline-size) {
+    @media (min-width: globals.$breakpoint-lg) {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 32px;
+
+      &__group--outlined, &__item--outlined {
+        @include globals.field-set;
+        padding: 10px;
       }
-      float: left;
     }
-    // will have to find different solution if ever swap to use SSR
-    // but there is no good alternative when children are mixed types
-    // so will require adding consistent wrapper to all children
-    > :not(:last-child) {
-      margin-bottom: 10px;
+
+    & & {
+      grid-template-columns: 1fr;
     }
-  }
-
-  &__content--long {
-    display: block;
-  }
-
-  & &__content-subgroup {
-    @include globals.field-set;
-    width: 100%;
   }
 }

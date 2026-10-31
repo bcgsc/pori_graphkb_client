@@ -2,10 +2,7 @@ import './index.scss';
 
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
-import {
-  Alert, Button, CircularProgress,
-  Paper, Typography,
-} from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, {
   useCallback, useEffect, useMemo, useState,
@@ -13,22 +10,18 @@ import React, {
 import { useQuery } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router';
 
-import ActionButton from '@/components/ActionButton';
-import { useAuth } from '@/components/Auth';
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
-import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
-import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
+import { FormActions, FormErrors, FormHeader } from '../RecordForm';
 import StatementSentence from '../SentencePreview/StatementSentence';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
-const FIELD_EXCLUSIONS = ['groupRestrictions'];
 const model = schema.get('Statement');
 
 interface StatementFormProps {
@@ -111,8 +104,6 @@ const StatementForm = ({
     throwOnError: true,
   });
 
-  const auth = useAuth();
-
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const checkLogicalStatement = useCallback((formContent) => {
@@ -194,57 +185,40 @@ const StatementForm = ({
     setFormIsDirty(true);
   }, [form.content.reviews, setFormIsDirty, updateField]);
 
-  let pageTitle = title;
-
-  if (variant === FORM_VARIANT.VIEW && form.content) {
-    if (form.content.displayName) {
-      pageTitle = `${form.content.displayName} (${form.content['@rid']})`;
-    } else {
-      pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
-    }
-  }
-
   return (
-    <Paper className="statement-form__wrapper" elevation={4}>
-      <div className="statement-form__header">
-        <span className="title">
-          <Typography variant="h1">{pageTitle}</Typography>
-          {title !== pageTitle && (<Typography>{title}</Typography>)}
-        </span>
-        <div className={`header__actions header__actions--${variant}`}>
-          {variant === FORM_VARIANT.EDIT && (
-            <Button
-              className="header__review-action"
-              disabled={form.action.inProgress}
-              onClick={() => setReviewDialogOpen(true)}
-              variant="outlined"
-            >
-              <LocalLibraryIcon classes={{ root: 'review-icon' }} />
-              Add Review
-            </Button>
+    <FormContext.Provider value={form}>
+      <Paper className="record-form__wrapper" elevation={4}>
+        <FormHeader
+          actions={(
+            <>
+              {variant === FORM_VARIANT.EDIT && (
+                <Button
+                  className="header__review-action"
+                  disabled={form.action.inProgress}
+                  onClick={() => setReviewDialogOpen(true)}
+                  variant="outlined"
+                >
+                  <LocalLibraryIcon classes={{ root: 'review-icon' }} />
+                  Add Review
+                </Button>
+              )}
+              {variant === FORM_VARIANT.VIEW && (
+                <Button
+                  className="header__review-action"
+                  component={Link}
+                  target="_blank"
+                  to={!isEmpty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
+                  variant="outlined"
+                >
+                  <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy
+                </Button>
+              )}
+              {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
+            </>
           )}
-          {variant === FORM_VARIANT.VIEW && (
-            <Button
-              className="header__review-action"
-              component={Link}
-              target="_blank"
-              to={!isEmpty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
-              variant="outlined"
-            >
-              <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy
-            </Button>
-          )}
-          {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
-          {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-            <RecordFormStateToggle
-              allowEdit={auth.hasWriteAccess && !form.content.deletedAt}
-              message="Are you sure? You will lose your changes."
-              onClick={onToggleState}
-              requireConfirm={variant === 'edit' && form.isDirty}
-              value={variant}
-            />
-          )}
-        </div>
+          onToggleState={onToggleState}
+          title={title}
+        />
         {variant === FORM_VARIANT.EDIT && (
           <ReviewDialog
             isOpen={reviewDialogOpen}
@@ -252,56 +226,16 @@ const StatementForm = ({
             onSubmit={handleAddReview}
           />
         )}
-      </div>
-      <StatementSentence
-        content={form.content}
-      />
-      <FormContext.Provider value={form}>
+        <StatementSentence
+          content={form.content}
+        />
         <FormLayout
           collapseExtra
-          exclusions={FIELD_EXCLUSIONS}
         />
-      </FormContext.Provider>
-      <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>
-      <div className="statement-form__action-buttons">
-        {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
-          ? (
-            <ActionButton
-              color="error"
-              disabled={form.action.inProgress}
-              message="Are you sure you want to delete this record?"
-              onClick={form.action.delete}
-              variant="outlined"
-            >
-              DELETE RECORD
-            </ActionButton>
-          )
-          // for spacing issues only
-          : (<div />)}
-        {form.action.inProgress && (
-        <CircularProgress size={50} />
-        )}
-        {form.validation.message && (
-          <Alert severity="error">{form.validation.message}</Alert>
-        )}
-        {variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT && !form.content.deletedAt
-          ? (
-            <ActionButton
-              color="primary"
-              disabled={form.action.inProgress || (!form.validation.valid && form.isDirty)}
-              onClick={form.action.submit}
-              requireConfirm={false}
-              variant="contained"
-            >
-              {variant === FORM_VARIANT.EDIT
-                ? 'SUBMIT CHANGES'
-                : 'SUBMIT'}
-            </ActionButton>
-          )
-          // for spacing issues only
-          : (<div />)}
-      </div>
-    </Paper>
+        <FormErrors />
+        <FormActions />
+      </Paper>
+    </FormContext.Provider>
   );
 };
 

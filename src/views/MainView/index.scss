@@ -54,17 +54,6 @@
     }
   }
 
-  .drawer-logo {
-    display: flex;
-    overflow: hidden;
-    white-space: nowrap;
-
-    button {
-      margin: auto;
-      margin-left: 8px;
-    }
-  }
-
   &__content {
     height: calc(100% - #{globals.$banner-height});
     margin-left: 0;
@@ -73,10 +62,6 @@
     transition-duration: globals.$transitions__duration--standard;
     transition-property: width, margin-left;
     width: 100%;
-
-    > .form-field {
-      margin-top: 8px;
-    }
 
     @media (min-width: globals.$breakpoint-med) {
       margin-left: globals.$closed-drawer-width;

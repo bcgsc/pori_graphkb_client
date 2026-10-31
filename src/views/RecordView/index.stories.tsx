@@ -56,7 +56,7 @@ export const ViewAliasOf = meta.story({
 export const ViewAliasOfOptionalFieldsExpanded = ViewAliasOf.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
+    await userEvent.click(await canvas.findByText('Expand to see additional fields'));
     await expect(canvas.findByText('@rid')).resolves.toBeInTheDocument();
   },
 });
@@ -120,7 +120,7 @@ export const ViewCategoryVariant = meta.story({
 export const ViewCategoryVariantOptionalFieldsExpanded = ViewCategoryVariant.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
+    await userEvent.click(await canvas.findByText('Expand to see additional fields'));
     await expect(canvas.findByText('@rid')).resolves.toBeInTheDocument();
   },
 });
@@ -176,7 +176,7 @@ export const ViewPositionalVariant = meta.story({
 export const ViewPositionalVariantOptionalFieldsExpanded = ViewPositionalVariant.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
+    await userEvent.click(await canvas.findByText('Expand to see additional fields'));
     await expect(canvas.findByText('@rid')).resolves.toBeInTheDocument();
   },
 });
@@ -204,6 +204,8 @@ export const ViewStatement = meta.story({
                 '@class': 'CuratedContent',
               },
             ],
+            source: { '@rid': '#111:777', name: 'civic' },
+            sourceId: '12345',
             subject: {
               displayName: 'pembrolizumab [DB09037]',
               '@rid': '#122:30774',
@@ -282,7 +284,7 @@ export const ViewStatementNotFound = meta.story({
 export const ViewStatementOptionalFieldsExpanded = ViewStatement.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
+    await userEvent.click(await canvas.findByText('Expand to see additional fields'));
     await expect(canvas.findByText('displayNameTemplate')).resolves.toBeInTheDocument();
   },
 });

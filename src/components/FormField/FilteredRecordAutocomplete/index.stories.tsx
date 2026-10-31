@@ -40,6 +40,13 @@ export const WithValue = meta.story({
   },
 });
 
+export const WithLabel = meta.story({
+  args: {
+    label: 'Record Label',
+    value: { '@rid': '#15:1' },
+  },
+});
+
 export const Disabled = WithValue.extend({
   args: { disabled: true },
 });

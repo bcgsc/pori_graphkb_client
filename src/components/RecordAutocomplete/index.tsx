@@ -81,6 +81,7 @@ interface RecordAutocompleteProps {
   /** the initial selected value(s) */
   value?: unknown[] | unknown;
   readOnly?: boolean;
+  startAdornment?: React.ReactNode;
 }
 
 /**
@@ -102,6 +103,7 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     helperText: initialHelperText = '',
     value,
     readOnly,
+    startAdornment,
   } = props;
   const disabled = disabledProp && !readOnly;
 
@@ -262,6 +264,9 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
                   {params.InputProps.endAdornment}
                 </>
               ),
+              startAdornment: startAdornment ? (
+                <>{startAdornment}{params.InputProps.startAdornment}</>
+              ) : params.InputProps.startAdornment,
               disableUnderline: readOnly || (Boolean(selectedValues.length) && !isMulti),
             },
           }}

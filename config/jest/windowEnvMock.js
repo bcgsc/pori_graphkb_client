@@ -38,10 +38,10 @@ function replaceNonDeterministicValues(value) {
   fixed = fixed.replace(/id="cell-[^-"]+-[^-"]+"/g, (matched) => matched.replaceAll(/\d+/g, 'XXXX'));
   fixed = fixed.replace(/id="ag-\d+/g, 'id="ag-XXXX');
 
-  const flakyAgGridClasses = ['ag-row-not-inline-editing','ag-body-horizontal-content-no-gap', 'ag-scrollbar-scrolling', 'ag-invisible']
+  const flakyClasses = ['ag-row-not-inline-editing','ag-body-horizontal-content-no-gap', 'ag-scrollbar-scrolling', 'ag-invisible', 'Mui-focusVisible']
 
   fixed = fixed.replaceAll(/class="([^"]+)"/g, (_, classnames) => {
-    const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).filter((name) => !flakyAgGridClasses.includes(name)).sort().join(' ');
+    const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).filter((name) => !flakyClasses.includes(name)).sort().join(' ');
     return `class="${classes}"`;
   });
 

@@ -28,7 +28,13 @@ export const NewSourceAsAdmin = meta.story({
 
 export const NewOntology = meta.story({
   args: {
-    path: '/new/e',
+    path: '/new/ontology',
+  },
+});
+
+export const NewFeature = meta.story({
+  args: {
+    path: '/new/Feature',
   },
 });
 
@@ -229,7 +235,7 @@ export const NewStatement = meta.story({
 export const NewStatementOptionalFieldsExpanded = NewStatement.extend({
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
-    await userEvent.click(await canvas.findByText('Expand to see all optional fields'));
+    await userEvent.click(await canvas.findByText('Expand to see additional fields'));
     await expect(canvas.findByText('displayNameTemplate')).resolves.toBeInTheDocument();
   },
 });
@@ -265,6 +271,7 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
     await userEvent.type(canvas.getByLabelText(/target record \(in\)/i), '222');
     await userEvent.click(await screen.findByText('Ontology (222:222)'));
     await userEvent.click(canvas.getByText(/submit/i));
+    await userEvent.tab();
     await canvas.findByText(/Internal Server Error/, { exact: false });
   },
 });

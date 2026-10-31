@@ -1,35 +1,61 @@
 import './index.scss';
 
-import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
-  Collapse,
-  List,
-  ListItem,
-  ListItemText,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { omit } from 'lodash';
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 
-import { useFormContext } from '@/components/hooks/useSchemaForm';
-import schema, { SchemaPropertyDefinition } from '@/services/schema';
+import FormField from '@/components/FormField';
+import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
+import schema, { SchemaClassDefinition } from '@/services/schema';
 
-import FieldGroup from './FieldGroup';
+interface ColumnLayoutProps {
+  children: React.ReactNode;
+}
 
-const CLASS_MODEL_PROP = '@class';
+const ColumnLayout = ({ children }: ColumnLayoutProps) => (
+  <div className="column-layout-container">
+    <div className="column-layout">
+      {children}
+    </div>
+  </div>
+);
+
+interface LayoutGroupProps {
+  children: React.ReactNode;
+  outlined?: boolean;
+}
+
+const LayoutGroup = ({ children, outlined }: LayoutGroupProps) => (
+  <div className={`column-layout__group${outlined ? ' column-layout__group--outlined' : ''}`}>
+    {children}
+  </div>
+);
+
+interface LayoutItemProps {
+  children: React.ReactNode;
+  fullWidth?: boolean;
+  outlined?: boolean;
+}
+
+/**
+ * optional wrapper for an item in the column layout, allowing full width and outlined styles.
+ */
+const LayoutItem = ({ children, fullWidth, outlined }: LayoutItemProps) => (
+  <div className={`column-layout__item${fullWidth ? ' column-layout__item--full-width' : ''}${outlined ? ' column-layout__item--outlined' : ''}`}>
+    {children}
+  </div>
+);
+
 const BELOW_FOLD = Object.keys(schema.get('V').properties);
 
-const FIELD_GROUPS = [
-  ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history', 'groupRestrictions'],
-  ['relevance', 'subject'],
-  ['refSeq', 'untemplatedSeq'],
-  ['reviewStatus', 'reviews'],
-  ['reference1', 'break1Repr', 'break1Start', 'break1End', 'reference2', 'break2Repr', 'break2Start', 'break2End'],
-  ['source', 'sourceId', 'sourceIdVersion'],
-  ['startYear', 'completionYear'],
-  ['city', 'country'],
-  ['out', 'in'],
-];
+const BELOW_FOLD_ORDER = ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'updatedBy', 'updatedAt', 'uuid', 'history'];
 
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'
@@ -47,24 +73,19 @@ const FIELD_GROUPS = [
  */
 export const sortAndGroupFields = (
   /** the current class model to base the form off of */
-  propertiesWithClass: Record<string, SchemaPropertyDefinition>,
+  model: Pick<SchemaClassDefinition, 'properties' | 'fieldOrder'>,
   opt: {
     /** flag to indicate if a collaspible section should be created */
     collapseExtra?: boolean;
-    order?: string[][];
-    excludeFieldsNotInOrder?: boolean;
     exclude?: string[];
   } = {},
 ) => {
   const mainFields: (string | string[])[] = [];
   const extraFields: (string | string[])[] = [];
 
-  if (!propertiesWithClass) {
-    return { extraFields, fields: mainFields };
-  }
-
-  opt.order?.forEach((group) => {
-    const filtered = group.filter((field) => Boolean(propertiesWithClass[field]) && !opt.exclude?.includes(field));
+  model.fieldOrder?.order?.forEach((groupOrItem) => {
+    const group = Array.isArray(groupOrItem) ? groupOrItem : [groupOrItem];
+    const filtered = group.filter((field) => Boolean(model.properties[field]) && !model.properties[field].hide && !opt.exclude?.includes(field));
 
     if (filtered.length === 1) {
       mainFields.push(filtered[0]);
@@ -73,12 +94,8 @@ export const sortAndGroupFields = (
     }
   });
 
-  if (opt.excludeFieldsNotInOrder) {
-    return { fields: mainFields, extraFields };
-  }
-
   const exclude = [...opt.exclude || [], ...mainFields.flat()];
-  const { [CLASS_MODEL_PROP]: _, ...properties } = omit(propertiesWithClass, exclude) as typeof propertiesWithClass;
+  const properties = omit(model.properties, exclude) as typeof model.properties;
   type Group = {
     fields: string[];
     aboveFold: boolean;
@@ -87,6 +104,7 @@ export const sortAndGroupFields = (
   const fieldsMap: Record<string, Group> = {};
 
   Object.values(properties).forEach((prop) => {
+    if (prop.hide) return;
     const required = Boolean(
       prop.mandatory
       && prop.default === undefined
@@ -99,8 +117,8 @@ export const sortAndGroupFields = (
     };
   });
 
-  FIELD_GROUPS?.forEach((group) => {
-    const filteredGroup = group.filter((key) => properties[key]);
+  [BELOW_FOLD_ORDER, ...model.fieldOrder?.groups ?? []].forEach((group) => {
+    const filteredGroup = group.filter((key) => properties[key] && !properties[key].hide);
     if (!filteredGroup.length) return;
     const first = filteredGroup[0];
     let { aboveFold, required } = fieldsMap[first];
@@ -135,68 +153,114 @@ export const sortAndGroupFields = (
   return { fields: mainFields, extraFields };
 };
 
+interface FieldGroupProps {
+  /** the property names in order to be rendered (array of array of strings for groups) */
+  ordering: (string | string[])[];
+}
+
+/**
+ * Given some ordering of fields (possibly grouped) return the set of fields
+ */
+const FieldGroup = ({ ordering }: FieldGroupProps) => ordering.map((itemOrGroup) => {
+  // if only 1 item, make it full width
+  if (ordering.length === 1 && !Array.isArray(ordering[0])) {
+    return (
+      <LayoutItem key={ordering[0]} fullWidth>
+        <FormField name={ordering[0]} />
+      </LayoutItem>
+    );
+  }
+  if (Array.isArray(itemOrGroup)) {
+    return (
+      <LayoutGroup key={itemOrGroup.join('-')} outlined>
+        {itemOrGroup.map((item) => (
+          <FormField key={item} name={item} />
+        ))}
+      </LayoutGroup>
+    );
+  }
+  return (
+    <FormField key={itemOrGroup} name={itemOrGroup} />
+  );
+});
+
+function CollapsibleSection({ children }: { children: React.ReactNode }) {
+  const id = useId();
+  const [isExpanded, setIsExpanded] = useState(false);
+  return (
+    <Accordion
+      disableGutters
+      elevation={0}
+      expanded={isExpanded}
+      onChange={() => setIsExpanded(!isExpanded)}
+      square
+      sx={{
+        background: 'transparent',
+        '&::before': {
+          display: 'none',
+        },
+        '& .MuiAccordionDetails-root': {
+          padding: 0,
+        },
+        '& .MuiAccordion-heading button': {
+          padding: 0,
+        },
+      }}
+    >
+      <AccordionSummary
+        aria-controls={`${id}-content`}
+        expandIcon={<ExpandMore />}
+        id={`${id}-header`}
+      >
+        <Typography component="span">
+          {isExpanded
+            ? 'Close to hide additional fields'
+            : 'Expand to see additional fields'}
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        {children}
+      </AccordionDetails>
+    </Accordion>
+  );
+}
+
 interface FormLayoutProps {
-  /** css class to add to main element */
-  className?: string;
   /** flag to indicate a collapsible section should be created */
   collapseExtra?: boolean;
   /** an array of fields not to display */
   exclusions?: string[];
-  /** properties that should be grouped together */
-  order?: string[][];
-  excludeFieldsNotInOrder?: boolean;
+  children?: React.ReactNode;
 }
 
 const FormLayout = ({
   exclusions = [],
-  className = '',
   collapseExtra = false,
-  order,
-  excludeFieldsNotInOrder = false,
+  children,
 }: FormLayoutProps) => {
   const form = useFormContext();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const hidden = Object.keys(form.model.properties).filter((name) => shouldHideField(form.variant, form.model.properties[name], form.content[name]));
 
-  const { extraFields, fields } = sortAndGroupFields(form.model.properties, {
-    collapseExtra, order, excludeFieldsNotInOrder, exclude: exclusions,
+  const { extraFields, fields } = sortAndGroupFields(form.model, {
+    collapseExtra, exclude: [...exclusions, ...hidden],
   });
 
   return (
-    <div className={`form-layout ${className}`}>
-      {form.model && (
-        <>
-          <List className="form-layout__content">
-            <FieldGroup
-              exclusions={exclusions}
-              ordering={fields}
-            />
-          </List>
-          {extraFields.length > 0 && (
-            <>
-              <ListItem onClick={() => setIsExpanded(!isExpanded)}>
-                <ListItemText
-                  primary={
-                    isExpanded
-                      ? 'Close to hide optional fields'
-                      : 'Expand to see all optional fields'
-                  }
-                />
-                {isExpanded ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                <List className="form-layout__content">
-                  <FieldGroup
-                    exclusions={exclusions}
-                    ordering={extraFields}
-                  />
-                </List>
-              </Collapse>
-            </>
-          )}
-        </>
+    <Stack spacing={1}>
+      <ColumnLayout>
+        {children}
+        <FieldGroup ordering={fields} />
+      </ColumnLayout>
+      {extraFields.length > 0 && (
+        <CollapsibleSection>
+          <ColumnLayout>
+            <FieldGroup ordering={extraFields} />
+          </ColumnLayout>
+        </CollapsibleSection>
       )}
-    </div>
+    </Stack>
   );
 };
 
 export default FormLayout;
+export { LayoutGroup, LayoutItem };

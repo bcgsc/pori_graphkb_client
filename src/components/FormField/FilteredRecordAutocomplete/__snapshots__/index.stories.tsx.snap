@@ -21,17 +21,17 @@ exports[`Disabled snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
-            class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
+            class="Mui-disabled MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
+              aria-disabled="true"
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
-              class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+              class="Mui-disabled MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"
               role="combobox"
-              tabindex="0"
             >
               Variant
             </div>
@@ -39,6 +39,7 @@ exports[`Disabled snapshot 1`] = `
               aria-hidden="true"
               aria-invalid="false"
               class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+              disabled=""
               name="search-class"
               tabindex="-1"
               value="Variant"
@@ -46,7 +47,7 @@ exports[`Disabled snapshot 1`] = `
             <svg
               aria-hidden="true"
               aria-label="Filter records search by selected Class"
-              class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+              class="Mui-disabled MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
               data-mui-internal-clone-element="true"
               data-testid="FilterListIcon"
               focusable="false"
@@ -152,12 +153,12 @@ exports[`Empty snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
             class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
               class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"
@@ -301,12 +302,12 @@ exports[`WithError snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
             class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
               class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"
@@ -455,12 +456,12 @@ exports[`WithFilterOptions snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
             class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
               class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"
@@ -564,12 +565,12 @@ exports[`WithLabel snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
             class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
               class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"
@@ -711,12 +712,12 @@ exports[`WithMultipleValues snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
             class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
               class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"
@@ -885,12 +886,12 @@ exports[`WithValue snapshot 1`] = `
             ​
           </span>
           <div
-            aria-label="Filter (search) Search by Class"
             class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
           >
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
+              aria-label="Filter (search) Search by Class"
               aria-labelledby="mui-component-select-search-class"
               class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="mui-component-select-search-class"

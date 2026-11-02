@@ -12,17 +12,6 @@ import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';
 
-const FilterIconWithTooltip = React.forwardRef<SVGSVGElement, React.ComponentProps<typeof FilterIcon>>((props: React.ComponentProps<typeof FilterIcon>, ref) => (
-  <Tooltip
-    arrow
-    placement="top"
-    title="Filter records search by selected Class"
-  >
-    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-    <FilterIcon {...props} ref={ref} />
-  </Tooltip>
-));
-
 interface FilteredRecordAutocompleteProps extends Pick<React.ComponentProps<typeof RecordAutocomplete>, 'disabled' | 'isMulti' | 'helperText' | 'label' | 'className' | 'onChange' | 'required' | 'value' | 'readOnly'> {
   /** the base class for creating the class filter for the paired autocomplete component */
   linkedClassName: string;
@@ -57,6 +46,25 @@ const FilteredRecordAutocomplete = ({
   const [selectedClassName, setSelectedClassName] = useState(
     defaultFilterClassName || linkedClassName,
   );
+  const [classMenuOpen, setClassMenuOpen] = useState(false);
+
+  const FilterIconWithTooltip = useMemo(() => React.forwardRef<SVGSVGElement, React.ComponentProps<typeof FilterIcon>>((iconProps, ref) => (
+    <Tooltip
+      arrow
+      placement="top"
+      title="Filter records search by selected Class"
+    >
+      <FilterIcon
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...iconProps}
+        onMouseDown={(event) => {
+          iconProps.onMouseDown?.(event);
+          if (!disabled) setClassMenuOpen(true);
+        }}
+        ref={ref}
+      />
+    </Tooltip>
+  )), [disabled]);
 
   const filterOptions = useMemo(() => {
     if (filterOptionsProp) {
@@ -82,12 +90,16 @@ const FilteredRecordAutocomplete = ({
     startAdornment = (
       <InputAdornment position="start">
         <Select
-          aria-label={`Filter (${name}) Search by Class`}
           className="filtered-record-autocomplete__class-filter"
+          disabled={disabled}
           disableUnderline
           IconComponent={FilterIconWithTooltip}
+          inputProps={{ 'aria-label': `Filter (${name}) Search by Class` }}
           name="search-class"
           onChange={handleClassChange}
+          onClose={() => setClassMenuOpen(false)}
+          onOpen={() => setClassMenuOpen(true)}
+          open={classMenuOpen}
           value={selectedClassName}
           variant="standard"
         >

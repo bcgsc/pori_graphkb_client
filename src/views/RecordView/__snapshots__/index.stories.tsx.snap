@@ -989,12 +989,12 @@ exports[`EditCategoryVariant snapshot 1`] = `
                         ​
                       </span>
                       <div
-                        aria-label="Filter (reference1) Search by Class"
                         class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                       >
                         <div
                           aria-expanded="false"
                           aria-haspopup="listbox"
+                          aria-label="Filter (reference1) Search by Class"
                           aria-labelledby="mui-component-select-search-class"
                           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                           id="mui-component-select-search-class"
@@ -1147,12 +1147,12 @@ exports[`EditCategoryVariant snapshot 1`] = `
                         ​
                       </span>
                       <div
-                        aria-label="Filter (reference2) Search by Class"
                         class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                       >
                         <div
                           aria-expanded="false"
                           aria-haspopup="listbox"
+                          aria-label="Filter (reference2) Search by Class"
                           aria-labelledby="mui-component-select-search-class"
                           class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                           id="mui-component-select-search-class"
@@ -3648,12 +3648,12 @@ exports[`EditStatement snapshot 1`] = `
                       ​
                     </span>
                     <div
-                      aria-label="Filter (conditions) Search by Class"
                       class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                     >
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Filter (conditions) Search by Class"
                         aria-labelledby="mui-component-select-search-class"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                         id="mui-component-select-search-class"
@@ -3867,12 +3867,12 @@ exports[`EditStatement snapshot 1`] = `
                       ​
                     </span>
                     <div
-                      aria-label="Filter (evidence) Search by Class"
                       class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                     >
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Filter (evidence) Search by Class"
                         aria-labelledby="mui-component-select-search-class"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                         id="mui-component-select-search-class"
@@ -4150,12 +4150,12 @@ exports[`EditStatement snapshot 1`] = `
                       ​
                     </span>
                     <div
-                      aria-label="Filter (subject) Search by Class"
                       class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                     >
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Filter (subject) Search by Class"
                         aria-labelledby="mui-component-select-search-class"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                         id="mui-component-select-search-class"
@@ -5453,12 +5453,12 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       ​
                     </span>
                     <div
-                      aria-label="Filter (conditions) Search by Class"
                       class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                     >
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Filter (conditions) Search by Class"
                         aria-labelledby="mui-component-select-search-class"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                         id="mui-component-select-search-class"
@@ -5672,12 +5672,12 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       ​
                     </span>
                     <div
-                      aria-label="Filter (evidence) Search by Class"
                       class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                     >
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Filter (evidence) Search by Class"
                         aria-labelledby="mui-component-select-search-class"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                         id="mui-component-select-search-class"
@@ -5955,12 +5955,12 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       ​
                     </span>
                     <div
-                      aria-label="Filter (subject) Search by Class"
                       class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
                     >
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Filter (subject) Search by Class"
                         aria-labelledby="mui-component-select-search-class"
                         class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                         id="mui-component-select-search-class"

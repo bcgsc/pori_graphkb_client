@@ -26,7 +26,7 @@
   }
 
   &__operator {
-    min-width: 400px;
+    min-width: min(400px, 100%);
     width: max-content;
     flex-grow: 1;
   }

@@ -5,7 +5,7 @@ exports[`NewCategoryVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -653,18 +653,13 @@ exports[`NewCategoryVariant snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -676,7 +671,7 @@ exports[`NewFeature snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -1689,18 +1684,13 @@ exports[`NewFeature snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -2513,7 +2503,7 @@ exports[`NewPositionalVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -3536,18 +3526,13 @@ exports[`NewPositionalVariant snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -3559,7 +3544,7 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -4968,18 +4953,13 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -4991,7 +4971,7 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -6110,18 +6090,13 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -6133,7 +6108,7 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -7104,19 +7079,14 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          disabled=""
+          tabindex="-1"
+          type="button"
         >
-          <button
-            class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -7708,7 +7678,7 @@ exports[`NewRelationshipAliasOf snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -8166,18 +8136,13 @@ exports[`NewRelationshipAliasOf snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -8189,7 +8154,7 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -8780,21 +8745,16 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-            <span
-              class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
-            />
-          </button>
-        </div>
+          SUBMIT
+          <span
+            class="MuiTouchRipple-root css-XXXX-MuiTouchRipple-root"
+          />
+        </button>
       </div>
     </div>
   </div>
@@ -8828,7 +8788,7 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -9394,18 +9354,13 @@ exports[`NewSourceAsAdmin snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -9417,7 +9372,7 @@ exports[`NewStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -10270,18 +10225,13 @@ exports[`NewStatement snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -10293,7 +10243,7 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -11146,18 +11096,13 @@ exports[`NewStatementOptionalFieldsExpanded snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>

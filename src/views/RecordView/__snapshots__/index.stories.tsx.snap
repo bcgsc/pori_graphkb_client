@@ -5,7 +5,7 @@ exports[`CopyStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -1251,18 +1251,13 @@ exports[`CopyStatement snapshot 1`] = `
       <div
         class="record-form__action-buttons"
       >
-        <div />
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT
-          </button>
-        </div>
+          SUBMIT
+        </button>
       </div>
     </div>
   </div>
@@ -1274,7 +1269,7 @@ exports[`EditAliasOf snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -1971,17 +1966,16 @@ exports[`EditAliasOf snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div />
       </div>
     </div>
   </div>
@@ -1993,7 +1987,7 @@ exports[`EditCategoryVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -3087,27 +3081,23 @@ exports[`EditCategoryVariant snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -3119,7 +3109,7 @@ exports[`EditPositionalVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -4658,28 +4648,24 @@ exports[`EditPositionalVariant snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          disabled=""
+          tabindex="-1"
+          type="button"
         >
-          <button
-            class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -4691,7 +4677,7 @@ exports[`EditStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -6464,27 +6450,23 @@ exports[`EditStatement snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -6496,7 +6478,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -8310,10 +8292,10 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
@@ -8323,17 +8305,13 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
             />
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -8345,7 +8323,7 @@ exports[`ViewAliasOf snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -8893,10 +8871,7 @@ exports[`ViewAliasOf snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -8960,7 +8935,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -9508,10 +9483,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -9522,7 +9494,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -10258,10 +10230,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -10272,7 +10241,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -11008,10 +10977,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -11022,7 +10988,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -14930,10 +14896,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -14944,7 +14907,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -15842,10 +15805,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -15856,7 +15816,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -16754,10 +16714,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -16768,7 +16725,7 @@ exports[`ViewStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -18033,10 +17990,7 @@ exports[`ViewStatement snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -18100,7 +18054,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -19365,10 +19319,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>

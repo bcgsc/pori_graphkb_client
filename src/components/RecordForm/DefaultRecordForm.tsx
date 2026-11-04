@@ -2,10 +2,14 @@ import './index.scss';
 
 import {
   Alert,
-  CircularProgress,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Paper, Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import ActionButton from '@/components/ActionButton';
 import FormLayout from '@/components/FormLayout';
@@ -22,43 +26,70 @@ import EdgeTable from './EdgeTable';
 import RelatedStatementsTable from './RelatedStatementsTable';
 import RelatedVariantsTable from './RelatedVariantsTable';
 
+interface FormLayoutContextValue {
+  type: 'dialog' | 'inline';
+  onClose?: () => void;
+}
+const FormLayoutContext = React.createContext<FormLayoutContextValue>({
+  type: 'inline',
+});
+
 function FormActions() {
   const form = useFormContext();
-  return (
-    <div className="record-form__action-buttons">
-      {form.variant === FORM_VARIANT.EDIT && !form.content.deletedAt
-        ? (
+  const { type: formType, onClose } = useContext(FormLayoutContext);
+
+  const content = (
+    <>
+      {(form.variant === FORM_VARIANT.EDIT && !form.content.deletedAt)
+        && (
           <ActionButton
+            className="record-form__delete-button"
             color="error"
             disabled={form.action.inProgress}
             message="Are you sure you want to delete this record?"
             onClick={form.action.delete}
+            size="medium"
             variant="outlined"
           >
             DELETE RECORD
           </ActionButton>
-        )
-        // for spacing issues only
-        : (<div />)}
-      {form.action.inProgress && (
-        <CircularProgress size={50} />
+        )}
+      {formType === 'dialog' && onClose && (
+        <Button
+          onClick={onClose}
+          size="medium"
+          variant="outlined"
+        >
+          {form.variant === FORM_VARIANT.VIEW ? 'Close' : 'Cancel'}
+        </Button>
       )}
-      {form.variant === FORM_VARIANT.NEW || (form.variant === FORM_VARIANT.EDIT && !form.model.isEdge && !form.content.deletedAt)
-        ? (
-          <ActionButton
+      {(form.variant === FORM_VARIANT.NEW || (form.variant === FORM_VARIANT.EDIT && !form.model.isEdge && !form.content.deletedAt))
+        && (
+          <Button
             color="primary"
             disabled={form.action.inProgress || (!form.validation.valid && form.isDirty)}
             onClick={form.action.submit}
-            requireConfirm={false}
+            size="medium"
             variant="contained"
           >
             {form.variant === FORM_VARIANT.EDIT && !form.content.deletedAt
               ? 'SUBMIT CHANGES'
               : 'SUBMIT'}
-          </ActionButton>
-        )
-        // for spacing issues only
-        : (<div />)}
+          </Button>
+        )}
+    </>
+  );
+
+  if (formType === 'dialog') {
+    return (
+      <DialogActions>
+        {content}
+      </DialogActions>
+    );
+  }
+  return (
+    <div className="record-form__action-buttons">
+      {content}
     </div>
   );
 }
@@ -74,6 +105,7 @@ function FormHeader({
 }: FormHeaderProps) {
   const auth = useAuth();
   const form = useFormContext();
+  const { type: formType } = useContext(FormLayoutContext);
   let pageTitle = title;
   const subtitle = title;
 
@@ -84,10 +116,11 @@ function FormHeader({
       pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
     }
   }
-  return (
+
+  const content = (
     <div className="record-form__header">
       <span className="title">
-        <Typography variant="h1">{pageTitle}</Typography>
+        <Typography variant={formType === 'dialog' ? 'h2' : 'h1'}>{pageTitle}</Typography>
         {subtitle !== pageTitle && (<Typography variant="subtitle1">{subtitle}</Typography>)}
       </span>
       <div className={`header__actions header__actions--${form.variant}`}>
@@ -104,6 +137,15 @@ function FormHeader({
       </div>
     </div>
   );
+
+  if (formType === 'dialog') {
+    return (
+      <DialogTitle component="div">
+        {content}
+      </DialogTitle>
+    );
+  }
+  return content;
 }
 
 function FormErrors() {
@@ -118,6 +160,50 @@ function FormErrors() {
   );
 }
 
+function FormContent({ children }: { children: React.ReactNode }) {
+  const { type: formType } = useContext(FormLayoutContext);
+
+  if (formType === 'dialog') {
+    return (
+      <DialogContent>
+        {children}
+      </DialogContent>
+    );
+  }
+  return children;
+}
+
+interface FormProps {
+  value: ReturnType<typeof useSchemaForm>;
+  children: React.ReactNode;
+  formType: 'inline' | 'dialog' | undefined;
+  open: boolean | undefined;
+  onClose: (() => void) | undefined;
+}
+
+function Form(props: FormProps) {
+  const {
+    value, children, formType, open = false, onClose,
+  } = props;
+  const formTypeValue = useMemo(() => ({ type: formType ?? 'inline', onClose }), [formType, onClose]);
+  const content = (
+    <FormLayoutContext.Provider value={formTypeValue}>
+      <FormContext.Provider value={value}>
+        {children}
+      </FormContext.Provider>
+    </FormLayoutContext.Provider>
+  );
+
+  if (formType === 'dialog') {
+    return (
+      <Dialog fullWidth maxWidth="lg" onClose={onClose} open={open}>
+        {content}
+      </Dialog>
+    );
+  }
+  return <Paper className={`record-form record-form--${formType}`} elevation={4}>{content}</Paper>;
+}
+
 export interface RecordFormProps {
   /** the title for this form */
   title: string;
@@ -129,6 +215,9 @@ export interface RecordFormProps {
   value?: GeneralRecordType;
   /** the type of NodeForm to create */
   variant?: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
+  formType?: 'inline' | 'dialog';
+  open?: boolean;
+  onClose?: () => void;
 }
 
 /**
@@ -141,15 +230,18 @@ const RecordForm = ({
   onToggleState,
   onSubmit,
   variant = FORM_VARIANT.VIEW,
+  open = false,
+  onClose,
+  formType = 'inline',
 }: RecordFormProps) => {
   const model = schemaDefn.get(modelName);
 
   const form = useSchemaForm(model, initialValue, { variant, onActionSuccess: onSubmit });
 
   return (
-    <FormContext.Provider value={form}>
-      <Paper className="record-form__wrapper" elevation={4}>
-        <FormHeader onToggleState={onToggleState} title={title} />
+    <Form formType={formType} onClose={onClose} open={open} value={form}>
+      <FormHeader onToggleState={onToggleState} title={title} />
+      <FormContent>
         {form.model.isEdge && (
           <EdgeSentence
             srcRecord={(form.content as EdgeType).out}
@@ -165,16 +257,19 @@ const RecordForm = ({
             <EdgeTable recordId={String(form.content['@rid'])} />
             <RelatedStatementsTable recordId={String(form.content['@rid'])} />
             {schemaDefn.ancestors(modelName).includes('Ontology') && (
-              <RelatedVariantsTable recordId={String(form.content['@rid'])} />
+            <RelatedVariantsTable recordId={String(form.content['@rid'])} />
             )}
           </>
         )}
         <FormErrors />
-        <FormActions />
-      </Paper>
-    </FormContext.Provider>
+      </FormContent>
+      <FormActions />
+    </Form>
   );
 };
 
-export { FormActions, FormErrors, FormHeader };
+export {
+  Form,
+  FormActions, FormContent, FormErrors, FormHeader,
+};
 export default RecordForm;

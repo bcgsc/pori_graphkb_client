@@ -58,7 +58,7 @@ export const AddNewUser = AsAdmin.extend({
   play: async ({ canvas, step, userEvent }) => {
     await hasFinishedLoading({ canvas, step });
     await userEvent.click(canvas.getByText(/add new user$/i, { exact: true }));
-    await expect(screen.findByText('Add a new User')).resolves.toBeInTheDocument();
+    await expect(screen.findByText(/submit/i)).resolves.toBeInTheDocument();
   },
 });
 
@@ -66,6 +66,6 @@ export const AddNewGroup = AsAdmin.extend({
   play: async ({ canvas, step, userEvent }) => {
     await hasFinishedLoading({ canvas, step });
     await userEvent.click(canvas.getByText(/add new usergroup$/i, { exact: true }));
-    await expect(screen.findByText('Add a new UserGroup')).resolves.toBeInTheDocument();
+    await expect(screen.findByText(/submit/i)).resolves.toBeInTheDocument();
   },
 });

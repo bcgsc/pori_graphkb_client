@@ -1,5 +1,5 @@
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper, TextField, Typography,
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography,
 } from '@mui/material';
 import React, {
   useCallback, useEffect, useMemo, useState,
@@ -9,13 +9,15 @@ import { Link } from 'react-router';
 
 import DropDownSelect from '@/components/DropDownSelect';
 import FormLayout, { LayoutItem } from '@/components/FormLayout';
-import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
 import RecordAutocomplete from '../RecordAutocomplete';
-import { FormActions, FormErrors, FormHeader } from '../RecordForm/DefaultRecordForm';
+import {
+  Form, FormActions, FormContent, FormErrors, FormHeader, RecordFormProps,
+} from '../RecordForm/DefaultRecordForm';
 import EdgeTable from '../RecordForm/EdgeTable';
 import RelatedStatementsTable from '../RecordForm/RelatedStatementsTable';
 import { GeneralRecordType } from '../types';
@@ -148,17 +150,6 @@ const PrepopulateVariantButton = ({ onSubmit }: PrepopulateVariantButtonProps) =
 
 const allowedTypes = Object.keys(typeToAllowedCoordinates).sort();
 
-interface VariantFormProps {
-  /** the title for this form */
-  title: string;
-  onSubmit?: (record?: GeneralRecordType) => void;
-  onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** values of individual properties of passed class model */
-  value?: GeneralRecordType;
-  /** the type of NodeForm to create */
-  variant?: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
-}
-
 function useVariantSchemaForm(valueProp: GeneralRecordType | undefined, options: Parameters<typeof useSchemaForm>[2]) {
   const value = useMemo(() => ({
     '@class': MODEL.name,
@@ -200,9 +191,10 @@ function useVariantSchemaForm(valueProp: GeneralRecordType | undefined, options:
 /**
  * Input form for new Variants
  */
-const VariantForm = ({
-  title, onSubmit, onToggleState, value: initialValue, variant = FORM_VARIANT.NEW,
-}: VariantFormProps) => {
+const VariantForm = (props: RecordFormProps) => {
+  const {
+    title, onSubmit, onToggleState, value: initialValue, variant = FORM_VARIANT.NEW, formType = 'inline', open, onClose,
+  } = props;
   const form = useVariantSchemaForm(initialValue, { variant, onActionSuccess: onSubmit });
   const { update: updateForm } = form;
 
@@ -225,15 +217,15 @@ const VariantForm = ({
   }, [updateForm, form.content]);
 
   return (
-    <Paper className="record-form__wrapper" elevation={4}>
-      <FormContext.Provider value={form}>
-        <FormHeader
-          actions={variant === FORM_VARIANT.NEW && (
-            <PrepopulateVariantButton onSubmit={(content) => updateForm(content, { replace: true })} />
-          )}
-          onToggleState={onToggleState}
-          title={title}
-        />
+    <Form formType={formType} onClose={onClose} open={open} value={form}>
+      <FormHeader
+        actions={variant === FORM_VARIANT.NEW && (
+          <PrepopulateVariantButton onSubmit={(content) => updateForm(content, { replace: true })} />
+        )}
+        onToggleState={onToggleState}
+        title={title}
+      />
+      <FormContent>
         <FormLayout
           collapseExtra
           exclusions={FIELD_EXCLUSIONS}
@@ -284,9 +276,9 @@ const VariantForm = ({
           </>
         )}
         <FormErrors />
-        <FormActions />
-      </FormContext.Provider>
-    </Paper>
+      </FormContent>
+      <FormActions />
+    </Form>
   );
 };
 

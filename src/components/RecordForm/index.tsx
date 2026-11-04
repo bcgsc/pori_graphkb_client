@@ -7,7 +7,7 @@ import DefaultRecordForm, { RecordFormProps } from './DefaultRecordForm';
 
 export default function RecordForm(props: Omit<RecordFormProps, 'title'>) {
   const {
-    modelName, onSubmit, onToggleState, value, variant,
+    modelName, onSubmit, onToggleState, value, variant, open, formType, onClose,
   } = props;
   let title = 'Record Contents';
 
@@ -27,9 +27,12 @@ export default function RecordForm(props: Omit<RecordFormProps, 'title'>) {
 
   return (
     <Form
+      formType={formType}
       modelName={modelName}
+      onClose={onClose}
       onSubmit={onSubmit}
       onToggleState={onToggleState}
+      open={open}
       title={title}
       value={value}
       variant={variant}

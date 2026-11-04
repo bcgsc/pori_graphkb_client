@@ -118,7 +118,7 @@ function FormErrors() {
   );
 }
 
-interface RecordFormProps {
+export interface RecordFormProps {
   /** the title for this form */
   title: string;
   /** name of class model to be displayed */

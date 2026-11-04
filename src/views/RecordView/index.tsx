@@ -5,9 +5,7 @@ import React, { useCallback } from 'react';
 import { useLoaderData, useNavigate } from 'react-router';
 
 import ModelSelect from '@/components/ModelSelect';
-import PositionalVariantForm from '@/components/PositionalVariantForm';
-import RecordForm from '@/components/RecordForm/DefaultRecordForm';
-import StatementForm from '@/components/StatementForm';
+import RecordForm from '@/components/RecordForm';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT, navigateToGraph } from '@/components/util';
 import schema from '@/services/schema';
@@ -49,21 +47,6 @@ const RecordView = () => {
     }
   }, [snackbar, navigate, model.name, recordContent, rid]);
 
-  let title = 'Record Contents';
-
-  if (variant === FORM_VARIANT.EDIT) {
-    title = 'Edit this Record';
-  } else if (variant === FORM_VARIANT.NEW) {
-    title = `Create a new ${model.name} Record`;
-  }
-  let Form = RecordForm;
-
-  if (model.name === 'PositionalVariant') {
-    Form = PositionalVariantForm;
-  } else if (model.name === 'Statement') {
-    Form = StatementForm;
-  }
-
   if (model.isAbstract && variant === FORM_VARIANT.NEW) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -80,11 +63,10 @@ const RecordView = () => {
   }
 
   return (
-    <Form
+    <RecordForm
       modelName={model.name}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
-      title={title}
       value={recordContent}
       variant={variant}
     />

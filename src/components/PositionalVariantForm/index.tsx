@@ -15,7 +15,7 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import RecordAutocomplete from '../RecordAutocomplete';
-import { FormActions, FormErrors, FormHeader } from '../RecordForm';
+import { FormActions, FormErrors, FormHeader } from '../RecordForm/DefaultRecordForm';
 import EdgeTable from '../RecordForm/EdgeTable';
 import RelatedStatementsTable from '../RecordForm/RelatedStatementsTable';
 import { GeneralRecordType } from '../types';

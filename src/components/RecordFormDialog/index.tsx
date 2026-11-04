@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-import RecordForm from '@/components/RecordForm';
+import RecordForm from '@/components/RecordForm/DefaultRecordForm';
 import { FORM_VARIANT } from '@/components/util';
 
 interface RecordFormDialogProps extends Omit<React.ComponentProps<typeof RecordForm>, 'title'> {

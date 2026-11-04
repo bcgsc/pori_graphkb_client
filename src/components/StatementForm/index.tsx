@@ -17,7 +17,7 @@ import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-import { FormActions, FormErrors, FormHeader } from '../RecordForm';
+import { FormActions, FormErrors, FormHeader } from '../RecordForm/DefaultRecordForm';
 import StatementSentence from '../SentencePreview/StatementSentence';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';

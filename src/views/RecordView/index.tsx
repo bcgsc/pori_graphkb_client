@@ -6,7 +6,7 @@ import { useLoaderData, useNavigate } from 'react-router';
 
 import ModelSelect from '@/components/ModelSelect';
 import PositionalVariantForm from '@/components/PositionalVariantForm';
-import RecordForm from '@/components/RecordForm';
+import RecordForm from '@/components/RecordForm/DefaultRecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT, navigateToGraph } from '@/components/util';

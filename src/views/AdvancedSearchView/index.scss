@@ -13,7 +13,7 @@
   }
 
   &__filters,
-  &__property-filter {
+  .property-filter {
     margin-left: auto;
     margin-right: auto;
     width: calc(100% - 40px);
@@ -23,7 +23,7 @@
     }
   }
 
-  &__search, &__add-group {
+  &__search {
     display: flex;
 
     > * {

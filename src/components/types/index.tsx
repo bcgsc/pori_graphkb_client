@@ -20,6 +20,8 @@ interface TGeneralRecordType {
   status: string | number | boolean;
   break1Start: Partial<TGeneralRecordType>;
   break1End: Partial<TGeneralRecordType>;
+  break2Start: Partial<TGeneralRecordType>;
+  break2End: Partial<TGeneralRecordType>;
   source: Partial<TGeneralRecordType>;
   sourceId: string;
   reviews: unknown[];

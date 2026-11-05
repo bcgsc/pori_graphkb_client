@@ -2,23 +2,23 @@
 
 exports[`CdsPositionVariant snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -36,7 +36,7 @@ exports[`CdsPositionVariant snapshot 1`] = `
               </span>
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -66,12 +66,8 @@ exports[`CdsPositionVariant snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -82,7 +78,7 @@ exports[`CdsPositionVariant snapshot 1`] = `
               offset
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -111,32 +107,32 @@ exports[`CdsPositionVariant snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`CdsPositionVariantReadOnly snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -154,7 +150,7 @@ exports[`CdsPositionVariantReadOnly snapshot 1`] = `
               </span>
             </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -187,12 +183,8 @@ exports[`CdsPositionVariantReadOnly snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -203,7 +195,7 @@ exports[`CdsPositionVariantReadOnly snapshot 1`] = `
               offset
             </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -233,32 +225,32 @@ exports[`CdsPositionVariantReadOnly snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`CdsPositionVariantWithValue snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -276,7 +268,7 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
               </span>
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -308,12 +300,8 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -324,7 +312,7 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
               offset
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -353,29 +341,29 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`CytobandPositionVariant snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        <div
+          class="column-layout"
         >
           <div
             class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
@@ -432,17 +420,13 @@ exports[`CytobandPositionVariant snapshot 1`] = `
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="m7 10 5 5 5-5z"
+                  d="M7 10l5 5 5-5z"
                 />
               </svg>
             </div>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -453,7 +437,7 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               majorBand
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -482,12 +466,8 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -498,7 +478,7 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               minorBand
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -527,29 +507,29 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`CytobandPositionVariantDisabled snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        <div
+          class="column-layout"
         >
           <div
             class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
@@ -583,10 +563,10 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
                 role="combobox"
               >
                 <div
-                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                  class="MuiListItemText-root css-XXXX-MuiListItemText-root"
                 >
                   <span
-                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
+                    class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root disabled-text"
                   >
                     p
                   </span>
@@ -613,17 +593,13 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="m7 10 5 5 5-5z"
+                  d="M7 10l5 5 5-5z"
                 />
               </svg>
             </div>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -634,7 +610,7 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               majorBand
             </label>
             <div
-              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -666,12 +642,8 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -682,7 +654,7 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               minorBand
             </label>
             <div
-              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -714,29 +686,29 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        <div
+          class="column-layout"
         >
           <div
             class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
@@ -770,10 +742,10 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
                 tabindex="0"
               >
                 <div
-                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                  class="MuiListItemText-root css-XXXX-MuiListItemText-root"
                 >
                   <span
-                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                   >
                     p
                   </span>
@@ -796,12 +768,8 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               />
             </div>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -812,7 +780,7 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               majorBand
             </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -844,12 +812,8 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -860,7 +824,7 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               minorBand
             </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -892,29 +856,29 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`CytobandPositionVariantWithValue snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
+        <div
+          class="column-layout"
         >
           <div
             class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
@@ -948,10 +912,10 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
                 tabindex="0"
               >
                 <div
-                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                  class="MuiListItemText-root css-XXXX-MuiListItemText-root"
                 >
                   <span
-                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                   >
                     p
                   </span>
@@ -977,17 +941,13 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="m7 10 5 5 5-5z"
+                  d="M7 10l5 5 5-5z"
                 />
               </svg>
             </div>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -998,7 +958,7 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               majorBand
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1029,12 +989,8 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1045,7 +1001,7 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               minorBand
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1076,380 +1032,400 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               </span>
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`GenomicPositionVariant snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="column-layout__item column-layout__item--full-width"
           >
-            <label
-              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink="false"
-              for="_r_XXXX_"
-              id="_r_XXXX_-label"
-            >
-              pos
-              <span
-                aria-hidden="true"
-                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
-              <textarea
-                aria-describedby="_r_XXXX_-helper-text"
-                aria-invalid="false"
-                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                data-testid="pos"
-                id="_r_XXXX_"
-                name="pos"
-                required=""
-              />
-              <textarea
-                aria-hidden="true"
-                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                readonly=""
-                tabindex="-1"
-              />
+              <label
+                class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="false"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                pos
+                <span
+                  aria-hidden="true"
+                  class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                >
+                   
+                  *
+                </span>
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="pos"
+                  id="_r_XXXX_"
+                  name="pos"
+                  required=""
+                />
+                <textarea
+                  aria-hidden="true"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The genomic/nucleotide number
+              </p>
             </div>
-            <p
-              class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-              id="_r_XXXX_-helper-text"
-            >
-              The genomic/nucleotide number
-            </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`GenomicPositionVariantDisabled snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="column-layout__item column-layout__item--full-width"
           >
-            <label
-              class="Mui-disabled Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink="true"
-              for="_r_XXXX_"
-              id="_r_XXXX_-label"
-            >
-              pos
-              <span
-                aria-hidden="true"
-                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
             <div
-              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
-              <textarea
-                aria-describedby="_r_XXXX_-helper-text"
-                aria-invalid="false"
-                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                data-testid="pos"
-                disabled=""
-                id="_r_XXXX_"
-                name="pos"
-                required=""
+              <label
+                class="Mui-disabled Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
               >
-                400
-              </textarea>
-              <textarea
-                aria-hidden="true"
-                class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                readonly=""
-                tabindex="-1"
-              />
+                pos
+                <span
+                  aria-hidden="true"
+                  class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                >
+                   
+                  *
+                </span>
+              </label>
+              <div
+                class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="pos"
+                  disabled=""
+                  id="_r_XXXX_"
+                  name="pos"
+                  required=""
+                >
+                  400
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-disabled MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="Mui-disabled Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The genomic/nucleotide number
+              </p>
             </div>
-            <p
-              class="Mui-disabled Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-              id="_r_XXXX_-helper-text"
-            >
-              The genomic/nucleotide number
-            </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`GenomicPositionVariantReadOnly snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="column-layout__item column-layout__item--full-width"
           >
-            <label
-              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink="true"
-              for="_r_XXXX_"
-              id="_r_XXXX_-label"
-            >
-              pos
-              <span
-                aria-hidden="true"
-                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
-              <textarea
-                aria-describedby="_r_XXXX_-helper-text"
-                aria-invalid="false"
-                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                data-testid="pos"
-                id="_r_XXXX_"
-                name="pos"
-                readonly=""
-                required=""
+              <label
+                class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
               >
-                400
-              </textarea>
-              <textarea
-                aria-hidden="true"
-                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
-                readonly=""
-                tabindex="-1"
-              />
+                pos
+                <span
+                  aria-hidden="true"
+                  class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                >
+                   
+                  *
+                </span>
+              </label>
+              <div
+                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="pos"
+                  id="_r_XXXX_"
+                  name="pos"
+                  readonly=""
+                  required=""
+                >
+                  400
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The genomic/nucleotide number
+              </p>
             </div>
-            <p
-              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-              id="_r_XXXX_-helper-text"
-            >
-              The genomic/nucleotide number
-            </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`GenomicPositionVariantWithValue snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="column-layout__item column-layout__item--full-width"
           >
-            <label
-              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink="true"
-              for="_r_XXXX_"
-              id="_r_XXXX_-label"
-            >
-              pos
-              <span
-                aria-hidden="true"
-                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
-              <textarea
-                aria-describedby="_r_XXXX_-helper-text"
-                aria-invalid="false"
-                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                data-testid="pos"
-                id="_r_XXXX_"
-                name="pos"
-                required=""
+              <label
+                class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
               >
-                400
-              </textarea>
-              <textarea
-                aria-hidden="true"
-                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                readonly=""
-                tabindex="-1"
-              />
+                pos
+                <span
+                  aria-hidden="true"
+                  class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                >
+                   
+                  *
+                </span>
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="pos"
+                  id="_r_XXXX_"
+                  name="pos"
+                  required=""
+                >
+                  400
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The genomic/nucleotide number
+              </p>
             </div>
-            <p
-              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-              id="_r_XXXX_-helper-text"
-            >
-              The genomic/nucleotide number
-            </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`NoVariantEmpty snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="column-layout__item column-layout__item--full-width"
           >
-            <label
-              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-              data-shrink="false"
-              for="_r_XXXX_"
-              id="_r_XXXX_-label"
-            >
-              pos
-              <span
-                aria-hidden="true"
-                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
-              >
-                 
-                *
-              </span>
-            </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
-              <textarea
-                aria-describedby="_r_XXXX_-helper-text"
-                aria-invalid="false"
-                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                data-testid="pos"
-                id="_r_XXXX_"
-                name="pos"
-                required=""
-              />
-              <textarea
-                aria-hidden="true"
-                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                readonly=""
-                tabindex="-1"
-              />
+              <label
+                class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="false"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                pos
+                <span
+                  aria-hidden="true"
+                  class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                >
+                   
+                  *
+                </span>
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="pos"
+                  id="_r_XXXX_"
+                  name="pos"
+                  required=""
+                />
+                <textarea
+                  aria-hidden="true"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The genomic/nucleotide number
+              </p>
             </div>
-            <p
-              class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-              id="_r_XXXX_-helper-text"
-            >
-              The genomic/nucleotide number
-            </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`ProteinPositionVariant snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1467,7 +1443,7 @@ exports[`ProteinPositionVariant snapshot 1`] = `
               </span>
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1492,12 +1468,8 @@ exports[`ProteinPositionVariant snapshot 1`] = `
               The Amino Acid number
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1508,7 +1480,7 @@ exports[`ProteinPositionVariant snapshot 1`] = `
               refAA
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1532,32 +1504,32 @@ exports[`ProteinPositionVariant snapshot 1`] = `
               The reference Amino Acid (single letter notation)
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`ProteinPositionVariantDisabled snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-disabled Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1575,7 +1547,7 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
               </span>
             </label>
             <div
-              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1603,12 +1575,8 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
               The Amino Acid number
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-disabled MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1619,7 +1587,7 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
               refAA
             </label>
             <div
-              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1646,32 +1614,32 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
               The reference Amino Acid (single letter notation)
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1689,7 +1657,7 @@ exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
               </span>
             </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1717,12 +1685,8 @@ exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
               The Amino Acid number
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1733,7 +1697,7 @@ exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
               refAA
             </label>
             <div
-              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1760,32 +1724,32 @@ exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
               The reference Amino Acid (single letter notation)
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;
 
 exports[`ProteinPositionVariantWithValue snapshot 1`] = `
 <div>
-  <ul
-    class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content-subgroup"
+  <div
+    class="MuiStack-root css-XXXX-MuiStack-root"
   >
     <label
       class="MuiFormLabel-colorPrimary MuiFormLabel-root css-XXXX-MuiFormLabel-root"
     />
     <div
-      class="form-layout"
+      class="MuiStack-root css-XXXX-MuiStack-root"
     >
-      <ul
-        class="MuiList-padding MuiList-root css-XXXX-MuiList-root form-layout__content"
+      <div
+        class="column-layout-container"
       >
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--integer"
+        <div
+          class="column-layout"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1803,7 +1767,7 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
               </span>
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1830,12 +1794,8 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
               The Amino Acid number
             </p>
           </div>
-        </li>
-        <li
-          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root form-field form-field--string"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
           >
             <label
               class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
@@ -1846,7 +1806,7 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
               refAA
             </label>
             <div
-              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
             >
               <textarea
                 aria-describedby="_r_XXXX_-helper-text"
@@ -1872,9 +1832,9 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
               The reference Amino Acid (single letter notation)
             </p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
-  </ul>
+  </div>
 </div>
 `;

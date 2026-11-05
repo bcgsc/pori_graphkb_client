@@ -1,10 +1,13 @@
 import './index.scss';
 
 import FilterIcon from '@mui/icons-material/FilterList';
-import { FormControl, FormHelperText } from '@mui/material';
-import React, { useCallback, useMemo, useState } from 'react';
+import {
+  InputAdornment, MenuItem, Select, Tooltip,
+} from '@mui/material';
+import React, {
+  ReactNode, useCallback, useMemo, useState,
+} from 'react';
 
-import DropDownSelect from '@/components/DropDownSelect';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';
@@ -30,7 +33,7 @@ const FilteredRecordAutocomplete = ({
   disabled = false,
   isMulti = false,
   helperText = '',
-  filterOptions,
+  filterOptions: filterOptionsProp,
   error = false,
   name,
   label,
@@ -43,6 +46,33 @@ const FilteredRecordAutocomplete = ({
   const [selectedClassName, setSelectedClassName] = useState(
     defaultFilterClassName || linkedClassName,
   );
+  const [classMenuOpen, setClassMenuOpen] = useState(false);
+
+  const FilterIconWithTooltip = useMemo(() => React.forwardRef<SVGSVGElement, React.ComponentProps<typeof FilterIcon>>((iconProps, ref) => (
+    <Tooltip
+      arrow
+      placement="top"
+      title="Filter records search by selected Class"
+    >
+      <FilterIcon
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...iconProps}
+        onMouseDown={(event) => {
+          iconProps.onMouseDown?.(event);
+          if (!disabled) setClassMenuOpen(true);
+        }}
+        ref={ref}
+      />
+    </Tooltip>
+  )), [disabled]);
+
+  const filterOptions = useMemo(() => {
+    if (filterOptionsProp) {
+      return filterOptionsProp;
+    }
+    const model = schemaDefn.get(linkedClassName);
+    return schemaDefn.descendants(model.name, { excludeAbstract: false, includeSelf: true });
+  }, [filterOptionsProp, linkedClassName]);
 
   const handleClassChange = useCallback((event) => {
     if (readOnly) return;
@@ -50,45 +80,58 @@ const FilteredRecordAutocomplete = ({
     setSelectedClassName(value);
   }, [setSelectedClassName, readOnly]);
 
-  const model = schemaDefn.get(linkedClassName);
-
   const getQueryBody = useMemo(() => api.getDefaultSuggestionQueryBody(
     schemaDefn.get(selectedClassName),
   ), [selectedClassName]);
 
-  return (
-    <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
-      <div className="filtered-record-autocomplete__content">
-        {!readOnly && (
-          <DropDownSelect
-            className="node-form__class-select filtered-record-autocomplete__select-search-class"
-            disabled={disabled}
-            IconComponent={FilterIcon}
-            label={`Filter (${name}) Search by Class`}
-            name="search-class"
-            onChange={handleClassChange}
-            options={filterOptions || [...schemaDefn.descendants(model.name, { excludeAbstract: false, includeSelf: true })]}
-            value={selectedClassName}
-          />
-        )}
-        <RecordAutocomplete
-          className={className}
+  let startAdornment: ReactNode;
+
+  if (!readOnly) {
+    startAdornment = (
+      <InputAdornment position="start">
+        <Select
+          className="filtered-record-autocomplete__class-filter"
           disabled={disabled}
-          getQueryBody={getQueryBody}
-          isMulti={isMulti}
-          label={label}
-          name={name}
-          onChange={onChange}
-          placeholder={isMulti
-            ? `Search for Existing ${selectedClassName} Record(s)`
-            : `Search for an Existing ${selectedClassName} Record`}
-          readOnly={readOnly}
-          required={required}
-          value={value}
-        />
-      </div>
-      {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
-    </FormControl>
+          disableUnderline
+          IconComponent={FilterIconWithTooltip}
+          inputProps={{ 'aria-label': `Filter (${name}) Search by Class` }}
+          name="search-class"
+          onChange={handleClassChange}
+          onClose={() => setClassMenuOpen(false)}
+          onOpen={() => setClassMenuOpen(true)}
+          open={classMenuOpen}
+          value={selectedClassName}
+          variant="standard"
+        >
+          {filterOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </InputAdornment>
+    );
+  }
+
+  return (
+    <RecordAutocomplete
+      className={`filtered-record-autocomplete ${className || ''}`}
+      disabled={disabled}
+      error={error}
+      getQueryBody={getQueryBody}
+      helperText={helperText}
+      isMulti={isMulti}
+      label={label}
+      name={name}
+      onChange={onChange}
+      placeholder={isMulti
+        ? `Search for Existing ${selectedClassName} Record(s)`
+        : `Search for an Existing ${selectedClassName} Record`}
+      readOnly={readOnly}
+      required={required}
+      startAdornment={startAdornment}
+      value={value}
+    />
   );
 };
 

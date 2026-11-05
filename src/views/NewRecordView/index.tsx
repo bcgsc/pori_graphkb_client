@@ -1,5 +1,3 @@
-import './index.scss';
-
 import React, { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
 

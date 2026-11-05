@@ -1,96 +1,115 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import './BreakpointForm.scss';
+
 import {
+  Box,
   Checkbox,
   FormControlLabel,
-  Stack,
 } from '@mui/material';
 import React, { useCallback } from 'react';
 
-import FormField from '@/components/FormField';
-import { shouldHideField, useFormContext } from '@/components/hooks/useSchemaForm';
+import FormField, { useFormField } from '@/components/FormField';
+import { useFormContext } from '@/components/hooks/useSchemaForm';
 
+import EmbeddedForm from '../FormField/EmbeddedForm';
 import { FORM_VARIANT } from '../util';
 
-interface BreakpointFormProps {
-  /** the Position class */
-  coordinateType: string;
-  breakpoint: '1' | '2';
-}
-
-/**
- * Handles the form for a single breakpoint (start and end) with the reference element it is
- * associated with
- *
- * Used for inputting positional variants
- */
-const BreakpointForm = ({ coordinateType, breakpoint }: BreakpointFormProps) => {
+function BreakpointsForm({ coordinateType }: { coordinateType: string }) {
   const form = useFormContext();
-  const reference = `reference${breakpoint}`;
-  const start = `break${breakpoint}Start`;
-  const end = `break${breakpoint}End`;
-  const uncertain = Boolean(form.content[end]);
   const { update } = form;
 
-  const shouldHide = (name: string) => shouldHideField(form.variant, form.model.properties[name], form.content[name]);
+  const getStartLabel = (breakpoint: number) => {
+    if (form.variant !== FORM_VARIANT.VIEW) {
+      // return `position/start (${coordinateType})`;
+    }
+    return `${form.content[`break${breakpoint}End`] ? 'start' : 'position'} (${coordinateType})`;
+  };
 
-  const handleCheckUncertain = useCallback((checked) => {
+  const break1Start = useFormField('break1Start', { label: getStartLabel(1) });
+  const break1End = useFormField('break1End', { label: `end (${coordinateType})` });
+  const break2Start = useFormField('break2Start', { label: getStartLabel(2) });
+  const break2End = useFormField('break2End', { label: `end (${coordinateType})` });
+  const reference2 = useFormField('reference2');
+
+  const uncertain = {
+    1: Boolean(form.content.break1End),
+    2: Boolean(form.content.break2End),
+  };
+
+  const handleCheckUncertain = useCallback((breakpoint: number, checked) => {
     if (!checked) {
       // unchecking
-      update({ [end]: null });
+      update({ [`break${breakpoint}End`]: null });
     } else {
-      update({ [`${end}.@class`]: coordinateType });
+      update({ [`break${breakpoint}End.@class`]: coordinateType });
     }
-  }, [end, coordinateType, update]);
+  }, [coordinateType, update]);
 
-  const hide = Object.fromEntries([reference, start, end].map((name) => [name, shouldHide(name)]));
-
-  let label = 'Breakpoint';
-
-  if (breakpoint === '1' && !shouldHide('break2Start')) {
-    label = 'First Breakpoint';
-  } else if (breakpoint === '2') {
-    label = 'Second Breakpoint';
-  }
-
-  if (hide[reference] && hide[start] && hide[end]) {
-    return null;
-  }
+  const showBreak2 = !break2Start.hide || !break2End.hide || !reference2.hide;
 
   return (
-    <Stack spacing={2}>
-      {label}
-      {!hide[reference] && (
-        <FormField name={reference} />
-      )}
-      {form.variant !== FORM_VARIANT.VIEW && (
-        <FormControlLabel
-          className="breakpoint-form__uncertain-checkbox"
-          control={(
-            <Checkbox
-              checked={uncertain}
-              data-testid="breakpoint-form__uncertain-checkbox"
-              onChange={() => handleCheckUncertain(!uncertain)}
-            />
+    <Box
+      className="breakpoints-form"
+    >
+      {reference2.hide ? <FormField name="reference1" /> : null}
+      <div className="column">
+        <div>{showBreak2 ? 'First Breakpoint' : 'Breakpoint'}</div>
+        {!reference2.hide && <FormField name="reference1" />}
+        {form.variant !== FORM_VARIANT.VIEW && (
+          <FormControlLabel
+            control={(
+              <Checkbox
+                checked={uncertain[1]}
+                onChange={() => handleCheckUncertain(1, !uncertain[1])}
+              />
+            )}
+            disabled={form.disabled}
+            label="uncertain position"
+          />
+        )}
+        <EmbeddedForm
+          {...break1Start.props}
+          defaultLinkedClass={coordinateType}
+        />
+        {Boolean(break1End.value) && (
+          <EmbeddedForm
+            {...break1End.props}
+            defaultLinkedClass={coordinateType}
+            required
+          />
+        )}
+      </div>
+      {showBreak2 && (
+        <div className="column">
+          <div id="break2">Second Breakpoint</div>
+          {!reference2.hide && <FormField name="reference2" />}
+          {form.variant !== FORM_VARIANT.VIEW && (
+            <FormControlLabel
+              control={(
+                <Checkbox
+                  checked={uncertain[2]}
+                  onChange={() => handleCheckUncertain(2, !uncertain[2])}
+                />
               )}
-          disabled={form.disabled}
-          label="uncertain position"
-        />
+              disabled={form.disabled}
+              label="uncertain position"
+            />
+          )}
+          <EmbeddedForm
+            {...break2Start.props}
+            defaultLinkedClass={coordinateType}
+          />
+          {Boolean(break2End.value) && (
+            <EmbeddedForm
+              {...break2End.props}
+              defaultLinkedClass={coordinateType}
+              required
+            />
+          )}
+        </div>
       )}
-      {!hide[start] && (
-        <FormField
-          defaultLinkedClass={coordinateType}
-          label={`${uncertain ? 'start' : 'position'} (${coordinateType})`}
-          name={start}
-        />
-      )}
-      {uncertain && !hide[end] && (
-        <FormField
-          defaultLinkedClass={coordinateType}
-          label={`end (${coordinateType})`}
-          name={end}
-        />
-      )}
-    </Stack>
+    </Box>
   );
-};
+}
 
-export default BreakpointForm;
+export default BreakpointsForm;

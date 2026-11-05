@@ -110,29 +110,10 @@
     }
   }
 
-  p,
-  .about-version-info {
+  p {
     font-size: 0.875rem;
   }
 
-  .about-version-info {
-    min-width: globals.$readable-min;
-    max-width: globals.$readable-max;
-    width: 700px;
-  }
-
-
-  .record-classes-table__content-header {
-    position: sticky;
-    top: -1px;
-
-    th {
-      background: globals.$palette__background--default;
-      position: sticky;
-      top: -1px;
-      z-index: 1;
-    }
-  }
 .MuiListItem-gutters {
   &:nth-child(even) {
     padding-top: 0;

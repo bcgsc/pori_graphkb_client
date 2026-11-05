@@ -14,6 +14,9 @@ const cache = createCache({
   prepend: true,
 });
 
+// force text to wrap instead of truncating
+const wrap = { whiteSpace: 'normal', wordBreak: 'break-word' } as const;
+
 const theme = createTheme({
   direction: 'ltr',
   components: {
@@ -22,7 +25,8 @@ const theme = createTheme({
     MuiFab: { defaultProps: { size: 'small' } },
     MuiFilledInput: { defaultProps: { margin: 'dense' } },
     MuiFormControl: { defaultProps: { margin: 'none' } },
-    MuiFormHelperText: { defaultProps: { margin: 'dense' } },
+    MuiFormHelperText: { defaultProps: { margin: 'dense' }, styleOverrides: { root: wrap } },
+    MuiListItemText: { styleOverrides: { secondary: wrap } },
     MuiIconButton: { defaultProps: { size: 'small' } },
     MuiInputLabel: { defaultProps: { margin: 'dense' } },
     MuiListItem: { defaultProps: { dense: true } },

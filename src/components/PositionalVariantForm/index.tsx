@@ -1,5 +1,5 @@
 import {
-  Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Stack, TextField, Typography,
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper, TextField, Typography,
 } from '@mui/material';
 import React, {
   useCallback, useEffect, useMemo, useState,
@@ -7,39 +7,33 @@ import React, {
 import { useQuery } from 'react-query';
 import { Link } from 'react-router';
 
-import ActionButton from '@/components/ActionButton';
-import { useAuth } from '@/components/Auth';
 import DropDownSelect from '@/components/DropDownSelect';
-import FormLayout from '@/components/FormLayout';
+import FormLayout, { LayoutItem } from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
-import RecordFormStateToggle from '@/components/RecordFormStateToggle';
 import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
-import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
 
 import RecordAutocomplete from '../RecordAutocomplete';
+import { FormActions, FormErrors, FormHeader } from '../RecordForm';
 import EdgeTable from '../RecordForm/EdgeTable';
 import RelatedStatementsTable from '../RecordForm/RelatedStatementsTable';
 import { GeneralRecordType } from '../types';
-import BreakpointForm from './BreakpointForm';
+import BreakpointsForm from './BreakpointForm';
 
 const MODEL = schema.get('PositionalVariant');
 
 const FIELD_EXCLUSIONS = [
-  'groupRestrictions',
   // explicitly since we add them above
+  'break1Repr',
   'break1Start',
   'break1End',
+  'break2Repr',
   'break2Start',
   'break2End',
   'reference1',
   'reference2',
   'type',
-];
-
-const REMAINING_FIELD_ORDER = [
-  ['refSeq', 'untemplatedSeq', 'truncation', 'untemplatedSeqSize'],
 ];
 
 const coordinateOptions = schema.descendants('Position', { excludeAbstract: true, includeSelf: true }).map((m) => ({
@@ -165,24 +159,16 @@ interface VariantFormProps {
   variant?: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
 }
 
-/**
- * Input form for new Variants
- */
-const VariantForm = ({
-  title, onSubmit, onToggleState, value: valueProp, variant = FORM_VARIANT.NEW,
-}: VariantFormProps) => {
-  const auth = useAuth();
+function useVariantSchemaForm(valueProp: GeneralRecordType | undefined, options: Parameters<typeof useSchemaForm>[2]) {
   const value = useMemo(() => ({
+    '@class': MODEL.name,
     ...valueProp ?? {},
     break1Start: valueProp?.break1Start ?? { '@class': 'GenomicPosition' },
   }), [valueProp]);
-
-  const initialValue = useMemo(() => ({ '@class': MODEL.name, ...value }), [value]);
-  const form = useSchemaForm(MODEL, initialValue, { variant, onActionSuccess: onSubmit });
-  const { update: updateForm } = form;
+  const form = useSchemaForm(MODEL, value, options);
 
   const otherValidation = useMemo(() => {
-    if (variant === FORM_VARIANT.VIEW) {
+    if (form.variant === FORM_VARIANT.VIEW) {
       return null;
     }
     const variantTypeName = (form.content as any)?.type?.displayName;
@@ -198,9 +184,27 @@ const VariantForm = ({
       }
     }
     return null;
-  }, [variant, form.content]);
+  }, [form.variant, form.content]);
 
-  const formHasErrors = !form.validation.valid || Boolean(otherValidation);
+  const context = useMemo(() => ({
+    ...form,
+    validation: {
+      ...form.validation,
+      valid: form.validation.valid && !otherValidation,
+    },
+    otherValidation,
+  }), [form, otherValidation]);
+  return context;
+}
+
+/**
+ * Input form for new Variants
+ */
+const VariantForm = ({
+  title, onSubmit, onToggleState, value: initialValue, variant = FORM_VARIANT.NEW,
+}: VariantFormProps) => {
+  const form = useVariantSchemaForm(initialValue, { variant, onActionSuccess: onSubmit });
+  const { update: updateForm } = form;
 
   const handleUpdateVariantType = useCallback((value: unknown) => {
     updateForm({ type: value });
@@ -220,128 +224,67 @@ const VariantForm = ({
     updateForm(updates);
   }, [updateForm, form.content]);
 
-  let pageTitle = title;
-
-  if (variant === FORM_VARIANT.VIEW && form.content) {
-    if (form.content.displayName) {
-      pageTitle = `${form.content.displayName} (${form.content['@rid']})`;
-    } else {
-      pageTitle = `${form.content['@class']} ${form.content['@rid']}`;
-    }
-  }
-
   return (
     <Paper className="record-form__wrapper" elevation={4}>
       <FormContext.Provider value={form}>
-        <div className="record-form__header">
-          <span className="title">
-            <Typography variant="h1">{pageTitle}</Typography>
-            {title !== pageTitle && (<Typography variant="subtitle1">{title}</Typography>)}
-          </span>
-          <div className={`header__actions header__actions--${variant}`}>
-            {variant === FORM_VARIANT.NEW && (
-              <PrepopulateVariantButton onSubmit={(content) => updateForm(content, { replace: true })} />
-            )}
-            {onToggleState && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-              <RecordFormStateToggle
-                allowEdit={auth.hasWriteAccess && !form.content.deletedAt}
-                message="Are you sure? You will lose your changes."
-                onClick={onToggleState}
-                requireConfirm={variant === FORM_VARIANT.EDIT && form.isDirty}
-                value={variant}
-              />
-            )}
-          </div>
-        </div>
-        <Stack
-          className="new-variant"
-          spacing={2}
-        >
-          <RecordAutocomplete
-            disabled={form.disabled}
-            error={Boolean((!(form.validation.properties?.type?.valid ?? true) && form.isDirty) || otherValidation?.type)}
-            getQueryBody={() => ({
-              target: 'Vocabulary',
-              orderBy: ['displayName'],
-              filters: [{ operator: 'IN', displayName: allowedTypes }],
-            })}
-            helperText={otherValidation?.type ?? form.validation.properties?.type?.message ?? form.model.properties.type.description}
-            isMulti={false}
-            label="type"
-            name="type"
-            onChange={(e) => handleUpdateVariantType(e.target.value)}
-            readOnly={variant === FORM_VARIANT.VIEW}
-            required
-            singleLoad
-            value={form.content.type ?? null}
-          />
-          <DropDownSelect
-            disabled={form.disabled}
-            error={Boolean(otherValidation?.coordinateType)}
-            helperText={otherValidation?.coordinateType}
-            label="Position Coordinate System"
-            onChange={({ target: { value: newValue } }) => handleUpdateCoordinateType(newValue)}
-            options={coordinateOptions}
-            readOnly={variant === FORM_VARIANT.VIEW}
-            required
-            value={coordinateType}
-          />
-          <BreakpointForm
-            breakpoint="1"
-            coordinateType={coordinateType}
-          />
-          <BreakpointForm
-            breakpoint="2"
-            coordinateType={coordinateType}
-          />
-        </Stack>
+        <FormHeader
+          actions={variant === FORM_VARIANT.NEW && (
+            <PrepopulateVariantButton onSubmit={(content) => updateForm(content, { replace: true })} />
+          )}
+          onToggleState={onToggleState}
+          title={title}
+        />
         <FormLayout
           collapseExtra
           exclusions={FIELD_EXCLUSIONS}
-          order={REMAINING_FIELD_ORDER}
-        />
+        >
+          <LayoutItem fullWidth>
+            <RecordAutocomplete
+              disabled={form.disabled}
+              error={Boolean((!(form.validation.properties?.type?.valid ?? true) && form.isDirty) || form.otherValidation?.type)}
+              getQueryBody={() => ({
+                target: 'Vocabulary',
+                orderBy: ['displayName'],
+                filters: [{ operator: 'IN', displayName: allowedTypes }],
+              })}
+              helperText={form.otherValidation?.type ?? form.validation.properties?.type?.message ?? form.model.properties.type.description}
+              isMulti={false}
+              label="type"
+              name="type"
+              onChange={(e) => handleUpdateVariantType(e.target.value)}
+              readOnly={variant === FORM_VARIANT.VIEW}
+              required
+              singleLoad
+              value={form.content.type ?? null}
+            />
+          </LayoutItem>
+          <LayoutItem fullWidth>
+            <DropDownSelect
+              disabled={form.disabled}
+              error={Boolean(form.otherValidation?.coordinateType)}
+              helperText={form.otherValidation?.coordinateType}
+              label="Position Coordinate System"
+              onChange={({ target: { value: newValue } }) => handleUpdateCoordinateType(newValue)}
+              options={coordinateOptions}
+              readOnly={variant === FORM_VARIANT.VIEW}
+              required
+              value={coordinateType}
+            />
+          </LayoutItem>
+          <LayoutItem fullWidth>
+            <BreakpointsForm
+              coordinateType={coordinateType}
+            />
+          </LayoutItem>
+        </FormLayout>
         {variant === FORM_VARIANT.VIEW && (
           <>
             <EdgeTable recordId={String(form.content['@rid'])} />
             <RelatedStatementsTable recordId={String(form.content['@rid'])} />
           </>
         )}
-        <ErrorMessage error={form.action.error}>{form.action.errorMessage}</ErrorMessage>
-        <div className="record-form__action-buttons">
-          {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
-            ? (
-              <ActionButton
-                color="error"
-                disabled={form.action.inProgress}
-                message="Are you sure you want to delete this record?"
-                onClick={form.action.delete}
-                variant="outlined"
-              >
-                DELETE RECORD
-              </ActionButton>
-            )
-          // for spacing issues only
-            : (<div />)}
-          {form.action.inProgress && (
-          <CircularProgress size={50} />
-          )}
-          {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT)
-            ? (
-              <ActionButton
-                color="primary"
-                disabled={form.action.inProgress || (formHasErrors && form.isDirty)}
-                onClick={form.action.submit}
-                requireConfirm={false}
-                variant="contained"
-              >
-                {variant === FORM_VARIANT.EDIT && !form.content.deletedAt
-                  ? 'SUBMIT CHANGES'
-                  : 'SUBMIT'}
-              </ActionButton>
-            )
-          // for spacing issues only
-            : (<div />)}
-        </div>
+        <FormErrors />
+        <FormActions />
       </FormContext.Provider>
     </Paper>
   );

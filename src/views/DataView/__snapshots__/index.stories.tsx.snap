@@ -7054,7 +7054,7 @@ exports[`WithRows snapshot 1`] = `
                 />
                 <div
                   aria-colcount="33"
-                  aria-rowcount="-1"
+                  aria-rowcount="4"
                   class="ag-body-vertical-content-no-gap ag-layout-normal ag-root ag-unselectable"
                   role="grid"
                 >
@@ -7893,8 +7893,9 @@ exports[`WithRows snapshot 1`] = `
                           <div
                             aria-rowindex="3"
                             aria-selected="false"
-                            class="ag-row ag-row-even ag-row-first ag-row-last ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                            class="ag-row ag-row-even ag-row-first ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
                             role="row"
+                            row-id="0"
                             row-index="0"
                             tabindex="0"
                           >
@@ -7914,7 +7915,7 @@ exports[`WithRows snapshot 1`] = `
                                   id="cell-preview-XXXX"
                                   role="presentation"
                                 >
-                                  undefined
+                                  immunotherapy
                                 </span>
                               </div>
                             </div>
@@ -7933,7 +7934,133 @@ exports[`WithRows snapshot 1`] = `
                                   class="ag-cell-value"
                                   id="cell-name-XXXX"
                                   role="presentation"
+                                >
+                                  immunotherapy
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="22"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="source.displayName"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-source.displayName-XXXX"
+                                  role="presentation"
+                                >
+                                  source 1234
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="25"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="sourceId"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-sourceId-XXXX"
+                                  role="presentation"
                                 />
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="26"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="sourceIdVersion"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-sourceIdVersion-XXXX"
+                                  role="presentation"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="33"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                              col-id="SubClassOf"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-SubClassOf-XXXX"
+                                  role="presentation"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-rowindex="4"
+                            aria-selected="false"
+                            class="ag-row ag-row-last ag-row-level-0 ag-row-no-focus ag-row-odd ag-row-position-absolute"
+                            role="row"
+                            row-id="1"
+                            row-index="1"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="preview"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-preview-XXXX"
+                                  role="presentation"
+                                >
+                                  immunological therapy
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="21"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="name"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-name-XXXX"
+                                  role="presentation"
+                                >
+                                  immunological therapy
+                                </span>
                               </div>
                             </div>
                             <div

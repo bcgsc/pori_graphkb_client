@@ -1,5 +1,5 @@
 import type { StoryObj } from '@storybook/react-vite';
-import { HttpResponse } from 'msw';
+import { delay, HttpResponse } from 'msw';
 import {
   expect, screen, waitFor,
 } from 'storybook/test';
@@ -260,7 +260,11 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
     msw: {
       handlers: [
         http.gkb.query(() => [{ '@rid': '111:111', '@class': 'Ontology' }, { '@rid': '222:222', '@class': 'Ontology' }]),
-        http.gkb.post('/api/aliasof', () => HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 })),
+        http.gkb.post('/api/aliasof', async () => {
+          // delay so the in-progress (disabled) submit button always renders, which drops its focus
+          await delay(100);
+          return HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 });
+        }),
       ],
     },
   },
@@ -271,7 +275,6 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
     await userEvent.type(canvas.getByLabelText(/target record \(in\)/i), '222');
     await userEvent.click(await screen.findByText('Ontology (222:222)'));
     await userEvent.click(canvas.getByText(/submit/i));
-    await userEvent.tab();
     await canvas.findByText(/Internal Server Error/, { exact: false });
   },
 });

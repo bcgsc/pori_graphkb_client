@@ -111,8 +111,8 @@ export const ProteinPositionVariant = meta.story({
     variant: 'ProteinPosition',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText(/^pos/)).toBeInTheDocument();
-    await expect(canvas.getByLabelText(/refAA/)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/^pos/i)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/ref aa/i)).toBeInTheDocument();
     await expect(canvas.queryByLabelText(/arm/i)).not.toBeInTheDocument();
   },
 });
@@ -138,8 +138,8 @@ export const CytobandPositionVariant = meta.story({
   },
   play: async ({ canvas }) => {
     await expect(canvas.getByLabelText(/arm/i)).toBeInTheDocument();
-    await expect(canvas.getByLabelText(/majorBand/i)).toBeInTheDocument();
-    await expect(canvas.getByLabelText(/minorBand/i)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/major band/i)).toBeInTheDocument();
+    await expect(canvas.getByLabelText(/minor band/i)).toBeInTheDocument();
     await expect(canvas.queryByLabelText(/^pos/i)).not.toBeInTheDocument();
   },
 });

@@ -26,7 +26,7 @@ exports[`CdsPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -75,7 +75,7 @@ exports[`CdsPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              offset
+              Offset
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -140,7 +140,7 @@ exports[`CdsPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -192,7 +192,7 @@ exports[`CdsPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              offset
+              Offset
             </label>
             <div
               class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -258,7 +258,7 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -309,7 +309,7 @@ exports[`CdsPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              offset
+              Offset
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -374,7 +374,7 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              arm
+              Arm
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -434,7 +434,7 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              majorBand
+              Major Band
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -475,7 +475,7 @@ exports[`CytobandPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              minorBand
+              Minor Band
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -540,7 +540,7 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              arm
+              Arm
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -607,7 +607,7 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              majorBand
+              Major Band
             </label>
             <div
               class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -651,7 +651,7 @@ exports[`CytobandPositionVariantDisabled snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              minorBand
+              Minor Band
             </label>
             <div
               class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -719,7 +719,7 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              arm
+              Arm
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -777,7 +777,7 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              majorBand
+              Major Band
             </label>
             <div
               class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -821,7 +821,7 @@ exports[`CytobandPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              minorBand
+              Minor Band
             </label>
             <div
               class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -889,7 +889,7 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              arm
+              Arm
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -955,7 +955,7 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              majorBand
+              Major Band
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -998,7 +998,7 @@ exports[`CytobandPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              minorBand
+              Minor Band
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1068,7 +1068,7 @@ exports[`GenomicPositionVariant snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                pos
+                Pos
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1140,7 +1140,7 @@ exports[`GenomicPositionVariantDisabled snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                pos
+                Pos
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1215,7 +1215,7 @@ exports[`GenomicPositionVariantReadOnly snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                pos
+                Pos
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1290,7 +1290,7 @@ exports[`GenomicPositionVariantWithValue snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                pos
+                Pos
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1364,7 +1364,7 @@ exports[`NoVariantEmpty snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                pos
+                Pos
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1433,7 +1433,7 @@ exports[`ProteinPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1477,7 +1477,7 @@ exports[`ProteinPositionVariant snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              refAA
+              Ref Aa
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1537,7 +1537,7 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1584,7 +1584,7 @@ exports[`ProteinPositionVariantDisabled snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              refAA
+              Ref Aa
             </label>
             <div
               class="Mui-disabled MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1647,7 +1647,7 @@ exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1694,7 +1694,7 @@ exports[`ProteinPositionVariantReadOnly snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              refAA
+              Ref Aa
             </label>
             <div
               class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1757,7 +1757,7 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              pos
+              Pos
               <span
                 aria-hidden="true"
                 class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1803,7 +1803,7 @@ exports[`ProteinPositionVariantWithValue snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              refAA
+              Ref Aa
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"

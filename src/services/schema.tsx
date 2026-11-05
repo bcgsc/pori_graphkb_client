@@ -472,10 +472,15 @@ function prepareModels() {
   schemaDefn.getModels().forEach((model) => {
     const preparedModel = {
       ...model,
-      // schemaDefn.getProperties differs from model.properties in that it includes
-      // all inherited properties
-      properties: Object.fromEntries(Object.entries(schemaDefn.getProperties(model.name)).map(([name, prop]) => [name, { ...prop }])) as SchemaClassDefinition['properties'],
+      properties: {} as SchemaClassDefinition['properties'],
     } as SchemaClassDefinition;
+
+    // schemaDefn.getProperties differs from model.properties in that it includes
+    // all inherited properties
+    Object.entries(schemaDefn.getProperties(model.name)).forEach(([name, prop]) => {
+      preparedModel.properties[name] = { ...prop };
+      preparedModel.properties[name].label ??= !name.startsWith('@') ? titleCase(name) : name;
+    });
 
     ['@class', 'groupRestrictions'].forEach((propName) => {
       if (preparedModel.properties[propName]) {
@@ -517,8 +522,6 @@ function prepareModels() {
   prepared.StatementReview.properties.comment.componentProps = {
     multiline: true,
   };
-  prepared.PositionalVariant.properties.reference1.label = 'reference';
-  prepared.PositionalVariant.properties.reference2.label = 'reference';
   // special case (KBDEV-790) to improve user inputs
   prepared.Statement.properties.conditions.componentProps = {
     filterOptions: [

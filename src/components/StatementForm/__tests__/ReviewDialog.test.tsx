@@ -52,17 +52,17 @@ describe('ReviewDialog', () => {
   });
 
   test('displays comment box', () => {
-    const commentNodes = getAllByText('comment');
+    const commentNodes = getAllByText('Comment');
     expect(commentNodes).toHaveLength(2);
     expect(commentNodes[0]).toBeInTheDocument();
     expect(commentNodes[1]).toBeInTheDocument();
   });
 
-  test('does not display createdBy input box', () => {
-    expect(queryByText('createdBy')).not.toBeInTheDocument();
+  test('does not display Created By input box', () => {
+    expect(queryByText('Created By')).not.toBeInTheDocument();
   });
 
   test('shows status drop down', () => {
-    expect(getByText('status')).toBeInTheDocument();
+    expect(getByText('Status')).toBeInTheDocument();
   });
 });

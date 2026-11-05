@@ -77,10 +77,10 @@ New.test('on submit sets reviewStatus as initial and adds empty review if left b
     await userEvent.click(option);
   }
 
-  await selectFromAutocomplete(/^conditions/, 'anything (11:11)');
-  await selectFromAutocomplete(/^evidence /, 'anything (12:23)');
-  await selectFromAutocomplete(/^relevance/, 'anything (90:32)');
-  await selectFromAutocomplete(/^subject/, 'anything (20:20)');
+  await selectFromAutocomplete(/^conditions/i, 'anything (11:11)');
+  await selectFromAutocomplete(/^evidence (?!L)/i, 'anything (12:23)');
+  await selectFromAutocomplete(/^relevance/i, 'anything (90:32)');
+  await selectFromAutocomplete(/^subject/i, 'anything (20:20)');
   const submitBtn = canvas.getByText('SUBMIT');
   expect(submitBtn).toBeEnabled();
 

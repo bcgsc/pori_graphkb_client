@@ -70,7 +70,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                conditions
+                Conditions
                 <span
                   aria-hidden="true"
                   class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -189,7 +189,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                evidence
+                Evidence
                 <span
                   aria-hidden="true"
                   class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -308,7 +308,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                relevance
+                Relevance
                 <span
                   aria-hidden="true"
                   class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -380,7 +380,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                subject
+                Subject
                 <span
                   aria-hidden="true"
                   class="Mui-error MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -496,7 +496,7 @@ exports[`Editing snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              description
+              Description
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -537,7 +537,7 @@ exports[`Editing snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              displayNameTemplate
+              Display Name Template
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -576,7 +576,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                evidenceLevel
+                Evidence Level
               </label>
               <div
                 class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -640,7 +640,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                reviewStatus
+                Review Status
               </label>
               <div
                 class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -741,7 +741,7 @@ exports[`Editing snapshot 1`] = `
                   for="_r_XXXX_"
                   id="_r_XXXX_-label"
                 >
-                  source
+                  Source
                 </label>
                 <div
                   class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -802,7 +802,7 @@ exports[`Editing snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                sourceId
+                Source Id
               </label>
               <div
                 class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -908,7 +908,7 @@ exports[`Editing snapshot 1`] = `
                             for="_r_XXXX_"
                             id="_r_XXXX_-label"
                           >
-                            comment
+                            Comment
                           </label>
                           <div
                             class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1032,7 +1032,7 @@ exports[`New snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                conditions
+                Conditions
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1151,7 +1151,7 @@ exports[`New snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                evidence
+                Evidence
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1270,7 +1270,7 @@ exports[`New snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                relevance
+                Relevance
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1342,7 +1342,7 @@ exports[`New snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                subject
+                Subject
                 <span
                   aria-hidden="true"
                   class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -1458,7 +1458,7 @@ exports[`New snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              description
+              Description
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1499,7 +1499,7 @@ exports[`New snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              displayNameTemplate
+              Display Name Template
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1540,7 +1540,7 @@ exports[`New snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                evidenceLevel
+                Evidence Level
               </label>
               <div
                 class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1601,7 +1601,7 @@ exports[`New snapshot 1`] = `
               for="_r_XXXX_"
               id="_r_XXXX_-label"
             >
-              reviewStatus
+              Review Status
             </label>
             <div
               class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1662,7 +1662,7 @@ exports[`New snapshot 1`] = `
                 for="_r_XXXX_"
                 id="_r_XXXX_-label"
               >
-                source
+                Source
               </label>
               <div
                 class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -1792,7 +1792,7 @@ exports[`New snapshot 1`] = `
                             for="_r_XXXX_"
                             id="_r_XXXX_-label"
                           >
-                            comment
+                            Comment
                           </label>
                           <div
                             class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"

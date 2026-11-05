@@ -112,24 +112,25 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
   // set the property options
   useEffect(() => {
     const choices: typeof propertyChoices = [];
-    schema.getQueryProperties(modelName)
-      .filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name))
-      .forEach((prop) => {
-        if (prop.type.includes('embedded')) {
-          if (prop.linkedClass) {
-            Object.values(schema.get(prop.linkedClass).properties).forEach((subProp) => {
-              const key = `${prop.name}.${subProp.name}`;
-              choices.push({
-                label: key, value: key, key, caption: subProp.description,
-              });
+    const queryable = schema.getQueryProperties(modelName).filter((p) => !BLACKLISTED_PROPERTIES.includes(p.name)).map((p) => p.name);
+    queryable.forEach((propName) => {
+      const prop = schema.get(modelName).properties[propName];
+
+      if (prop.type?.includes('embedded')) {
+        if (prop.linkedClass) {
+          Object.values(schema.get(prop.linkedClass).properties).forEach((subProp) => {
+            const key = `${prop.name}.${subProp.name}`;
+            choices.push({
+              label: `${prop.label ?? prop.name}: ${subProp.label ?? subProp.name}`, value: key, key, caption: subProp.description,
             });
-          }
-        } else {
-          choices.push({
-            label: prop.name, value: prop.name, key: prop.name, caption: prop.description,
           });
         }
-      });
+      } else {
+        choices.push({
+          label: prop.label ?? prop.name, value: prop.name, key: prop.name, caption: prop.description,
+        });
+      }
+    });
     choices.sort(propertySort);
     setPropertyChoices(choices);
 

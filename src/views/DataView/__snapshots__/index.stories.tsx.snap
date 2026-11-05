@@ -3814,33 +3814,6 @@ exports[`WithDetailsOpen snapshot 1`] = `
             </button>
           </span>
         </div>
-        <div
-          class="footer__loader"
-        >
-          <span
-            class="MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate MuiCircularProgress-root css-XXXX-MuiCircularProgress-root"
-            role="progressbar"
-          >
-            <svg
-              class="MuiCircularProgress-svg css-XXXX-MuiCircularProgress-svg"
-              viewBox="22 22 44 44"
-            >
-              <circle
-                class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-XXXX-MuiCircularProgress-circle"
-                cx="44"
-                cy="44"
-                fill="none"
-                r="20.2"
-                stroke-width="3.6"
-              />
-            </svg>
-          </span>
-          <p
-            class="MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            loading more of 2 rows
-          </p>
-        </div>
         <p
           class="MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root footer__total-rows"
         >

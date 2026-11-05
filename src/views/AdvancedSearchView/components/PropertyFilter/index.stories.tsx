@@ -35,7 +35,7 @@ export const Default = meta.story({
 
 export const ExactMatchLinkProperty = Default.extend({
   play: async ({ canvas, userEvent, args }) => {
-    await selectOption(canvas, userEvent, 'relevance', /^immunotherapy/);
+    await selectOption(canvas, userEvent, /relevance/i, /^immunotherapy/);
     await userEvent.click(await canvas.findByText(/add to selected group/i));
     await userEvent.tab();
     await waitFor(() => expect(args.onSubmit).toHaveBeenCalledWith({
@@ -85,7 +85,7 @@ export const KeywordLinkProperty = Default.extend({
 export const SubclassTreeLinkProperty = Default.extend({
   play: async ({ canvas, userEvent, args }) => {
     await userEvent.click(await canvas.findByText(/subclass tree/i));
-    await selectOption(canvas, userEvent, 'relevance', /^immunotherapy/);
+    await selectOption(canvas, userEvent, /relevance/i, /^immunotherapy/);
     await userEvent.click(await canvas.findByText(/add to selected group/i));
     await userEvent.tab();
     await waitFor(() => expect(args.onSubmit).toHaveBeenCalledWith({
@@ -111,7 +111,7 @@ export const SubclassTreeLinkProperty = Default.extend({
 export const EmbeddedProperty = meta.story({
   args: { modelName: 'PositionalVariant' },
   play: async ({ canvas, userEvent, args }) => {
-    await selectOption(canvas, userEvent, 'Property', /^break1Start/);
+    await selectOption(canvas, userEvent, 'Property', /^break1 start/i);
     await userEvent.click(await canvas.findByRole('textbox', { name: /@class/i }));
     await userEvent.paste('ProteinPosition');
     await userEvent.click(await canvas.findByText(/add to selected group/i));

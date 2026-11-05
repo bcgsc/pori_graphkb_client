@@ -97,7 +97,7 @@ exports[`Default snapshot 1`] = `
                     <span
                       class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      relevance
+                      Relevance
                     </span>
                     <p
                       class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"

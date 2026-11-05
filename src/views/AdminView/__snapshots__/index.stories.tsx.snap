@@ -2674,7 +2674,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      name
+                      Name
                       <span
                         aria-hidden="true"
                         class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -2723,7 +2723,7 @@ exports[`AddNewGroup snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      description
+                      Description
                     </label>
                     <div
                       class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -8848,7 +8848,7 @@ exports[`AddNewUser snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      name
+                      Name
                       <span
                         aria-hidden="true"
                         class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
@@ -8892,7 +8892,7 @@ exports[`AddNewUser snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      email
+                      Email
                     </label>
                     <div
                       class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -8928,7 +8928,7 @@ exports[`AddNewUser snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      firstLoginAt
+                      First Login At
                     </label>
                     <div
                       class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -8967,7 +8967,7 @@ exports[`AddNewUser snapshot 1`] = `
                         for="_r_XXXX_"
                         id="_r_XXXX_-label"
                       >
-                        groups
+                        Groups
                       </label>
                       <div
                         class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -9028,7 +9028,7 @@ exports[`AddNewUser snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      lastLoginAt
+                      Last Login At
                     </label>
                     <div
                       class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -9064,7 +9064,7 @@ exports[`AddNewUser snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      loginCount
+                      Login Count
                     </label>
                     <div
                       class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
@@ -9100,7 +9100,7 @@ exports[`AddNewUser snapshot 1`] = `
                       for="_r_XXXX_"
                       id="_r_XXXX_-label"
                     >
-                      signedLicenseAt
+                      Signed License At
                     </label>
                     <div
                       class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"

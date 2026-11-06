@@ -310,3 +310,103 @@ export const EditStatementErrorDeleting = ViewStatement.extend({
     await canvas.findByText(/Insufficient permissions to delete record./, { exact: false });
   },
 });
+
+const featureRecord = {
+  '@class': 'Feature',
+  '@rid': '#128:30382',
+  displayName: 'DNMT3A',
+  in_ElementOf: [
+    {
+      out: {
+        displayName: 'NR_135490',
+        '@class': 'Feature',
+        '@rid': '#127:63119',
+      },
+      '@class': 'ElementOf',
+      '@rid': '#83:71936',
+    },
+  ],
+  name: 'dnmt3a',
+  in_CrossReferenceOf: [
+    {
+      in: '#128:30382',
+      out: {
+        displayName: 'DNMT3A',
+        '@class': 'Feature',
+        '@rid': '#125:112189',
+      },
+      '@class': 'CrossReferenceOf',
+      '@rid': '#73:3842',
+    },
+  ],
+  longName: 'DNA methyltransferase 3 alpha',
+  updatedAt: 1725084719833,
+};
+
+export const ViewFeatureWithRelated = meta.story({
+  args: { path: '/view/Feature/128:30382' },
+  parameters: {
+    msw: {
+      handlers: [
+        http.gkb.query((body) => {
+          if (body.target === 'Statement') {
+            return [
+              {
+                '@class': 'Statement',
+                '@rid': '#153:5652',
+                conditions: [
+                  {
+                    displayName: 'acute myeloid leukemia [DOID:9119]',
+                  },
+                  {
+                    displayName: 'DNMT3A',
+                  },
+                  {
+                    displayName: 'DNMT3A:p.R882C',
+                  },
+                ],
+                evidence: [
+                  {
+                    displayName: 'pmid:21518476',
+                  },
+                ],
+                relevance: {
+                  displayName: 'loss of function',
+                },
+                subject: {
+                  displayName: 'DNMT3A',
+                },
+              },
+            ];
+          }
+          if (body.target === 'Variant') {
+            return [
+              {
+                '@class': 'PositionalVariant',
+                '@rid': '#157:466',
+                displayName: 'DNMT3A:p.R882G',
+              },
+              {
+                '@class': 'PositionalVariant',
+                '@rid': '#157:489',
+                displayName: 'DNMT3A:p.S714X',
+              },
+              {
+                '@class': 'PositionalVariant',
+                '@rid': '#160:5446',
+                displayName: 'DNMT3A:p.R882H',
+              },
+            ];
+          }
+          if (Array.isArray(body.target) && body.target[0] === '#128:30382') {
+            return [featureRecord];
+          }
+          return [];
+        }),
+        http.gkb.get('/api/features/128:30382', () => HttpResponse.json({
+          result: featureRecord,
+        })),
+      ],
+    },
+  },
+});

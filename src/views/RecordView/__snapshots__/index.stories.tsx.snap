@@ -9748,6 +9748,3785 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
 </div>
 `;
 
+exports[`ViewFeatureWithRelated snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+    >
+      <div
+        class="record-form__header"
+      >
+        <span
+          class="title"
+        >
+          <h1
+            class="MuiTypography-h1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            DNMT3A (#128:30382)
+          </h1>
+          <h6
+            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+          >
+            Record Contents
+          </h6>
+        </span>
+        <div
+          class="header__actions header__actions--view"
+        >
+          <div
+            aria-label="form state toggle"
+            class="MuiToggleButtonGroup-horizontal MuiToggleButtonGroup-root css-XXXX-MuiToggleButtonGroup-root record-form-state-toggle"
+            role="group"
+          >
+            <button
+              aria-label="graph"
+              aria-pressed="false"
+              class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-firstButton MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              data-testid="graph-view"
+              tabindex="0"
+              type="button"
+              value="graph"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="TimelineIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M23 8c0 1.1-.9 2-2 2-.18 0-.35-.02-.51-.07l-3.56 3.55c.05.16.07.34.07.52 0 1.1-.9 2-2 2s-2-.9-2-2c0-.18.02-.36.07-.52l-2.55-2.55c-.16.05-.34.07-.52.07s-.36-.02-.52-.07l-4.55 4.56c.05.16.07.33.07.51 0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2c.18 0 .35.02.51.07l4.56-4.55C8.02 9.36 8 9.18 8 9c0-1.1.9-2 2-2s2 .9 2 2c0 .18-.02.36-.07.52l2.55 2.55c.16-.05.34-.07.52-.07s.36.02.52.07l3.55-3.56C19.02 8.35 19 8.18 19 8c0-1.1.9-2 2-2s2 .9 2 2"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                Graph
+              </span>
+            </button>
+            <button
+              aria-label="view"
+              aria-pressed="true"
+              class="Mui-selected MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeSmall MuiToggleButton-standard MuiToggleButtonGroup-grouped MuiToggleButtonGroup-groupedHorizontal MuiToggleButtonGroup-lastButton css-XXXX-MuiButtonBase-root-MuiToggleButton-root"
+              tabindex="0"
+              type="button"
+              value="view"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="VisibilityIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"
+                />
+              </svg>
+              <span
+                class="toggle-option__text"
+              >
+                View
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiStack-root css-XXXX-MuiStack-root"
+      >
+        <div
+          class="column-layout-container"
+        >
+          <div
+            class="column-layout"
+          >
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                displayName
+              </label>
+              <div
+                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="displayName"
+                  id="_r_XXXX_"
+                  name="displayName"
+                  readonly=""
+                >
+                  DNMT3A
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Optional string used for display in the web application. Can be overwritten w/o tracking
+              </p>
+            </div>
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                longName
+              </label>
+              <div
+                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="longName"
+                  id="_r_XXXX_"
+                  name="longName"
+                  readonly=""
+                >
+                  DNA methyltransferase 3 alpha
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                <span
+                  aria-hidden="true"
+                  class="notranslate"
+                >
+                  ​
+                </span>
+              </p>
+            </div>
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                name
+              </label>
+              <div
+                class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="name"
+                  id="_r_XXXX_"
+                  name="name"
+                  readonly=""
+                >
+                  dnmt3a
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                Name of the term
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiAccordion-root MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiAccordion-root"
+        >
+          <h3
+            class="MuiAccordion-heading css-XXXX-MuiAccordion-heading"
+          >
+            <button
+              aria-controls="_r_XXXX_-content"
+              aria-expanded="false"
+              class="MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+              id="_r_XXXX_-header"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiAccordionSummary-content css-XXXX-MuiAccordionSummary-content"
+              >
+                <span
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Expand to see additional fields
+                </span>
+              </span>
+              <span
+                class="MuiAccordionSummary-expandIconWrapper css-XXXX-MuiAccordionSummary-expandIconWrapper"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="ExpandMoreIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  />
+                </svg>
+              </span>
+            </button>
+          </h3>
+          <div
+            class="MuiCollapse-hidden MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+            >
+              <div
+                class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+              >
+                <div
+                  aria-labelledby="_r_XXXX_-header"
+                  class="MuiAccordion-region css-XXXX-MuiAccordion-region"
+                  id="_r_XXXX_-content"
+                  role="region"
+                >
+                  <div
+                    class="MuiAccordionDetails-root css-XXXX-MuiAccordionDetails-root"
+                  >
+                    <div
+                      class="column-layout-container"
+                    >
+                      <div
+                        class="column-layout"
+                      >
+                        <div
+                          class="column-layout__group column-layout__group--outlined"
+                        >
+                          <div
+                            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                          >
+                            <label
+                              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                              data-shrink="true"
+                              for="_r_XXXX_"
+                              id="_r_XXXX_-label"
+                            >
+                              @rid
+                            </label>
+                            <div
+                              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                            >
+                              <textarea
+                                aria-describedby="_r_XXXX_-helper-text"
+                                aria-invalid="false"
+                                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                                data-testid="@rid"
+                                id="_r_XXXX_"
+                                name="@rid"
+                                readonly=""
+                              >
+                                #128:30382
+                              </textarea>
+                              <textarea
+                                aria-hidden="true"
+                                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                                readonly=""
+                                tabindex="-1"
+                              />
+                            </div>
+                            <p
+                              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                              id="_r_XXXX_-helper-text"
+                            >
+                              The record identifier
+                            </p>
+                          </div>
+                          <div
+                            class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                          >
+                            <label
+                              class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                              data-shrink="true"
+                              for="_r_XXXX_"
+                              id="_r_XXXX_-label"
+                            >
+                              updatedAt
+                              <span
+                                aria-hidden="true"
+                                class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                              >
+                                 
+                                *
+                              </span>
+                            </label>
+                            <div
+                              class="Mui-readOnly MuiInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-readOnly MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                            >
+                              <input
+                                aria-describedby="_r_XXXX_-helper-text"
+                                aria-invalid="false"
+                                class="Mui-readOnly MuiInput-input MuiInputBase-input MuiInputBase-readOnly css-XXXX-MuiInputBase-input-MuiInput-input"
+                                data-testid="updatedAt"
+                                id="_r_XXXX_"
+                                name="updatedAt"
+                                readonly=""
+                                required=""
+                                type="datetime-local"
+                                value="2024-08-31T06:11"
+                              />
+                            </div>
+                            <p
+                              class="Mui-required MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                              id="_r_XXXX_-helper-text"
+                            >
+                              The timestamp at which the record was last updated
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="edge-table"
+      >
+        <h4
+          class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+        >
+          Related Records
+        </h4>
+        <div
+          class="ag-theme-material"
+          role="presentation"
+        >
+          <div
+            class="ag-theme-batchEditStyle-3 ag-theme-buttonStyle-4 ag-theme-checkboxStyle-5 ag-theme-columnDropStyle-9 ag-theme-iconSet-6 ag-theme-inputStyle-8 ag-theme-params-1 ag-theme-styleMaterial-10 ag-theme-tabStyle-7"
+          >
+            <div
+              class="ag-measurement-container"
+            >
+              <div
+              />
+              <div
+              />
+              <div
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+            </div>
+            <div
+              class="ag-layout-normal ag-ltr ag-root-wrapper"
+              grid-id="9"
+              role="presentation"
+            >
+              <div
+                class="ag-focus-managed ag-layout-normal ag-root-wrapper-body"
+                role="presentation"
+              >
+                <div
+                  class="ag-tab-guard ag-tab-guard-top"
+                  role="presentation"
+                  tabindex="0"
+                />
+                <div
+                  aria-colcount="4"
+                  aria-rowcount="3"
+                  class="ag-layout-normal ag-root ag-unselectable"
+                  role="grid"
+                >
+                  <div
+                    class="ag-header ag-header-allow-overflow ag-pivot-off"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-header"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-header-viewport"
+                      role="rowgroup"
+                      tabindex="-1"
+                    >
+                      <div
+                        class="ag-header-container"
+                        role="presentation"
+                      >
+                        <div
+                          aria-rowindex="1"
+                          class="ag-header-row ag-header-row-column"
+                          role="row"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="1"
+                            aria-sort="none"
+                            class="ag-column-first ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="relationshipType"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    Relationship
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="2"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="target.@class"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    Class
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="3"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="2"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    Target
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-header"
+                      role="rowgroup"
+                    >
+                      <div
+                        aria-rowindex="1"
+                        class="ag-header-row ag-header-row-column"
+                        role="row"
+                        tabindex="0"
+                      >
+                        <div
+                          aria-colindex="4"
+                          class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
+                          col-id="3"
+                          role="columnheader"
+                          tabindex="-1"
+                        >
+                          <div
+                            aria-hidden="false"
+                            class="ag-header-cell-resize"
+                            role="presentation"
+                          />
+                          <div
+                            class="ag-header-cell-comp-wrapper"
+                            role="presentation"
+                          >
+                            <div
+                              class="ag-cell-label-container"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-header-cell-label"
+                                data-ref="eLabel"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-header-cell-text"
+                                  data-ref="eText"
+                                >
+                                  Actions
+                                </span>
+                                <span
+                                  aria-hidden="true"
+                                  class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                  data-ref="eFilter"
+                                >
+                                  <span
+                                    class="ag-icon ag-icon-filter"
+                                    role="presentation"
+                                    unselectable="on"
+                                  />
+                                </span>
+                                <span
+                                  class="ag-sort-indicator-container"
+                                  data-ref="eSortIndicator"
+                                >
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                    data-ref="eSortOrder"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAsc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortDesc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                    data-ref="eSortMixed"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-none"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAbsoluteAsc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAbsoluteDesc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                    data-ref="eSortNone"
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ag-floating-top ag-selectable"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-floating-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-top-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-floating-top-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-floating-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-top-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-body ag-layout-normal"
+                    role="presentation"
+                  >
+                    <div
+                      class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
+                      role="presentation"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="ag-hidden ag-pinned-left-cols-container"
+                        role="rowgroup"
+                      />
+                      <div
+                        class="ag-center-cols-viewport ag-viewport"
+                        role="rowgroup"
+                      >
+                        <div
+                          class="ag-center-cols-container"
+                          role="presentation"
+                        >
+                          <div
+                            aria-rowindex="2"
+                            class="ag-row ag-row-even ag-row-first ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                            role="row"
+                            row-id="#83:71936"
+                            row-index="0"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="relationshipType"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-relationshipType-XXXX"
+                                  role="presentation"
+                                >
+                                  HasElement
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="2"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="target.@class"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-target.@class-XXXX"
+                                  role="presentation"
+                                >
+                                  Feature
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="3"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="2"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-XXXX-XXXX"
+                                  role="presentation"
+                                >
+                                  NR_135490
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-rowindex="3"
+                            class="ag-row ag-row-last ag-row-level-0 ag-row-no-focus ag-row-odd ag-row-position-absolute"
+                            role="row"
+                            row-id="#73:3842"
+                            row-index="1"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="relationshipType"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-relationshipType-XXXX"
+                                  role="presentation"
+                                >
+                                  HasCrossReference
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="2"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="target.@class"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-target.@class-XXXX"
+                                  role="presentation"
+                                >
+                                  Feature
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="3"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="2"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-XXXX-XXXX"
+                                  role="presentation"
+                                >
+                                  DNMT3A
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="false"
+                        class="ag-pinned-right-cols-container"
+                        role="rowgroup"
+                      >
+                        <div
+                          aria-rowindex="2"
+                          class="ag-row ag-row-even ag-row-first ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                          role="row"
+                          row-id="#83:71936"
+                          row-index="0"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="4"
+                            class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                            col-id="3"
+                            role="gridcell"
+                            tabindex="-1"
+                          >
+                            <div
+                              class="ag-cell-wrapper"
+                              role="presentation"
+                            >
+                              <span
+                                class="ag-cell-value"
+                                id="cell-XXXX-XXXX"
+                                role="presentation"
+                              >
+                                <a
+                                  class="record-link"
+                                  data-discover="true"
+                                  href="/view/Feature/127:63119"
+                                  target="_blank"
+                                >
+                                  <span>
+                                    #127:63119
+                                  </span>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                    data-testid="OpenInNewIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                    />
+                                  </svg>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-rowindex="3"
+                          class="ag-row ag-row-last ag-row-level-0 ag-row-no-focus ag-row-odd ag-row-position-absolute"
+                          role="row"
+                          row-id="#73:3842"
+                          row-index="1"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="4"
+                            class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                            col-id="3"
+                            role="gridcell"
+                            tabindex="-1"
+                          >
+                            <div
+                              class="ag-cell-wrapper"
+                              role="presentation"
+                            >
+                              <span
+                                class="ag-cell-value"
+                                id="cell-XXXX-XXXX"
+                                role="presentation"
+                              >
+                                <a
+                                  class="record-link"
+                                  data-discover="true"
+                                  href="/view/Feature/125:112189"
+                                  target="_blank"
+                                >
+                                  <span>
+                                    #125:112189
+                                  </span>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                    data-testid="OpenInNewIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                    />
+                                  </svg>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ag-full-width-container"
+                        role="rowgroup"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      class="ag-body-vertical-scroll ag-hidden ag-scrollbar-invisible"
+                    >
+                      <div
+                        class="ag-body-vertical-scroll-viewport"
+                        data-ref="eViewport"
+                      >
+                        <div
+                          class="ag-body-vertical-scroll-container"
+                          data-ref="eContainer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ag-selectable ag-sticky-top"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-sticky-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-top-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-sticky-top-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-sticky-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-top-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-selectable ag-sticky-bottom"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-sticky-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-bottom-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-sticky-bottom-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-sticky-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-bottom-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-floating-bottom ag-selectable"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-floating-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-bottom-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-floating-bottom-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-floating-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-bottom-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    class="ag-body-horizontal-scroll ag-scrollbar-invisible"
+                  >
+                    <div
+                      class="ag-horizontal-left-spacer ag-scroller-corner"
+                      data-ref="eLeftSpacer"
+                    />
+                    <div
+                      class="ag-body-horizontal-scroll-viewport"
+                      data-ref="eViewport"
+                    >
+                      <div
+                        class="ag-body-horizontal-scroll-container"
+                        data-ref="eContainer"
+                      />
+                    </div>
+                    <div
+                      class="ag-horizontal-right-spacer"
+                      data-ref="eRightSpacer"
+                    />
+                  </div>
+                  <div
+                    class="ag-hidden ag-overlay"
+                    role="presentation"
+                  >
+                    <div
+                      class="ag-overlay-panel"
+                      role="presentation"
+                    >
+                      <div
+                        class="ag-layout-normal ag-overlay-loading-wrapper ag-overlay-wrapper"
+                        data-ref="eOverlayWrapper"
+                        role="presentation"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ag-tab-guard ag-tab-guard-bottom"
+                  role="presentation"
+                  tabindex="0"
+                />
+              </div>
+              <div
+                class="ag-focus-managed ag-paging-panel ag-unselectable"
+                id="ag-XXXX"
+              >
+                <div
+                  class="ag-tab-guard ag-tab-guard-top"
+                  role="presentation"
+                  tabindex="0"
+                />
+                <span
+                  class="ag-paging-page-size"
+                  data-ref="pageSizeComp"
+                />
+                <span
+                  class="ag-paging-row-summary-panel"
+                >
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbFirstRowOnPage"
+                    id="ag-XXXX-first-row"
+                  >
+                    1
+                  </span>
+                  <span
+                    id="ag-XXXX-to"
+                  >
+                    to
+                  </span>
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbLastRowOnPage"
+                    id="ag-XXXX-last-row"
+                  >
+                    2
+                  </span>
+                  <span
+                    id="ag-XXXX-of"
+                  >
+                    of
+                  </span>
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbRecordCount"
+                    id="ag-XXXX-row-count"
+                  >
+                    2
+                  </span>
+                </span>
+                <span
+                  class="ag-paging-page-summary-panel"
+                  role="presentation"
+                >
+                  <div
+                    aria-disabled="true"
+                    aria-label="First Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btFirst"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-first"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Previous Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btPrevious"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-previous"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <span
+                    class="ag-paging-description"
+                  >
+                    <span
+                      id="ag-XXXX-start-page"
+                    >
+                      Page
+                    </span>
+                    <span
+                      class="ag-paging-number"
+                      data-ref="lbCurrent"
+                      id="ag-XXXX-start-page-number"
+                    >
+                      1
+                    </span>
+                    <span
+                      id="ag-XXXX-of-page"
+                    >
+                      of
+                    </span>
+                    <span
+                      class="ag-paging-number"
+                      data-ref="lbTotal"
+                      id="ag-XXXX-of-page-number"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Next Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btNext"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-next"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Last Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btLast"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-last"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                </span>
+                <div
+                  class="ag-tab-guard ag-tab-guard-bottom"
+                  role="presentation"
+                  tabindex="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="related-statements"
+      >
+        <h4
+          class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+        >
+          Related Statements
+        </h4>
+        <div
+          class="ag-theme-material"
+          role="presentation"
+        >
+          <div
+            class="ag-theme-batchEditStyle-3 ag-theme-buttonStyle-4 ag-theme-checkboxStyle-5 ag-theme-columnDropStyle-9 ag-theme-iconSet-6 ag-theme-inputStyle-8 ag-theme-params-1 ag-theme-styleMaterial-10 ag-theme-tabStyle-7"
+          >
+            <div
+              class="ag-measurement-container"
+            >
+              <div
+              />
+              <div
+              />
+              <div
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+            </div>
+            <div
+              class="ag-layout-normal ag-ltr ag-root-wrapper"
+              grid-id="10"
+              role="presentation"
+            >
+              <div
+                class="ag-focus-managed ag-layout-normal ag-root-wrapper-body"
+                role="presentation"
+              >
+                <div
+                  class="ag-tab-guard ag-tab-guard-top"
+                  role="presentation"
+                  tabindex="0"
+                />
+                <div
+                  aria-colcount="5"
+                  aria-rowcount="2"
+                  class="ag-layout-normal ag-root ag-unselectable"
+                  role="grid"
+                >
+                  <div
+                    class="ag-header ag-header-allow-overflow ag-pivot-off"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-header"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-header-viewport"
+                      role="rowgroup"
+                      tabindex="-1"
+                    >
+                      <div
+                        class="ag-header-container"
+                        role="presentation"
+                      >
+                        <div
+                          aria-rowindex="1"
+                          class="ag-header-row ag-header-row-column"
+                          role="row"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="1"
+                            aria-sort="none"
+                            class="ag-column-first ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="relevance.displayName"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    relevance
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="2"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="subject.displayName"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    subject
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="3"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="3"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    conditions
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="4"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="4"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    evidence
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-header"
+                      role="rowgroup"
+                    >
+                      <div
+                        aria-rowindex="1"
+                        class="ag-header-row ag-header-row-column"
+                        role="row"
+                        tabindex="0"
+                      >
+                        <div
+                          aria-colindex="5"
+                          class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
+                          col-id="5"
+                          role="columnheader"
+                          tabindex="-1"
+                        >
+                          <div
+                            aria-hidden="true"
+                            class="ag-header-cell-resize ag-hidden"
+                            role="presentation"
+                          />
+                          <div
+                            class="ag-header-cell-comp-wrapper"
+                            role="presentation"
+                          >
+                            <div
+                              class="ag-cell-label-container"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-header-cell-label"
+                                data-ref="eLabel"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-header-cell-text"
+                                  data-ref="eText"
+                                >
+                                  Actions
+                                </span>
+                                <span
+                                  aria-hidden="true"
+                                  class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                  data-ref="eFilter"
+                                >
+                                  <span
+                                    class="ag-icon ag-icon-filter"
+                                    role="presentation"
+                                    unselectable="on"
+                                  />
+                                </span>
+                                <span
+                                  class="ag-sort-indicator-container"
+                                  data-ref="eSortIndicator"
+                                >
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                    data-ref="eSortOrder"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAsc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortDesc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                    data-ref="eSortMixed"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-none"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAbsoluteAsc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAbsoluteDesc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                    data-ref="eSortNone"
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ag-floating-top ag-selectable"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-floating-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-top-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-floating-top-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-floating-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-top-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-body ag-layout-normal"
+                    role="presentation"
+                  >
+                    <div
+                      class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
+                      role="presentation"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="ag-hidden ag-pinned-left-cols-container"
+                        role="rowgroup"
+                      />
+                      <div
+                        class="ag-center-cols-viewport ag-viewport"
+                        role="rowgroup"
+                      >
+                        <div
+                          class="ag-center-cols-container"
+                          role="presentation"
+                        >
+                          <div
+                            aria-rowindex="2"
+                            class="ag-row ag-row-even ag-row-first ag-row-last ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                            role="row"
+                            row-id="#153:5652"
+                            row-index="0"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="relevance.displayName"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-relevance.displayName-XXXX"
+                                  role="presentation"
+                                >
+                                  loss of function
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="2"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="subject.displayName"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-subject.displayName-XXXX"
+                                  role="presentation"
+                                >
+                                  DNMT3A
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="3"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="3"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-XXXX-XXXX"
+                                  role="presentation"
+                                >
+                                  acute myeloid leukemia [DOID:9119]; DNMT3A; DNMT3A:p.R882C
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="4"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="4"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-XXXX-XXXX"
+                                  role="presentation"
+                                >
+                                  pmid:21518476
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="false"
+                        class="ag-pinned-right-cols-container"
+                        role="rowgroup"
+                      >
+                        <div
+                          aria-rowindex="2"
+                          class="ag-row ag-row-even ag-row-first ag-row-last ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                          role="row"
+                          row-id="#153:5652"
+                          row-index="0"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="5"
+                            class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                            col-id="5"
+                            role="gridcell"
+                            tabindex="-1"
+                          >
+                            <div
+                              class="ag-cell-wrapper"
+                              role="presentation"
+                            >
+                              <span
+                                class="ag-cell-value"
+                                id="cell-XXXX-XXXX"
+                                role="presentation"
+                              >
+                                <a
+                                  class="record-link"
+                                  data-discover="true"
+                                  href="/view/Statement/153:5652"
+                                  target="_blank"
+                                >
+                                  <span>
+                                    #153:5652
+                                  </span>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                    data-testid="OpenInNewIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                    />
+                                  </svg>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ag-full-width-container"
+                        role="rowgroup"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      class="ag-body-vertical-scroll ag-hidden ag-scrollbar-invisible"
+                    >
+                      <div
+                        class="ag-body-vertical-scroll-viewport"
+                        data-ref="eViewport"
+                      >
+                        <div
+                          class="ag-body-vertical-scroll-container"
+                          data-ref="eContainer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ag-selectable ag-sticky-top"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-sticky-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-top-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-sticky-top-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-sticky-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-top-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-selectable ag-sticky-bottom"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-sticky-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-bottom-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-sticky-bottom-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-sticky-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-bottom-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-floating-bottom ag-selectable"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-floating-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-bottom-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-floating-bottom-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-floating-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-bottom-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    class="ag-body-horizontal-scroll ag-scrollbar-invisible"
+                  >
+                    <div
+                      class="ag-horizontal-left-spacer ag-scroller-corner"
+                      data-ref="eLeftSpacer"
+                    />
+                    <div
+                      class="ag-body-horizontal-scroll-viewport"
+                      data-ref="eViewport"
+                    >
+                      <div
+                        class="ag-body-horizontal-scroll-container"
+                        data-ref="eContainer"
+                      />
+                    </div>
+                    <div
+                      class="ag-horizontal-right-spacer"
+                      data-ref="eRightSpacer"
+                    />
+                  </div>
+                  <div
+                    class="ag-hidden ag-overlay"
+                    role="presentation"
+                  >
+                    <div
+                      class="ag-overlay-panel"
+                      role="presentation"
+                    >
+                      <div
+                        class="ag-layout-normal ag-overlay-loading-wrapper ag-overlay-wrapper"
+                        data-ref="eOverlayWrapper"
+                        role="presentation"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ag-tab-guard ag-tab-guard-bottom"
+                  role="presentation"
+                  tabindex="0"
+                />
+              </div>
+              <div
+                class="ag-focus-managed ag-paging-panel ag-unselectable"
+                id="ag-XXXX"
+              >
+                <div
+                  class="ag-tab-guard ag-tab-guard-top"
+                  role="presentation"
+                  tabindex="0"
+                />
+                <span
+                  class="ag-paging-page-size"
+                  data-ref="pageSizeComp"
+                />
+                <span
+                  class="ag-paging-row-summary-panel"
+                >
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbFirstRowOnPage"
+                    id="ag-XXXX-first-row"
+                  >
+                    1
+                  </span>
+                  <span
+                    id="ag-XXXX-to"
+                  >
+                    to
+                  </span>
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbLastRowOnPage"
+                    id="ag-XXXX-last-row"
+                  >
+                    1
+                  </span>
+                  <span
+                    id="ag-XXXX-of"
+                  >
+                    of
+                  </span>
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbRecordCount"
+                    id="ag-XXXX-row-count"
+                  >
+                    1
+                  </span>
+                </span>
+                <span
+                  class="ag-paging-page-summary-panel"
+                  role="presentation"
+                >
+                  <div
+                    aria-disabled="true"
+                    aria-label="First Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btFirst"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-first"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Previous Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btPrevious"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-previous"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <span
+                    class="ag-paging-description"
+                  >
+                    <span
+                      id="ag-XXXX-start-page"
+                    >
+                      Page
+                    </span>
+                    <span
+                      class="ag-paging-number"
+                      data-ref="lbCurrent"
+                      id="ag-XXXX-start-page-number"
+                    >
+                      1
+                    </span>
+                    <span
+                      id="ag-XXXX-of-page"
+                    >
+                      of
+                    </span>
+                    <span
+                      class="ag-paging-number"
+                      data-ref="lbTotal"
+                      id="ag-XXXX-of-page-number"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Next Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btNext"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-next"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Last Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btLast"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-last"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                </span>
+                <div
+                  class="ag-tab-guard ag-tab-guard-bottom"
+                  role="presentation"
+                  tabindex="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="related-variants"
+      >
+        <h4
+          class="MuiTypography-h4 MuiTypography-root css-XXXX-MuiTypography-root"
+        >
+          Related Variants
+        </h4>
+        <div
+          class="ag-theme-material"
+          role="presentation"
+        >
+          <div
+            class="ag-theme-batchEditStyle-3 ag-theme-buttonStyle-4 ag-theme-checkboxStyle-5 ag-theme-columnDropStyle-9 ag-theme-iconSet-6 ag-theme-inputStyle-8 ag-theme-params-1 ag-theme-styleMaterial-10 ag-theme-tabStyle-7"
+          >
+            <div
+              class="ag-measurement-container"
+            >
+              <div
+              />
+              <div
+              />
+              <div
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+              <div
+                class="ag-measurement-element-border"
+              />
+            </div>
+            <div
+              class="ag-layout-normal ag-ltr ag-root-wrapper"
+              grid-id="11"
+              role="presentation"
+            >
+              <div
+                class="ag-focus-managed ag-layout-normal ag-root-wrapper-body"
+                role="presentation"
+              >
+                <div
+                  class="ag-tab-guard ag-tab-guard-top"
+                  role="presentation"
+                  tabindex="0"
+                />
+                <div
+                  aria-colcount="3"
+                  aria-rowcount="4"
+                  class="ag-layout-normal ag-root ag-unselectable"
+                  role="grid"
+                >
+                  <div
+                    class="ag-header ag-header-allow-overflow ag-pivot-off"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-header"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-header-viewport"
+                      role="rowgroup"
+                      tabindex="-1"
+                    >
+                      <div
+                        class="ag-header-container"
+                        role="presentation"
+                      >
+                        <div
+                          aria-rowindex="1"
+                          class="ag-header-row ag-header-row-column"
+                          role="row"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="1"
+                            aria-sort="none"
+                            class="ag-column-first ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="@class"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    class
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="2"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="displayName"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    variant
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-header"
+                      role="rowgroup"
+                    >
+                      <div
+                        aria-rowindex="1"
+                        class="ag-header-row ag-header-row-column"
+                        role="row"
+                        tabindex="0"
+                      >
+                        <div
+                          aria-colindex="3"
+                          class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
+                          col-id="1"
+                          role="columnheader"
+                          tabindex="-1"
+                        >
+                          <div
+                            aria-hidden="true"
+                            class="ag-header-cell-resize ag-hidden"
+                            role="presentation"
+                          />
+                          <div
+                            class="ag-header-cell-comp-wrapper"
+                            role="presentation"
+                          >
+                            <div
+                              class="ag-cell-label-container"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-header-cell-label"
+                                data-ref="eLabel"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-header-cell-text"
+                                  data-ref="eText"
+                                >
+                                  Actions
+                                </span>
+                                <span
+                                  aria-hidden="true"
+                                  class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                  data-ref="eFilter"
+                                >
+                                  <span
+                                    class="ag-icon ag-icon-filter"
+                                    role="presentation"
+                                    unselectable="on"
+                                  />
+                                </span>
+                                <span
+                                  class="ag-sort-indicator-container"
+                                  data-ref="eSortIndicator"
+                                >
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                    data-ref="eSortOrder"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAsc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortDesc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                    data-ref="eSortMixed"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-none"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAbsoluteAsc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                    data-ref="eSortAbsoluteDesc"
+                                  />
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                    data-ref="eSortNone"
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ag-floating-top ag-selectable"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-floating-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-top-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-floating-top-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-floating-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-top-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-body ag-layout-normal"
+                    role="presentation"
+                  >
+                    <div
+                      class="ag-body-viewport ag-layout-normal ag-row-no-animation ag-selectable"
+                      role="presentation"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="ag-hidden ag-pinned-left-cols-container"
+                        role="rowgroup"
+                      />
+                      <div
+                        class="ag-center-cols-viewport ag-viewport"
+                        role="rowgroup"
+                      >
+                        <div
+                          class="ag-center-cols-container"
+                          role="presentation"
+                        >
+                          <div
+                            aria-rowindex="2"
+                            class="ag-row ag-row-even ag-row-first ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                            role="row"
+                            row-id="#157:466"
+                            row-index="0"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="@class"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-@class-XXXX"
+                                  role="presentation"
+                                >
+                                  PositionalVariant
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="2"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="displayName"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-displayName-XXXX"
+                                  role="presentation"
+                                >
+                                  DNMT3A:p.R882G
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-rowindex="3"
+                            class="ag-row ag-row-level-0 ag-row-no-focus ag-row-odd ag-row-position-absolute"
+                            role="row"
+                            row-id="#157:489"
+                            row-index="1"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="@class"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-@class-XXXX"
+                                  role="presentation"
+                                >
+                                  PositionalVariant
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="2"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="displayName"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-displayName-XXXX"
+                                  role="presentation"
+                                >
+                                  DNMT3A:p.S714X
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-rowindex="4"
+                            class="ag-row ag-row-even ag-row-last ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                            role="row"
+                            row-id="#160:5446"
+                            row-index="2"
+                            tabindex="0"
+                          >
+                            <div
+                              aria-colindex="1"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-first"
+                              col-id="@class"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-@class-XXXX"
+                                  role="presentation"
+                                >
+                                  PositionalVariant
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              aria-colindex="2"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="displayName"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-displayName-XXXX"
+                                  role="presentation"
+                                >
+                                  DNMT3A:p.R882H
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="false"
+                        class="ag-pinned-right-cols-container"
+                        role="rowgroup"
+                      >
+                        <div
+                          aria-rowindex="2"
+                          class="ag-row ag-row-even ag-row-first ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                          role="row"
+                          row-id="#157:466"
+                          row-index="0"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="3"
+                            class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                            col-id="1"
+                            role="gridcell"
+                            tabindex="-1"
+                          >
+                            <div
+                              class="ag-cell-wrapper"
+                              role="presentation"
+                            >
+                              <span
+                                class="ag-cell-value"
+                                id="cell-XXXX-XXXX"
+                                role="presentation"
+                              >
+                                <a
+                                  class="record-link"
+                                  data-discover="true"
+                                  href="/view/PositionalVariant/157:466"
+                                  target="_blank"
+                                >
+                                  <span>
+                                    #157:466
+                                  </span>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                    data-testid="OpenInNewIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                    />
+                                  </svg>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-rowindex="3"
+                          class="ag-row ag-row-level-0 ag-row-no-focus ag-row-odd ag-row-position-absolute"
+                          role="row"
+                          row-id="#157:489"
+                          row-index="1"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="3"
+                            class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                            col-id="1"
+                            role="gridcell"
+                            tabindex="-1"
+                          >
+                            <div
+                              class="ag-cell-wrapper"
+                              role="presentation"
+                            >
+                              <span
+                                class="ag-cell-value"
+                                id="cell-XXXX-XXXX"
+                                role="presentation"
+                              >
+                                <a
+                                  class="record-link"
+                                  data-discover="true"
+                                  href="/view/PositionalVariant/157:489"
+                                  target="_blank"
+                                >
+                                  <span>
+                                    #157:489
+                                  </span>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                    data-testid="OpenInNewIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                    />
+                                  </svg>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          aria-rowindex="4"
+                          class="ag-row ag-row-even ag-row-last ag-row-level-0 ag-row-no-focus ag-row-position-absolute"
+                          role="row"
+                          row-id="#160:5446"
+                          row-index="2"
+                          tabindex="0"
+                        >
+                          <div
+                            aria-colindex="3"
+                            class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
+                            col-id="1"
+                            role="gridcell"
+                            tabindex="-1"
+                          >
+                            <div
+                              class="ag-cell-wrapper"
+                              role="presentation"
+                            >
+                              <span
+                                class="ag-cell-value"
+                                id="cell-XXXX-XXXX"
+                                role="presentation"
+                              >
+                                <a
+                                  class="record-link"
+                                  data-discover="true"
+                                  href="/view/PositionalVariant/160:5446"
+                                  target="_blank"
+                                >
+                                  <span>
+                                    #160:5446
+                                  </span>
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                    data-testid="OpenInNewIcon"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                    />
+                                  </svg>
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ag-full-width-container"
+                        role="rowgroup"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      class="ag-body-vertical-scroll ag-hidden ag-scrollbar-invisible"
+                    >
+                      <div
+                        class="ag-body-vertical-scroll-viewport"
+                        data-ref="eViewport"
+                      >
+                        <div
+                          class="ag-body-vertical-scroll-container"
+                          data-ref="eContainer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ag-selectable ag-sticky-top"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-sticky-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-top-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-sticky-top-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-sticky-top"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-top-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-selectable ag-sticky-bottom"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-sticky-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-bottom-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-sticky-bottom-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-sticky-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-sticky-bottom-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    class="ag-floating-bottom ag-selectable"
+                    role="presentation"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="ag-hidden ag-pinned-left-floating-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-bottom-viewport ag-viewport"
+                      role="rowgroup"
+                    >
+                      <div
+                        class="ag-floating-bottom-container"
+                        role="presentation"
+                      />
+                    </div>
+                    <div
+                      aria-hidden="false"
+                      class="ag-pinned-right-floating-bottom"
+                      role="rowgroup"
+                    />
+                    <div
+                      class="ag-floating-bottom-full-width-container"
+                      role="rowgroup"
+                    />
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    class="ag-body-horizontal-scroll ag-scrollbar-invisible"
+                  >
+                    <div
+                      class="ag-horizontal-left-spacer ag-scroller-corner"
+                      data-ref="eLeftSpacer"
+                    />
+                    <div
+                      class="ag-body-horizontal-scroll-viewport"
+                      data-ref="eViewport"
+                    >
+                      <div
+                        class="ag-body-horizontal-scroll-container"
+                        data-ref="eContainer"
+                      />
+                    </div>
+                    <div
+                      class="ag-horizontal-right-spacer"
+                      data-ref="eRightSpacer"
+                    />
+                  </div>
+                  <div
+                    class="ag-hidden ag-overlay"
+                    role="presentation"
+                  >
+                    <div
+                      class="ag-overlay-panel"
+                      role="presentation"
+                    >
+                      <div
+                        class="ag-layout-normal ag-overlay-loading-wrapper ag-overlay-wrapper"
+                        data-ref="eOverlayWrapper"
+                        role="presentation"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ag-tab-guard ag-tab-guard-bottom"
+                  role="presentation"
+                  tabindex="0"
+                />
+              </div>
+              <div
+                class="ag-focus-managed ag-paging-panel ag-unselectable"
+                id="ag-XXXX"
+              >
+                <div
+                  class="ag-tab-guard ag-tab-guard-top"
+                  role="presentation"
+                  tabindex="0"
+                />
+                <span
+                  class="ag-paging-page-size"
+                  data-ref="pageSizeComp"
+                />
+                <span
+                  class="ag-paging-row-summary-panel"
+                >
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbFirstRowOnPage"
+                    id="ag-XXXX-first-row"
+                  >
+                    1
+                  </span>
+                  <span
+                    id="ag-XXXX-to"
+                  >
+                    to
+                  </span>
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbLastRowOnPage"
+                    id="ag-XXXX-last-row"
+                  >
+                    3
+                  </span>
+                  <span
+                    id="ag-XXXX-of"
+                  >
+                    of
+                  </span>
+                  <span
+                    class="ag-paging-row-summary-panel-number"
+                    data-ref="lbRecordCount"
+                    id="ag-XXXX-row-count"
+                  >
+                    3
+                  </span>
+                </span>
+                <span
+                  class="ag-paging-page-summary-panel"
+                  role="presentation"
+                >
+                  <div
+                    aria-disabled="true"
+                    aria-label="First Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btFirst"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-first"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Previous Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btPrevious"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-previous"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <span
+                    class="ag-paging-description"
+                  >
+                    <span
+                      id="ag-XXXX-start-page"
+                    >
+                      Page
+                    </span>
+                    <span
+                      class="ag-paging-number"
+                      data-ref="lbCurrent"
+                      id="ag-XXXX-start-page-number"
+                    >
+                      1
+                    </span>
+                    <span
+                      id="ag-XXXX-of-page"
+                    >
+                      of
+                    </span>
+                    <span
+                      class="ag-paging-number"
+                      data-ref="lbTotal"
+                      id="ag-XXXX-of-page-number"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Next Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btNext"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-next"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                  <div
+                    aria-disabled="true"
+                    aria-label="Last Page"
+                    class="ag-button ag-disabled ag-paging-button"
+                    data-ref="btLast"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <span
+                      class="ag-icon ag-icon-last"
+                      role="presentation"
+                      unselectable="on"
+                    />
+                  </div>
+                </span>
+                <div
+                  class="ag-tab-guard ag-tab-guard-bottom"
+                  role="presentation"
+                  tabindex="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="record-form__action-buttons"
+      >
+        <div />
+        <div />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`ViewPositionalVariant snapshot 1`] = `
 <div>
   <div

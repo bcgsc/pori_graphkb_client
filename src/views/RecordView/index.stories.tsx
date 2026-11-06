@@ -376,6 +376,7 @@ export const ViewFeatureWithRelated = meta.story({
                 subject: {
                   displayName: 'DNMT3A',
                 },
+                reviewStatus: 'passed',
               },
             ];
           }

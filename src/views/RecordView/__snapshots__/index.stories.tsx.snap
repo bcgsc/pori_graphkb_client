@@ -11317,7 +11317,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                   tabindex="0"
                 />
                 <div
-                  aria-colcount="5"
+                  aria-colcount="6"
                   aria-rowcount="2"
                   class="ag-layout-normal ag-root ag-unselectable"
                   role="grid"
@@ -11376,7 +11376,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                                     class="ag-header-cell-text"
                                     data-ref="eText"
                                   >
-                                    relevance
+                                    Relevance
                                   </span>
                                   <span
                                     aria-hidden="true"
@@ -11499,7 +11499,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                                     class="ag-header-cell-text"
                                     data-ref="eText"
                                   >
-                                    subject
+                                    Subject
                                   </span>
                                   <span
                                     aria-hidden="true"
@@ -11622,7 +11622,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                                     class="ag-header-cell-text"
                                     data-ref="eText"
                                   >
-                                    conditions
+                                    Conditions
                                   </span>
                                   <span
                                     aria-hidden="true"
@@ -11745,7 +11745,130 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                                     class="ag-header-cell-text"
                                     data-ref="eText"
                                   >
-                                    evidence
+                                    Evidence
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ag-filter-icon ag-header-icon ag-header-label-icon ag-hidden"
+                                    data-ref="eFilter"
+                                  >
+                                    <span
+                                      class="ag-icon ag-icon-filter"
+                                      role="presentation"
+                                      unselectable="on"
+                                    />
+                                  </span>
+                                  <span
+                                    class="ag-sort-indicator-container"
+                                    data-ref="eSortIndicator"
+                                  >
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-order"
+                                      data-ref="eSortOrder"
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-asc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-desc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-mixed-icon"
+                                      data-ref="eSortMixed"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-ascending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteAsc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-aasc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-absolute-descending-icon ag-sort-indicator-icon"
+                                      data-ref="eSortAbsoluteDesc"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-adesc"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ag-hidden ag-sort-indicator-icon ag-sort-none-icon"
+                                      data-ref="eSortNone"
+                                    >
+                                      <span
+                                        class="ag-icon ag-icon-none"
+                                        role="presentation"
+                                        unselectable="on"
+                                      />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            aria-colindex="5"
+                            aria-sort="none"
+                            class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-parent-hidden"
+                            col-id="reviewStatus"
+                            role="columnheader"
+                            tabindex="-1"
+                          >
+                            <div
+                              aria-hidden="false"
+                              class="ag-header-cell-resize"
+                              role="presentation"
+                            />
+                            <div
+                              class="ag-header-cell-comp-wrapper"
+                              role="presentation"
+                            >
+                              <div
+                                class="ag-cell-label-container"
+                                role="presentation"
+                              >
+                                <div
+                                  class="ag-header-cell-label"
+                                  data-ref="eLabel"
+                                  role="presentation"
+                                >
+                                  <span
+                                    class="ag-header-cell-text"
+                                    data-ref="eText"
+                                  >
+                                    Review Status
                                   </span>
                                   <span
                                     aria-hidden="true"
@@ -11853,7 +11976,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                         tabindex="0"
                       >
                         <div
-                          aria-colindex="5"
+                          aria-colindex="6"
                           class="ag-column-last ag-focus-managed ag-header-cell ag-header-parent-hidden"
                           col-id="5"
                           role="columnheader"
@@ -12084,6 +12207,26 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                                 </span>
                               </div>
                             </div>
+                            <div
+                              aria-colindex="5"
+                              class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
+                              col-id="reviewStatus"
+                              role="gridcell"
+                              tabindex="-1"
+                            >
+                              <div
+                                class="ag-cell-wrapper"
+                                role="presentation"
+                              >
+                                <span
+                                  class="ag-cell-value"
+                                  id="cell-reviewStatus-XXXX"
+                                  role="presentation"
+                                >
+                                  passed
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -12101,7 +12244,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
                           tabindex="0"
                         >
                           <div
-                            aria-colindex="5"
+                            aria-colindex="6"
                             class="ag-cell ag-cell-first-right-pinned ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                             col-id="5"
                             role="gridcell"

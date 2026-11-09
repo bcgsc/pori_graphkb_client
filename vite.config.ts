@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       watch: false,
+      execArgv: ['--no-webstorage'],
       setupFiles: ['config/jest/windowEnvMock.js'],
       globals: false, // necessary for now for jest-dom extend-expect to work
       coverage: {

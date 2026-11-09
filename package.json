@@ -91,7 +91,7 @@
     "vitest": "^4.1.2"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=26.12.1"
   },
   "scripts": {
     "env": "",
@@ -117,5 +117,10 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "allowScripts": {
+    "msw@2.12.14": true,
+    "esbuild@0.27.3": true,
+    "@parcel/watcher@2.5.6": true
   }
 }

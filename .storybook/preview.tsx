@@ -69,8 +69,9 @@ try {
         print.error();
       }
     },
-    // @ts-expect-error
-    quiet: import.meta.env.CI === 'true',
+    quiet: typeof process !== 'undefined' && process.env
+      ? process.env.NODE_ENV === 'test' || process.env.CI === 'true'
+      : false,
   })
 }
 

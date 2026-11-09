@@ -37,19 +37,17 @@ const AboutGraphView = () => (
         alt="Graph Node Actions"
         src={graphActions}
       />
-      <Typography variant="body1">
-        <List>
-          <ListItem>
-            <ListItemText primary="Expand" secondary="Expand the record to view its related records" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Hide" secondary="Hide the record from the graph" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Details" secondary="View record details in a side drawer" />
-          </ListItem>
-        </List>
-      </Typography>
+      <List>
+        <ListItem>
+          <ListItemText primary="Expand" secondary="Expand the record to view its related records" />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary="Hide" secondary="Hide the record from the graph" />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary="Details" secondary="View record details in a side drawer" />
+        </ListItem>
+      </List>
     </div>
   </>
 );

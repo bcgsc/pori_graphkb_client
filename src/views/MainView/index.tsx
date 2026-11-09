@@ -7,12 +7,15 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { Navigate, useRoutes } from 'react-router';
+import type { LoaderFunctionArgs, RouteObject } from 'react-router';
+import {
+  Navigate, Outlet, useLoaderData, useNavigation,
+} from 'react-router';
 
-import { AuthenticatedLayout } from '@/components/Auth';
+import { AuthContext, authContext, createAuthMiddleware } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
-import schema from '@/services/schema';
-import ErrorBoundary from '@/views/ErrorView';
+import ErrorBoundary, { RouteErrorBoundary } from '@/views/ErrorView';
+import { createRecordLoader } from '@/views/RecordView/loader';
 
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
@@ -31,19 +34,29 @@ const DataView = lazy(() => import('@/views/DataView'));
 const GraphView = lazy(() => import('@/views/GraphView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
-const NewRecordView = lazy(() => import('@/views/NewRecordView'));
-const NewRecordSelectView = lazy(() => import('@/views/NewRecordSelectView'));
 const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-const ABSTRACT_CLASSES = Object.values(schema.models)
-  .filter((m) => m.isAbstract)
-  .map((m) => m.name);
+const withAuth = (Component: React.ComponentType) => () => {
+  const auth = useLoaderData<typeof authLoader>()!;
+  return (
+    <AuthContext.Provider value={auth}><Component /></AuthContext.Provider>
+  );
+};
 
-export const appRoutes = [
+const authLoader = ({ context }: LoaderFunctionArgs) => {
+  const auth = context.get(authContext);
+  return auth;
+};
+
+export const createRoutes = (MainAuthLayout?: React.ComponentType): RouteObject[] => [
   {
-    element: <AuthenticatedLayout />,
+    Component: withAuth(MainAuthLayout ?? Outlet),
+    loader: authLoader,
+    HydrateFallback: CircularProgress,
+    ErrorBoundary: RouteErrorBoundary,
+    middleware: [createAuthMiddleware()],
     children: [
       {
         path: '/feedback',
@@ -58,7 +71,8 @@ export const appRoutes = [
           { path: 'notation', Component: AboutViewNotationTab },
           { path: 'terms', Component: AboutViewTermsTab },
           {
-            element: <AuthenticatedLayout signedLicenseRequired />,
+            middleware: [createAuthMiddleware({ requireSignedLicense: true })],
+            ErrorBoundary: RouteErrorBoundary,
             children: [
               { path: 'classes', Component: AboutViewClassesTab },
               { path: 'matching', Component: AboutViewMatchingTab },
@@ -67,46 +81,43 @@ export const appRoutes = [
         ],
       },
       {
-        element: <AuthenticatedLayout signedLicenseRequired />,
+        middleware: [createAuthMiddleware({ requireSignedLicense: true })],
         children: [
           { path: '/activity', Component: ActivityView },
           { path: '/query', Component: QuickSearch },
           { path: '/query-advanced', Component: AdvancedSearchView },
           { path: '/user-profile', Component: UserProfileView },
-          {
-            element: <AuthenticatedLayout admin />,
-            children: [
-              { path: '/admin', Component: AdminView },
-              { path: '/edit/Source/:rid', element: <RecordView modelName="Source" variant={FORM_VARIANT.EDIT} /> },
-              { path: '/new/Source', element: <NewRecordView modelName="Source" /> },
-              { path: '/edit/User/:rid', element: <RecordView modelName="User" variant={FORM_VARIANT.EDIT} /> },
-              { path: '/new/User', element: <NewRecordView modelName="User" /> },
-              { path: '/edit/UserGroup/:rid', element: <RecordView modelName="UserGroup" variant={FORM_VARIANT.EDIT} /> },
-              { path: '/new/UserGroup', element: <NewRecordView modelName="UserGroup" /> },
-            ],
-          },
+          { path: '/admin', Component: AdminView, middleware: [createAuthMiddleware({ requireAdmin: true })] },
           {
             path: '/edit/:modelName/:rid',
-            element: <RecordView variant={FORM_VARIANT.EDIT} />,
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.EDIT),
           },
           {
             path: '/view/:modelName/:rid',
-            element: <RecordView variant={FORM_VARIANT.VIEW} />,
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.VIEW),
           },
           {
             path: '/edit/:rid',
-            element: <RecordView variant={FORM_VARIANT.EDIT} />,
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.EDIT),
           },
           {
             path: '/view/:rid',
-            element: <RecordView variant={FORM_VARIANT.VIEW} />,
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.VIEW),
           },
-          ...ABSTRACT_CLASSES.map((modelName) => ({
-            path: `/new/${modelName}`,
-            element: <NewRecordSelectView modelName={modelName} />,
-          })),
-          { path: '/new/:modelName/:rid', Component: NewRecordView },
-          { path: '/new/:modelName', Component: NewRecordView },
+          {
+            path: '/new/:modelName/:rid',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.NEW),
+          },
+          {
+            path: '/new/:modelName',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.NEW),
+          },
           { path: '/data/table', Component: DataView },
           { path: '/data/graph', Component: GraphView },
           { path: '/import/pubmed', Component: ImportPubmedView },
@@ -125,7 +136,7 @@ export const appRoutes = [
  */
 const Main = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const routes = useRoutes(appRoutes);
+  const navigation = useNavigation();
 
   return (
     <div className="main-view">
@@ -140,9 +151,10 @@ const Main = () => {
         onDrawerChange={setDrawerOpen}
       />
       <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
+        {navigation.state === 'loading' && <CircularProgress color="secondary" />}
         <ErrorBoundary>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            {routes}
+            <Outlet />
           </Suspense>
         </ErrorBoundary>
       </section>

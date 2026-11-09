@@ -5,10 +5,10 @@ import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import { Button, Paper } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useMemo, useState,
 } from 'react';
 import { useQuery } from 'react-query';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router';
 
 import FormLayout from '@/components/FormLayout';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
@@ -45,9 +45,6 @@ const StatementForm = ({
   onSubmit,
   variant = FORM_VARIANT.VIEW,
 }: StatementFormProps) => {
-  const params = useParams();
-  const navigate = useNavigate();
-
   const { data: diagnosticData } = useQuery({
     queryKey: tuple(
       '/query',
@@ -96,14 +93,6 @@ const StatementForm = ({
     queryFn: async ({ queryKey: [, body] }) => api.query(body),
   });
 
-  // Fetch and populate the fields for quick copy of record
-  const statementQuery = useQuery({
-    queryKey: [`/statements/${params.rid}?neighbors=1`],
-    queryFn: async ({ queryKey: [route] }) => api.get(route),
-    enabled: (isEmpty(initialValue) && Boolean(params.rid)),
-    throwOnError: true,
-  });
-
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const checkLogicalStatement = useCallback((formContent) => {
@@ -143,24 +132,6 @@ const StatementForm = ({
     setDirty: setFormIsDirty,
     updateField,
   } = form;
-
-  useEffect(() => {
-    if (statementQuery.data) {
-      navigate('/new/statement', { replace: true });
-      const keysToIgnore = [
-        '@rid', '@class',
-        'createdAt', 'createdBy',
-        'updatedAt', 'updatedBy',
-        'deletedAt', 'deletedBy',
-        'uuid', 'reviews',
-      ];
-      Object.entries(statementQuery.data).forEach(([key, value]) => {
-        if (!keysToIgnore.includes(key)) {
-          updateField(key, value);
-        }
-      });
-    }
-  }, [navigate, statementQuery.data, updateField]);
 
   const civicEvidenceId = useMemo(() => {
     try {

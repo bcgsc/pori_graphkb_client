@@ -1,61 +1,30 @@
-import {
-  CircularProgress,
-} from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import { Buffer } from 'buffer';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect } from 'react';
-import { useQuery } from 'react-query';
-import { useNavigate, useParams } from 'react-router';
+import React, { useCallback } from 'react';
+import { useLoaderData, useNavigate } from 'react-router';
 
+import ModelSelect from '@/components/ModelSelect';
 import PositionalVariantForm from '@/components/PositionalVariantForm';
 import RecordForm from '@/components/RecordForm';
 import StatementForm from '@/components/StatementForm';
 import { GeneralRecordType } from '@/components/types';
-import { FORM_VARIANT, navigateToGraph, tuple } from '@/components/util';
-import api from '@/services/api';
+import { FORM_VARIANT, navigateToGraph } from '@/components/util';
 import schema from '@/services/schema';
+
+import { createRecordLoader } from './loader';
 
 window.Buffer = window.Buffer || Buffer;
 
-const DEFAULT_TITLES = {
-  [FORM_VARIANT.EDIT]: 'Edit this Record',
-  [FORM_VARIANT.VIEW]: 'Record Contents',
-};
-
-const getModelFromName = (modelName: string | undefined, variant = FORM_VARIANT.VIEW) => {
-  if (modelName) {
-    const model = schema.get(modelName);
-
-    if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
-      throw new Error(`Page Not Found. '${modelName}' is not a valid model`);
-    }
-    return model;
-  }
-  return schema.get('V');
-};
-
-type RouteParams = {
-  variant: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
-  modelName: string;
-  rid: string;
-};
-
-const RecordView = ({
-  modelName: modelNameParamProp,
-  variant,
-}: {
-  modelName?: string;
-  variant: FORM_VARIANT.EDIT | FORM_VARIANT.NEW | FORM_VARIANT.VIEW;
-}) => {
+const RecordView = () => {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
   const {
-    rid,
-    modelName: modelNameParams,
-  } = useParams<RouteParams>();
+    variant, modelName, rid, data: recordContent,
+  } = useLoaderData<ReturnType<typeof createRecordLoader>>();
 
   // Use props over params
-  const model = getModelFromName((modelNameParamProp ?? modelNameParams) || 'V');
+  const model = schema.get(modelName);
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
@@ -67,24 +36,6 @@ const RecordView = ({
       navigate('/');
     }
   }, [navigate, variant]);
-
-  const { data: recordContent, isPending } = useQuery({
-    queryKey: tuple(`${model.routeName}/${rid?.replace(/^#/, '')}?neighbors=1`, { forceListReturn: true, variant }),
-    queryFn: async ({ queryKey: [route, options] }) => {
-      const result = await api.get(route, options);
-
-      return { ...result[0] };
-    },
-    enabled: Boolean(variant !== FORM_VARIANT.NEW && rid),
-    refetchOnMount: 'always',
-    throwOnError: true,
-  });
-
-  useEffect(() => {
-    if (recordContent?.['@class'] && recordContent['@class'] !== model.name) {
-      navigate(`/${variant}/${recordContent['@class']}/${rid}`, { replace: true });
-    }
-  }, [model.name, navigate, recordContent, rid, variant]);
 
   // redirect when the user clicks the top right button
   const handleToggleState = useCallback((newState: FORM_VARIANT | 'graph') => {
@@ -98,11 +49,13 @@ const RecordView = ({
     }
   }, [snackbar, navigate, model.name, recordContent, rid]);
 
-  if (isPending && Boolean(variant !== FORM_VARIANT.NEW && rid)) {
-    // wait for the content to load for existing records
-    return (<CircularProgress />);
-  }
+  let title = 'Record Contents';
 
+  if (variant === FORM_VARIANT.EDIT) {
+    title = 'Edit this Record';
+  } else if (variant === FORM_VARIANT.NEW) {
+    title = `Create a new ${model.name} Record`;
+  }
   let Form = RecordForm;
 
   if (model.name === 'PositionalVariant') {
@@ -110,12 +63,28 @@ const RecordView = ({
   } else if (model.name === 'Statement') {
     Form = StatementForm;
   }
+
+  if (model.isAbstract && variant === FORM_VARIANT.NEW) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Paper sx={{ maxWidth: 'md', width: '100%' }}>
+          <ModelSelect
+            baseModel={modelName}
+            onChange={(e) => navigate(`/new/${e.target.value as string}`)}
+            value=""
+            variant="radio"
+          />
+        </Paper>
+      </Box>
+    );
+  }
+
   return (
     <Form
       modelName={model.name}
       onSubmit={handleSubmit}
       onToggleState={handleToggleState}
-      title={DEFAULT_TITLES[variant]}
+      title={title}
       value={recordContent}
       variant={variant}
     />

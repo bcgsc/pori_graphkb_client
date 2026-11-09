@@ -11741,7 +11741,7 @@ exports[`AsNonAdmin snapshot 1`] = `
   <div
   >
     <div
-      class="auth-centered"
+      class="error-wrapper"
     >
       <h2
         class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"

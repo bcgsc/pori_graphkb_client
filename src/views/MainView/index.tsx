@@ -7,7 +7,7 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, useRoutes } from 'react-router';
 
 import { AuthenticatedLayout } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
@@ -41,59 +41,91 @@ const ABSTRACT_CLASSES = Object.values(schema.models)
   .filter((m) => m.isAbstract)
   .map((m) => m.name);
 
-export function AppRoutes() {
-  return (
-    <Routes>
-      <Route element={<AuthenticatedLayout />}>
-        <Route Component={FeedbackView} path="/feedback" />
-        <Route Component={AboutView} path="/about">
-          <Route Component={AboutViewMainTab} index />
-          <Route Component={AboutViewGettingStartedTab} path="getting-started" />
-          <Route Component={AboutViewNotationTab} path="notation" />
-          <Route Component={AboutViewTermsTab} path="terms" />
-          <Route element={<AuthenticatedLayout signedLicenseRequired />}>
-            <Route Component={AboutViewClassesTab} path="classes" />
-            <Route Component={AboutViewMatchingTab} path="matching" />
-          </Route>
-        </Route>
-        <Route element={<AuthenticatedLayout signedLicenseRequired />}>
-          <Route Component={ActivityView} path="/activity" />
-          <Route Component={QuickSearch} path="/query" />
-          <Route Component={AdvancedSearchView} path="/query-advanced" />
-          <Route Component={UserProfileView} path="/user-profile" />
-          <Route element={<AuthenticatedLayout admin />}>
-            <Route Component={AdminView} path="/admin" />
-            <Route element={<RecordView modelName="Source" variant={FORM_VARIANT.EDIT} />} path="/edit/Source/:rid" />
-            <Route element={<NewRecordView modelName="Source" />} path="/new/Source" />
-            <Route element={<RecordView modelName="User" variant={FORM_VARIANT.EDIT} />} path="/edit/User/:rid" />
-            <Route element={<NewRecordView modelName="User" />} path="/new/User" />
-            <Route element={<RecordView modelName="UserGroup" variant={FORM_VARIANT.EDIT} />} path="/edit/UserGroup/:rid" />
-            <Route element={<NewRecordView modelName="UserGroup" />} path="/new/UserGroup" />
-          </Route>
-          <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:modelName/:rid" />
-          <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:modelName/:rid" />
-          <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:rid" />
-          <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:rid" />
-          {ABSTRACT_CLASSES.map((modelName) => (
-            <Route key={modelName} element={<NewRecordSelectView modelName={modelName} />} path={`/new/${modelName}`} />
-          ))}
-          <Route Component={NewRecordView} path="/new/:modelName/:rid" />
-          <Route Component={NewRecordView} path="/new/:modelName" />
-          <Route Component={DataView} path="/data/table" />
-          <Route Component={GraphView} path="/data/graph" />
-          <Route Component={ImportPubmedView} path="/import/pubmed" />
-        </Route>
-      </Route>
-      <Route element={<Navigate to="/query" />} path="/*" />
-    </Routes>
-  );
-}
+export const appRoutes = [
+  {
+    element: <AuthenticatedLayout />,
+    children: [
+      {
+        path: '/feedback',
+        Component: FeedbackView,
+      },
+      {
+        path: '/about',
+        Component: AboutView,
+        children: [
+          { index: true, Component: AboutViewMainTab },
+          { path: 'getting-started', Component: AboutViewGettingStartedTab },
+          { path: 'notation', Component: AboutViewNotationTab },
+          { path: 'terms', Component: AboutViewTermsTab },
+          {
+            element: <AuthenticatedLayout signedLicenseRequired />,
+            children: [
+              { path: 'classes', Component: AboutViewClassesTab },
+              { path: 'matching', Component: AboutViewMatchingTab },
+            ],
+          },
+        ],
+      },
+      {
+        element: <AuthenticatedLayout signedLicenseRequired />,
+        children: [
+          { path: '/activity', Component: ActivityView },
+          { path: '/query', Component: QuickSearch },
+          { path: '/query-advanced', Component: AdvancedSearchView },
+          { path: '/user-profile', Component: UserProfileView },
+          {
+            element: <AuthenticatedLayout admin />,
+            children: [
+              { path: '/admin', Component: AdminView },
+              { path: '/edit/Source/:rid', element: <RecordView modelName="Source" variant={FORM_VARIANT.EDIT} /> },
+              { path: '/new/Source', element: <NewRecordView modelName="Source" /> },
+              { path: '/edit/User/:rid', element: <RecordView modelName="User" variant={FORM_VARIANT.EDIT} /> },
+              { path: '/new/User', element: <NewRecordView modelName="User" /> },
+              { path: '/edit/UserGroup/:rid', element: <RecordView modelName="UserGroup" variant={FORM_VARIANT.EDIT} /> },
+              { path: '/new/UserGroup', element: <NewRecordView modelName="UserGroup" /> },
+            ],
+          },
+          {
+            path: '/edit/:modelName/:rid',
+            element: <RecordView variant={FORM_VARIANT.EDIT} />,
+          },
+          {
+            path: '/view/:modelName/:rid',
+            element: <RecordView variant={FORM_VARIANT.VIEW} />,
+          },
+          {
+            path: '/edit/:rid',
+            element: <RecordView variant={FORM_VARIANT.EDIT} />,
+          },
+          {
+            path: '/view/:rid',
+            element: <RecordView variant={FORM_VARIANT.VIEW} />,
+          },
+          ...ABSTRACT_CLASSES.map((modelName) => ({
+            path: `/new/${modelName}`,
+            element: <NewRecordSelectView modelName={modelName} />,
+          })),
+          { path: '/new/:modelName/:rid', Component: NewRecordView },
+          { path: '/new/:modelName', Component: NewRecordView },
+          { path: '/data/table', Component: DataView },
+          { path: '/data/graph', Component: GraphView },
+          { path: '/import/pubmed', Component: ImportPubmedView },
+        ],
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/query" />,
+  },
+];
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 const Main = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const routes = useRoutes(appRoutes);
 
   return (
     <div className="main-view">
@@ -110,7 +142,7 @@ const Main = () => {
       <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
         <ErrorBoundary>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <AppRoutes />
+            {routes}
           </Suspense>
         </ErrorBoundary>
       </section>

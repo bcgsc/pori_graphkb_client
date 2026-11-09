@@ -11,8 +11,8 @@ import { GeneralRecordType, QueryBody } from '../src/components/types';
 import { Decorator, definePreview, StoryObj } from '@storybook/react-vite';
 import addonTest from '@storybook/addon-vitest';
 import { Canvas, PreviewAddon } from 'storybook/internal/csf';
-import { AppRoutes } from '../src/views/MainView';
-import { MemoryRouter, useLocation } from 'react-router';
+import { appRoutes } from '../src/views/MainView';
+import { MemoryRouter, useRoutes, useLocation } from 'react-router';
 import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor, screen } from 'storybook/test';
@@ -189,11 +189,12 @@ export interface ViewPreviewType {
 }
 
 function View() {
+  const routes = useRoutes(appRoutes);
   return (
       <div style={{height: '100%', minWidth: '300px'}}>
         <ErrorView>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <AppRoutes />
+            {routes}
           </Suspense>
         </ErrorView>
       </div>

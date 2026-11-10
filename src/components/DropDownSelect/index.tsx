@@ -1,6 +1,5 @@
 import './index.scss';
 
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
   ListItemText,
   MenuItem,
@@ -54,7 +53,6 @@ const getOptionNode = (props: { key: string; disabled: boolean; } & SelectOption
 type SelectProps = React.ComponentProps<typeof Select>;
 
 interface DropDownSelectProps {
-  IconComponent?: SelectProps['IconComponent'];
   className?: string;
   disabled?: boolean;
   /** Error flag for input component. */
@@ -96,7 +94,6 @@ function DropDownSelect(props: DropDownSelectProps) {
     helperText = '',
     className = '',
     disabled: disabledProp = false,
-    IconComponent = ArrowDropDownIcon,
     readOnly,
     'aria-label': ariaLabel,
   } = props;
@@ -145,7 +142,7 @@ function DropDownSelect(props: DropDownSelectProps) {
         select: {
           IconComponent: readOnly
             ? 'span'
-            : IconComponent,
+            : undefined,
           disableUnderline: readOnly,
           readOnly,
         },

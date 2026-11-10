@@ -70,7 +70,6 @@ function AdvancedSearchView() {
         />
       </div>
       <PropertyFilter
-        className="advanced-search__property-filter"
         modelName={modelName}
         onSubmit={addFilterToGroup}
       />

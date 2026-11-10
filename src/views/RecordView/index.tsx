@@ -1,5 +1,3 @@
-import './index.scss';
-
 import {
   CircularProgress,
 } from '@mui/material';

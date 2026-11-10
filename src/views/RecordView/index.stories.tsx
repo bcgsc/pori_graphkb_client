@@ -46,20 +46,15 @@ export const ViewAliasOf = meta.story({
     path: '/view/AliasOf/65:69073',
     auth: { hasWriteAccess: true },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((body) => {
-          if (Array.isArray(body.target) && body.target[0] === '#65:69073') {
-            return [aliasOfRecord];
-          }
-          return [];
-        }),
-        http.gkb.get('/api/aliasof/65:69073', () => HttpResponse.json({
-          result: aliasOfRecord,
-        })),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query((body) => {
+      if (Array.isArray(body.target) && body.target[0] === '#65:69073') {
+        return [aliasOfRecord];
+      }
+      return [];
+    }), http.gkb.get('/api/aliasof/65:69073', () => HttpResponse.json({
+      result: aliasOfRecord,
+    })));
   },
 });
 
@@ -83,13 +78,11 @@ export const ViewAliasOfNotFound = meta.story({
     path: '/view/AliasOf/65:69073',
     auth: { hasWriteAccess: true },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => []),
-        http.gkb.get('/api/aliasof/:rid', () => HttpResponse.json({ message: 'query expected 1 records but only found 0', name: 'NoRecordFoundError' }, { status: 404 })),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => []),
+      http.gkb.get('/api/aliasof/:rid', () => HttpResponse.json({ message: 'query expected 1 records but only found 0', name: 'NoRecordFoundError' }, { status: 404 })),
+    );
   },
 });
 
@@ -102,35 +95,33 @@ export const ViewCategoryVariant = meta.story({
     path: '/view/CategoryVariant/161:1484',
     auth: { hasWriteAccess: true },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => []),
-        http.gkb.get('/api/categoryvariants/161:1484', () => HttpResponse.json({
-          result: {
-            '@class': 'CategoryVariant',
-            '@rid': '#161:1484',
-            createdAt: 1775765271881,
-            updatedBy: mockUser,
-            germline: false,
-            createdBy: mockUser,
-            displayName: 'NOTCH4 increased RNA expression',
-            reference1: {
-              displayName: 'NOTCH4',
-              '@class': 'Feature',
-              '@rid': '#128:91665',
-            },
-            type: {
-              displayName: 'increased RNA expression',
-              '@class': 'Vocabulary',
-              '@rid': '#148:16',
-            },
-            updatedAt: 1775765271881,
-            reference2: null,
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => []),
+      http.gkb.get('/api/categoryvariants/161:1484', () => HttpResponse.json({
+        result: {
+          '@class': 'CategoryVariant',
+          '@rid': '#161:1484',
+          createdAt: 1775765271881,
+          updatedBy: mockUser,
+          germline: false,
+          createdBy: mockUser,
+          displayName: 'NOTCH4 increased RNA expression',
+          reference1: {
+            displayName: 'NOTCH4',
+            '@class': 'Feature',
+            '@rid': '#128:91665',
           },
-        })),
-      ],
-    },
+          type: {
+            displayName: 'increased RNA expression',
+            '@class': 'Vocabulary',
+            '@rid': '#148:16',
+          },
+          updatedAt: 1775765271881,
+          reference2: null,
+        },
+      })),
+    );
   },
 });
 
@@ -151,42 +142,40 @@ export const ViewPositionalVariant = meta.story({
     path: '/view/PositionalVariant/157:106045',
     auth: { hasWriteAccess: true },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => []),
-        http.gkb.get('/api/positionalvariants/157:106045', () => HttpResponse.json({
-          result: {
-            '@class': 'PositionalVariant',
-            '@rid': '#157:106045',
-            createdAt: 1775068561621,
-            break1Start: {
-              pos: 411,
-              refAA: 'D',
-              '@class': 'ProteinPosition',
-            },
-            updatedBy: mockUser,
-            createdBy: mockUser,
-            displayName: 'PPP2R2A:p.D411N',
-            reference1: {
-              displayName: 'PPP2R2A',
-              '@class': 'Feature',
-              '@rid': '#128:89338',
-            },
-            untemplatedSeq: 'N',
-            refSeq: 'D',
-            type: {
-              displayName: 'missense',
-              '@class': 'Vocabulary',
-              '@rid': '#145:31',
-            },
-            break1Repr: 'p.D411',
-            updatedAt: 1775068561621,
-            reference2: null,
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => []),
+      http.gkb.get('/api/positionalvariants/157:106045', () => HttpResponse.json({
+        result: {
+          '@class': 'PositionalVariant',
+          '@rid': '#157:106045',
+          createdAt: 1775068561621,
+          break1Start: {
+            pos: 411,
+            refAA: 'D',
+            '@class': 'ProteinPosition',
           },
-        })),
-      ],
-    },
+          updatedBy: mockUser,
+          createdBy: mockUser,
+          displayName: 'PPP2R2A:p.D411N',
+          reference1: {
+            displayName: 'PPP2R2A',
+            '@class': 'Feature',
+            '@rid': '#128:89338',
+          },
+          untemplatedSeq: 'N',
+          refSeq: 'D',
+          type: {
+            displayName: 'missense',
+            '@class': 'Vocabulary',
+            '@rid': '#145:31',
+          },
+          break1Repr: 'p.D411',
+          updatedAt: 1775068561621,
+          reference2: null,
+        },
+      })),
+    );
   },
 });
 
@@ -207,79 +196,77 @@ export const ViewStatement = meta.story({
     path: '/view/Statement/157:106045',
     auth: { hasWriteAccess: true },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => []),
-        http.gkb.get('/api/statements/157:106045', () => HttpResponse.json({
-          result: {
-            updatedBy: mockUser,
-            evidence: [
-              {
-                displayName: 'FDA approves pembrolizumab for adults and children with TMB-H solid tumors',
-                '@rid': '#114:57',
-                '@class': 'CuratedContent',
-              },
-            ],
-            source: { '@rid': '#111:777', name: 'civic' },
-            sourceId: '12345',
-            subject: {
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => []),
+      http.gkb.get('/api/statements/157:106045', () => HttpResponse.json({
+        result: {
+          updatedBy: mockUser,
+          evidence: [
+            {
+              displayName: 'FDA approves pembrolizumab for adults and children with TMB-H solid tumors',
+              '@rid': '#114:57',
+              '@class': 'CuratedContent',
+            },
+          ],
+          source: { '@rid': '#111:777', name: 'civic' },
+          sourceId: '12345',
+          subject: {
+            displayName: 'pembrolizumab [DB09037]',
+            '@rid': '#122:30774',
+            '@class': 'Therapy',
+          },
+          displayNameTemplate: '{conditions:variant} is associated with {relevance} to {subject} in {conditions:disease} ({evidence}) ({evidenceLevel})',
+          history: '#153:14996',
+          relevance: {
+            displayName: 'sensitivity',
+            '@rid': '#148:34',
+            '@class': 'Vocabulary',
+          },
+          createdAt: 1659547281858,
+          reviews: [
+            {
+              createdAt: 1659547281859,
+              createdBy: mockUser['@rid'],
+              comment: '',
+              status: 'initial',
+              '@class': 'StatementReview',
+              '@rid': null,
+            },
+          ],
+          createdBy: mockUser,
+          comment: 'for the treatment of adult and pediatric patients with unresectable or metastatic tumor mutational burden-high (tmb-h) [≥10 mutations/megabase (mut/mb)] solid tumors, as determined by an fda-approved test, that have progressed following prior treatment and who have no satisfactory alternative treatment options.',
+          reviewStatus: 'passed',
+          conditions: [
+            {
               displayName: 'pembrolizumab [DB09037]',
               '@rid': '#122:30774',
               '@class': 'Therapy',
             },
-            displayNameTemplate: '{conditions:variant} is associated with {relevance} to {subject} in {conditions:disease} ({evidence}) ({evidenceLevel})',
-            history: '#153:14996',
-            relevance: {
-              displayName: 'sensitivity',
-              '@rid': '#148:34',
-              '@class': 'Vocabulary',
+            {
+              displayName: 'all solid tumors',
+              '@rid': '#133:21363',
+              '@class': 'Disease',
             },
-            createdAt: 1659547281858,
-            reviews: [
-              {
-                createdAt: 1659547281859,
-                createdBy: mockUser['@rid'],
-                comment: '',
-                status: 'initial',
-                '@class': 'StatementReview',
-                '@rid': null,
-              },
-            ],
-            createdBy: mockUser,
-            comment: 'for the treatment of adult and pediatric patients with unresectable or metastatic tumor mutational burden-high (tmb-h) [≥10 mutations/megabase (mut/mb)] solid tumors, as determined by an fda-approved test, that have progressed following prior treatment and who have no satisfactory alternative treatment options.',
-            reviewStatus: 'passed',
-            conditions: [
-              {
-                displayName: 'pembrolizumab [DB09037]',
-                '@rid': '#122:30774',
-                '@class': 'Therapy',
-              },
-              {
-                displayName: 'all solid tumors',
-                '@rid': '#133:21363',
-                '@class': 'Disease',
-              },
-              {
-                displayName: 'high mutation burden high signature',
-                '@rid': '#161:920',
-                '@class': 'CategoryVariant',
-              },
-            ],
-            evidenceLevel: [
-              {
-                displayName: 'IPR-A',
-                '@rid': '#108:30',
-                '@class': 'EvidenceLevel',
-              },
-            ],
-            updatedAt: 1700759163483,
-            '@rid': '#153:14338',
-            '@class': 'Statement',
-          },
-        })),
-      ],
-    },
+            {
+              displayName: 'high mutation burden high signature',
+              '@rid': '#161:920',
+              '@class': 'CategoryVariant',
+            },
+          ],
+          evidenceLevel: [
+            {
+              displayName: 'IPR-A',
+              '@rid': '#108:30',
+              '@class': 'EvidenceLevel',
+            },
+          ],
+          updatedAt: 1700759163483,
+          '@rid': '#153:14338',
+          '@class': 'Statement',
+        },
+      })),
+    );
   },
 });
 
@@ -288,13 +275,11 @@ export const ViewStatementNotFound = meta.story({
     path: '/view/Statement/157:106045',
     auth: { hasWriteAccess: true },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => []),
-        http.gkb.get('/api/statements/:rid', () => HttpResponse.json({ message: 'query expected 1 records but only found 0', name: 'NoRecordFoundError' }, { status: 404 })),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => []),
+      http.gkb.get('/api/statements/:rid', () => HttpResponse.json({ message: 'query expected 1 records but only found 0', name: 'NoRecordFoundError' }, { status: 404 })),
+    );
   },
 });
 
@@ -332,13 +317,10 @@ EditStatement.test('can add review', async ({ canvas, userEvent }) => {
 
 export const EditStatementErrorDeleting = ViewStatement.extend({
   args: { path: '/edit/Statement/157:106045' },
-  parameters: {
-    msw: {
-      handlers: [
-        ...ViewStatement.input.parameters.msw.handlers,
-        http.gkb.delete('/api/statements/:rid', () => HttpResponse.json({ message: 'Insufficient permissions to delete record.' }, { status: 403 })),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.delete('/api/statements/:rid', () => HttpResponse.json({ message: 'Insufficient permissions to delete record.' }, { status: 403 })),
+    );
   },
   play: async ({ canvas, userEvent, step }) => {
     await hasFinishedLoading({ canvas, step });
@@ -382,69 +364,64 @@ const featureRecord = {
 
 export const ViewFeatureWithRelated = meta.story({
   args: { path: '/view/Feature/128:30382' },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((body) => {
-          if (body.target === 'Statement') {
-            return [
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query((body) => {
+      if (body.target === 'Statement') {
+        return [
+          {
+            '@class': 'Statement',
+            '@rid': '#153:5652',
+            conditions: [
               {
-                '@class': 'Statement',
-                '@rid': '#153:5652',
-                conditions: [
-                  {
-                    displayName: 'acute myeloid leukemia [DOID:9119]',
-                  },
-                  {
-                    displayName: 'DNMT3A',
-                  },
-                  {
-                    displayName: 'DNMT3A:p.R882C',
-                  },
-                ],
-                evidence: [
-                  {
-                    displayName: 'pmid:21518476',
-                  },
-                ],
-                relevance: {
-                  displayName: 'loss of function',
-                },
-                subject: {
-                  displayName: 'DNMT3A',
-                },
-                reviewStatus: 'passed',
-              },
-            ];
-          }
-          if (body.target === 'Variant') {
-            return [
-              {
-                '@class': 'PositionalVariant',
-                '@rid': '#157:466',
-                displayName: 'DNMT3A:p.R882G',
+                displayName: 'acute myeloid leukemia [DOID:9119]',
               },
               {
-                '@class': 'PositionalVariant',
-                '@rid': '#157:489',
-                displayName: 'DNMT3A:p.S714X',
+                displayName: 'DNMT3A',
               },
               {
-                '@class': 'PositionalVariant',
-                '@rid': '#160:5446',
-                displayName: 'DNMT3A:p.R882H',
+                displayName: 'DNMT3A:p.R882C',
               },
-            ];
-          }
-          if (Array.isArray(body.target) && body.target[0] === '#128:30382') {
-            return [featureRecord];
-          }
-          return [];
-        }),
-        http.gkb.get('/api/features/128:30382', () => HttpResponse.json({
-          result: featureRecord,
-        })),
-      ],
-    },
+            ],
+            evidence: [
+              {
+                displayName: 'pmid:21518476',
+              },
+            ],
+            relevance: {
+              displayName: 'loss of function',
+            },
+            subject: {
+              displayName: 'DNMT3A',
+            },
+            reviewStatus: 'passed',
+          },
+        ];
+      }
+      if (body.target === 'Variant') {
+        return [
+          {
+            '@class': 'PositionalVariant',
+            '@rid': '#157:466',
+            displayName: 'DNMT3A:p.R882G',
+          },
+          {
+            '@class': 'PositionalVariant',
+            '@rid': '#157:489',
+            displayName: 'DNMT3A:p.S714X',
+          },
+          {
+            '@class': 'PositionalVariant',
+            '@rid': '#160:5446',
+            displayName: 'DNMT3A:p.R882H',
+          },
+        ];
+      }
+      if (Array.isArray(body.target) && body.target[0] === '#128:30382') {
+        return [featureRecord];
+      }
+      return [];
+    }), http.gkb.get('/api/features/128:30382', () => HttpResponse.json({
+      result: featureRecord,
+    })));
   },
 });

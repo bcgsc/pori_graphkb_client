@@ -24,12 +24,8 @@ const meta = preview.meta({
     getQueryBody: () => ({}),
     label: 'Users',
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [bob, alice]),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query(() => [bob, alice]));
   },
 });
 

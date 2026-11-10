@@ -140,10 +140,11 @@ export const NewPositionalVariant = meta.story({
   args: {
     path: '/new/PositionalVariant',
   },
-  parameters: {
-    msw: {
-      handlers: [variantQuery, ...mockCreate('/api/positionalvariants', '#50:1', [...VOCABULARY, ...FEATURES])],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      variantQuery,
+      ...mockCreate('/api/positionalvariants', '#50:1', [...VOCABULARY, ...FEATURES]),
+    );
   },
 });
 
@@ -251,20 +252,15 @@ export const NewStatement = meta.story({
   args: {
     path: '/new/statement',
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((payload) => {
-          // to prevent other records causing validation error when running `checkLogicalStatement`
-          if (payload.queryType === 'similarTo') {
-            return [];
-          }
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query((payload) => {
+      // to prevent other records causing validation error when running `checkLogicalStatement`
+      if (payload.queryType === 'similarTo') {
+        return [];
+      }
 
-          return STATEMENT_LINKABLE_RECORDS;
-        }),
-        ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS),
-      ],
-    },
+      return STATEMENT_LINKABLE_RECORDS;
+    }), ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS));
   },
 });
 
@@ -315,17 +311,15 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
   args: {
     path: '/new/AliasOf',
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [{ '@rid': '#111:111', '@class': 'Ontology' }, { '@rid': '#222:222', '@class': 'Ontology' }]),
-        http.gkb.post('/api/aliasof', async () => {
-          // delay so the in-progress (disabled) submit button always renders, which drops its focus
-          await delay(100);
-          return HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 });
-        }),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => [{ '@rid': '#111:111', '@class': 'Ontology' }, { '@rid': '#222:222', '@class': 'Ontology' }]),
+      http.gkb.post('/api/aliasof', async () => {
+        // delay so the in-progress (disabled) submit button always renders, which drops its focus
+        await delay(100);
+        return HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 });
+      }),
+    );
   },
   play: async ({ canvas, step, userEvent }) => {
     await hasFinishedLoading({ canvas, step });

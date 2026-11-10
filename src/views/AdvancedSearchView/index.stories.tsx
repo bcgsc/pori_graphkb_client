@@ -10,16 +10,12 @@ export const Default = meta.story({
   args: {
     path: '/query-advanced',
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [
-          {
-            '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
-          },
-        ]),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query(() => [
+      {
+        '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
+      },
+    ]));
   },
 });
 

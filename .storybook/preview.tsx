@@ -2,14 +2,14 @@ import './preview.css';
 import type { UserEventObject } from 'storybook/test';
 import React, { Suspense, useEffect } from 'react';
 import ThemeProvider from '../src/theme';
-import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
+import addonMsw from 'msw-storybook-addon';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '../src/static/graphkb-env-config';
 import { HttpResponse, ResponseResolverInfo, http as httpBase, isCommonAssetRequest } from 'msw';
+import { setupWorker } from 'msw/browser';
 import { GeneralRecordType, QueryBody } from '../src/components/types';
 import { Decorator, definePreview, StoryObj } from '@storybook/react-vite';
 import addonTest from '@storybook/addon-vitest';
-import { MswParameters } from 'msw-storybook-addon'
 import { Canvas, PreviewAddon } from 'storybook/internal/csf';
 import { AppRoutes } from '../src/views/MainView';
 import { MemoryRouter, useLocation } from 'react-router';
@@ -59,11 +59,9 @@ export const http = {
   }
 }
 
-// see https://github.com/mswjs/msw-storybook-addon/issues/180
-try {
-  getWorker();
-} catch (_) {
-  initialize({
+const setupMsw = async () => {
+  const worker = setupWorker();
+  await worker.start({
     onUnhandledRequest: (request, print) => {
       if (request.url.startsWith(window._env_.API_BASE_URL) && !isCommonAssetRequest(request)) {
         print.error();
@@ -72,17 +70,14 @@ try {
     quiet: typeof process !== 'undefined' && process.env
       ? process.env.NODE_ENV === 'test' || process.env.CI === 'true'
       : false,
-  })
-}
+  });
+  return worker;
+};
 
 const snapshotAddon = () => ({}) as PreviewAddon<{ parameters: { snapshot?: boolean } }>;
 
-const addonMsw = () => ({}) as PreviewAddon<{
-  parameters: MswParameters
-}>;
-
 const preview = definePreview({
-  addons: [addonTest(), addonMsw(), snapshotAddon()],
+  addons: [addonTest(), addonMsw(setupMsw), snapshotAddon()],
   parameters: {
     snapshot: true,
   },
@@ -92,7 +87,7 @@ const preview = definePreview({
       return <QueryClientProvider client={context.loaded.queryClient}><Story /></QueryClientProvider>
     }
   ],
-  loaders: [mswLoader, () => ({ queryClient: new QueryClient({ defaultOptions: { queries: { retry: false } } }) })],
+  loaders: [() => ({ queryClient: new QueryClient({ defaultOptions: { queries: { retry: false } } }) })],
 });
 
 export async function hasFinishedLoading({
@@ -208,9 +203,9 @@ export const view = {
   play: hasFinishedLoading,
   parameters: {
     layout: 'fullscreen' as const,
-    msw: {
-      handlers: [http.gkb.query(() => [])]
-    }
+  },
+  beforeEach({ msw }) {
+    msw.use( http.gkb.query(() => []));
   },
   decorators: [withSnackbar, withAuth, withRouter],
 }

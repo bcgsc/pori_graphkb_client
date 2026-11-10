@@ -1,5 +1,5 @@
 import './preview.css';
-import type { UserEventObject } from 'storybook/test';
+import { UserEventObject, fn } from 'storybook/test';
 import React, { Suspense, useEffect } from 'react';
 import ThemeProvider from '../src/theme';
 import addonMsw from 'msw-storybook-addon';
@@ -44,14 +44,16 @@ export const http = {
         return wrapAsResponse(await resolver(info));
       })
     },
-    post: (url: `/api/${string}`, resolver: (body: any, info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
+    post: (url: `/api/${string}`, resolver: (body: any, info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>, spy?: ReturnType<typeof fn>) => {
       return httpBase.post(`${window._env_.API_BASE_URL}${url}`, async (info) => {
         const body = await info.request.clone().json();
+        spy?.('POST', url, body);
         return wrapAsResponse(await resolver(body, info));
       })
     },
-    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
+    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>, spy?: ReturnType<typeof fn>) => {
       return httpBase.delete(`${window._env_.API_BASE_URL}${url}`, async (info) => {
+        spy?.('DELETE', url);
         return wrapAsResponse(await resolver(info));
       })
     },
@@ -180,7 +182,7 @@ export const withRouter: Decorator<WithRouterArgs> = (Story, { args }) => {
   )
 }
 
-type ViewArgs  = WithAuthArgs & WithRouterArgs;
+type ViewArgs  = WithAuthArgs & WithRouterArgs & { onRequestSpy?: ReturnType<typeof fn> };
 
 export interface ViewPreviewType {
   args: ViewArgs;
@@ -199,6 +201,9 @@ function View() {
 }
 
 export const view = {
+  args: {
+    onRequestSpy: fn(),
+  },
   component: View,
   play: hasFinishedLoading,
   parameters: {

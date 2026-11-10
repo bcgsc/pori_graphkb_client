@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite';
 import { delay, HttpResponse } from 'msw';
 import {
-  expect, screen, waitFor,
+  expect, fn, screen, waitFor,
 } from 'storybook/test';
 
 import { GeneralRecordType } from '@/components/types';
@@ -91,7 +91,7 @@ const linkedRecord = (linkable: GeneralRecordType[], ridOrRids: unknown) => {
  * Mocks creating a record and then fetching it (ex. after the redirect to its view).
  * The fetched record is built from what was posted, with links resolved to the mock records.
  */
-function mockCreate(route: `/api/${string}`, rid: string, linkableRecords: GeneralRecordType[]) {
+function mockCreate(route: `/api/${string}`, rid: string, linkableRecords: GeneralRecordType[], onRequestSpy?: ReturnType<typeof fn>) {
   let created: Record<string, unknown> | undefined;
   const linkable = [...linkableRecords, DEFAULT_USER_RECORD];
 
@@ -99,7 +99,7 @@ function mockCreate(route: `/api/${string}`, rid: string, linkableRecords: Gener
     http.gkb.post(route, (body) => {
       created = { ...body, '@rid': rid };
       return { result: created };
-    }),
+    }, onRequestSpy),
     http.gkb.get(`${route}/:rid`, () => {
       if (!created) {
         return HttpResponse.json({ message: 'record has not been created', name: 'NoRecordFoundError' }, { status: 404 });
@@ -140,10 +140,10 @@ export const NewPositionalVariant = meta.story({
   args: {
     path: '/new/PositionalVariant',
   },
-  beforeEach({ msw }) {
+  beforeEach({ msw, args }) {
     msw.use(
       variantQuery,
-      ...mockCreate('/api/positionalvariants', '#50:1', [...VOCABULARY, ...FEATURES]),
+      ...mockCreate('/api/positionalvariants', '#50:1', [...VOCABULARY, ...FEATURES], args.onRequestSpy),
     );
   },
 });
@@ -230,9 +230,23 @@ export const NewPositionalVariantOther = NewPositionalVariant.extend({
 });
 
 NewPositionalVariantOther.test('submitting the filled out form shows the created variant with the entered values', async (context) => {
-  const { canvas } = context;
+  const { canvas, args } = context;
 
   await submitAndWaitForView(context);
+  await expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/positionalvariants', expect.objectContaining({
+    '@class': 'PositionalVariant',
+    break1Start: {
+      '@class': 'GenomicPosition',
+      pos: '10',
+    },
+    type: '#111:333',
+    reference1: '#21:1',
+    displayName: null,
+    break2Start: {
+      '@class': 'GenomicPosition',
+      pos: '15',
+    },
+  }));
 
   await expect(canvas.findByText('deletion (#111:333)')).resolves.toBeInTheDocument();
   await expect(canvas.findByText('KRAS (#21:1)')).resolves.toBeInTheDocument();
@@ -252,7 +266,7 @@ export const NewStatement = meta.story({
   args: {
     path: '/new/statement',
   },
-  beforeEach({ msw }) {
+  beforeEach({ msw, args }) {
     msw.use(http.gkb.query((payload) => {
       // to prevent other records causing validation error when running `checkLogicalStatement`
       if (payload.queryType === 'similarTo') {
@@ -260,11 +274,11 @@ export const NewStatement = meta.story({
       }
 
       return STATEMENT_LINKABLE_RECORDS;
-    }), ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS));
+    }), ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS, args.onRequestSpy));
   },
 });
 
-NewStatement.test('on submit sets reviewStatus as initial and adds empty review if left blank', async ({ canvas, userEvent }) => {
+NewStatement.test('on submit sets reviewStatus as initial and adds empty review if left blank', async ({ canvas, userEvent, args }) => {
   async function selectFromAutocomplete(label: RegExp, value: string) {
     const input = await canvas.findByLabelText(label);
     await userEvent.type(input, value[0]);
@@ -280,9 +294,28 @@ NewStatement.test('on submit sets reviewStatus as initial and adds empty review 
   expect(submitBtn).toBeEnabled();
 
   await userEvent.click(submitBtn);
+  await expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/statements', expect.objectContaining({
+    relevance: '#90:32',
+    subject: '#20:20',
+    conditions: [
+      '#11:11',
+    ],
+    evidence: [
+      '#12:23',
+    ],
+    displayNameTemplate: '{subject} is {relevance} ({evidence})',
+    '@class': 'Statement',
+    reviewStatus: 'initial',
+    reviews: [
+      {
+        status: 'initial',
+        comment: '',
+        createdBy: '#1:1',
+      },
+    ],
+  }));
 
   await expect(canvas.findByText('Statement #111:111')).resolves.toBeInTheDocument();
-  // check initial review was sent and added
   await expect(canvas.findByLabelText(/reviewstatus/i)).resolves.toHaveTextContent('initial');
   await expect(canvas.findByText('bmonkeys (#1:1)')).resolves.toBeInTheDocument();
 });

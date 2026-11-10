@@ -125,6 +125,13 @@ interface WithAuthArgs {
   auth?: Omit<Partial<AuthContextState>, 'user'> & { user?: Partial<AuthContextState['user']> };
 }
 
+export const DEFAULT_USER_RECORD = {
+  signedLicenseAt: new Date(2020, 0, 1).getTime(),
+  name: 'bmonkeys',
+  groups: [],
+  '@rid': '#1:1',
+}
+
 export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
     const auth = args.auth;
     const authState: AuthContextState = {
@@ -136,13 +143,10 @@ export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
       hasWriteAccess: false,
       error: undefined,
       ...auth,
-      user: auth?.user === null ? undefined : {
-        signedLicenseAt: new Date(2020, 0, 1).getTime(),
-        name: 'bmonkeys',
-        groups: [],
-        '@rid': '#1:1',
-        ...auth?.user
-      },
+        user: auth?.user === null ? undefined : {
+          ...DEFAULT_USER_RECORD,
+          ...auth?.user
+        },
     }
     return (
           <AuthContext.Provider value={authState}>

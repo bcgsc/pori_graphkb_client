@@ -11,7 +11,7 @@ import preview, {
   view, ViewPreviewType,
 } from '#.storybook/preview';
 
-const meta = preview.type<ViewPreviewType>().meta({ ...view });
+const meta = preview.type<ViewPreviewType>().meta({ ...view, title: 'Views/NewRecordView' });
 
 export const NewSource = meta.story({
   args: {

@@ -27,7 +27,7 @@ const meta = preview.type<ViewPreviewType>().meta({
         http.gkb.get('/api/license', () => ({
           enactedAt: new Date(2000, 0, 1).getTime(),
           content: [
-            { label: 'Term A', content: 'You must provide free oranges for the team.' },
+            { id: 'term-a', label: 'Term A', content: 'You must provide free oranges for the team.' },
           ],
         })),
         http.gkb.query(() => []),

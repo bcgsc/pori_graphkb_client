@@ -3587,7 +3587,7 @@ exports[`TermsTab snapshot 1`] = `
                   class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
                   <a
-                    href="about/terms#undefined"
+                    href="about/terms#term-a"
                   >
                     Term A
                   </a>
@@ -3598,6 +3598,7 @@ exports[`TermsTab snapshot 1`] = `
           <div>
             <h3
               class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="term-a"
             >
               Term A
             </h3>
@@ -3785,7 +3786,7 @@ exports[`TermsTabSigned snapshot 1`] = `
                   class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
                   <a
-                    href="about/terms#undefined"
+                    href="about/terms#term-a"
                   >
                     Term A
                   </a>
@@ -3796,6 +3797,7 @@ exports[`TermsTabSigned snapshot 1`] = `
           <div>
             <h3
               class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="term-a"
             >
               Term A
             </h3>

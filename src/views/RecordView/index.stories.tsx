@@ -1,9 +1,12 @@
 import { HttpResponse } from 'msw';
-import { expect, screen } from 'storybook/test';
+import {
+  expect, screen, waitFor, within,
+} from 'storybook/test';
 
 import preview, {
   hasFinishedLoading,
   http,
+  selectOption,
   view, ViewPreviewType,
 } from '#.storybook/preview';
 
@@ -16,6 +19,28 @@ const mockUser = {
   '@rid': '#1:1',
 };
 
+const aliasOfRecord = {
+  createdAt: 1774995410545,
+  in: {
+    displayName: 'amsa/5-aza-dcyd [c10098]',
+    '@rid': '#124:31764',
+    '@class': 'Therapy',
+  },
+  createdBy: mockUser,
+  source: {
+    displayName: 'NCIt',
+    '@rid': '#40:3',
+    '@class': 'Source',
+  },
+  out: {
+    displayName: 'amsa/dac [c10098]',
+    '@rid': '#121:23',
+    '@class': 'Therapy',
+  },
+  '@rid': '#65:69073',
+  '@class': 'AliasOf',
+};
+
 export const ViewAliasOf = meta.story({
   args: {
     path: '/view/AliasOf/65:69073',
@@ -24,33 +49,25 @@ export const ViewAliasOf = meta.story({
   parameters: {
     msw: {
       handlers: [
-        http.gkb.query(() => []),
+        http.gkb.query((body) => {
+          if (Array.isArray(body.target) && body.target[0] === '#65:69073') {
+            return [aliasOfRecord];
+          }
+          return [];
+        }),
         http.gkb.get('/api/aliasof/65:69073', () => HttpResponse.json({
-          result: {
-            createdAt: 1774995410545,
-            in: {
-              displayName: 'amsa/5-aza-dcyd [c10098]',
-              '@rid': '#124:31764',
-              '@class': 'Therapy',
-            },
-            createdBy: mockUser,
-            source: {
-              displayName: 'NCIt',
-              '@rid': '#40:3',
-              '@class': 'Source',
-            },
-            out: {
-              displayName: 'amsa/dac [c10098]',
-              '@rid': '#121:23',
-              '@class': 'Therapy',
-            },
-            '@rid': '#65:69073',
-            '@class': 'AliasOf',
-          },
+          result: aliasOfRecord,
         })),
       ],
     },
   },
+});
+
+ViewAliasOf.test('clicking graph button opens graph view', async ({ canvas, userEvent }) => {
+  await userEvent.click(await canvas.findByText(/graph/i));
+  await expect(await canvas.findByText(/aliasof/i)).toBeInTheDocument();
+  // one of the buttons that's only visible in graph view
+  await expect(await canvas.findByLabelText(/rerun layout/i)).toBeInTheDocument();
 });
 
 export const ViewAliasOfOptionalFieldsExpanded = ViewAliasOf.extend({
@@ -291,6 +308,26 @@ export const ViewStatementOptionalFieldsExpanded = ViewStatement.extend({
 
 export const EditStatement = ViewStatement.extend({
   args: { path: '/edit/Statement/157:106045' },
+});
+
+EditStatement.test('can add review', async ({ canvas, userEvent }) => {
+  await userEvent.click(await canvas.findByText(/add review/i));
+  const dialog = await screen.findByRole('dialog');
+  await waitFor(() => expect(dialog).toBeVisible());
+  // try clicking add and show does not submit without status
+  await userEvent.click(await within(dialog).findByText(/add review/i));
+  await expect(await within(dialog).findByText(/Required Value/i)).toBeInTheDocument();
+  await expect(await within(dialog).findByText(/add review/i)).toBeDisabled();
+  await userEvent.type(await within(dialog).findByLabelText(/comment/i), 'test comment');
+  await selectOption(within(dialog), userEvent, /status/i, /passed/i);
+  await userEvent.click(await within(dialog).findByText(/add review/i));
+  // overall status and chip
+  await expect(await canvas.findByLabelText(/reviewstatus/i)).toHaveTextContent('passed');
+  await userEvent.click(await canvas.findByText(/bmonkeys/i));
+  // chip popup
+  await expect(await screen.findByText(/statement review/i)).toBeInTheDocument();
+  await expect(await screen.findByText(/test comment/i)).toBeInTheDocument();
+  await expect(await screen.findByText(/created by bmonkeys/i)).toBeInTheDocument();
 });
 
 export const EditStatementErrorDeleting = ViewStatement.extend({

@@ -1,6 +1,6 @@
 import './preview.css';
 import type { UserEventObject } from 'storybook/test';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import ThemeProvider from '../src/theme';
 import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -12,7 +12,7 @@ import addonTest from '@storybook/addon-vitest';
 import { MswParameters } from 'msw-storybook-addon'
 import { Canvas, PreviewAddon } from 'storybook/internal/csf';
 import { AppRoutes } from '../src/views/MainView';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor, screen } from 'storybook/test';
@@ -151,17 +151,34 @@ export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
     )
 };
 
-interface WithRouterArgs {
-  path?: string;
+
+interface LocationSpyProps {
+  onLocationChange?: (location: { pathname: string; search: string }, state: { state: unknown }) => void
 }
+
+function LocationSpy({ onLocationChange }: LocationSpyProps) {
+  const location = useLocation();
+  useEffect(() => {
+    onLocationChange?.({
+      search: location.search,
+      pathname: location.pathname,
+    }, { state: location.state });
+  }, [location, onLocationChange]);
+  return null;
+}
+
+type WithRouterArgs = {
+  path?: string;
+} & LocationSpyProps;
 
 export const withRouter: Decorator<WithRouterArgs> = (Story, { args }) => {
   const { path = '/' } = args;
-    return (
-      <MemoryRouter initialEntries={[path]}>
-        <Story />
-      </MemoryRouter>
-    )
+  return (
+    <MemoryRouter initialEntries={[path]}>
+      <LocationSpy onLocationChange={args.onLocationChange} />
+      <Story />
+    </MemoryRouter>
+  )
 }
 
 type ViewArgs  = WithAuthArgs & WithRouterArgs;

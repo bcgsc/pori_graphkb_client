@@ -92,7 +92,7 @@ const getQueryProperties = (className) => {
 function getEdges(): string[];
 
 /**
- * Returns a list of edges extracted from the node based on the valid edge class names.
+ * Returns edges with undefined deletedAt extracted from the node based on valid edge class names.
  * @param {Object} node - Object to retrieve edges from if input.
  */
 function getEdges(node: null): string[];
@@ -107,11 +107,9 @@ function getEdges<R extends GeneralRecordType>(node: R | null = null) {
     Object.keys(node)
       .filter((key) => key.split('_')[1] && list.includes(key.split('_')[1]))
       .forEach((key) => {
-        if (node[key].deletedAt === undefined || null) {
-          edges.push(...node[key]);
-        }
+        edges.push(...node[key]);
       });
-    return edges;
+    return edges.filter((edge) => edge.deletedAt === undefined);
   }
 
   return list;

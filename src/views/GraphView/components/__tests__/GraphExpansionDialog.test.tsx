@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import {
   describe, expect, test, vi,
 } from 'vitest';
-
-import testSchema from '@/services/schema';
 
 import GraphExpansionDialog from '../GraphComponent/GraphExpansionDialog/GraphExpansionDialog';
 
@@ -25,6 +24,41 @@ const testNode = {
 };
 
 describe('<GraphExpansionDialog />', () => {
+  test('excludes deleted edges with missing endpoints while allowing active edges to be staged', async () => {
+    const user = userEvent.setup();
+    const onStage = vi.fn();
+    const node = { '@rid': '#1:1', '@class': 'Disease' };
+    const target = { '@rid': '#1:2', '@class': 'Disease', name: 'Active neighbor' };
+
+    render(
+      <GraphExpansionDialog
+        node={{
+          ...node,
+          in_AliasOf: [
+            { '@rid': '#2:1', '@class': 'AliasOf', deletedAt: 123456789 },
+            {
+              '@rid': '#2:2', '@class': 'AliasOf', in: node, out: target,
+            },
+          ],
+          out_GeneralizationOf: [
+            { '@rid': '#3:1', '@class': 'GeneralizationOf', deletedAt: 123456789 },
+          ],
+        }}
+        onClose={vi.fn()}
+        onExpand={vi.fn()}
+        onStage={onStage}
+        onStageAll={vi.fn()}
+        onStageClass={vi.fn()}
+        open
+      />,
+    );
+
+    expect(screen.queryByRole('button', { name: 'GeneralizationOf' })).toBeNull();
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    await user.click(screen.getByText('Active neighbor'));
+    expect(onStage).toHaveBeenCalledWith('#2:2');
+  });
+
   test('does not crash', async () => {
     render(
       <GraphExpansionDialog
@@ -35,7 +69,6 @@ describe('<GraphExpansionDialog />', () => {
         onStageAll={vi.fn()}
         onStageClass={vi.fn()}
         open
-        schema={testSchema}
       />,
     );
 

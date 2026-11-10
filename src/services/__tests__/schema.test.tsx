@@ -39,6 +39,29 @@ describe('schema service', () => {
       };
       expect(testSchema.getEdges(testNode)).toEqual(['inalias', 'outalias', 'ingeneralization']);
     });
+
+    test.each(['in_AliasOf', 'out_AliasOf', 'in_GeneralizationOf'])(
+      'filters individual deleted edges from %s without changing the node',
+      (key) => {
+        const activeEdge = { '@rid': '#1:1' };
+        const undefinedDeletedAtEdge = { '@rid': '#1:2', deletedAt: undefined };
+        const deletedEdge = { '@rid': '#1:3', deletedAt: 123456789 };
+        const zeroDeletedAtEdge = { '@rid': '#1:4', deletedAt: 0 };
+        const edges = [deletedEdge, activeEdge, zeroDeletedAtEdge, undefinedDeletedAtEdge];
+        const node = { [key]: edges };
+
+        expect(testSchema.getEdges(node)).toEqual([activeEdge, undefinedDeletedAtEdge]);
+        expect(node[key]).toEqual([deletedEdge, activeEdge, zeroDeletedAtEdge, undefinedDeletedAtEdge]);
+      },
+    );
+
+    test('returns no edges when all edges are deleted or lists are empty', () => {
+      expect(testSchema.getEdges({
+        in_AliasOf: [{ '@rid': '#1:1', deletedAt: 123456789 }],
+        out_AliasOf: [],
+        out_GeneralizationOf: [{ '@rid': '#1:2', deletedAt: 123456789 }],
+      })).toEqual([]);
+    });
   });
 
   describe('getLabel/getPreview tests', () => {

@@ -34,24 +34,25 @@ function wrapAsResponse<T extends Record<string, any> | any[]>(maybeResponse: T 
 }
 
 type AllowedResponse = Record<string, any> | any[] | HttpResponse<any>;
+type MaybePromise<T> = T | Promise<T>;
 
 export const http = {
   ...httpBase,
   gkb: {
-    get: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => AllowedResponse) => {
-      return httpBase.get(`${window._env_.API_BASE_URL}${url}`, (info) => {
-        return wrapAsResponse(resolver(info));
+    get: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
+      return httpBase.get(`${window._env_.API_BASE_URL}${url}`, async (info) => {
+        return wrapAsResponse(await resolver(info));
       })
     },
-    post: (url: `/api/${string}`, resolver: (body: any, info: ResponseResolverInfo<any>) => AllowedResponse) => {
+    post: (url: `/api/${string}`, resolver: (body: any, info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
       return httpBase.post(`${window._env_.API_BASE_URL}${url}`, async (info) => {
         const body = await info.request.clone().json();
-        return wrapAsResponse(resolver(body, info));
+        return wrapAsResponse(await resolver(body, info));
       })
     },
-    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => AllowedResponse) => {
+    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
       return httpBase.delete(`${window._env_.API_BASE_URL}${url}`, async (info) => {
-        return wrapAsResponse(resolver(info));
+        return wrapAsResponse(await resolver(info));
       })
     },
     query: (resolver: (body: QueryBody) => (HttpResponse<Partial<GeneralRecordType>> | HttpResponse<{ message?: string }> | Partial<GeneralRecordType>[])) => http.gkb.post('/api/query', resolver)
@@ -93,12 +94,27 @@ const preview = definePreview({
   loaders: [mswLoader, () => ({ queryClient: new QueryClient({ defaultOptions: { queries: { retry: false } } }) })],
 });
 
-export async function hasFinishedLoading({ step, canvas }: Pick<Parameters<NonNullable<StoryObj['play']>>[0], 'step' | 'canvas'>) {
+export async function hasFinishedLoading({
+  step,
+  canvas,
+  // must exceed the longest debounce that can trigger a fetch (e.g. ag-grid blocks, search inputs)
+  settleMs = 500,
+}: Pick<Parameters<NonNullable<StoryObj['play']>>[0], 'step' | 'canvas'> & { settleMs?: number }) {
   await step('Finished Loading', async () => {
+    let idleSince: number | null = null;
     await waitFor(async () => {
-      await expect(canvas.queryAllByRole('progressbar'), 'has no progress bars').toHaveLength(0);
-      await expect(canvas.queryAllByText(/loading\.\.\./i), 'has no loading messages').toHaveLength(0);
-    }, { timeout: 30000 });
+      const progressBars = canvas.queryAllByRole('progressbar');
+      // ag-grid's screen-reader announcement can retain stale "Loading..." text after rows load
+      const loadingMessages = canvas.queryAllByText(/loading\.\.\./i, { ignore: 'script, style, .ag-aria-description-container' });
+      if (progressBars.length || loadingMessages.length) {
+        idleSince = null;
+      } else {
+        idleSince ??= Date.now();
+      }
+      await expect(progressBars, 'has no progress bars').toHaveLength(0);
+      await expect(loadingMessages, 'has no loading messages').toHaveLength(0);
+      await expect(Date.now() - idleSince!, 'loading state has settled').toBeGreaterThanOrEqual(settleMs);
+    }, { timeout: 30000, interval: 50 });
   });
 }
 

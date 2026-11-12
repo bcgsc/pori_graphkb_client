@@ -52,6 +52,8 @@ export const WithDetailsOpen = WithRows.extend({
     await hasFinishedLoading({ canvas, step });
     await userEvent.click(await canvas.findByText('source 1234'));
     await expect(await canvas.findByText('immunotherapy (#111:111)')).toBeInTheDocument();
+    // the drawer title renders from row data before the details query (and footer spinner) finishes
+    await hasFinishedLoading({ canvas, step });
   },
 });
 

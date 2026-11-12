@@ -22,7 +22,7 @@ const today = format(new Date(), 'yyyy-MM-dd');
  *
  * for that reason this helper will replace any generated classnames, ids, uuids,
  * relative dates, current dates etc. and omit style attributes entirely
- * 
+ *
  * @param {string} value - the string to normalize
  */
 function replaceNonDeterministicValues(value) {
@@ -74,6 +74,43 @@ expect.addSnapshotSerializer({
 });
 
 const annotations = setProjectAnnotations([previewAnnotations]);
+
+const createStorage = () => {
+  const store = new Map();
+
+  return {
+    getItem: (key) => (store.has(key) ? store.get(key) : null),
+    setItem: (key, value) => {
+      store.set(key, String(value));
+    },
+    removeItem: (key) => {
+      store.delete(key);
+    },
+    clear: () => {
+      store.clear();
+    },
+    key: (index) => Array.from(store.keys())[index] ?? null,
+    get length() {
+      return store.size;
+    },
+  };
+};
+
+if (!window.localStorage) {
+  Object.defineProperty(window, 'localStorage', {
+    value: createStorage(),
+    configurable: true,
+    writable: true,
+  });
+}
+
+if (!globalThis.localStorage) {
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: window.localStorage,
+    configurable: true,
+    writable: true,
+  });
+}
 
 beforeAll(annotations.beforeAll);
 

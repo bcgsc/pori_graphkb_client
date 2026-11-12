@@ -236,7 +236,7 @@ export const ViewStatement = meta.story({
           ],
           createdBy: mockUser,
           comment: 'for the treatment of adult and pediatric patients with unresectable or metastatic tumor mutational burden-high (tmb-h) [≥10 mutations/megabase (mut/mb)] solid tumors, as determined by an fda-approved test, that have progressed following prior treatment and who have no satisfactory alternative treatment options.',
-          reviewStatus: 'passed',
+          reviewStatus: 'initial',
           conditions: [
             {
               displayName: 'pembrolizumab [DB09037]',

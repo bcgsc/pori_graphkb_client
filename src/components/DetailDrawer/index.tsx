@@ -118,6 +118,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       if (type === 'embeddedset' || type === 'linkset') {
         const formattedSetProps = (
           <SetPropsList
+            key={name}
             handleExpand={handleExpand}
             identifiers={identifiers}
             opened={opened}
@@ -130,6 +131,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         const linkEmbeddedProps = (
           <LinkEmbeddedPropList
+            key={name}
             // eslint-disable-next-line no-use-before-define
             formatOtherProps={formatOtherProps}
             handleExpand={handleExpand}
@@ -148,6 +150,7 @@ function DetailDrawer(props: DetailDrawerProps) {
       }
       return (
         <TextRow
+          key={prop.name}
           handleExpand={handleExpand}
           isNested={isNested}
           isStatic

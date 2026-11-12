@@ -80,9 +80,9 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
       open={helpOpen}
     >
       <DialogTitle className="help-title">
-        <Typography variant="h5">
+        <span>
           {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
-        </Typography>
+        </span>
         <IconButton onClick={handleHelpClose}>
           <CloseIcon />
         </IconButton>
@@ -129,7 +129,7 @@ function GraphOptionsPanel(props: GraphOptionsPanelProps) {
           <CloseIcon />
         </IconButton>
         <DialogTitle className="options-title">
-          <Typography variant="h6">Graph Options</Typography>
+          <span>Graph Options</span>
           <IconButton
             color="primary"
             data-testid="main-help-btn"

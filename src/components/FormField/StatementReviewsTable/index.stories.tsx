@@ -47,12 +47,10 @@ export const WithValue = meta.story({
       },
     ],
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((body) => [{ '@class': 'User', '@rid': body.target as string, name: 'bob' }]),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query((body) => [{ '@class': 'User', '@rid': body.target as string, name: 'bob' }]),
+    );
   },
   play: async ({ canvas }) => {
     await expect(canvas.getByText('Reviews')).toBeTruthy();

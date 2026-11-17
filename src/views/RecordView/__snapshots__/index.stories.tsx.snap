@@ -4503,7 +4503,7 @@ exports[`EditStatement snapshot 1`] = `
                       <span
                         class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                       >
-                        passed
+                        initial
                       </span>
                       <p
                         class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
@@ -4516,7 +4516,7 @@ exports[`EditStatement snapshot 1`] = `
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
                     name="reviewStatus"
                     tabindex="-1"
-                    value="passed"
+                    value="initial"
                   />
                   <svg
                     aria-hidden="true"
@@ -6308,7 +6308,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                       <span
                         class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                       >
-                        passed
+                        initial
                       </span>
                       <p
                         class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
@@ -6321,7 +6321,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
                     name="reviewStatus"
                     tabindex="-1"
-                    value="passed"
+                    value="initial"
                   />
                   <svg
                     aria-hidden="true"
@@ -16135,7 +16135,7 @@ exports[`ViewStatement snapshot 1`] = `
                       <span
                         class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                       >
-                        passed
+                        initial
                       </span>
                       <p
                         class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
@@ -16148,7 +16148,7 @@ exports[`ViewStatement snapshot 1`] = `
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
                     name="reviewStatus"
                     tabindex="-1"
-                    value="passed"
+                    value="initial"
                   />
                   <span
                     class="MuiSelect-icon MuiSelect-iconStandard css-XXXX-MuiNativeSelect-root-MuiSelect-icon"
@@ -17467,7 +17467,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                       <span
                         class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
                       >
-                        passed
+                        initial
                       </span>
                       <p
                         class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
@@ -17480,7 +17480,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                     class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
                     name="reviewStatus"
                     tabindex="-1"
-                    value="passed"
+                    value="initial"
                   />
                   <span
                     class="MuiSelect-icon MuiSelect-iconStandard css-XXXX-MuiNativeSelect-root-MuiSelect-icon"

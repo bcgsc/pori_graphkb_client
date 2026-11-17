@@ -1,18 +1,18 @@
 import './preview.css';
-import type { UserEventObject } from 'storybook/test';
-import React, { Suspense } from 'react';
+import { UserEventObject, fn } from 'storybook/test';
+import React, { Suspense, useEffect } from 'react';
 import ThemeProvider from '../src/theme';
-import { initialize, mswLoader, getWorker } from 'msw-storybook-addon'
+import addonMsw from 'msw-storybook-addon';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '../src/static/graphkb-env-config';
 import { HttpResponse, ResponseResolverInfo, http as httpBase, isCommonAssetRequest } from 'msw';
+import { setupWorker } from 'msw/browser';
 import { GeneralRecordType, QueryBody } from '../src/components/types';
 import { Decorator, definePreview, StoryObj } from '@storybook/react-vite';
 import addonTest from '@storybook/addon-vitest';
-import { MswParameters } from 'msw-storybook-addon'
 import { Canvas, PreviewAddon } from 'storybook/internal/csf';
 import { AppRoutes } from '../src/views/MainView';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 import { SnackbarProvider } from 'notistack';
 import { AuthContext, AuthContextState } from '../src/components/Auth';
 import { expect, waitFor, screen } from 'storybook/test';
@@ -44,14 +44,16 @@ export const http = {
         return wrapAsResponse(await resolver(info));
       })
     },
-    post: (url: `/api/${string}`, resolver: (body: any, info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
+    post: (url: `/api/${string}`, resolver: (body: any, info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>, spy?: ReturnType<typeof fn>) => {
       return httpBase.post(`${window._env_.API_BASE_URL}${url}`, async (info) => {
         const body = await info.request.clone().json();
+        spy?.('POST', url, body);
         return wrapAsResponse(await resolver(body, info));
       })
     },
-    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>) => {
+    delete: (url: `/api/${string}`, resolver: (info: ResponseResolverInfo<any>) => MaybePromise<AllowedResponse>, spy?: ReturnType<typeof fn>) => {
       return httpBase.delete(`${window._env_.API_BASE_URL}${url}`, async (info) => {
+        spy?.('DELETE', url);
         return wrapAsResponse(await resolver(info));
       })
     },
@@ -59,29 +61,25 @@ export const http = {
   }
 }
 
-// see https://github.com/mswjs/msw-storybook-addon/issues/180
-try {
-  getWorker();
-} catch (_) {
-  initialize({
+const setupMsw = async () => {
+  const worker = setupWorker();
+  await worker.start({
     onUnhandledRequest: (request, print) => {
       if (request.url.startsWith(window._env_.API_BASE_URL) && !isCommonAssetRequest(request)) {
         print.error();
       }
     },
-    // @ts-expect-error
-    quiet: import.meta.env.CI === 'true',
-  })
-}
+    quiet: typeof process !== 'undefined' && process.env
+      ? process.env.NODE_ENV === 'test' || process.env.CI === 'true'
+      : false,
+  });
+  return worker;
+};
 
 const snapshotAddon = () => ({}) as PreviewAddon<{ parameters: { snapshot?: boolean } }>;
 
-const addonMsw = () => ({}) as PreviewAddon<{
-  parameters: MswParameters
-}>;
-
 const preview = definePreview({
-  addons: [addonTest(), addonMsw(), snapshotAddon()],
+  addons: [addonTest(), addonMsw(setupMsw), snapshotAddon()],
   parameters: {
     snapshot: true,
   },
@@ -91,7 +89,7 @@ const preview = definePreview({
       return <QueryClientProvider client={context.loaded.queryClient}><Story /></QueryClientProvider>
     }
   ],
-  loaders: [mswLoader, () => ({ queryClient: new QueryClient({ defaultOptions: { queries: { retry: false } } }) })],
+  loaders: [() => ({ queryClient: new QueryClient({ defaultOptions: { queries: { retry: false } } }) })],
 });
 
 export async function hasFinishedLoading({
@@ -124,6 +122,13 @@ interface WithAuthArgs {
   auth?: Omit<Partial<AuthContextState>, 'user'> & { user?: Partial<AuthContextState['user']> };
 }
 
+export const DEFAULT_USER_RECORD = {
+  signedLicenseAt: new Date(2020, 0, 1).getTime(),
+  name: 'bmonkeys',
+  groups: [],
+  '@rid': '#1:1',
+}
+
 export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
     const auth = args.auth;
     const authState: AuthContextState = {
@@ -135,13 +140,10 @@ export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
       hasWriteAccess: false,
       error: undefined,
       ...auth,
-      user: auth?.user === null ? undefined : {
-        signedLicenseAt: new Date(2020, 0, 1).getTime(),
-        name: 'bmonkeys',
-        groups: [],
-        '@rid': '#1:1',
-        ...auth?.user
-      },
+        user: auth?.user === null ? undefined : {
+          ...DEFAULT_USER_RECORD,
+          ...auth?.user
+        },
     }
     return (
           <AuthContext.Provider value={authState}>
@@ -150,20 +152,37 @@ export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
     )
 };
 
-interface WithRouterArgs {
-  path?: string;
+
+interface LocationSpyProps {
+  onLocationChange?: (location: { pathname: string; search: string }, state: { state: unknown }) => void
 }
+
+function LocationSpy({ onLocationChange }: LocationSpyProps) {
+  const location = useLocation();
+  useEffect(() => {
+    onLocationChange?.({
+      search: location.search,
+      pathname: location.pathname,
+    }, { state: location.state });
+  }, [location, onLocationChange]);
+  return null;
+}
+
+type WithRouterArgs = {
+  path?: string;
+} & LocationSpyProps;
 
 export const withRouter: Decorator<WithRouterArgs> = (Story, { args }) => {
   const { path = '/' } = args;
-    return (
-      <MemoryRouter initialEntries={[path]}>
-        <Story />
-      </MemoryRouter>
-    )
+  return (
+    <MemoryRouter initialEntries={[path]}>
+      <LocationSpy onLocationChange={args.onLocationChange} />
+      <Story />
+    </MemoryRouter>
+  )
 }
 
-type ViewArgs  = WithAuthArgs & WithRouterArgs;
+type ViewArgs  = WithAuthArgs & WithRouterArgs & { onRequestSpy?: ReturnType<typeof fn> };
 
 export interface ViewPreviewType {
   args: ViewArgs;
@@ -182,13 +201,16 @@ function View() {
 }
 
 export const view = {
+  args: {
+    onRequestSpy: fn(),
+  },
   component: View,
   play: hasFinishedLoading,
   parameters: {
     layout: 'fullscreen' as const,
-    msw: {
-      handlers: [http.gkb.query(() => [])]
-    }
+  },
+  beforeEach({ msw }) {
+    msw.use( http.gkb.query(() => []));
   },
   decorators: [withSnackbar, withAuth, withRouter],
 }

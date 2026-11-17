@@ -12,12 +12,11 @@ const meta = preview.meta({
     linkedClassName: 'Variant',
     isMulti: false,
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [{ '@rid': '#15:1' }, { '@rid': '#15:2' }, { '@rid': '#15:3' }]),
-      ],
-    },
+
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => [{ '@rid': '#15:1' }, { '@rid': '#15:2' }, { '@rid': '#15:3' }]),
+    );
   },
 });
 

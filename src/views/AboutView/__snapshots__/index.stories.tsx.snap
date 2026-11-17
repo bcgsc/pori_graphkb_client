@@ -2067,6 +2067,10 @@ exports[`GettingStartedTab snapshot 1`] = `
               class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
             >
               For this example we are attempting to input the following. There is a clinical trial with the trial id NCT0444444 (Fictional trial ID). This trial requires participants to have mutations in the gene EGFR for Eligibility. It also requires the patients to be diagnosed with Lung Adenocarcinoma. Decomposed this becomes
+            </p>
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+            >
               <li
                 class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
               >
@@ -2139,7 +2143,7 @@ exports[`GettingStartedTab snapshot 1`] = `
                   </p>
                 </div>
               </li>
-            </p>
+            </ul>
           </div>
           <div
             class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
@@ -2392,68 +2396,64 @@ exports[`GettingStartedTab snapshot 1`] = `
                 alt="Graph Node Actions"
                 src="/src/static/images/graph-actions.png"
               />
-              <p
-                class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              <ul
+                class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
               >
-                <ul
-                  class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
                 >
-                  <li
-                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
                   >
-                    <div
-                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      <span
-                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Expand
-                      </span>
-                      <p
-                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Expand the record to view its related records
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                      Expand
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      Expand the record to view its related records
+                    </p>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                >
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
                   >
-                    <div
-                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      <span
-                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Hide
-                      </span>
-                      <p
-                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Hide the record from the graph
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                      Hide
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      Hide the record from the graph
+                    </p>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                >
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
                   >
-                    <div
-                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      <span
-                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Details
-                      </span>
-                      <p
-                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        View record details in a side drawer
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </p>
+                      Details
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      View record details in a side drawer
+                    </p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -3587,7 +3587,7 @@ exports[`TermsTab snapshot 1`] = `
                   class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
                   <a
-                    href="about/terms#undefined"
+                    href="about/terms#term-a"
                   >
                     Term A
                   </a>
@@ -3598,6 +3598,7 @@ exports[`TermsTab snapshot 1`] = `
           <div>
             <h3
               class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="term-a"
             >
               Term A
             </h3>
@@ -3785,7 +3786,7 @@ exports[`TermsTabSigned snapshot 1`] = `
                   class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
                   <a
-                    href="about/terms#undefined"
+                    href="about/terms#term-a"
                   >
                     Term A
                   </a>
@@ -3796,6 +3797,7 @@ exports[`TermsTabSigned snapshot 1`] = `
           <div>
             <h3
               class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="term-a"
             >
               Term A
             </h3>

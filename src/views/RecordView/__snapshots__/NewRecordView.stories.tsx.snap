@@ -3661,7 +3661,7 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                           >
-                            fusion (111:111)
+                            fusion (#111:111)
                           </span>
                           <svg
                             aria-hidden="true"
@@ -3861,7 +3861,7 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                               >
-                                KRAS (21:1)
+                                KRAS (#21:1)
                               </span>
                               <svg
                                 aria-hidden="true"
@@ -4181,7 +4181,7 @@ exports[`NewPositionalVariantFusion snapshot 1`] = `
                               <span
                                 class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                               >
-                                NTRK1 (21:2)
+                                NTRK1 (#21:2)
                               </span>
                               <svg
                                 aria-hidden="true"
@@ -5097,7 +5097,7 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                           >
-                            deletion (111:333)
+                            deletion (#111:333)
                           </span>
                           <svg
                             aria-hidden="true"
@@ -5291,7 +5291,7 @@ exports[`NewPositionalVariantOther snapshot 1`] = `
                             <span
                               class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                             >
-                              KRAS (21:1)
+                              KRAS (#21:1)
                             </span>
                             <svg
                               aria-hidden="true"
@@ -6243,7 +6243,7 @@ exports[`NewPositionalVariantSubstitution snapshot 1`] = `
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                           >
-                            substitution (111:222)
+                            substitution (#111:222)
                           </span>
                           <svg
                             aria-hidden="true"
@@ -8365,7 +8365,7 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                           >
-                            Ontology (111:111)
+                            Ontology (#111:111)
                           </span>
                           <svg
                             aria-hidden="true"
@@ -8530,7 +8530,7 @@ exports[`NewRelationshipAliasOfErrorAfterSubmit snapshot 1`] = `
                           <span
                             class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
                           >
-                            Ontology (222:222)
+                            Ontology (#222:222)
                           </span>
                           <svg
                             aria-hidden="true"

@@ -2,11 +2,14 @@
 import './index.scss';
 
 import {
+  Dialog,
+  DialogContent,
   TextField,
 } from '@mui/material';
 import { omit } from 'lodash';
 import React, {
-  useCallback, useEffect, useState, useTransition,
+  ReactNode,
+  useCallback, useEffect, useMemo, useState, useTransition,
 } from 'react';
 
 import DropDownSelect from '@/components/DropDownSelect';
@@ -16,7 +19,11 @@ import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';
 
+import { useAuth } from '../Auth';
 import { LayoutItem } from '../FormLayout';
+import RadioSelect from '../RadioSelect';
+import RecordForm from '../RecordForm';
+import type { GeneralRecordType } from '../types';
 import BooleanField from './BooleanField';
 import EmbeddedForm from './EmbeddedForm';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
@@ -39,9 +46,7 @@ export function useFormField(name: string, options?: { label?: string, disabled?
   const label = options?.label ?? modelLabel;
   const example = examples?.[0];
 
-  const formValue = form.content[name];
-  const [value, setValue] = useState(formValue);
-  useEffect(() => setValue(formValue), [formValue]);
+  const value = form.content[name];
 
   const generated = Boolean(model.generated && form.variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && form.variant !== FORM_VARIANT.SEARCH);
@@ -90,6 +95,131 @@ export function useFormField(name: string, options?: { label?: string, disabled?
     value,
     hide: shouldHideField(form.variant, model, value),
   };
+}
+
+function LinkableFormField(props: ReturnType<typeof useFormField>['props'] & { model: ReturnType<typeof useFormField>['model'] }) {
+  const {
+    model, name, onChange, value, ...rest
+  } = props;
+  const auth = useAuth();
+  const {
+    linkedClass: linkedClassName,
+    type = 'string',
+  } = model;
+  const linkedClass = schemaDefn.get(linkedClassName, false);
+  const allowCreate = linkedClass?.allowCreateInPopup && auth.hasWriteAccess;
+  const [createDialogModelName, setCreateDialogModelName] = useState<string | null>(null);
+  const createModel = schemaDefn.get(createDialogModelName || 'V', false);
+  const createAbstractDialogChoices = useMemo(() => {
+    if (!createModel?.isAbstract) return [];
+    return schemaDefn.descendants(createModel.name, { excludeAbstract: true, includeSelf: true }).filter((name) => schemaDefn.get(name).allowCreateInPopup).map((name) => ({
+      label: name,
+      value: name,
+      caption: schemaDefn.get(name).description,
+      key: name,
+    })).sort((m1, m2) => m1.label.localeCompare(m2.label));
+  }, [createModel]);
+  const handleOpenCreateDialog = useCallback((modelName?: string) => {
+    setCreateDialogModelName(modelName ?? linkedClass?.name ?? null);
+  }, [linkedClass?.name]);
+
+  const handleProcessCreatedRecord = useCallback((newRecord: GeneralRecordType | undefined) => {
+    // append the newly created record to the field value
+    if (type === 'linkset') {
+      if (!value?.length) {
+        onChange({ target: { name, value: [newRecord] } });
+      } else {
+        onChange({ target: { name, value: [...value, newRecord] } });
+      }
+    } else {
+      onChange({ target: { name, value: newRecord } });
+    }
+    setCreateDialogModelName(null);
+  }, [type, value, onChange, name]);
+
+  let propComponent: ReactNode;
+  const autoProps = {
+    ...rest,
+    onChange,
+    value,
+    name,
+    allowCreate,
+    isMulti: type === 'linkset',
+  } satisfies SharedProps<[React.ComponentProps<typeof FilteredRecordAutocomplete>, React.ComponentProps<typeof RecordAutocomplete>]>;
+
+  if (linkedClass && linkedClass.isAbstract && !(rest.readOnly || rest.disabled)) {
+    const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
+      ...autoProps,
+      linkedClassName: linkedClass.name,
+      filterOptions: model.componentProps?.filterOptions,
+      defaultFilterClassName: model.componentProps?.defaultFilterClassName,
+    };
+
+    propComponent = (
+      <FilteredRecordAutocomplete
+        {...filteredAutoProps}
+        onCreate={handleOpenCreateDialog}
+      />
+    );
+  } else if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
+    propComponent = (
+      <RecordAutocomplete
+        {...autoProps}
+        getQueryBody={() => ({
+          target: `${linkedClass.name}`,
+          orderBy: linkedClass.name === 'EvidenceLevel'
+            ? ['source.sort', 'sourceId']
+            : ['name'],
+          neighbors: 1,
+        })}
+        onCreate={handleOpenCreateDialog}
+        singleLoad
+      />
+    );
+  } else {
+    propComponent = (
+      <RecordAutocomplete
+        {...autoProps}
+        getQueryBody={api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'))}
+        onCreate={handleOpenCreateDialog}
+      />
+    );
+  }
+
+  return (
+    <>
+      {propComponent}
+      {Boolean(createDialogModelName) && createModel?.isAbstract && (
+        <Dialog
+          fullWidth
+          maxWidth="md"
+          onClose={() => setCreateDialogModelName(null)}
+          open
+          slotProps={{ paper: { 'aria-label': 'Choose a record type to create' } }}
+        >
+          <DialogContent>
+            <RadioSelect
+              onChange={(e) => {
+                setCreateDialogModelName(e.target.value as string);
+              }}
+              options={createAbstractDialogChoices}
+              value=""
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+      {Boolean(createDialogModelName) && !createModel?.isAbstract && (
+        <RecordForm
+          formType="dialog"
+          modelName={createDialogModelName!}
+          onClose={() => setCreateDialogModelName(null)}
+          onSubmit={handleProcessCreatedRecord}
+          open
+          variant={FORM_VARIANT.NEW}
+        />
+      )}
+    </>
+  );
 }
 
 interface FormFieldProps {
@@ -154,7 +284,7 @@ const FormField = ({
     value,
   };
 
-  let propComponent;
+  let propComponent: ReactNode;
 
   if (type === 'boolean') {
     propComponent = (
@@ -204,46 +334,12 @@ const FormField = ({
       />
     );
   } else if (type === 'link' || type === 'linkset') {
-    const autoProps = {
-      ...sharedProps,
-      isMulti: type === 'linkset',
-    } satisfies SharedProps<[React.ComponentProps<typeof FilteredRecordAutocomplete>, React.ComponentProps<typeof RecordAutocomplete>]>;
-
-    if (linkedClass && linkedClass.isAbstract && !(field.props.readOnly || field.props.disabled)) {
-      const filteredAutoProps: React.ComponentProps<typeof FilteredRecordAutocomplete> = {
-        ...autoProps,
-        linkedClassName: linkedClass.name,
-        filterOptions: field.model.componentProps?.filterOptions,
-        defaultFilterClassName: field.model.componentProps?.defaultFilterClassName,
-      };
-
-      propComponent = (
-        <FilteredRecordAutocomplete
-          {...filteredAutoProps}
-        />
-      );
-    } else if (linkedClass && ['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
-      propComponent = (
-        <RecordAutocomplete
-          {...autoProps}
-          getQueryBody={() => ({
-            target: `${linkedClass.name}`,
-            orderBy: linkedClass.name === 'EvidenceLevel'
-              ? ['source.sort', 'sourceId']
-              : ['name'],
-            neighbors: 1,
-          })}
-          singleLoad
-        />
-      );
-    } else {
-      propComponent = (
-        <RecordAutocomplete
-          {...autoProps}
-          getQueryBody={api.getDefaultSuggestionQueryBody(linkedClass ?? schemaDefn.get('V'))}
-        />
-      );
-    }
+    propComponent = (
+      <LinkableFormField
+        {...field.props}
+        model={field.model}
+      />
+    );
   } else if (type === 'long' && (['createdAt', 'deletedAt', 'updatedAt'].includes(name) || format === 'date')) {
     // timestamp type component
     propComponent = (

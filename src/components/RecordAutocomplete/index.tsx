@@ -82,6 +82,8 @@ interface RecordAutocompleteProps {
   value?: unknown[] | unknown;
   readOnly?: boolean;
   startAdornment?: React.ReactNode;
+  onCreate?: (modelName?: string) => unknown;
+  allowCreate?: boolean;
 }
 
 /**
@@ -104,8 +106,11 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
     value,
     readOnly,
     startAdornment,
+    onCreate,
+    allowCreate: allowCreateProp = false,
   } = props;
   const disabled = disabledProp && !readOnly;
+  const allowCreate = Boolean(allowCreateProp && onCreate);
 
   const [searchTerm, setSearchTerm] = useState('');
   const selectedValues = useMemo(() => getAsArray(value), [value]);
@@ -167,15 +172,17 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   const handleChange = useCallback<NonNullable<AutocompleteProps<GeneralRecordType, true, false, false, any>['onChange']>>(
     (e, newValue, actionType, details) => {
       if (readOnly) return;
-      const { option } = details ?? {};
+      const option = (details?.option ?? {}) as { isNew?: boolean; };
 
-      if (actionType === 'selectOption' && !isMulti) {
+      if ((option as any)?.isNew) {
+        onCreate?.();
+      } else if (actionType === 'selectOption' && !isMulti) {
         onChange?.({ target: { name, value: option } });
       } else if (actionType !== 'blur') {
         onChange?.({ target: { name, value: isMulti ? newValue : (newValue[0] ?? null) } });
       }
     },
-    [isMulti, name, onChange, readOnly],
+    [isMulti, name, onChange, onCreate, readOnly],
   );
 
   const handleInputChange = useCallback((e, newSearchTerm) => {
@@ -198,18 +205,31 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
   );
 
   const filterOptions = useCallback((opts, { inputValue }) => {
+    let filtered = opts;
+
     if (singleLoad) {
-      return opts.filter((option) => [
+      filtered = opts.filter((option) => [
         option.name,
         option.sourceId,
         option.displayName,
       ].some(
         (tgt) => tgt && tgt.toLowerCase().includes(inputValue.toLowerCase()),
       ));
+    } else {
+      filtered = [...opts];
     }
 
-    return opts;
-  }, [singleLoad]);
+    if (inputValue !== '' && allowCreate && !isLoading && enabled) {
+      filtered.push({
+        inputValue,
+        displayName: `Add "${inputValue}"`,
+        isNew: true,
+        '@rid': '',
+      });
+    }
+
+    return filtered;
+  }, [singleLoad, allowCreate, isLoading, enabled]);
 
   return (
     <Autocomplete
@@ -247,10 +267,10 @@ const RecordAutocomplete = (props: RecordAutocompleteProps) => {
           helperText={helperText}
           label={label}
           placeholder={
-                (disabled || selectedValues.length)
-                  ? ''
-                  : placeholder
-              }
+            (disabled || selectedValues.length)
+              ? ''
+              : placeholder
+          }
           required={required}
           slotProps={{
             inputLabel: {

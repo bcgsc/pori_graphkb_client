@@ -12,10 +12,12 @@ import ActionButton from '@/components/ActionButton';
 import DropDownSelect from '@/components/DropDownSelect';
 import FormField from '@/components/FormField';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
+import { ComparisonOperator } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
+import { VerboseFilterType } from '../useFilterGroups';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
 
 const propertySort = ({ label: label1 }, { label: label2 }) => {
@@ -69,7 +71,7 @@ const constructOperatorOptions = ({ iterable, type, name }: Partial<SchemaProper
 interface PropertyFilterProps {
   /** name of target model of query */
   modelName: string;
-  onSubmit: (result: unknown) => void;
+  onSubmit: (result: VerboseFilterType) => void;
 }
 
 /**
@@ -91,7 +93,7 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
     value: '=',
     label: '=',
   }]);
-  const [operator, setOperator] = useState('=');
+  const [operator, setOperator] = useState<ComparisonOperator>('=');
   const [subqueryType, setSubqueryType] = useState<'' | 'keyword' | 'tree'>('');
   const [canSubquery, setCanSubquery] = useState(false);
   const [keywordTarget, setKeywordTarget] = useState('');
@@ -237,7 +239,7 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
 
   const handleAddFilter = useCallback(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
-    const result = {
+    const result: VerboseFilterType = {
       attr: property,
       value: form.content[fieldName],
       operator,
@@ -246,6 +248,10 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
     };
 
     if (subqueryType === 'keyword') {
+      if (operator !== '=' && operator !== 'CONTAINSTEXT') {
+        throw new Error(`Invalid keyword search operator: ${operator}`);
+      }
+
       result.query = {
         operator: originalPropertyModel?.iterable
           ? 'CONTAINSANY'
@@ -320,7 +326,7 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
               <DropDownSelect
                 aria-label="Operator"
                 disabled={!property || operatorChoices.length < 2}
-                onChange={({ target: { value: newValue } }) => setOperator(newValue)}
+                onChange={({ target: { value: newValue } }) => setOperator(newValue as ComparisonOperator)}
                 options={operatorChoices}
                 value={operator}
               />

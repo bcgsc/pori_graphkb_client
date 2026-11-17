@@ -75,32 +75,128 @@ interface EdgeType extends GeneralRecordType<'@rid'> {
   source: GeneralRecordType<'@rid' | '@class'>;
 }
 
-interface FilterType {
-  query?: unknown;
-  AND?: FilterType[];
-  OR?: FilterType[];
-  [key: string]: unknown;
+type RecordId = string;
+
+type QueryTarget = string | RecordId[] | SubQuery | FixedSubQuery;
+
+export type ComparisonOperator =
+  | 'CONTAINS'
+  | 'CONTAINSALL'
+  | 'CONTAINSANY'
+  | 'CONTAINSTEXT'
+  | '='
+  | '>'
+  | '>='
+  | 'IN'
+  | 'INSTANCEOF'
+  | 'IS'
+  | '<'
+  | '<=';
+
+type FilterValue =
+  | boolean
+  | string
+  | string[]
+  | number
+  | number[]
+  | null
+  | FixedSubQuery
+  | SubQuery;
+
+type Comparison = {
+  operator?: ComparisonOperator;
+  negate?: boolean;
+  AND?: never;
+  OR?: never;
+} & {
+  [property: string]: FilterValue | undefined;
+};
+
+type FilterType =
+  | Comparison
+  | { AND: FilterType[]; OR?: never }
+  | { OR: FilterType[]; AND?: never };
+
+type NeighborhoodDirection = 'out' | 'in' | 'both';
+
+type QueryEdge =
+  | 'AliasOf'
+  | 'Cites'
+  | 'CrossReferenceOf'
+  | 'DeprecatedBy'
+  | 'ElementOf'
+  | 'GeneralizationOf'
+  | 'Infers'
+  | 'SubClassOf'
+  | 'TargetOf'
+  | 'OppositeOf';
+
+interface KeywordQuery {
+  keyword: string;
+  queryType: 'keyword';
+  target: string;
+  operator?: '=' | 'CONTAINSTEXT';
+}
+
+interface DisplayNameQuery {
+  keyword: string;
+  queryType: 'displayName';
+  target: string;
+}
+
+interface NeighborhoodQuery {
+  queryType: 'neighborhood';
+  target: QueryTarget;
+  filters: FilterType;
+  depth?: number;
+  direction?: NeighborhoodDirection;
+  edges?: QueryEdge[];
+}
+
+interface TreeQuery {
+  queryType: 'ancestors' | 'descendants';
+  target: string | RecordId[];
+  filters?: FilterType;
+  disambiguate?: boolean;
+  edges?: QueryEdge[];
+}
+
+interface SimilarityQuery {
+  queryType: 'similarTo';
+  target: QueryTarget;
+  edges?: QueryEdge[];
+  treeEdges?: QueryEdge[];
+}
+
+type FixedSubQuery =
+  | KeywordQuery
+  | DisplayNameQuery
+  | NeighborhoodQuery
+  | TreeQuery
+  | SimilarityQuery;
+
+interface SubQuery {
+  target: QueryTarget;
+  queryType?: never;
+  keyword?: never;
+  filters?: FilterType | FilterType[];
+}
+
+interface QueryOptions<ReqFields extends string = string> {
+  count?: boolean;
+  limit?: number;
+  skip?: number | null;
+  orderBy?: string[] | string;
+  orderByDirection?: 'DESC' | 'ASC';
+  returnProperties?: ReqFields[];
+  neighbors?: number;
+  history?: boolean;
 }
 
 /**
- * body of request sent to /query endpoint
+ * body of a request sent to the /query endpoint
  */
-interface QueryBody<ReqFields extends string = string> {
-  queryType?: string;
-  target?: {
-    queryType: string;
-    target: string;
-    filters: FilterType;
-  } | string[] | string,
-  filters?: FilterType | FilterType[];
-  returnProperties?: ReqFields[];
-  neighbors?: number;
-  limit?: number;
-  skip?: number;
-  orderBy?: string[] | string;
-  orderByDirection?: 'DESC' | 'ASC';
-  count?: boolean;
-}
+type QueryBody<ReqFields extends string = string> = QueryOptions<ReqFields> & (SubQuery | FixedSubQuery);
 
 export type {
   EdgeType,

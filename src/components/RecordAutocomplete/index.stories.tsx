@@ -21,7 +21,7 @@ const meta = preview.meta({
   args: {
     onChange: fn(),
     name: 'fieldName',
-    getQueryBody: () => ({}),
+    getQueryBody: () => ({ target: 'User' }),
     label: 'Users',
   },
   beforeEach({ msw }) {

@@ -108,17 +108,14 @@ const del = (endpoint: string) => {
  * @param {ClassModel} model the schema model to use to generate the search function
  * @returns the function to retrieve the query request body based on some input text
  */
-const getDefaultSuggestionQueryBody = (model) => (textInput) => {
-  let body: Record<string, unknown> = {};
-
+const getDefaultSuggestionQueryBody = (model) => (textInput: string): QueryBody => {
   if (util.looksLikeRID(textInput)) {
-    body = {
+    return {
       target: [textInput],
     };
-    return body;
   }
 
-  body = {
+  const body: QueryBody = {
     queryType: 'keyword',
     target: `${model.name}`,
     keyword: textInput,

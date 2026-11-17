@@ -38,7 +38,7 @@ const getQueryFromSearch = (search: string): { payload: QueryBody, modelName: st
   }
   const routeName = '/query';
 
-  let payload: QueryBody = {};
+  let payload: QueryBody = { target: schema.get(modelName).name };
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search

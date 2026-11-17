@@ -1,11 +1,55 @@
-import { describe, expect, test } from 'vitest';
+import {
+  describe, expect, expectTypeOf, test,
+} from 'vitest';
+
+import { FilterType, QueryBody } from '@/components/types';
 
 import api from '..';
 
 describe('api methods test', () => {
+  test('query body types require the fields of each query variant', () => {
+    expectTypeOf<{ target: string }>().toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ target: string[] }>().toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ target: string; queryType: 'keyword'; keyword: string }>().toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ target: string; queryType: 'displayName'; keyword: string }>().toMatchTypeOf<QueryBody>();
+    expectTypeOf<{
+      queryType: 'similarTo';
+      target: { queryType: 'ancestors'; target: string; filters: { name: string } };
+    }>().toMatchTypeOf<QueryBody>();
+    expectTypeOf<{
+      queryType: 'neighborhood';
+      target: string;
+      filters: { name: string };
+    }>().toMatchTypeOf<QueryBody>();
+
+    expectTypeOf<Record<string, never>>().not.toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ queryType: 'keyword'; target: string }>().not.toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ queryType: 'displayName'; target: string[]; keyword: string }>().not.toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ queryType: 'neighborhood'; target: string }>().not.toMatchTypeOf<QueryBody>();
+    expectTypeOf<{ queryType: 'unknown'; target: string }>().not.toMatchTypeOf<QueryBody>();
+  });
+
+  test('filter types support comparisons and nested clauses', () => {
+    expectTypeOf<{ score: number[] }>().toMatchTypeOf<FilterType>();
+    expectTypeOf<{ active: boolean; negate: true }>().toMatchTypeOf<FilterType>();
+    expectTypeOf<{ value: null; operator: 'IS' }>().toMatchTypeOf<FilterType>();
+    expectTypeOf<{
+      AND: [{ score: number[] }, { OR: [{ name: string }, { name: string }] }];
+    }>().toMatchTypeOf<FilterType>();
+    expectTypeOf<{
+      conditions: { queryType: 'keyword'; target: string; keyword: string; operator: 'CONTAINSTEXT' };
+    }>().toMatchTypeOf<FilterType>();
+    expectTypeOf<{ score: { arbitrary: string } }>().not.toMatchTypeOf<FilterType>();
+    expectTypeOf<{ AND: number[] }>().not.toMatchTypeOf<FilterType>();
+    expectTypeOf<{ AND: [{ name: string }]; OR: [{ name: string }] }>().not.toMatchTypeOf<FilterType>();
+    expectTypeOf<{
+      conditions: { queryType: 'keyword'; target: string; keyword: string; operator: 'IN' };
+    }>().not.toMatchTypeOf<FilterType>();
+  });
+
   describe('getSearchFromQuery', () => {
     test('complex keyword search', () => {
-      const payload = {
+      const payload: QueryBody = {
         target: 'Disease',
         queryType: 'keyword',
         keyword: 'kras',
@@ -18,7 +62,7 @@ describe('api methods test', () => {
     });
 
     test('keyword search with additional params', () => {
-      const payload = {
+      const payload: QueryBody = {
         keyword: 'kras',
         target: 'Disease',
         queryType: 'keyword',
@@ -34,7 +78,7 @@ describe('api methods test', () => {
     });
 
     test('complex query', () => {
-      const payload = {
+      const payload: QueryBody = {
         target: 'Statement',
         filters: {
           OR: [
@@ -65,6 +109,14 @@ describe('api methods test', () => {
   });
 
   describe('getQueryFromSearch', () => {
+    test('uses the selected model as the target when there is no complex query', () => {
+      expect(api.getQueryFromSearch('class=Disease')).toEqual({
+        payload: { target: 'Disease' },
+        routeName: '/query',
+        modelName: 'Disease',
+      });
+    });
+
     test('search', () => {
       const payload = {
         target: 'Disease',

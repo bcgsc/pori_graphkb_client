@@ -1,18 +1,23 @@
 import { produce } from 'immer';
 import { useCallback, useState } from 'react';
 
-import { FilterType } from '@/components/types';
+import { FilterType, QueryBody } from '@/components/types';
 
 /**
  * Unlike cleaning record links, cannot assume there are no intermediary
  * objects that are not also records
  */
-const cleanFilterLinks = (content) => {
+const cleanFilterLinks = (content: unknown): unknown => {
   if (Array.isArray(content)) {
     return content.map(cleanFilterLinks);
   }
-  if (content != null && typeof content === 'object') {
-    const newContent = {};
+
+  function isObj(value: unknown): value is Record<string, unknown> {
+    return value != null && typeof value === 'object';
+  }
+
+  if (isObj(content)) {
+    const newContent: Record<string, unknown> = {};
 
     if (content['@rid'] !== undefined) {
       return content['@rid'];
@@ -77,12 +82,12 @@ const useFilterGroups = () => {
     }
   }, [selectedGroupIndex]);
 
-  const getQuery = useCallback((target) => {
+  const getQuery = useCallback((target: string): QueryBody => {
     const cleanedContent: FilterType[] = [];
     groups.forEach((group) => {
       const filters: FilterType[] = [];
       group.forEach((filter) => {
-        filters.push(cleanFilterLinks(filter.query));
+        filters.push(cleanFilterLinks(filter.query) as FilterType);
       });
 
       if (filters.length === 1) {
@@ -92,12 +97,7 @@ const useFilterGroups = () => {
       }
     });
 
-    const content: {
-      target: unknown;
-      filters?: unknown;
-    } = {
-      target,
-    };
+    const content: QueryBody = { target };
 
     if (cleanedContent.length === 1) {
       content.filters = cleanedContent;

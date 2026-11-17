@@ -1,9 +1,7 @@
+import { produce } from 'immer';
 import { useCallback, useState } from 'react';
 
-import useObject from '@/components/hooks/useObject';
 import { FilterType } from '@/components/types';
-
-const START_GROUP = '1';
 
 /**
  * Unlike cleaning record links, cannot assume there are no intermediary
@@ -38,62 +36,50 @@ export interface VerboseFilterType {
 }
 
 const useFilterGroups = () => {
-  const {
-    content: groups,
-    updateField: updateGroup,
-    removeField,
-    replace: replaceGroups,
-  } = useObject<Record<string, VerboseFilterType[]>>({ [START_GROUP]: [] });
-  const [selectedGroup, setSelectedGroup] = useState(START_GROUP);
+  const [groups, setGroups] = useState<VerboseFilterType[][]>([[]]);
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
 
   const reset = useCallback(() => {
-    replaceGroups({ [START_GROUP]: [] });
-  }, [replaceGroups]);
+    setGroups([[]]);
+  }, []);
 
   const addGroup = useCallback(() => {
-    let groupIndex = Object.keys(groups).length;
+    setGroups((prev) => [...prev, []]);
+  }, []);
 
-    while (true) {
-      const key = `${groupIndex + 1}`;
-
-      if (!groups[key]) {
-        break;
+  const addFilter = useCallback((filter) => {
+    setGroups(produce((draft) => {
+      if (!draft.length) {
+        draft.push([]);
       }
-      groupIndex += 1;
-    }
-    const newGroup = `${groupIndex + 1}`;
-    updateGroup(newGroup, []);
-    return newGroup;
-  }, [groups, updateGroup]);
+      const group = draft[selectedGroupIndex];
+      group.push(filter);
+    }));
+  }, [selectedGroupIndex]);
 
-  const addFilterToGroup = useCallback((filter, newGroup = false) => {
-    const group = newGroup
-      ? addGroup()
-      : selectedGroup;
+  const removeFilter = useCallback((groupIndex: number, filterIndex: number) => {
+    setGroups(produce((draft) => {
+      draft[groupIndex].splice(filterIndex, 1);
+    }));
+  }, []);
 
-    if (!groups[group]) {
-      groups[group] = [];
-    }
-    updateGroup(group, [...groups[group], filter]);
-  }, [addGroup, groups, selectedGroup, updateGroup]);
+  const removeGroup = useCallback((groupIndex: number) => {
+    setGroups(produce((draft) => {
+      draft.splice(groupIndex, 1);
 
-  const removeFilterAt = useCallback((pos, group = selectedGroup) => {
-    const newFilters = [...groups[group].slice(0, pos), ...groups[group].slice(pos + 1)];
-    updateGroup(group, newFilters);
-  }, [groups, selectedGroup, updateGroup]);
-
-  const removeGroup = useCallback((group) => {
-    if (group !== START_GROUP) {
-      if (selectedGroup === group) {
-        setSelectedGroup(START_GROUP);
+      if (!draft.length) {
+        draft.push([]);
       }
-      removeField(group);
+    }));
+
+    if (selectedGroupIndex === groupIndex) {
+      setSelectedGroupIndex(0);
     }
-  }, [removeField, selectedGroup]);
+  }, [selectedGroupIndex]);
 
   const getQuery = useCallback((target) => {
     const cleanedContent: FilterType[] = [];
-    Object.values(groups).forEach((group) => {
+    groups.forEach((group) => {
       const filters: FilterType[] = [];
       group.forEach((filter) => {
         filters.push(cleanFilterLinks(filter.query));
@@ -123,13 +109,12 @@ const useFilterGroups = () => {
 
   return {
     groups,
-    addFilterToGroup,
-    removeFilterAt,
+    addFilter,
+    removeFilter,
     removeGroup,
-    selectedGroup,
-    setSelectedGroup,
+    selectedGroupIndex,
+    setSelectedGroupIndex,
     addGroup,
-    defaultGroup: START_GROUP,
     getQuery,
     reset,
   };

@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { format } from 'date-fns';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import LetterIcon from '@/components/LetterIcon';
 import schema from '@/services/schema';
@@ -19,10 +19,11 @@ import { VerboseFilterType } from '../useFilterGroups';
 
 interface FilterGroupProps {
   filters: VerboseFilterType[];
+  groupIndex: number;
   name: string;
   isSelected?: boolean;
-  onDelete?: (name: string) => void;
-  onDeleteFilter?: (index: number, name: string) => void;
+  onDelete?: (groupIndex: number) => void;
+  onDeleteFilter?: (groupIndex: number, filterIndex: number) => void;
   onSelect?: React.ComponentProps<typeof LetterIcon>['onClick'];
 }
 
@@ -30,11 +31,8 @@ interface FilterGroupProps {
  * Displays Filter Groups and filter chips.
  */
 function FilterGroup({
-  name, filters = [], onDelete, onSelect, isSelected = false, onDeleteFilter,
+  name, filters = [], onDelete, onSelect, isSelected = false, onDeleteFilter, groupIndex,
 }: FilterGroupProps) {
-  const handleDeleteFilter = useCallback((filterIndex) => {
-    onDeleteFilter?.(filterIndex, name);
-  }, [name, onDeleteFilter]);
   return (
     <Paper className="filter-group">
       <div className="filter-group__label">
@@ -79,7 +77,7 @@ function FilterGroup({
                 label={`${filter.attr} ${filter.operator} ${filterValue}`}
                 onDelete={
                     onDeleteFilter
-                      ? () => handleDeleteFilter(index)
+                      ? () => onDeleteFilter(groupIndex, index)
                       : undefined
                   }
               />
@@ -91,7 +89,7 @@ function FilterGroup({
         <IconButton
           className="filter-group__cancel-btn"
           data-testid="cancel-btn"
-          onClick={() => { onDelete(name); }}
+          onClick={() => { onDelete(groupIndex); }}
         >
           <CancelIcon />
         </IconButton>

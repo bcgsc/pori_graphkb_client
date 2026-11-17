@@ -1,9 +1,6 @@
 import './index.scss';
 
-import React, {
-  useCallback,
-  useEffect, useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import ActionButton from '@/components/ActionButton';
@@ -27,19 +24,14 @@ function AdvancedSearchView() {
   const {
     groups,
     removeGroup,
-    addFilterToGroup,
+    addFilter,
     addGroup,
-    selectedGroup,
-    setSelectedGroup,
-    defaultGroup,
+    selectedGroupIndex,
+    setSelectedGroupIndex,
     getQuery,
-    removeFilterAt,
+    removeFilter,
     reset,
   } = useFilterGroups();
-
-  useEffect(() => {
-    setModelName(modelName || 'Statement');
-  }, [modelName, reset]);
 
   const handleSubmit = useCallback(() => {
     try {
@@ -71,20 +63,22 @@ function AdvancedSearchView() {
       </div>
       <PropertyFilter
         modelName={modelName}
-        onSubmit={addFilterToGroup}
+        onSubmit={addFilter}
       />
       <div className="advanced-search__filters">
-        {Object.keys(groups).map((groupId) => (
+        {groups.map((group, index) => (
           <FilterGroup
-            key={groupId}
-            filters={groups[groupId]}
-            isSelected={groupId === selectedGroup}
-            name={groupId}
-            onDelete={groupId === defaultGroup
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            filters={group}
+            groupIndex={index}
+            isSelected={index === selectedGroupIndex}
+            name={String(index + 1)}
+            onDelete={groups.length <= 1
               ? undefined
-              : () => removeGroup(groupId)}
-            onDeleteFilter={removeFilterAt}
-            onSelect={() => setSelectedGroup(groupId)}
+              : () => removeGroup(index)}
+            onDeleteFilter={removeFilter}
+            onSelect={() => setSelectedGroupIndex(index)}
           />
         ))}
         <AddFilterGroupButton onClick={addGroup} />

@@ -3,22 +3,27 @@ import React from 'react';
 
 import util from './util';
 
-class ErrorMixin extends Error {
-  content: any;
+type ErrorContent = string | Record<string, any>;
 
-  constructor(errorContent) {
-    let message;
-    let content = errorContent;
+class ApiError extends Error {
+  content: Record<string, any>;
 
-    if (typeof content === 'object' && content !== null) {
-      ({ message, ...content } = content);
+  public status = 500;
+
+  constructor(errorContent: ErrorContent) {
+    let message: string;
+    let content: Record<string, any> = {};
+
+    if (typeof errorContent === 'object' && errorContent !== null) {
+      ({ message, ...content } = errorContent);
     } else {
-      message = content;
+      message = errorContent;
       content = {};
     }
     super(message);
     this.message = message;
     this.content = content;
+    Object.setPrototypeOf(this, new.target.prototype);
     this.name = this.constructor.name;
 
     if (Error.captureStackTrace) {
@@ -35,46 +40,33 @@ class ErrorMixin extends Error {
   }
 }
 
-class AbortError extends ErrorMixin {
-  constructor(content) {
-    super(content);
-    this.name = 'AbortError';
-  }
+class AuthenticationError extends ApiError {
+  status = 401;
 }
 
-class AuthenticationError extends ErrorMixin {
-  constructor(content) {
-    super(content);
-    this.name = 'AuthenticationError';
-  }
+class AuthorizationError extends ApiError {
+  status = 403;
 }
 
-class AuthorizationError extends ErrorMixin {
-  constructor(content) {
-    super(content);
-    this.name = 'AuthorizationError';
-  }
+class BadRequestError extends ApiError {
+  status = 400;
 }
 
-class BadRequestError extends ErrorMixin {
-  constructor(content) {
-    super(content);
-    this.name = 'BadRequestError';
-  }
+/**
+ * Thrown by `requireSignedLicenseMiddleware` when an authenticated user has
+ * not yet signed the license agreement. Handled specially by
+ * `RouteErrorBoundary` to render a link to the terms of use page.
+ */
+class SignedLicenseRequiredError extends AuthorizationError {
+  status = 403;
 }
 
-class RecordExistsError extends ErrorMixin {
-  constructor(content) {
-    super(content);
-    this.name = 'RecordExistsError';
-  }
+class RecordExistsError extends ApiError {
+  status = 409;
 }
 
-class APIConnectionFailureError extends ErrorMixin {
-  constructor(content) {
-    super(content);
-    this.name = 'APIConnectionFailureError';
-  }
+class NotFoundError extends ApiError {
+  status = 404;
 }
 
 interface EmailReportErrorProps {
@@ -131,12 +123,13 @@ function ErrorMessage({ error, children, hideReportLink }: ErrorMessageProps) {
 }
 
 export {
-  AbortError,
-  APIConnectionFailureError,
+  ApiError,
   AuthenticationError,
   AuthorizationError,
   BadRequestError,
   ErrorMessage,
+  NotFoundError,
   RecordExistsError,
   ReportErrorMessage,
+  SignedLicenseRequiredError,
 };

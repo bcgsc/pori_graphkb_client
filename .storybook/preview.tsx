@@ -1,6 +1,6 @@
 import './preview.css';
 import { UserEventObject, fn } from 'storybook/test';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import ThemeProvider from '../src/theme';
 import addonMsw from 'msw-storybook-addon';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -11,13 +11,17 @@ import { GeneralRecordType, QueryBody } from '../src/components/types';
 import { Decorator, definePreview, StoryObj } from '@storybook/react-vite';
 import addonTest from '@storybook/addon-vitest';
 import { Canvas, PreviewAddon } from 'storybook/internal/csf';
-import { AppRoutes } from '../src/views/MainView';
-import { MemoryRouter, useLocation } from 'react-router';
+import { MemoryRouter, useLocation, createMemoryRouter, Outlet, RouterContextProvider, RouterProvider } from 'react-router';
+import { createRoutes } from '../src/views/MainView';
 import { SnackbarProvider } from 'notistack';
-import { AuthContext, AuthContextState } from '../src/components/Auth';
+import { authContext, AuthContext, AuthContextState } from '../src/components/Auth';
+import api from '../src/services/api';
 import { expect, waitFor, screen } from 'storybook/test';
 import { CircularProgress } from '@mui/material';
 import ErrorView from '../src/views/ErrorView';
+import { sb } from 'storybook/test';
+
+sb.mock(import('keycloak-js'));
 
 export async function selectOption(canvas: Canvas, userEvent: UserEventObject, label: string | RegExp, optionValue: string | RegExp) {
   const dropdown = await canvas.findByRole('combobox', { name: label });
@@ -119,7 +123,7 @@ export async function hasFinishedLoading({
 export const withSnackbar: Decorator = (Story) => <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}><Story /></SnackbarProvider>;
 
 interface WithAuthArgs {
-  auth?: Omit<Partial<AuthContextState>, 'user'> & { user?: Partial<AuthContextState['user']> };
+  auth?: (Omit<Partial<AuthContextState>, 'user'> & { user?: Partial<AuthContextState['user']> }) | null;
 }
 
 export const DEFAULT_USER_RECORD = {
@@ -128,28 +132,27 @@ export const DEFAULT_USER_RECORD = {
   groups: [],
   '@rid': '#1:1',
 }
+function buildAuthState(auth?: WithAuthArgs['auth']): AuthContextState | null {
+  if (auth === null) return null;
+  return {
+    isAdmin: false,
+    hasWriteAccess: false,
+    username: DEFAULT_USER_RECORD.name,
+    ...auth,
+    user: {
+      ...DEFAULT_USER_RECORD,
+      ...auth?.user
+    },
+  };
+}
 
 export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
-    const auth = args.auth;
-    const authState: AuthContextState = {
-      login: () => { },
-      logout: () => { },
-      isAuthenticating: false,
-      isAuthenticated: true,
-      isAdmin: false,
-      hasWriteAccess: false,
-      error: undefined,
-      ...auth,
-        user: auth?.user === null ? undefined : {
-          ...DEFAULT_USER_RECORD,
-          ...auth?.user
-        },
-    }
-    return (
-          <AuthContext.Provider value={authState}>
-            <Story />
-          </AuthContext.Provider>
-    )
+  const authState = useMemo(() => buildAuthState(args.auth ?? undefined)!, [args.auth]);
+  return (
+    <AuthContext.Provider value={authState}>
+      <Story />
+    </AuthContext.Provider>
+  )
 };
 
 
@@ -188,15 +191,29 @@ export interface ViewPreviewType {
   args: ViewArgs;
 }
 
-function View() {
+const withView: Decorator<ViewArgs> = (Story, { args, loaded }) => {
+  const router = useMemo(() => createMemoryRouter(createRoutes(() => (
+    <>
+      <LocationSpy onLocationChange={args.onLocationChange} />
+      <Outlet />
+    </>
+  )), {
+    initialEntries: [args.path ?? '/'],
+    getContext: () => {
+      const context = new RouterContextProvider();
+      const auth = buildAuthState(args.auth);
+      if (auth) {
+        context.set(authContext, auth);
+      }
+      context.set(api.routerQueryContext, loaded.queryClient);
+      return context;
+    },
+  }), [args.path, args.auth]);
+
   return (
-      <div style={{height: '100%', minWidth: '300px'}}>
-        <ErrorView>
-          <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <AppRoutes />
-          </Suspense>
-        </ErrorView>
-      </div>
+    <div style={{ height: '100%', minWidth: '300px' }}>
+      <RouterProvider router={router} />
+    </div>
   )
 }
 
@@ -204,7 +221,7 @@ export const view = {
   args: {
     onRequestSpy: fn(),
   },
-  component: View,
+  component: () => <div />,
   play: hasFinishedLoading,
   parameters: {
     layout: 'fullscreen' as const,
@@ -212,7 +229,7 @@ export const view = {
   beforeEach({ msw }) {
     msw.use( http.gkb.query(() => []));
   },
-  decorators: [withSnackbar, withAuth, withRouter],
+  decorators: [withSnackbar, withView],
 }
 
 

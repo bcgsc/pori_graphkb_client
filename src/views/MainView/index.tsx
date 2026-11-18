@@ -7,12 +7,15 @@ import React, {
   lazy,
   Suspense, useState,
 } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import type { LoaderFunctionArgs, RouteObject } from 'react-router';
+import {
+  Navigate, Outlet, useLoaderData, useNavigation,
+} from 'react-router';
 
-import { AuthenticatedLayout } from '@/components/Auth';
+import { AuthContext, authContext, createAuthMiddleware } from '@/components/Auth';
 import { FORM_VARIANT } from '@/components/util';
-import schema from '@/services/schema';
-import ErrorBoundary from '@/views/ErrorView';
+import ErrorBoundary, { RouteErrorBoundary } from '@/views/ErrorView';
+import { createRecordLoader } from '@/views/RecordView/loader';
 
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
@@ -31,69 +34,109 @@ const DataView = lazy(() => import('@/views/DataView'));
 const GraphView = lazy(() => import('@/views/GraphView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
-const NewRecordView = lazy(() => import('@/views/NewRecordView'));
-const NewRecordSelectView = lazy(() => import('@/views/NewRecordSelectView'));
 const QuickSearch = lazy(() => import('@/views/QuickSearch'));
 const RecordView = lazy(() => import('@/views/RecordView'));
 const UserProfileView = lazy(() => import('@/views/UserProfileView'));
 
-const ABSTRACT_CLASSES = Object.values(schema.models)
-  .filter((m) => m.isAbstract)
-  .map((m) => m.name);
-
-export function AppRoutes() {
+const withAuth = (Component: React.ComponentType) => () => {
+  const auth = useLoaderData<typeof authLoader>()!;
   return (
-    <Routes>
-      <Route element={<AuthenticatedLayout />}>
-        <Route Component={FeedbackView} path="/feedback" />
-        <Route Component={AboutView} path="/about">
-          <Route Component={AboutViewMainTab} index />
-          <Route Component={AboutViewGettingStartedTab} path="getting-started" />
-          <Route Component={AboutViewNotationTab} path="notation" />
-          <Route Component={AboutViewTermsTab} path="terms" />
-          <Route element={<AuthenticatedLayout signedLicenseRequired />}>
-            <Route Component={AboutViewClassesTab} path="classes" />
-            <Route Component={AboutViewMatchingTab} path="matching" />
-          </Route>
-        </Route>
-        <Route element={<AuthenticatedLayout signedLicenseRequired />}>
-          <Route Component={ActivityView} path="/activity" />
-          <Route Component={QuickSearch} path="/query" />
-          <Route Component={AdvancedSearchView} path="/query-advanced" />
-          <Route Component={UserProfileView} path="/user-profile" />
-          <Route element={<AuthenticatedLayout admin />}>
-            <Route Component={AdminView} path="/admin" />
-            <Route element={<RecordView modelName="Source" variant={FORM_VARIANT.EDIT} />} path="/edit/Source/:rid" />
-            <Route element={<NewRecordView modelName="Source" />} path="/new/Source" />
-            <Route element={<RecordView modelName="User" variant={FORM_VARIANT.EDIT} />} path="/edit/User/:rid" />
-            <Route element={<NewRecordView modelName="User" />} path="/new/User" />
-            <Route element={<RecordView modelName="UserGroup" variant={FORM_VARIANT.EDIT} />} path="/edit/UserGroup/:rid" />
-            <Route element={<NewRecordView modelName="UserGroup" />} path="/new/UserGroup" />
-          </Route>
-          <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:modelName/:rid" />
-          <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:modelName/:rid" />
-          <Route element={<RecordView variant={FORM_VARIANT.EDIT} />} path="/edit/:rid" />
-          <Route element={<RecordView variant={FORM_VARIANT.VIEW} />} path="/view/:rid" />
-          {ABSTRACT_CLASSES.map((modelName) => (
-            <Route key={modelName} element={<NewRecordSelectView modelName={modelName} />} path={`/new/${modelName}`} />
-          ))}
-          <Route Component={NewRecordView} path="/new/:modelName/:rid" />
-          <Route Component={NewRecordView} path="/new/:modelName" />
-          <Route Component={DataView} path="/data/table" />
-          <Route Component={GraphView} path="/data/graph" />
-          <Route Component={ImportPubmedView} path="/import/pubmed" />
-        </Route>
-      </Route>
-      <Route element={<Navigate to="/query" />} path="/*" />
-    </Routes>
+    <AuthContext.Provider value={auth}><Component /></AuthContext.Provider>
   );
-}
+};
+
+const authLoader = ({ context }: LoaderFunctionArgs) => {
+  const auth = context.get(authContext);
+  return auth;
+};
+
+export const createRoutes = (MainAuthLayout?: React.ComponentType): RouteObject[] => [
+  {
+    Component: withAuth(MainAuthLayout ?? Outlet),
+    loader: authLoader,
+    HydrateFallback: CircularProgress,
+    ErrorBoundary: RouteErrorBoundary,
+    middleware: [createAuthMiddleware()],
+    children: [
+      {
+        path: '/feedback',
+        Component: FeedbackView,
+      },
+      {
+        path: '/about',
+        Component: AboutView,
+        children: [
+          { index: true, Component: AboutViewMainTab },
+          { path: 'getting-started', Component: AboutViewGettingStartedTab },
+          { path: 'notation', Component: AboutViewNotationTab },
+          { path: 'terms', Component: AboutViewTermsTab },
+          {
+            middleware: [createAuthMiddleware({ requireSignedLicense: true })],
+            ErrorBoundary: RouteErrorBoundary,
+            children: [
+              { path: 'classes', Component: AboutViewClassesTab },
+              { path: 'matching', Component: AboutViewMatchingTab },
+            ],
+          },
+        ],
+      },
+      {
+        middleware: [createAuthMiddleware({ requireSignedLicense: true })],
+        children: [
+          { path: '/activity', Component: ActivityView },
+          { path: '/query', Component: QuickSearch },
+          { path: '/query-advanced', Component: AdvancedSearchView },
+          { path: '/user-profile', Component: UserProfileView },
+          { path: '/admin', Component: AdminView, middleware: [createAuthMiddleware({ requireAdmin: true })] },
+          {
+            path: '/edit/:modelName/:rid',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.EDIT),
+          },
+          {
+            path: '/view/:modelName/:rid',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.VIEW),
+          },
+          {
+            path: '/edit/:rid',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.EDIT),
+          },
+          {
+            path: '/view/:rid',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.VIEW),
+          },
+          {
+            path: '/new/:modelName/:rid',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.NEW),
+          },
+          {
+            path: '/new/:modelName',
+            Component: RecordView,
+            loader: createRecordLoader(FORM_VARIANT.NEW),
+          },
+          { path: '/data/table', Component: DataView },
+          { path: '/data/graph', Component: GraphView },
+          { path: '/import/pubmed', Component: ImportPubmedView },
+        ],
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/query" />,
+  },
+];
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 const Main = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigation = useNavigation();
 
   return (
     <div className="main-view">
@@ -108,9 +151,10 @@ const Main = () => {
         onDrawerChange={setDrawerOpen}
       />
       <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
+        {navigation.state === 'loading' && <CircularProgress color="secondary" />}
         <ErrorBoundary>
           <Suspense fallback={(<CircularProgress color="secondary" />)}>
-            <AppRoutes />
+            <Outlet />
           </Suspense>
         </ErrorBoundary>
       </section>

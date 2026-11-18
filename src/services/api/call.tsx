@@ -1,10 +1,10 @@
 import * as jc from 'json-cycle';
 
 import {
-  APIConnectionFailureError,
   AuthenticationError,
   AuthorizationError,
   BadRequestError,
+  NotFoundError,
   RecordExistsError,
 } from '../errors';
 
@@ -102,7 +102,7 @@ async function request(
     throw new AuthorizationError(error);
   }
   if (status === 404) {
-    throw new APIConnectionFailureError(error);
+    throw new NotFoundError(error);
   }
   throw new Error(`Unexpected Error [${status}]: ${statusText}${error.message ? `. ${error.message}` : ''}`);
 }

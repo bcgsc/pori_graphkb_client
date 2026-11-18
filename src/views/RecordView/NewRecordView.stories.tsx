@@ -233,7 +233,7 @@ NewPositionalVariantOther.test('submitting the filled out form shows the created
   const { canvas, args } = context;
 
   await submitAndWaitForView(context);
-  await expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/positionalvariants', expect.objectContaining({
+  await waitFor(() => expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/positionalvariants', expect.objectContaining({
     '@class': 'PositionalVariant',
     break1Start: {
       '@class': 'GenomicPosition',
@@ -246,7 +246,7 @@ NewPositionalVariantOther.test('submitting the filled out form shows the created
       '@class': 'GenomicPosition',
       pos: '15',
     },
-  }));
+  })));
 
   await expect(canvas.findByText('deletion (#111:333)')).resolves.toBeInTheDocument();
   await expect(canvas.findByText('KRAS (#21:1)')).resolves.toBeInTheDocument();
@@ -294,7 +294,7 @@ NewStatement.test('on submit sets reviewStatus as initial and adds empty review 
   expect(submitBtn).toBeEnabled();
 
   await userEvent.click(submitBtn);
-  await expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/statements', expect.objectContaining({
+  await waitFor(() => expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/statements', expect.objectContaining({
     relevance: '#90:32',
     subject: '#20:20',
     conditions: [
@@ -313,7 +313,7 @@ NewStatement.test('on submit sets reviewStatus as initial and adds empty review 
         createdBy: '#1:1',
       },
     ],
-  }));
+  })));
 
   await expect(canvas.findByText('Statement #111:111')).resolves.toBeInTheDocument();
   await expect(canvas.findByLabelText(/reviewstatus/i)).resolves.toHaveTextContent('initial');

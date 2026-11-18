@@ -16,7 +16,7 @@ import React, {
 } from 'react';
 
 import useGrid from '@/components/hooks/useGrid';
-import RecordFormDialog from '@/components/RecordFormDialog';
+import RecordForm from '@/components/RecordForm';
 import { GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
@@ -124,16 +124,19 @@ const AdminTable = ({ onChange, records = [], variant = 'User' }: AdminTableProp
 
   return (
     <div className="admin-table">
-      <RecordFormDialog
-        isOpen={dialogOpen}
-        modelName={variant}
-        onClose={handleDialogCancel}
-        onSubmit={handleDialogSubmit}
-        value={recordOpen}
-        variant={!recordOpen
-          ? FORM_VARIANT.NEW
-          : FORM_VARIANT.EDIT}
-      />
+      {dialogOpen && (
+        <RecordForm
+          formType="dialog"
+          modelName={variant}
+          onClose={handleDialogCancel}
+          onSubmit={handleDialogSubmit}
+          open
+          value={recordOpen}
+          variant={!recordOpen
+            ? FORM_VARIANT.NEW
+            : FORM_VARIANT.EDIT}
+        />
+      )}
       <div className="admin-table__header">
         <Typography variant="h2">
           Current {variant}s ({records.length})

@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite';
 import { delay, HttpResponse } from 'msw';
 import {
-  expect, fn, screen, waitFor,
+  expect, fn, screen, waitFor, within,
 } from 'storybook/test';
 
 import { GeneralRecordType } from '@/components/types';
@@ -18,37 +18,42 @@ const meta = preview.type<ViewPreviewType>().meta({ ...view, title: 'Views/NewRe
 export const NewSource = meta.story({
   args: {
     path: '/new/source',
+    auth: { hasWriteAccess: true },
   },
 });
 
 export const NewSourceAsAdmin = meta.story({
   args: {
     path: '/new/source',
-    auth: { isAdmin: true },
+    auth: { hasWriteAccess: true, isAdmin: true },
   },
 });
 
 export const NewOntology = meta.story({
   args: {
     path: '/new/ontology',
+    auth: { hasWriteAccess: true },
   },
 });
 
 export const NewFeature = meta.story({
   args: {
     path: '/new/Feature',
+    auth: { hasWriteAccess: true },
   },
 });
 
 export const NewVariant = meta.story({
   args: {
     path: '/new/variant',
+    auth: { hasWriteAccess: true },
   },
 });
 
 export const NewCategoryVariant = meta.story({
   args: {
     path: '/new/CategoryVariant',
+    auth: { hasWriteAccess: true },
   },
 });
 
@@ -116,8 +121,7 @@ type PlayContext = Parameters<NonNullable<StoryObj['play']>>[0];
 const getPositions = (canvas: PlayContext['canvas']) => canvas.getAllByLabelText<HTMLInputElement>(/^pos\b/i);
 
 async function enterText({ userEvent }: Pick<PlayContext, 'userEvent'>, input: HTMLElement, text: string) {
-  await userEvent.click(input);
-  await userEvent.paste(text);
+  await userEvent.type(input, text);
 }
 
 async function selectRecord(context: Pick<PlayContext, 'userEvent'>, input: HTMLElement, search: string, option: string) {
@@ -139,6 +143,7 @@ async function submitAndWaitForView(context: Pick<PlayContext, 'canvas' | 'userE
 export const NewPositionalVariant = meta.story({
   args: {
     path: '/new/PositionalVariant',
+    auth: { hasWriteAccess: true },
   },
   beforeEach({ msw, args }) {
     msw.use(
@@ -265,17 +270,74 @@ const STATEMENT_LINKABLE_RECORDS = [
 export const NewStatement = meta.story({
   args: {
     path: '/new/statement',
+    auth: { hasWriteAccess: true },
   },
   beforeEach({ msw, args }) {
-    msw.use(http.gkb.query((payload) => {
-      // to prevent other records causing validation error when running `checkLogicalStatement`
-      if (payload.queryType === 'similarTo') {
-        return [];
-      }
+    msw.use(
+      http.gkb.query((payload) => {
+        // to prevent other records causing validation error when running `checkLogicalStatement`
+        if (payload.queryType === 'similarTo') {
+          return [];
+        }
 
-      return STATEMENT_LINKABLE_RECORDS;
-    }), ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS, args.onRequestSpy));
+        if (payload.target === 'Vocabulary' && payload.filters) {
+          return VOCABULARY;
+        }
+        if (payload.target === 'Feature') {
+          return FEATURES;
+        }
+
+        return STATEMENT_LINKABLE_RECORDS;
+      }),
+      ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS, args.onRequestSpy),
+      ...mockCreate('/api/positionalvariants', '#50:1', [...VOCABULARY, ...FEATURES], args.onRequestSpy),
+    );
   },
+});
+
+NewStatement.test('creates a positional variant in a dialog and appends it to conditions', async (context) => {
+  const { canvas, userEvent, args } = context;
+  const conditions = await canvas.findByLabelText(/^conditions/);
+  await selectRecord(context, conditions, 'anything', 'anything (#11:11)');
+  await enterText(context, conditions, 'KRAS deletion');
+  await userEvent.click(await screen.findByRole('option', { name: 'Add "KRAS deletion"' }));
+  await userEvent.click(await screen.findByRole('radio', { name: /^PositionalVariant/ }));
+
+  const dialog = await screen.findByRole('dialog', { name: /Create a new PositionalVariant Record/ });
+  const dialogCanvas = within(dialog);
+  await selectOption(dialogCanvas, userEvent, /^type/i, /^deletion/i);
+  const [reference1] = await dialogCanvas.findAllByLabelText(/^reference/i);
+  await selectRecord(context, reference1, 'KRAS', 'KRAS (#21:1)');
+  await waitFor(() => expect(getPositions(dialogCanvas)).toHaveLength(2));
+  const positions = getPositions(dialogCanvas);
+  await enterText(context, positions[0], '10');
+  await enterText(context, positions[1], '15');
+  const variantSubmit = dialogCanvas.getByText('SUBMIT');
+  await waitFor(() => expect(variantSubmit).toBeEnabled());
+  await userEvent.click(variantSubmit);
+
+  await waitFor(() => expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/positionalvariants', expect.objectContaining({
+    '@class': 'PositionalVariant',
+    type: '#111:333',
+    reference1: '#21:1',
+    break1Start: { '@class': 'GenomicPosition', pos: '10' },
+    break2Start: { '@class': 'GenomicPosition', pos: '15' },
+  })));
+  await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  await expect(canvas.findByText('PositionalVariant (#50:1)')).resolves.toBeInTheDocument();
+  await expect(canvas.getByText('anything (#11:11)')).toBeInTheDocument();
+  await expect(args.onRequestSpy).not.toHaveBeenCalledWith('POST', '/api/statements', expect.anything());
+
+  await selectRecord(context, await canvas.findByLabelText(/^evidence /), 'anything', 'anything (#12:23)');
+  await selectRecord(context, await canvas.findByLabelText(/^relevance/), 'anything', 'anything (#90:32)');
+  await selectRecord(context, await canvas.findByLabelText(/^subject/), 'anything', 'anything (#20:20)');
+  const statementSubmit = canvas.getByText('SUBMIT');
+  await waitFor(() => expect(statementSubmit).toBeEnabled());
+  await userEvent.click(statementSubmit);
+  await waitFor(() => expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/statements', expect.objectContaining({
+    conditions: ['#11:11', '#50:1'],
+  })));
+  await expect(canvas.findByText('Statement #111:111')).resolves.toBeInTheDocument();
 });
 
 NewStatement.test('on submit sets reviewStatus as initial and adds empty review if left blank', async ({ canvas, userEvent, args }) => {
@@ -331,18 +393,21 @@ export const NewStatementOptionalFieldsExpanded = NewStatement.extend({
 export const NewRelationship = meta.story({
   args: {
     path: '/new/e',
+    auth: { hasWriteAccess: true },
   },
 });
 
 export const NewRelationshipAliasOf = meta.story({
   args: {
     path: '/new/AliasOf',
+    auth: { hasWriteAccess: true },
   },
 });
 
 export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
   args: {
     path: '/new/AliasOf',
+    auth: { hasWriteAccess: true },
   },
   beforeEach({ msw }) {
     msw.use(
@@ -368,5 +433,6 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
 export const NewInvalidModel = meta.story({
   args: {
     path: '/new/Blargh',
+    auth: { hasWriteAccess: true },
   },
 });

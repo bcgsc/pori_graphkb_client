@@ -2,7 +2,7 @@ import './index.scss';
 
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
-import { Button, Paper } from '@mui/material';
+import { Button } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, {
   useCallback, useMemo, useState,
@@ -11,40 +11,34 @@ import { useQuery } from 'react-query';
 import { Link } from 'react-router';
 
 import FormLayout from '@/components/FormLayout';
-import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
-import { GeneralRecordType } from '@/components/types';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-import { FormActions, FormErrors, FormHeader } from '../RecordForm';
+import {
+  Form, FormActions, FormContent, FormErrors, FormHeader, RecordFormProps,
+} from '../RecordForm/DefaultRecordForm';
 import StatementSentence from '../SentencePreview/StatementSentence';
 import CivicEvidenceLink from './CivicEvidenceLink';
 import ReviewDialog from './ReviewDialog';
 
 const model = schema.get('Statement');
 
-interface StatementFormProps {
-  /** the title for this form */
-  title: string;
-  onSubmit?: (record?: GeneralRecordType) => void;
-  onToggleState?: (newState: FORM_VARIANT | 'graph') => void;
-  /** values of individual properties of passed class model */
-  value?: GeneralRecordType;
-  /** the type of NodeForm to create */
-  variant?: FORM_VARIANT;
-}
-
 /**
  * Form/View that displays the contents of a single node
  */
-const StatementForm = ({
-  value: initialValue,
-  title,
-  onToggleState,
-  onSubmit,
-  variant = FORM_VARIANT.VIEW,
-}: StatementFormProps) => {
+const StatementForm = (props: RecordFormProps) => {
+  const {
+    value: initialValue,
+    title,
+    onToggleState,
+    onSubmit,
+    variant = FORM_VARIANT.VIEW,
+    open = false,
+    onClose,
+    formType = 'inline',
+  } = props;
   const { data: diagnosticData } = useQuery({
     queryKey: tuple(
       '/query',
@@ -157,56 +151,56 @@ const StatementForm = ({
   }, [form.content.reviews, setFormIsDirty, updateField]);
 
   return (
-    <FormContext.Provider value={form}>
-      <Paper className="record-form__wrapper" elevation={4}>
-        <FormHeader
-          actions={(
-            <>
-              {variant === FORM_VARIANT.EDIT && (
-                <Button
-                  className="header__review-action"
-                  disabled={form.action.inProgress}
-                  onClick={() => setReviewDialogOpen(true)}
-                  variant="outlined"
-                >
-                  <LocalLibraryIcon classes={{ root: 'review-icon' }} />
-                  Add Review
-                </Button>
-              )}
-              {variant === FORM_VARIANT.VIEW && (
-                <Button
-                  className="header__review-action"
-                  component={Link}
-                  target="_blank"
-                  to={!isEmpty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
-                  variant="outlined"
-                >
-                  <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy
-                </Button>
-              )}
-              {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
-            </>
-          )}
-          onToggleState={onToggleState}
-          title={title}
-        />
-        {variant === FORM_VARIANT.EDIT && (
-          <ReviewDialog
-            isOpen={reviewDialogOpen}
-            onClose={() => setReviewDialogOpen(false)}
-            onSubmit={handleAddReview}
-          />
+    <Form formType={formType} onClose={onClose} open={open} value={form}>
+      <FormHeader
+        actions={(
+          <>
+            {variant === FORM_VARIANT.EDIT && (
+              <Button
+                className="header__review-action"
+                disabled={form.action.inProgress}
+                onClick={() => setReviewDialogOpen(true)}
+                variant="outlined"
+              >
+                <LocalLibraryIcon classes={{ root: 'review-icon' }} />
+                Add Review
+              </Button>
+            )}
+            {variant === FORM_VARIANT.VIEW && (
+              <Button
+                className="header__review-action"
+                component={Link}
+                target="_blank"
+                to={!isEmpty(initialValue) ? `/new/${initialValue!['@class']!.toLowerCase()}/${initialValue!['@rid']!.replace(/^#/, '')}/` : ''}
+                variant="outlined"
+              >
+                <FileCopyIcon classes={{ root: 'review-icon' }} /> Create As Copy
+              </Button>
+            )}
+            {civicEvidenceId && <CivicEvidenceLink evidenceId={civicEvidenceId} />}
+          </>
         )}
+        onToggleState={onToggleState}
+        title={title}
+      />
+      {variant === FORM_VARIANT.EDIT && (
+        <ReviewDialog
+          isOpen={reviewDialogOpen}
+          onClose={() => setReviewDialogOpen(false)}
+          onSubmit={handleAddReview}
+        />
+      )}
+      <FormContent>
         <StatementSentence
           content={form.content}
         />
         <FormLayout
           collapseExtra
         />
-        <FormErrors />
-        <FormActions />
-      </Paper>
-    </FormContext.Provider>
+      </FormContent>
+      <FormErrors />
+      <FormActions />
+    </Form>
   );
 };
 

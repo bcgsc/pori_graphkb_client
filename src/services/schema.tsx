@@ -42,6 +42,7 @@ type SchemaClassDefinition = Omit<ClassDefinition, 'properties'> & {
     /** if providered will determine how fields are grouped in the form (for those not in order) and order within each group but not overall position of group in form */
     groups?: string[][];
   };
+  allowCreateInPopup?: boolean;
 };
 
 /**
@@ -584,6 +585,12 @@ function prepareModels() {
     ],
   };
 
+  ['PositionalVariant', 'CategoryVariant', 'Therapy', 'ClinicalTrial', 'Publication', 'Abstract', 'CuratedContent'].forEach((modelName) => {
+    prepared[modelName].allowCreateInPopup = true;
+    schemaDefn.ancestors(modelName).forEach((ancestor) => {
+      prepared[ancestor].allowCreateInPopup = true;
+    });
+  });
   return prepared;
 }
 

@@ -12,7 +12,7 @@ import RecordAutocomplete from '@/components/RecordAutocomplete';
 import api from '@/services/api';
 import schemaDefn from '@/services/schema';
 
-interface FilteredRecordAutocompleteProps extends Pick<React.ComponentProps<typeof RecordAutocomplete>, 'disabled' | 'isMulti' | 'helperText' | 'label' | 'className' | 'onChange' | 'required' | 'value' | 'readOnly'> {
+interface FilteredRecordAutocompleteProps extends Pick<React.ComponentProps<typeof RecordAutocomplete>, 'disabled' | 'isMulti' | 'helperText' | 'label' | 'className' | 'onChange' | 'required' | 'value' | 'readOnly' | 'onCreate' | 'allowCreate'> {
   /** the base class for creating the class filter for the paired autocomplete component */
   linkedClassName: string;
   /** the field name used in passing to parent handlers */
@@ -42,10 +42,13 @@ const FilteredRecordAutocomplete = ({
   required,
   value,
   readOnly,
+  onCreate,
+  allowCreate: allowCreateProp,
 }: FilteredRecordAutocompleteProps) => {
   const [selectedClassName, setSelectedClassName] = useState(
     defaultFilterClassName || linkedClassName,
   );
+  const allowCreate = allowCreateProp && schemaDefn.get(selectedClassName)?.allowCreateInPopup;
   const [classMenuOpen, setClassMenuOpen] = useState(false);
 
   const FilterIconWithTooltip = useMemo(() => React.forwardRef<SVGSVGElement, React.ComponentProps<typeof FilterIcon>>((iconProps, ref) => (
@@ -115,6 +118,7 @@ const FilteredRecordAutocomplete = ({
 
   return (
     <RecordAutocomplete
+      allowCreate={allowCreate}
       className={`filtered-record-autocomplete ${className || ''}`}
       disabled={disabled}
       error={error}
@@ -124,6 +128,7 @@ const FilteredRecordAutocomplete = ({
       label={label}
       name={name}
       onChange={onChange}
+      onCreate={() => onCreate?.(selectedClassName)}
       placeholder={isMulti
         ? `Search for Existing ${selectedClassName} Record(s)`
         : `Search for an Existing ${selectedClassName} Record`}

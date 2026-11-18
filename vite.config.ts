@@ -39,7 +39,8 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       watch: false,
-      setupFiles: ['config/jest/windowEnvMock.js'],
+      execArgv: ['--no-webstorage'],
+      setupFiles: ['config/vitest.setup.js'],
       globals: false, // necessary for now for jest-dom extend-expect to work
       coverage: {
         include: ['src/**/*.{js,jsx,ts,tsx}'],
@@ -88,6 +89,7 @@ export default defineConfig(({ mode }) => {
           ],
           test: {
             name: 'storybook',
+            setupFiles: ['config/vitest.setup.js', 'config/vitest.setup.browser.js'],
             browser: {
               enabled: true,
               provider: playwright({}),

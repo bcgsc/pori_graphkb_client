@@ -1,17 +1,19 @@
 import type { StoryObj } from '@storybook/react-vite';
 import { delay, HttpResponse } from 'msw';
 import {
-  expect, screen, waitFor,
+  expect, fn, screen, waitFor,
 } from 'storybook/test';
 
+import { GeneralRecordType } from '@/components/types';
 import preview, {
+  DEFAULT_USER_RECORD,
   hasFinishedLoading,
   http,
   selectOption,
   view, ViewPreviewType,
 } from '#.storybook/preview';
 
-const meta = preview.type<ViewPreviewType>().meta({ ...view });
+const meta = preview.type<ViewPreviewType>().meta({ ...view, title: 'Views/NewRecordView' });
 
 export const NewSource = meta.story({
   args: {
@@ -51,14 +53,14 @@ export const NewCategoryVariant = meta.story({
 });
 
 const VOCABULARY = [
-  { '@rid': '111:111', '@class': 'Vocabulary', displayName: 'fusion' },
-  { '@rid': '111:222', '@class': 'Vocabulary', displayName: 'substitution' },
-  { '@rid': '111:333', '@class': 'Vocabulary', displayName: 'deletion' },
+  { '@rid': '#111:111', '@class': 'Vocabulary', displayName: 'fusion' },
+  { '@rid': '#111:222', '@class': 'Vocabulary', displayName: 'substitution' },
+  { '@rid': '#111:333', '@class': 'Vocabulary', displayName: 'deletion' },
 ];
 
 const FEATURES = [
-  { '@rid': '21:1', '@class': 'Feature', displayName: 'KRAS' },
-  { '@rid': '21:2', '@class': 'Feature', displayName: 'NTRK1' },
+  { '@rid': '#21:1', '@class': 'Feature', displayName: 'KRAS' },
+  { '@rid': '#21:2', '@class': 'Feature', displayName: 'NTRK1' },
 ];
 
 const variantQuery = http.gkb.query((body) => {
@@ -72,26 +74,38 @@ const variantQuery = http.gkb.query((body) => {
   return [];
 });
 
-const linkedRecord = (rid: unknown) => [...VOCABULARY, ...FEATURES].find((record) => record['@rid'] === rid) ?? rid;
+const linkedRecord = (linkable: GeneralRecordType[], ridOrRids: unknown) => {
+  if (Array.isArray(ridOrRids)) {
+    return ridOrRids.map((rid) => linkedRecord(linkable, rid));
+  }
+  if (ridOrRids && typeof ridOrRids === 'object') {
+    return Object.fromEntries(Object.entries(ridOrRids).map(([key, value]) => [key, linkedRecord(linkable, value)]));
+  }
+  if (typeof ridOrRids !== 'string' || !ridOrRids.startsWith('#')) {
+    return ridOrRids;
+  }
+  return linkable.find((record) => record['@rid'] === ridOrRids) ?? ridOrRids;
+};
 
 /**
  * Mocks creating a record and then fetching it (ex. after the redirect to its view).
  * The fetched record is built from what was posted, with links resolved to the mock records.
  */
-function mockCreate(route: `/api/${string}`, rid: string) {
+function mockCreate(route: `/api/${string}`, rid: string, linkableRecords: GeneralRecordType[], onRequestSpy?: ReturnType<typeof fn>) {
   let created: Record<string, unknown> | undefined;
+  const linkable = [...linkableRecords, DEFAULT_USER_RECORD];
 
   return [
     http.gkb.post(route, (body) => {
       created = { ...body, '@rid': rid };
       return { result: created };
-    }),
+    }, onRequestSpy),
     http.gkb.get(`${route}/:rid`, () => {
       if (!created) {
         return HttpResponse.json({ message: 'record has not been created', name: 'NoRecordFoundError' }, { status: 404 });
       }
       return HttpResponse.json({
-        result: Object.fromEntries(Object.entries(created).map(([key, value]) => [key, linkedRecord(value)])),
+        result: Object.fromEntries(Object.entries(created).map(([key, value]) => [key, linkedRecord(linkable, value)])),
       });
     }),
   ];
@@ -126,10 +140,11 @@ export const NewPositionalVariant = meta.story({
   args: {
     path: '/new/PositionalVariant',
   },
-  parameters: {
-    msw: {
-      handlers: [variantQuery, ...mockCreate('/api/positionalvariants', '#50:1')],
-    },
+  beforeEach({ msw, args }) {
+    msw.use(
+      variantQuery,
+      ...mockCreate('/api/positionalvariants', '#50:1', [...VOCABULARY, ...FEATURES], args.onRequestSpy),
+    );
   },
 });
 
@@ -142,8 +157,8 @@ export const NewPositionalVariantFusion = NewPositionalVariant.extend({
     await expect(canvas.findByText('Second Breakpoint')).resolves.toBeInTheDocument();
 
     const [reference1, reference2] = await canvas.findAllByLabelText(/^reference/i);
-    await selectRecord(context, reference1, 'K', 'KRAS (21:1)');
-    await selectRecord(context, reference2, 'N', 'NTRK1 (21:2)');
+    await selectRecord(context, reference1, 'K', 'KRAS (#21:1)');
+    await selectRecord(context, reference2, 'N', 'NTRK1 (#21:2)');
 
     // mark both breakpoints as ranges so the end positions are shown
     const uncertain = await canvas.findAllByRole('checkbox', { name: /uncertain position/i });
@@ -167,9 +182,9 @@ NewPositionalVariantFusion.test('submitting the filled out form shows the create
   const { canvas } = context;
   await submitAndWaitForView(context);
 
-  await expect(canvas.findByText('fusion (111:111)')).resolves.toBeInTheDocument();
-  await expect(canvas.findByText('KRAS (21:1)')).resolves.toBeInTheDocument();
-  await expect(canvas.findByText('NTRK1 (21:2)')).resolves.toBeInTheDocument();
+  await expect(canvas.findByText('fusion (#111:111)')).resolves.toBeInTheDocument();
+  await expect(canvas.findByText('KRAS (#21:1)')).resolves.toBeInTheDocument();
+  await expect(canvas.findByText('NTRK1 (#21:2)')).resolves.toBeInTheDocument();
   await waitFor(() => {
     expect(getPositions(canvas).map((input) => input.value)).toEqual(['10', '15', '20', '25']);
   });
@@ -201,7 +216,7 @@ export const NewPositionalVariantOther = NewPositionalVariant.extend({
     await expect(canvas.findByText('Second Breakpoint')).resolves.toBeInTheDocument();
 
     const [reference1] = await canvas.findAllByLabelText(/^reference/i);
-    await selectRecord(context, reference1, 'K', 'KRAS (21:1)');
+    await selectRecord(context, reference1, 'K', 'KRAS (#21:1)');
 
     // in order: break1Start, break2Start
     await waitFor(() => expect(getPositions(canvas)).toHaveLength(2));
@@ -215,21 +230,94 @@ export const NewPositionalVariantOther = NewPositionalVariant.extend({
 });
 
 NewPositionalVariantOther.test('submitting the filled out form shows the created variant with the entered values', async (context) => {
-  const { canvas } = context;
+  const { canvas, args } = context;
 
   await submitAndWaitForView(context);
+  await expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/positionalvariants', expect.objectContaining({
+    '@class': 'PositionalVariant',
+    break1Start: {
+      '@class': 'GenomicPosition',
+      pos: '10',
+    },
+    type: '#111:333',
+    reference1: '#21:1',
+    displayName: null,
+    break2Start: {
+      '@class': 'GenomicPosition',
+      pos: '15',
+    },
+  }));
 
-  await expect(canvas.findByText('deletion (111:333)')).resolves.toBeInTheDocument();
-  await expect(canvas.findByText('KRAS (21:1)')).resolves.toBeInTheDocument();
+  await expect(canvas.findByText('deletion (#111:333)')).resolves.toBeInTheDocument();
+  await expect(canvas.findByText('KRAS (#21:1)')).resolves.toBeInTheDocument();
   await waitFor(() => {
     expect(getPositions(canvas).map((input) => input.value)).toEqual(['10', '15']);
   });
 });
 
+const STATEMENT_LINKABLE_RECORDS = [
+  { '@rid': '#11:11', '@class': 'Vocabulary', displayName: 'anything' },
+  { '@rid': '#12:23', '@class': 'Vocabulary', displayName: 'anything' },
+  { '@rid': '#20:20', '@class': 'Vocabulary', displayName: 'anything' },
+  { '@rid': '#90:32', '@class': 'Vocabulary', displayName: 'anything' },
+];
+
 export const NewStatement = meta.story({
   args: {
     path: '/new/statement',
   },
+  beforeEach({ msw, args }) {
+    msw.use(http.gkb.query((payload) => {
+      // to prevent other records causing validation error when running `checkLogicalStatement`
+      if (payload.queryType === 'similarTo') {
+        return [];
+      }
+
+      return STATEMENT_LINKABLE_RECORDS;
+    }), ...mockCreate('/api/statements', '#111:111', STATEMENT_LINKABLE_RECORDS, args.onRequestSpy));
+  },
+});
+
+NewStatement.test('on submit sets reviewStatus as initial and adds empty review if left blank', async ({ canvas, userEvent, args }) => {
+  async function selectFromAutocomplete(label: RegExp, value: string) {
+    const input = await canvas.findByLabelText(label);
+    await userEvent.type(input, value[0]);
+    const option = await screen.findByText(value);
+    await userEvent.click(option);
+  }
+
+  await selectFromAutocomplete(/^conditions/, 'anything (#11:11)');
+  await selectFromAutocomplete(/^evidence /, 'anything (#12:23)');
+  await selectFromAutocomplete(/^relevance/, 'anything (#90:32)');
+  await selectFromAutocomplete(/^subject/, 'anything (#20:20)');
+  const submitBtn = canvas.getByText('SUBMIT');
+  expect(submitBtn).toBeEnabled();
+
+  await userEvent.click(submitBtn);
+  await expect(args.onRequestSpy).toHaveBeenCalledWith('POST', '/api/statements', expect.objectContaining({
+    relevance: '#90:32',
+    subject: '#20:20',
+    conditions: [
+      '#11:11',
+    ],
+    evidence: [
+      '#12:23',
+    ],
+    displayNameTemplate: '{subject} is {relevance} ({evidence})',
+    '@class': 'Statement',
+    reviewStatus: 'initial',
+    reviews: [
+      {
+        status: 'initial',
+        comment: '',
+        createdBy: '#1:1',
+      },
+    ],
+  }));
+
+  await expect(canvas.findByText('Statement #111:111')).resolves.toBeInTheDocument();
+  await expect(canvas.findByLabelText(/reviewstatus/i)).resolves.toHaveTextContent('initial');
+  await expect(canvas.findByText('bmonkeys (#1:1)')).resolves.toBeInTheDocument();
 });
 
 export const NewStatementOptionalFieldsExpanded = NewStatement.extend({
@@ -256,24 +344,22 @@ export const NewRelationshipAliasOfErrorAfterSubmit = meta.story({
   args: {
     path: '/new/AliasOf',
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [{ '@rid': '111:111', '@class': 'Ontology' }, { '@rid': '222:222', '@class': 'Ontology' }]),
-        http.gkb.post('/api/aliasof', async () => {
-          // delay so the in-progress (disabled) submit button always renders, which drops its focus
-          await delay(100);
-          return HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 });
-        }),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => [{ '@rid': '#111:111', '@class': 'Ontology' }, { '@rid': '#222:222', '@class': 'Ontology' }]),
+      http.gkb.post('/api/aliasof', async () => {
+        // delay so the in-progress (disabled) submit button always renders, which drops its focus
+        await delay(100);
+        return HttpResponse.json({ message: 'Failed unique constraint.' }, { status: 500 });
+      }),
+    );
   },
   play: async ({ canvas, step, userEvent }) => {
     await hasFinishedLoading({ canvas, step });
     await userEvent.type(canvas.getByLabelText(/source record \(out\)/i), '111');
-    await userEvent.click(await screen.findByText('Ontology (111:111)'));
+    await userEvent.click(await screen.findByText('Ontology (#111:111)'));
     await userEvent.type(canvas.getByLabelText(/target record \(in\)/i), '222');
-    await userEvent.click(await screen.findByText('Ontology (222:222)'));
+    await userEvent.click(await screen.findByText('Ontology (#222:222)'));
     await userEvent.click(canvas.getByText(/submit/i));
     await canvas.findByText(/Internal Server Error/, { exact: false });
   },

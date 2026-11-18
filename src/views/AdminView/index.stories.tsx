@@ -24,32 +24,28 @@ export const AsAdmin = meta.story({
       isAdmin: true,
     },
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((body) => {
-          if (body.target === 'User') {
-            return [{
-              '@class': 'User',
-              '@rid': '#1:1',
-              name: 'lorelai',
-              email: 'lorelai@sh.com',
-              signedLicenseAt: new Date(2020, 0, 3).getTime(),
-              createdAt: new Date(2020, 0, 1).getTime(),
-            }];
-          }
-          if (body.target === 'UserGroup') {
-            return [{
-              '@class': 'UserGroup',
-              '@rid': '#1:1',
-              name: 'Super Cool Party People',
-              createdAt: new Date(2020, 0, 1).getTime(),
-            }];
-          }
-          return [];
-        }),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query((body) => {
+      if (body.target === 'User') {
+        return [{
+          '@class': 'User',
+          '@rid': '#1:1',
+          name: 'lorelai',
+          email: 'lorelai@sh.com',
+          signedLicenseAt: new Date(2020, 0, 3).getTime(),
+          createdAt: new Date(2020, 0, 1).getTime(),
+        }];
+      }
+      if (body.target === 'UserGroup') {
+        return [{
+          '@class': 'UserGroup',
+          '@rid': '#1:1',
+          name: 'Super Cool Party People',
+          createdAt: new Date(2020, 0, 1).getTime(),
+        }];
+      }
+      return [];
+    }));
   },
   play: async ({ canvas, step }) => {
     await hasFinishedLoading({ canvas, step });

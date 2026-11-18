@@ -1,0 +1,1958 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`NoNode snapshot 1`] = `
+<div>
+  <div
+    class="MuiDrawer-anchorRight MuiDrawer-docked MuiDrawer-root css-XXXX-MuiDrawer-docked"
+  >
+    <div
+      class="MuiDrawer-paper MuiDrawer-paperAnchorDockedRight MuiDrawer-paperAnchorRight MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiDrawer-paper detail-drawer detail-drawer--closed"
+    />
+  </div>
+</div>
+`;
+
+exports[`OntologyNode snapshot 1`] = `
+<div>
+  <div
+    class="MuiDrawer-anchorRight MuiDrawer-docked MuiDrawer-root css-XXXX-MuiDrawer-docked"
+  >
+    <div
+      class="MuiDrawer-paper MuiDrawer-paperAnchorDockedRight MuiDrawer-paperAnchorRight MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiDrawer-paper detail-drawer"
+    >
+      <div
+        class="detail-drawer__content"
+      >
+        <div
+          class="detail-drawer__heading"
+        >
+          <div>
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              testNode (#1:0)
+            </h2>
+          </div>
+          <a
+            data-discover="true"
+            href="/edit/Ontology/1:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="EditIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z"
+                />
+              </svg>
+            </button>
+          </a>
+          <a
+            data-discover="true"
+            href="/view/Ontology/1:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="OpenInNewIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                />
+              </svg>
+            </button>
+          </a>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Display Name
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  testNode
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </span>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source ID
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  test sourceId
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Name
+            </p>
+          </div>
+        </li>
+        <div
+          class="MuiCollapse-entered MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    test node. This is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh
+                  </span>
+                </div>
+              </li>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Long Name
+            </p>
+          </div>
+        </li>
+        <div
+          class="MuiCollapse-entered MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    test node. This is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh
+                  </span>
+                </div>
+              </li>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Subsets
+            </p>
+          </div>
+        </li>
+        <ul
+          class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                one
+              </span>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                two
+              </span>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                three
+              </span>
+            </div>
+          </li>
+        </ul>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Metadata
+            </p>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListSubheader-gutters MuiListSubheader-root MuiListSubheader-sticky css-XXXX-MuiListSubheader-root detail-drawer__relationships-subheader"
+        >
+          Relationships
+        </li>
+        <ul
+          class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root detail-link-wrapper"
+          >
+            <div
+              class="MuiListItemIcon-root css-XXXX-MuiListItemIcon-root"
+            >
+              <div
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-colorAction MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="LinkIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+              >
+                #135:0
+              </h6>
+              <p
+                class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                AliasOf
+              </p>
+            </div>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ExpandMoreIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              />
+            </svg>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OntologyNodeMetadataExpanded snapshot 1`] = `
+<div>
+  <div
+    class="MuiDrawer-anchorRight MuiDrawer-docked MuiDrawer-root css-XXXX-MuiDrawer-docked"
+  >
+    <div
+      class="MuiDrawer-paper MuiDrawer-paperAnchorDockedRight MuiDrawer-paperAnchorRight MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiDrawer-paper detail-drawer"
+    >
+      <div
+        class="detail-drawer__content"
+      >
+        <div
+          class="detail-drawer__heading"
+        >
+          <div>
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              testNode (#1:0)
+            </h2>
+          </div>
+          <a
+            data-discover="true"
+            href="/edit/Ontology/1:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="EditIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z"
+                />
+              </svg>
+            </button>
+          </a>
+          <a
+            data-discover="true"
+            href="/view/Ontology/1:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="OpenInNewIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                />
+              </svg>
+            </button>
+          </a>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Display Name
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  testNode
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </span>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source ID
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  test sourceId
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Name
+            </p>
+          </div>
+        </li>
+        <div
+          class="MuiCollapse-entered MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    test node. This is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh
+                  </span>
+                </div>
+              </li>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Long Name
+            </p>
+          </div>
+        </li>
+        <div
+          class="MuiCollapse-entered MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    test node. This is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh
+                  </span>
+                </div>
+              </li>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Subsets
+            </p>
+          </div>
+        </li>
+        <ul
+          class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                one
+              </span>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                two
+              </span>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                three
+              </span>
+            </div>
+          </li>
+        </ul>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Metadata
+            </p>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandLessIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+            />
+          </svg>
+        </li>
+        <div
+          class="MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <ul
+                class="MuiList-dense MuiList-root css-XXXX-MuiList-root detail-drawer__nested-list"
+              >
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                >
+                  <div
+                    class="nested-spacer"
+                  />
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                  >
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      <div
+                        class="detail-identifiers"
+                      >
+                        <p
+                          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                        >
+                          RID
+                        </p>
+                        <p
+                          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                        >
+                          #1:0
+                        </p>
+                      </div>
+                    </span>
+                  </div>
+                </li>
+                <hr
+                  class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+                />
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                >
+                  <div
+                    class="nested-spacer"
+                  />
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                  >
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      <div
+                        class="detail-identifiers"
+                      >
+                        <p
+                          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                        >
+                          Class
+                        </p>
+                        <p
+                          class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                        >
+                          Ontology
+                        </p>
+                      </div>
+                    </span>
+                  </div>
+                </li>
+                <hr
+                  class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+                />
+              </ul>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListSubheader-gutters MuiListSubheader-root MuiListSubheader-sticky css-XXXX-MuiListSubheader-root detail-drawer__relationships-subheader"
+        >
+          Relationships
+        </li>
+        <ul
+          class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root detail-link-wrapper"
+          >
+            <div
+              class="MuiListItemIcon-root css-XXXX-MuiListItemIcon-root"
+            >
+              <div
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-colorAction MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="LinkIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+              >
+                #135:0
+              </h6>
+              <p
+                class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                AliasOf
+              </p>
+            </div>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ExpandMoreIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              />
+            </svg>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OntologyRelationshipExpanded snapshot 1`] = `
+<div>
+  <div
+    class="MuiDrawer-anchorRight MuiDrawer-docked MuiDrawer-root css-XXXX-MuiDrawer-docked"
+  >
+    <div
+      class="MuiDrawer-paper MuiDrawer-paperAnchorDockedRight MuiDrawer-paperAnchorRight MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiDrawer-paper detail-drawer"
+    >
+      <div
+        class="detail-drawer__content"
+      >
+        <div
+          class="detail-drawer__heading"
+        >
+          <div>
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              testNode (#1:0)
+            </h2>
+          </div>
+          <a
+            data-discover="true"
+            href="/edit/Ontology/1:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="EditIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z"
+                />
+              </svg>
+            </button>
+          </a>
+          <a
+            data-discover="true"
+            href="/view/Ontology/1:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="OpenInNewIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                />
+              </svg>
+            </button>
+          </a>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Display Name
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  testNode
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </span>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source ID
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  test sourceId
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Name
+            </p>
+          </div>
+        </li>
+        <div
+          class="MuiCollapse-entered MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    test node. This is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh
+                  </span>
+                </div>
+              </li>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Long Name
+            </p>
+          </div>
+        </li>
+        <div
+          class="MuiCollapse-entered MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+        >
+          <div
+            class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+            >
+              <li
+                class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+              >
+                <div
+                  class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                >
+                  <span
+                    class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    test node. This is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh
+                  </span>
+                </div>
+              </li>
+            </div>
+          </div>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Subsets
+            </p>
+          </div>
+        </li>
+        <ul
+          class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                one
+              </span>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                two
+              </span>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-inset MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                three
+              </span>
+            </div>
+          </li>
+        </ul>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Metadata
+            </p>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListSubheader-gutters MuiListSubheader-root MuiListSubheader-sticky css-XXXX-MuiListSubheader-root detail-drawer__relationships-subheader"
+        >
+          Relationships
+        </li>
+        <ul
+          class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root detail-link-wrapper"
+          >
+            <div
+              class="MuiListItemIcon-root css-XXXX-MuiListItemIcon-root"
+            >
+              <div
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-colorAction MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="LinkIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root"
+              >
+                #135:0
+              </h6>
+              <p
+                class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                AliasOf
+              </p>
+            </div>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ExpandLessIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+              />
+            </svg>
+          </li>
+          <div
+            class="MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+            >
+              <div
+                class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+              >
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root detail-drawer__nested-list"
+                >
+                  <hr
+                    class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+                  />
+                  <li
+                    class="MuiListSubheader-colorPrimary MuiListSubheader-gutters MuiListSubheader-root css-XXXX-MuiListSubheader-root"
+                  >
+                    Linked Record
+                  </li>
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="nested-spacer"
+                    />
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <p
+                            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            RID
+                          </p>
+                          <p
+                            class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            #135:0
+                          </p>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                  <hr
+                    class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+                  />
+                </ul>
+                <hr
+                  class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+                />
+              </div>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`StatementNodeLinksExpanded snapshot 1`] = `
+<div>
+  <div
+    class="MuiDrawer-anchorRight MuiDrawer-docked MuiDrawer-root css-XXXX-MuiDrawer-docked"
+  >
+    <div
+      class="MuiDrawer-paper MuiDrawer-paperAnchorDockedRight MuiDrawer-paperAnchorRight MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiDrawer-paper detail-drawer"
+    >
+      <div
+        class="detail-drawer__content"
+      >
+        <div
+          class="detail-drawer__heading"
+        >
+          <div>
+            <h2
+              class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Given linkedRecord1 and linkedRecord2, {relevan...
+            </h2>
+          </div>
+          <a
+            data-discover="true"
+            href="/edit/Statement/12:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="EditIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75z"
+                />
+              </svg>
+            </button>
+          </a>
+          <a
+            data-discover="true"
+            href="/view/Statement/12:0"
+            target="_blank"
+          >
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                data-testid="OpenInNewIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                />
+              </svg>
+            </button>
+          </a>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Conditions
+            </p>
+          </div>
+        </li>
+        <ul
+          class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+        >
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                <div
+                  class="detail-identifiers-linkset"
+                >
+                  <p
+                    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Ontology
+                  </p>
+                  <p
+                    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    linkedRecord1 (19:1)
+                  </p>
+                </div>
+              </span>
+            </div>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ExpandLessIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+              />
+            </svg>
+          </li>
+          <div
+            class="MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+            >
+              <div
+                class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+              >
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <h6
+                            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root detail-identifiers-nested"
+                          >
+                            Display Name
+                          </h6>
+                          <h6
+                            class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            linkedRecord1
+                          </h6>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <h6
+                            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root detail-identifiers-nested"
+                          >
+                            RID
+                          </h6>
+                          <h6
+                            class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            <a
+                              class="record-link"
+                              data-discover="true"
+                              href="/view/Ontology/19:1"
+                              target="_blank"
+                            >
+                              <span>
+                                19:1
+                              </span>
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                data-testid="OpenInNewIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                />
+                              </svg>
+                            </a>
+                          </h6>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <h6
+                            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root detail-identifiers-nested"
+                          >
+                            Source ID
+                          </h6>
+                          <h6
+                            class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            BBC
+                          </h6>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <li
+            class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+          >
+            <div
+              class="nested-spacer"
+            />
+            <div
+              class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+            >
+              <span
+                class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+              >
+                <div
+                  class="detail-identifiers-linkset"
+                >
+                  <p
+                    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    Ontology
+                  </p>
+                  <p
+                    class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                  >
+                    linkedRecord2 (19:2)
+                  </p>
+                </div>
+              </span>
+            </div>
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+              data-testid="ExpandLessIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+              />
+            </svg>
+          </li>
+          <div
+            class="MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+            >
+              <div
+                class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+              >
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <h6
+                            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root detail-identifiers-nested"
+                          >
+                            Display Name
+                          </h6>
+                          <h6
+                            class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            linkedRecord2
+                          </h6>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <h6
+                            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root detail-identifiers-nested"
+                          >
+                            RID
+                          </h6>
+                          <h6
+                            class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            <a
+                              class="record-link"
+                              data-discover="true"
+                              href="/view/Ontology/19:2"
+                              target="_blank"
+                            >
+                              <span>
+                                19:2
+                              </span>
+                              <svg
+                                aria-hidden="true"
+                                class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                                data-testid="OpenInNewIcon"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                                />
+                              </svg>
+                            </a>
+                          </h6>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+                <ul
+                  class="MuiList-dense MuiList-root css-XXXX-MuiList-root"
+                >
+                  <li
+                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  >
+                    <div
+                      class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                      >
+                        <div
+                          class="detail-identifiers"
+                        >
+                          <h6
+                            class="MuiTypography-root MuiTypography-subtitle1 css-XXXX-MuiTypography-root detail-identifiers-nested"
+                          >
+                            Source ID
+                          </h6>
+                          <h6
+                            class="MuiTypography-h6 MuiTypography-root css-XXXX-MuiTypography-root"
+                          >
+                            CBC
+                          </h6>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </ul>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source ID
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  test sourceId
+                </p>
+              </div>
+            </span>
+          </div>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root detail-li-text"
+          >
+            <span
+              class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              <div
+                class="detail-identifiers"
+              >
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Source
+                </p>
+                <p
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                />
+              </div>
+            </span>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+        >
+          <div
+            class="MuiListItemText-dense MuiListItemText-root css-XXXX-MuiListItemText-root"
+          >
+            <p
+              class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+            >
+              Metadata
+            </p>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+            data-testid="ExpandMoreIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </li>
+        <hr
+          class="MuiDivider-fullWidth MuiDivider-root css-XXXX-MuiDivider-root"
+        />
+        <li
+          class="MuiListSubheader-gutters MuiListSubheader-root MuiListSubheader-sticky css-XXXX-MuiListSubheader-root detail-drawer__relationships-subheader"
+        >
+          Relationships
+        </li>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,5 +1,4 @@
 import { useSnackbar } from 'notistack';
-import * as qs from 'qs';
 import { NavigateFunction } from 'react-router';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -89,34 +88,15 @@ function decodeJSON<R = unknown>(input: string): R {
  * @param {function} onErrorCallback callback function to call if error occurs
  */
 const navigateToGraph = (nodeRIDs: unknown[], navigate: NavigateFunction, snackbar: ReturnType<typeof useSnackbar>) => {
-  const savedState: { nodes?: string } = {};
-  let encodedState;
+  const search = new URLSearchParams();
 
   try {
-    const encodedContent = encodeURIComponent(encodeJSON(nodeRIDs));
-
-    savedState.nodes = encodedContent;
-    encodedState = qs.stringify(savedState);
+    search.set('nodes', encodeJSON(nodeRIDs));
   } catch (err) {
     snackbar.enqueueSnackbar({ message: 'Unable to view graph. An error occurred encoding graph state', variant: 'error' });
   }
 
-  navigate({
-    pathname: '/data/graph',
-    search: `${encodedState}`,
-  });
-};
-
-/**
- * parses through URL and decodes it to return an array of node RIDs.
- */
-const getNodeRIDsFromURL = (href) => {
-  const URLBeforeNodeEncoding = href.split('nodes')[0];
-  const encodedData = href.split(URLBeforeNodeEncoding)[1];
-  const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
-  if (!nodes) return [];
-
-  return decodeJSON<string[]>(decodeURIComponent(nodes));
+  navigate(`/data/graph?${search}`);
 };
 
 type MutableTupleValue<T> = T extends readonly unknown[]
@@ -138,7 +118,6 @@ export {
   decodeJSON,
   encodeJSON,
   FORM_VARIANT,
-  getNodeRIDsFromURL,
   navigateToGraph,
   tuple,
 };

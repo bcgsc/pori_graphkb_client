@@ -157,7 +157,7 @@ export const withAuth: Decorator<WithAuthArgs> = (Story, { args }) => {
 
 
 interface LocationSpyProps {
-  onLocationChange?: (location: { pathname: string; search: string }, state: { state: unknown }) => void
+  onLocationChange?: (location: { pathname: string; search: string }) => void
 }
 
 function LocationSpy({ onLocationChange }: LocationSpyProps) {
@@ -166,7 +166,7 @@ function LocationSpy({ onLocationChange }: LocationSpyProps) {
     onLocationChange?.({
       search: location.search,
       pathname: location.pathname,
-    }, { state: location.state });
+    });
   }, [location, onLocationChange]);
   return null;
 }

@@ -1,6 +1,8 @@
 import { expect, fn, waitFor } from 'storybook/test';
 
+import { encodeJSON } from '@/components/util';
 import preview, {
+  hasFinishedLoading,
   http, selectOption, view, ViewPreviewType,
 } from '#.storybook/preview';
 
@@ -21,7 +23,8 @@ export const Default = meta.story({
 
 export const WithFilterGroup = Default.extend({
   args: { onLocationChange: fn() },
-  play: async ({ canvas, userEvent }) => {
+  play: async ({ canvas, userEvent, step }) => {
+    await hasFinishedLoading({ canvas, step });
     await selectOption(canvas, userEvent, 'relevance', /^immunotherapy/);
     const addBtn = await canvas.findByText(/add to selected group/i);
     await waitFor(() => expect(addBtn).toBeEnabled());
@@ -36,18 +39,10 @@ WithFilterGroup.test('clicking search navigates to results page', async ({ canva
   await waitFor(() => expect(args.onLocationChange).toHaveBeenLastCalledWith(
     {
       pathname: '/data/table',
-      search: '?%40class=Statement&complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjpbeyJvcGVyYXRvciI6IklOIiwicmVsZXZhbmNlIjpbIiMxMTE6MTExIl19XX0%253D',
+      search: `?${new URLSearchParams({
+        '@class': 'Statement',
+        complex: encodeJSON({ target: 'Statement', filters: [{ operator: 'IN', relevance: ['#111:111'] }] }),
+      })}`,
     },
-    {
-      state: {
-        query: {
-          filters: [{
-            operator: 'IN',
-            relevance: ['#111:111'],
-          }],
-          target: 'Statement',
-        },
-      },
-    },
-  ));
+  ), { timeout: 5000 });
 });

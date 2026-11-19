@@ -39,10 +39,7 @@ const QuickSearch = () => {
       };
 
       const search = api.encodeQueryComplexToSearch(payload, 'Statement');
-      navigate({
-        pathname: '/data/table',
-        search,
-      });
+      navigate(`/data/table?${search}`);
     }
   }, [errorMessage, navigate, value]);
 
@@ -64,10 +61,7 @@ const QuickSearch = () => {
         'Statement',
       );
 
-      navigate({
-        pathname: '/data/table',
-        search,
-      });
+      navigate(`/data/table?${search}`);
     }
   }, [navigate, value, variant]);
 

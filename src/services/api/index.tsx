@@ -3,7 +3,6 @@
  */
 import { util } from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
-import qs from 'qs';
 import { QueryClient } from 'react-query';
 import { createContext as createRouterContext } from 'react-router';
 
@@ -134,16 +133,13 @@ const getDefaultSuggestionQueryBody = (model) => (textInput: string): QueryBody 
  * @param {string} modelName target class that is expected to be returned
  * generated at the top of dataview
  */
-const encodeQueryComplexToSearch = (content, modelName = 'V') => {
-  const payload: Record<string, unknown> = {};
-  payload['@class'] = modelName;
+const encodeQueryComplexToSearch = (content: unknown, modelName = 'V'): URLSearchParams => {
+  const search = new URLSearchParams({ '@class': modelName });
 
   if (content) {
-    const encodedContent = encodeURIComponent(encodeJSON(content));
-    payload.complex = encodedContent;
+    search.set('complex', encodeJSON(content));
   }
 
-  const search = qs.stringify(payload);
   return search;
 };
 

@@ -21,6 +21,7 @@ import React, {
 } from 'react';
 import { useQuery } from 'react-query';
 
+import { QueryBody } from '@/components/types';
 import { tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
@@ -46,10 +47,9 @@ const extractRids = (obj) => {
   return Array.from(new Set(recordIds));
 };
 
-const ActiveFilters = ({ search }: { search: string; }) => {
+const ActiveFilters = ({ queryBody }: { queryBody: QueryBody; }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { payload, routeName } = useMemo(() => api.getQueryFromSearch(search), [search]);
-  const recordIds = useMemo(() => extractRids(payload), [payload]);
+  const recordIds = useMemo(() => extractRids(queryBody), [queryBody]);
 
   const { data: recordHash } = useQuery({
     queryKey: tuple(
@@ -90,8 +90,8 @@ const ActiveFilters = ({ search }: { search: string; }) => {
   }, [recordHash]);
 
   const handleCopyToClipboard = useCallback(() => {
-    copy(JSON.stringify(payload));
-  }, [payload]);
+    copy(JSON.stringify(queryBody));
+  }, [queryBody]);
 
   return (
     <>
@@ -119,9 +119,9 @@ const ActiveFilters = ({ search }: { search: string; }) => {
           }}
         >
           <Card className="active-filters-card">
-            <CardHeader title={routeName} />
+            <CardHeader title="/query" />
             <CardContent className="active-filters-card__content">
-              <JSONView data={payload} indent="  " ValueComponent={ValueComponent} />
+              <JSONView data={queryBody} indent="  " ValueComponent={ValueComponent} />
             </CardContent>
             <CardActions className="active-filters-card__actions">
               <Button onClick={handleCopyToClipboard}>

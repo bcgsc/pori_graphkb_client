@@ -11,9 +11,6 @@ import { GeneralRecordType, QueryBody } from '@/components/types';
 
 import schema from '../schema';
 import { request, RequestCallOptions } from './call';
-import {
-  getQueryFromSearch, getSearchFromQuery,
-} from './search';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -155,8 +152,6 @@ const routerQueryContext = createRouterContext<QueryClient>();
 
 export default {
   encodeQueryComplexToSearch,
-  getQueryFromSearch,
-  getSearchFromQuery,
   CLASS_PROP,
   delete: del,
   get,

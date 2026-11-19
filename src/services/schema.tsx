@@ -9,8 +9,6 @@ import { titleCase } from 'change-case';
 import { EdgeType, GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
-import { getQueryFromSearch } from './api/search';
-
 const MAX_LABEL_LENGTH = 50;
 
 type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
@@ -235,13 +233,9 @@ const validateValue = (propModel: SchemaPropertyDefinition, value: unknown): Val
 /**
  * Given some search string, defines column definitions for AgGrid table
  *
- * @param {string} search the URI search component
- *
  * @returns {Array.<object>} the column definitions to be applied to a grid
  */
-const defineGridColumns = (search) => {
-  const { modelName } = getQueryFromSearch(search);
-
+const defineGridColumns = (modelName: string) => {
   const showEdges: string[] = [];
   const showByDefault: string[] = [];
   const defaultOrdering: string[] = [];

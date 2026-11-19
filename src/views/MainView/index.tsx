@@ -30,7 +30,6 @@ const AboutViewNotationTab = lazy(() => import('@/views/AboutView/components/Not
 const ActivityView = lazy(() => import('@/views/ActivityView'));
 const AdminView = lazy(() => import('@/views/AdminView'));
 const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
-const DataView = lazy(() => import('@/views/DataView'));
 const GraphView = lazy(() => import('@/views/GraphView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
@@ -118,7 +117,7 @@ export const createRoutes = (MainAuthLayout?: React.ComponentType): RouteObject[
             Component: RecordView,
             loader: createRecordLoader(FORM_VARIANT.NEW),
           },
-          { path: '/data/table', Component: DataView },
+          { path: '/data/table', lazy: () => import('@/views/DataView') },
           { path: '/data/graph', Component: GraphView },
           { path: '/import/pubmed', Component: ImportPubmedView },
         ],

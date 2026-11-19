@@ -1,6 +1,7 @@
 import { expect } from 'storybook/test';
 
 import { GeneralRecordType } from '@/components/types';
+import { encodeJSON } from '@/components/util';
 import preview, {
   hasFinishedLoading,
   http,
@@ -23,7 +24,7 @@ export const GraphNoNodes = meta.story({
 
 export const GraphOneNode = meta.story({
   args: {
-    path: `/data/graph?nodes=${encodeURIComponent(btoa(JSON.stringify(['#123:123'])))}`,
+    path: `/data/graph?nodes=${encodeURIComponent(encodeJSON(['#123:123']))}`,
   },
   beforeEach({ msw }) {
     msw.use(http.gkb.query((body) => {

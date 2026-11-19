@@ -23,7 +23,7 @@ import {
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
 import { GeneralRecordType, QueryBody } from '@/components/types';
-import { tuple } from '@/components/util';
+import { decodeJSON, tuple } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage, NotFoundError } from '@/services/errors';
 import schema from '@/services/schema';
@@ -88,7 +88,7 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 
   if (complex) {
     // the decodeURIComponent should not be necessary but this seems to be double encoded
-    payload = JSON.parse(atob(decodeURIComponent(complex))) as QueryBody;
+    payload = decodeJSON<QueryBody>(decodeURIComponent(complex));
 
     if (payload.target && typeof payload.target === 'string') {
       modelName = payload.target;

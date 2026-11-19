@@ -68,6 +68,19 @@ const cleanPayload = (payload) => {
   return newPayload;
 };
 
+function encodeJSON(input: unknown): string {
+  // Escape non-Latin-1 code units without changing the legacy base64 format.
+  const json = JSON.stringify(input).replace(
+    /[\u0100-\uffff]/g,
+    (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, '0')}`,
+  );
+  return btoa(json);
+}
+
+function decodeJSON<R = unknown>(input: string): R {
+  return JSON.parse(atob(input)) as R;
+}
+
 /**
  * Save graph state (nodeRIDS) to URL and jump to graphview with nodeRIDs as initial seed
  *
@@ -80,9 +93,7 @@ const navigateToGraph = (nodeRIDs: unknown[], navigate: NavigateFunction, snackb
   let encodedState;
 
   try {
-    const stringifiedState = JSON.stringify(nodeRIDs);
-    const base64encodedState = btoa(stringifiedState);
-    const encodedContent = encodeURIComponent(base64encodedState);
+    const encodedContent = encodeURIComponent(encodeJSON(nodeRIDs));
 
     savedState.nodes = encodedContent;
     encodedState = qs.stringify(savedState);
@@ -105,10 +116,7 @@ const getNodeRIDsFromURL = (href) => {
   const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
   if (!nodes) return [];
 
-  const decodedContent = decodeURIComponent(nodes);
-  const base64decoded = atob(decodedContent);
-  const decodedNodes = JSON.parse(base64decoded);
-  return decodedNodes;
+  return decodeJSON<string[]>(decodeURIComponent(nodes));
 };
 
 type MutableTupleValue<T> = T extends readonly unknown[]
@@ -127,6 +135,8 @@ function tuple<const T extends readonly [unknown, unknown, ...unknown[]]>(...val
 export {
   cleanLinkedRecords,
   cleanPayload,
+  decodeJSON,
+  encodeJSON,
   FORM_VARIANT,
   getNodeRIDsFromURL,
   navigateToGraph,

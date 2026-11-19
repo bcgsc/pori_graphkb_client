@@ -8,6 +8,7 @@ import { QueryClient } from 'react-query';
 import { createContext as createRouterContext } from 'react-router';
 
 import { GeneralRecordType, QueryBody } from '@/components/types';
+import { encodeJSON } from '@/components/util';
 
 import schema from '../schema';
 import { request, RequestCallOptions } from './call';
@@ -138,9 +139,7 @@ const encodeQueryComplexToSearch = (content, modelName = 'V') => {
   payload['@class'] = modelName;
 
   if (content) {
-    const stringifiedContent = JSON.stringify(content);
-    const base64EncodedContent = btoa(stringifiedContent);
-    const encodedContent = encodeURIComponent(base64EncodedContent);
+    const encodedContent = encodeURIComponent(encodeJSON(content));
     payload.complex = encodedContent;
   }
 

@@ -8,7 +8,7 @@ exports[`ComplexOptions snapshot 1`] = `
     tabindex="-1"
   >
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="0"
     >
@@ -18,7 +18,6 @@ exports[`ComplexOptions snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-apple-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__apple"
           type="radio"
         />
         <span
@@ -52,20 +51,20 @@ exports[`ComplexOptions snapshot 1`] = `
         class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-apple-label"
         >
           apple
         </span>
         <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
         >
           this the most basic fruit
         </p>
       </div>
     </li>
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="-1"
     >
@@ -75,7 +74,6 @@ exports[`ComplexOptions snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-orange-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__orange"
           type="radio"
         />
         <span
@@ -109,13 +107,13 @@ exports[`ComplexOptions snapshot 1`] = `
         class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-orange-label"
         >
           orange
         </span>
         <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
         >
           contensious, rhymes with nothing
         </p>
@@ -133,7 +131,7 @@ exports[`ComplexOptionsWithValueSelected snapshot 1`] = `
     tabindex="-1"
   >
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="-1"
     >
@@ -143,7 +141,6 @@ exports[`ComplexOptionsWithValueSelected snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-apple-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__apple"
           type="radio"
         />
         <span
@@ -177,20 +174,20 @@ exports[`ComplexOptionsWithValueSelected snapshot 1`] = `
         class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-apple-label"
         >
           apple
         </span>
         <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
         >
           this the most basic fruit
         </p>
       </div>
     </li>
     <li
-      class="Mui-selected MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="Mui-selected MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="0"
     >
@@ -201,7 +198,6 @@ exports[`ComplexOptionsWithValueSelected snapshot 1`] = `
           aria-labelledby="_r_XXXX_-orange-label"
           checked=""
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__orange"
           type="radio"
         />
         <span
@@ -235,13 +231,13 @@ exports[`ComplexOptionsWithValueSelected snapshot 1`] = `
         class="MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-orange-label"
         >
           orange
         </span>
         <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
+          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
         >
           contensious, rhymes with nothing
         </p>
@@ -269,7 +265,7 @@ exports[`StringOptions snapshot 1`] = `
     tabindex="-1"
   >
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="0"
     >
@@ -279,7 +275,6 @@ exports[`StringOptions snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-apple-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__apple"
           type="radio"
         />
         <span
@@ -313,18 +308,15 @@ exports[`StringOptions snapshot 1`] = `
         class="MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-apple-label"
         >
           apple
         </span>
-        <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
-        />
       </div>
     </li>
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="-1"
     >
@@ -334,7 +326,6 @@ exports[`StringOptions snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-banana-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__banana"
           type="radio"
         />
         <span
@@ -368,18 +359,15 @@ exports[`StringOptions snapshot 1`] = `
         class="MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-banana-label"
         >
           banana
         </span>
-        <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
-        />
       </div>
     </li>
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="-1"
     >
@@ -389,7 +377,6 @@ exports[`StringOptions snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-orange-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__orange"
           type="radio"
         />
         <span
@@ -423,14 +410,11 @@ exports[`StringOptions snapshot 1`] = `
         class="MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-orange-label"
         >
           orange
         </span>
-        <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
-        />
       </div>
     </li>
   </ul>
@@ -445,7 +429,7 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
     tabindex="-1"
   >
     <li
-      class="Mui-selected MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="Mui-selected MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="0"
     >
@@ -456,7 +440,6 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
           aria-labelledby="_r_XXXX_-apple-label"
           checked=""
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__apple"
           type="radio"
         />
         <span
@@ -490,18 +473,15 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
         class="MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-apple-label"
         >
           apple
         </span>
-        <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
-        />
       </div>
     </li>
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="-1"
     >
@@ -511,7 +491,6 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-banana-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__banana"
           type="radio"
         />
         <span
@@ -545,18 +524,15 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
         class="MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-banana-label"
         >
           banana
         </span>
-        <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
-        />
       </div>
     </li>
     <li
-      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root radio-option"
+      class="MuiButtonBase-root MuiMenuItem-gutters MuiMenuItem-root css-XXXX-MuiButtonBase-root-MuiMenuItem-root"
       role="menuitem"
       tabindex="-1"
     >
@@ -566,7 +542,6 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
         <input
           aria-labelledby="_r_XXXX_-orange-label"
           class="PrivateSwitchBase-input css-XXXX-MuiSwitchBase-root"
-          data-testid="radio-option__orange"
           type="radio"
         />
         <span
@@ -600,14 +575,11 @@ exports[`StringOptionsWithValueSelected snapshot 1`] = `
         class="MuiListItemText-root css-XXXX-MuiListItemText-root"
       >
         <span
-          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root radio-option__title"
+          class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
           id="_r_XXXX_-orange-label"
         >
           orange
         </span>
-        <p
-          class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root radio-option__caption"
-        />
       </div>
     </li>
   </ul>

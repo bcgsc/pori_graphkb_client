@@ -7,7 +7,13 @@ import preview, {
   view, ViewPreviewType,
 } from '#.storybook/preview';
 
-const meta = preview.type<ViewPreviewType>().meta({ ...view });
+const meta = preview.type<ViewPreviewType>().meta({
+  ...view,
+  beforeEach({ msw }) {
+    window.localStorage.clear();
+    msw.use(http.gkb.query(() => []));
+  },
+});
 
 export const GraphNoNodes = meta.story({
   args: {

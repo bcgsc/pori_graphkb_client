@@ -154,114 +154,30 @@ exports[`ClassesTab snapshot 1`] = `
   <div
   >
     <div
-      class="about-page"
+      class="error-wrapper"
     >
-      <div
-        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      <h2
+        class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
-        />
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
-        >
-          <div
-            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
-            role="tablist"
-          >
-            <a
-              aria-current="page"
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about"
-              role="tab"
-              tabindex="-1"
-            >
-              About
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/getting-started"
-              role="tab"
-              tabindex="-1"
-            >
-              Getting Started
-            </a>
-            <a
-              aria-current="page"
-              aria-selected="true"
-              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/classes"
-              role="tab"
-              tabindex="0"
-            >
-              Classes
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/notation"
-              role="tab"
-              tabindex="-1"
-            >
-              Notation
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/matching"
-              role="tab"
-              tabindex="-1"
-            >
-              Matching
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/terms"
-              role="tab"
-              tabindex="-1"
-            >
-              Terms of Use
-            </a>
-          </div>
-          <span
-            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
-          />
-        </div>
-      </div>
-      <div
-        class="tabs-content"
+        Forbidden
+      </h2>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="auth-centered"
+        User must sign the license agreement before they can access data.
+      </p>
+      <a
+        data-discover="true"
+        href="/about/terms"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <h2
-            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            Forbidden
-          </h2>
-          <p
-            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            User must sign the license agreement before they can access data.
-          </p>
-          <button
-            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            Terms of Use and License Agreement
-          </button>
-        </div>
-      </div>
+          Terms of Use and License Agreement
+        </button>
+      </a>
     </div>
   </div>
 </div>
@@ -2468,114 +2384,30 @@ exports[`MatchingTab snapshot 1`] = `
   <div
   >
     <div
-      class="about-page"
+      class="error-wrapper"
     >
-      <div
-        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      <h2
+        class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
-        />
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
-        >
-          <div
-            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
-            role="tablist"
-          >
-            <a
-              aria-current="page"
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about"
-              role="tab"
-              tabindex="-1"
-            >
-              About
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/getting-started"
-              role="tab"
-              tabindex="-1"
-            >
-              Getting Started
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/classes"
-              role="tab"
-              tabindex="-1"
-            >
-              Classes
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/notation"
-              role="tab"
-              tabindex="-1"
-            >
-              Notation
-            </a>
-            <a
-              aria-current="page"
-              aria-selected="true"
-              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/matching"
-              role="tab"
-              tabindex="0"
-            >
-              Matching
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/terms"
-              role="tab"
-              tabindex="-1"
-            >
-              Terms of Use
-            </a>
-          </div>
-          <span
-            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
-          />
-        </div>
-      </div>
-      <div
-        class="tabs-content"
+        Forbidden
+      </h2>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="auth-centered"
+        User must sign the license agreement before they can access data.
+      </p>
+      <a
+        data-discover="true"
+        href="/about/terms"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <h2
-            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            Forbidden
-          </h2>
-          <p
-            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            User must sign the license agreement before they can access data.
-          </p>
-          <button
-            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            Terms of Use and License Agreement
-          </button>
-        </div>
-      </div>
+          Terms of Use and License Agreement
+        </button>
+      </a>
     </div>
   </div>
 </div>

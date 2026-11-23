@@ -18,7 +18,7 @@ import {
   Link, NavLink,
 } from 'react-router';
 
-import { useAuth } from '@/components/Auth';
+import { logout, useAuth } from '@/components/Auth';
 
 interface MainAppBarProps {
   onDrawerChange: (isOpen: boolean) => void;
@@ -68,7 +68,7 @@ const MainAppBar = ({
           >
             <PersonIcon />
             <Typography color="inherit" variant="h6">
-              {auth.isAuthenticated ? auth.username : 'Logged Out'}
+              {auth.username}
             </Typography>
           </Button>
           <Menu
@@ -87,20 +87,12 @@ const MainAppBar = ({
                 Admin
               </MenuItem>
             )}
-            {auth.isAuthenticated && (
-              <MenuItem component={NavLink} to="/user-profile">
-                Profile
-              </MenuItem>
-            )}
-            {auth.isAuthenticated ? (
-              <MenuItem onClick={() => auth.logout()}>
-                Logout
-              </MenuItem>
-            ) : (
-              <MenuItem onClick={() => auth.login()}>
-                Login
-              </MenuItem>
-            )}
+            <MenuItem component={NavLink} to="/user-profile">
+              Profile
+            </MenuItem>
+            <MenuItem onClick={logout}>
+              Logout
+            </MenuItem>
           </Menu>
         </div>
       </div>

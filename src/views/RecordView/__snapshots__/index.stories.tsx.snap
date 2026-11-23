@@ -1,11 +1,1275 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`CopyStatement snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
+    >
+      <div
+        class="record-form__header"
+      >
+        <span
+          class="title"
+        >
+          <h1
+            class="MuiTypography-h1 MuiTypography-root css-XXXX-MuiTypography-root"
+          >
+            Create a new Statement Record
+          </h1>
+        </span>
+        <div
+          class="header__actions header__actions--new"
+        />
+      </div>
+      <p
+        class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root sentence-preview"
+      >
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          high mutation burden high signature
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           is associated with
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          sensitivity
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           to
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          pembrolizumab [DB09037]
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           in
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          all solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+           (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          FDA approves pembrolizumab for adults and children with TMB-H solid tumors
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          ) (
+        </span>
+        <mark
+          class="sentence-preview__chunk--highlighted"
+        >
+          IPR-A
+        </mark>
+        <span
+          class="sentence-preview__chunk"
+        >
+          )
+        </span>
+      </p>
+      <div
+        class="MuiStack-root css-XXXX-MuiStack-root"
+      >
+        <div
+          class="column-layout-container"
+        >
+          <div
+            class="column-layout"
+          >
+            <div
+              class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  conditions
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                  >
+                    <span
+                      aria-hidden="true"
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                    <div
+                      class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-label="Filter (conditions) Search by Class"
+                        aria-labelledby="mui-component-select-search-class"
+                        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                        id="mui-component-select-search-class"
+                        role="combobox"
+                        tabindex="0"
+                      >
+                        Variant
+                      </div>
+                      <input
+                        aria-hidden="true"
+                        aria-invalid="false"
+                        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                        name="search-class"
+                        tabindex="-1"
+                        value="Variant"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        aria-label="Filter records search by selected Class"
+                        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                        data-mui-internal-clone-element="true"
+                        data-testid="FilterListIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        pembrolizumab [DB09037] (#122:30774)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="1"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        all solid tumors (#133:21363)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="2"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        high mutation burden high signature (#161:920)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                  >
+                    <button
+                      aria-label="Clear"
+                      class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                      tabindex="-1"
+                      title="Clear"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CloseIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      aria-label="Open"
+                      class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                      tabindex="-1"
+                      title="Open"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="SearchIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  This is the statement context. Formally it is a set of conditions which when true result in the overall assertion of the statement
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  evidence
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                  >
+                    <span
+                      aria-hidden="true"
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                    <div
+                      class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-label="Filter (evidence) Search by Class"
+                        aria-labelledby="mui-component-select-search-class"
+                        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                        id="mui-component-select-search-class"
+                        role="combobox"
+                        tabindex="0"
+                      >
+                        Evidence
+                      </div>
+                      <input
+                        aria-hidden="true"
+                        aria-invalid="false"
+                        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                        name="search-class"
+                        tabindex="-1"
+                        value="Evidence"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        aria-label="Filter records search by selected Class"
+                        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                        data-mui-internal-clone-element="true"
+                        data-testid="FilterListIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        FDA approves pembrolizumab for adults and child...
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                  >
+                    <button
+                      aria-label="Clear"
+                      class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                      tabindex="-1"
+                      title="Clear"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CloseIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      aria-label="Open"
+                      class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                      tabindex="-1"
+                      title="Open"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="SearchIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  One or more pieces of evidence (Literature, DB, etc) which support the overall assertion
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  relevance
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        sensitivity (#148:34)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                  >
+                    <button
+                      aria-label="Clear"
+                      class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                      tabindex="-1"
+                      title="Clear"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CloseIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      aria-label="Open"
+                      class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                      tabindex="-1"
+                      title="Open"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="SearchIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  Adds meaning to a statement and applies to the "subject" element
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root filtered-record-autocomplete record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="Mui-required MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  subject
+                  <span
+                    aria-hidden="true"
+                    class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-XXXX-MuiFormLabel-asterisk"
+                  >
+                     
+                    *
+                  </span>
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="MuiInputAdornment-positionStart MuiInputAdornment-root MuiInputAdornment-sizeMedium MuiInputAdornment-standard css-XXXX-MuiInputAdornment-root"
+                  >
+                    <span
+                      aria-hidden="true"
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                    <div
+                      class="MuiInput-root MuiInputBase-colorPrimary MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root-MuiSelect-root filtered-record-autocomplete__class-filter"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-label="Filter (subject) Search by Class"
+                        aria-labelledby="mui-component-select-search-class"
+                        class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                        id="mui-component-select-search-class"
+                        role="combobox"
+                        tabindex="0"
+                      >
+                        Biomarker
+                      </div>
+                      <input
+                        aria-hidden="true"
+                        aria-invalid="false"
+                        class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                        name="search-class"
+                        tabindex="-1"
+                        value="Biomarker"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        aria-label="Filter records search by selected Class"
+                        class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                        data-mui-internal-clone-element="true"
+                        data-testid="FilterListIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        pembrolizumab [DB09037] (#122:30774)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    required=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                  >
+                    <button
+                      aria-label="Clear"
+                      class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                      tabindex="-1"
+                      title="Clear"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CloseIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      aria-label="Open"
+                      class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                      tabindex="-1"
+                      title="Open"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="SearchIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p
+                  class="Mui-required MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  The subject of the statement. For example in a therapeutic efficacy statement this would be a drug
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="false"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                description
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="description"
+                  id="_r_XXXX_"
+                  name="description"
+                />
+                <textarea
+                  aria-hidden="true"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                <span
+                  aria-hidden="true"
+                  class="notranslate"
+                >
+                  ​
+                </span>
+              </p>
+            </div>
+            <div
+              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                displayNameTemplate
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <textarea
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-invalid="false"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  data-testid="displayNameTemplate"
+                  id="_r_XXXX_"
+                  name="displayNameTemplate"
+                >
+                  {conditions:variant} is associated with {relevance} to {subject} in {conditions:disease} ({evidence}) ({evidenceLevel})
+                </textarea>
+                <textarea
+                  aria-hidden="true"
+                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                  readonly=""
+                  tabindex="-1"
+                />
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The template used in building the display name
+              </p>
+            </div>
+            <div
+              class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  evidenceLevel
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInput-underline MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        IPR-A (#108:30)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                  >
+                    <button
+                      aria-label="Clear"
+                      class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                      tabindex="-1"
+                      title="Clear"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CloseIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      aria-label="Open"
+                      class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                      tabindex="-1"
+                      title="Open"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="SearchIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  A summarization of the supporting evidence for this statment as a category
+                </p>
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root option-select"
+            >
+              <label
+                class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="true"
+                for="_r_XXXX_"
+                id="_r_XXXX_-label"
+              >
+                reviewStatus
+              </label>
+              <div
+                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-root MuiSelect-root css-XXXX-MuiInputBase-root-MuiInput-root"
+              >
+                <div
+                  aria-describedby="_r_XXXX_-helper-text"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-labelledby="_r_XXXX_-label _r_XXXX_"
+                  class="MuiInput-input MuiInputBase-input MuiSelect-select MuiSelect-standard css-XXXX-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input-MuiInput-input"
+                  id="_r_XXXX_"
+                  role="combobox"
+                  tabindex="0"
+                >
+                  <div
+                    class="MuiListItemText-root css-XXXX-MuiListItemText-root"
+                  >
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      initial
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root option-select__option-description"
+                    />
+                  </div>
+                </div>
+                <input
+                  aria-hidden="true"
+                  aria-invalid="false"
+                  class="MuiSelect-nativeInput css-XXXX-MuiSelect-nativeInput"
+                  name="reviewStatus"
+                  tabindex="-1"
+                  value="initial"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSelect-icon MuiSelect-iconStandard MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                  data-testid="ArrowDropDownIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+              <p
+                class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                id="_r_XXXX_-helper-text"
+              >
+                The review status of the overall statement. The amalgemated status of all (or no) reviews
+              </p>
+            </div>
+            <div
+              class="MuiAutocomplete-hasClearIcon MuiAutocomplete-hasPopupIcon MuiAutocomplete-root css-XXXX-MuiAutocomplete-root record-autocomplete"
+            >
+              <div
+                class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root"
+              >
+                <label
+                  class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                  data-shrink="true"
+                  for="_r_XXXX_"
+                  id="_r_XXXX_-label"
+                >
+                  source
+                </label>
+                <div
+                  class="MuiAutocomplete-inputRoot MuiInput-root MuiInputBase-adornedEnd MuiInputBase-adornedStart MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                >
+                  <div
+                    class="detail-chip"
+                  >
+                    <div
+                      class="MuiAutocomplete-tag MuiAutocomplete-tagSizeMedium MuiButtonBase-root MuiChip-clickable MuiChip-clickableColorPrimary MuiChip-colorPrimary MuiChip-deletable MuiChip-deletableColorPrimary MuiChip-outlined MuiChip-outlinedPrimary MuiChip-root MuiChip-sizeSmall css-XXXX-MuiButtonBase-root-MuiChip-root detail-chip__outlined detail-chip__root record-autocomplete__chip record-autocomplete__chip--multi"
+                      data-item-index="0"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <span
+                        class="MuiChip-label MuiChip-labelSmall css-XXXX-MuiChip-label"
+                      >
+                        civic (#111:777)
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        class="MuiChip-deleteIcon MuiChip-deleteIconColorPrimary MuiChip-deleteIconOutlinedColorPrimary MuiChip-deleteIconSmall MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CancelIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-describedby="_r_XXXX_-helper-text"
+                    aria-expanded="false"
+                    aria-invalid="false"
+                    autocapitalize="none"
+                    autocomplete="off"
+                    class="MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiInputBase-inputAdornedStart css-XXXX-MuiInputBase-input-MuiInput-input"
+                    id="_r_XXXX_"
+                    placeholder=""
+                    role="combobox"
+                    spellcheck="false"
+                    type="text"
+                    value=""
+                  />
+                  <div
+                    class="MuiAutocomplete-endAdornment css-XXXX-MuiAutocomplete-endAdornment"
+                  >
+                    <button
+                      aria-label="Clear"
+                      class="MuiAutocomplete-clearIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                      tabindex="-1"
+                      title="Clear"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="CloseIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      aria-label="Open"
+                      class="MuiAutocomplete-popupIndicator MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-XXXX-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                      tabindex="-1"
+                      title="Open"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                        data-testid="SearchIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <p
+                  class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                  id="_r_XXXX_-helper-text"
+                >
+                  If the statement is imported from an external source, it is linked here
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiAccordion-root MuiPaper-elevation MuiPaper-elevation0 MuiPaper-root css-XXXX-MuiPaper-root-MuiAccordion-root"
+        >
+          <h3
+            class="MuiAccordion-heading css-XXXX-MuiAccordion-heading"
+          >
+            <button
+              aria-controls="_r_XXXX_-content"
+              aria-expanded="false"
+              class="MuiAccordionSummary-root MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiAccordionSummary-root"
+              id="_r_XXXX_-header"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiAccordionSummary-content css-XXXX-MuiAccordionSummary-content"
+              >
+                <span
+                  class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+                >
+                  Expand to see additional fields
+                </span>
+              </span>
+              <span
+                class="MuiAccordionSummary-expandIconWrapper css-XXXX-MuiAccordionSummary-expandIconWrapper"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-fontSizeSmall MuiSvgIcon-root css-XXXX-MuiSvgIcon-root"
+                  data-testid="ExpandMoreIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  />
+                </svg>
+              </span>
+            </button>
+          </h3>
+          <div
+            class="MuiCollapse-hidden MuiCollapse-root MuiCollapse-vertical css-XXXX-MuiCollapse-root"
+          >
+            <div
+              class="MuiCollapse-vertical MuiCollapse-wrapper css-XXXX-MuiCollapse-wrapper"
+            >
+              <div
+                class="MuiCollapse-vertical MuiCollapse-wrapperInner css-XXXX-MuiCollapse-wrapperInner"
+              >
+                <div
+                  aria-labelledby="_r_XXXX_-header"
+                  class="MuiAccordion-region css-XXXX-MuiAccordion-region"
+                  id="_r_XXXX_-content"
+                  role="region"
+                >
+                  <div
+                    class="MuiAccordionDetails-root css-XXXX-MuiAccordionDetails-root"
+                  >
+                    <div
+                      class="column-layout-container"
+                    >
+                      <div
+                        class="column-layout"
+                      >
+                        <div
+                          class="column-layout__item column-layout__item--full-width"
+                        >
+                          <div
+                            class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                          >
+                            <label
+                              class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                              data-shrink="true"
+                              for="_r_XXXX_"
+                              id="_r_XXXX_-label"
+                            >
+                              comment
+                            </label>
+                            <div
+                              class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                            >
+                              <textarea
+                                aria-describedby="_r_XXXX_-helper-text"
+                                aria-invalid="false"
+                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                                data-testid="comment"
+                                id="_r_XXXX_"
+                                name="comment"
+                              >
+                                for the treatment of adult and pediatric patients with unresectable or metastatic tumor mutational burden-high (tmb-h) [≥10 mutations/megabase (mut/mb)] solid tumors, as determined by an fda-approved test, that have progressed following prior treatment and who have no satisfactory alternative treatment options.
+                              </textarea>
+                              <textarea
+                                aria-hidden="true"
+                                class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                                readonly=""
+                                tabindex="-1"
+                              />
+                            </div>
+                            <p
+                              class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                              id="_r_XXXX_-helper-text"
+                            >
+                              <span
+                                aria-hidden="true"
+                                class="notranslate"
+                              >
+                                ​
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="record-form__action-buttons"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          SUBMIT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`EditAliasOf snapshot 1`] = `
 <div>
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -702,17 +1966,16 @@ exports[`EditAliasOf snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div />
       </div>
     </div>
   </div>
@@ -724,7 +1987,7 @@ exports[`EditCategoryVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -1818,27 +3081,23 @@ exports[`EditCategoryVariant snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -1850,7 +3109,7 @@ exports[`EditPositionalVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -3389,28 +4648,24 @@ exports[`EditPositionalVariant snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          disabled=""
+          tabindex="-1"
+          type="button"
         >
-          <button
-            class="Mui-disabled MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -3422,7 +4677,7 @@ exports[`EditStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -5195,27 +6450,23 @@ exports[`EditStatement snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             DELETE RECORD
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -5227,7 +6478,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -7041,10 +8292,10 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
         class="record-form__action-buttons"
       >
         <div
-          class="action-button"
+          class="action-button record-form__delete-button"
         >
           <button
-            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
+            class="MuiButton-colorError MuiButton-outlined MuiButton-outlinedError MuiButton-outlinedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
@@ -7054,17 +8305,13 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
             />
           </button>
         </div>
-        <div
-          class="action-button"
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeMedium MuiButton-root MuiButton-sizeMedium MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <button
-            class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-root MuiButton-sizeLarge MuiButtonBase-root action-button__button css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            SUBMIT CHANGES
-          </button>
-        </div>
+          SUBMIT CHANGES
+        </button>
       </div>
     </div>
   </div>
@@ -7076,7 +8323,7 @@ exports[`ViewAliasOf snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -7624,10 +8871,7 @@ exports[`ViewAliasOf snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -7643,7 +8887,7 @@ exports[`ViewAliasOfNotFound snapshot 1`] = `
       <h2
         class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        APIConnectionFailureError
+        Not Found
       </h2>
       <h3
         class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
@@ -7663,7 +8907,7 @@ exports[`ViewAliasOfNotFound snapshot 1`] = `
         </a>
          ticket or email us at 
         <a
-          href="mailto:graphkb@bcgsc.ca?subject=APIConnectionFailureError%3A%20query%20expected%201%20records%20but%20only%20found%200&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20APIConnectionFailureError%0Aerror%20text%3A%20query%20expected%201%20records%20but%20only%20found%200"
+          href="mailto:graphkb@bcgsc.ca?subject=NotFoundError%3A%20query%20expected%201%20records%20but%20only%20found%200&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20NotFoundError%0Aerror%20text%3A%20query%20expected%201%20records%20but%20only%20found%200"
         >
           graphkb@bcgsc.ca
         </a>
@@ -7691,7 +8935,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -8239,10 +9483,7 @@ exports[`ViewAliasOfOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -8253,7 +9494,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -8989,10 +10230,7 @@ exports[`ViewCategoryVariant snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -9003,7 +10241,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -9739,10 +10977,7 @@ exports[`ViewCategoryVariantOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -9753,7 +10988,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -13661,10 +14896,7 @@ exports[`ViewFeatureWithRelated snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -13675,7 +14907,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -14573,10 +15805,7 @@ exports[`ViewPositionalVariant snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -14587,7 +15816,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -15485,10 +16714,7 @@ exports[`ViewPositionalVariantOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -15499,7 +16725,7 @@ exports[`ViewStatement snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -16764,10 +17990,7 @@ exports[`ViewStatement snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>
@@ -16783,7 +18006,7 @@ exports[`ViewStatementNotFound snapshot 1`] = `
       <h2
         class="MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        APIConnectionFailureError
+        Not Found
       </h2>
       <h3
         class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
@@ -16803,7 +18026,7 @@ exports[`ViewStatementNotFound snapshot 1`] = `
         </a>
          ticket or email us at 
         <a
-          href="mailto:graphkb@bcgsc.ca?subject=APIConnectionFailureError%3A%20query%20expected%201%20records%20but%20only%20found%200&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20APIConnectionFailureError%0Aerror%20text%3A%20query%20expected%201%20records%20but%20only%20found%200"
+          href="mailto:graphkb@bcgsc.ca?subject=NotFoundError%3A%20query%20expected%201%20records%20but%20only%20found%200&body=Error%20Details%20(Please%20include%20in%20error%20reports)%0Aversion%3A%204.4.1%0Aerror%20name%3A%20NotFoundError%0Aerror%20text%3A%20query%20expected%201%20records%20but%20only%20found%200"
         >
           graphkb@bcgsc.ca
         </a>
@@ -16831,7 +18054,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
   <div
   >
     <div
-      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form__wrapper"
+      class="MuiPaper-elevation MuiPaper-elevation4 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root record-form record-form--inline"
     >
       <div
         class="record-form__header"
@@ -18096,10 +19319,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
       </div>
       <div
         class="record-form__action-buttons"
-      >
-        <div />
-        <div />
-      </div>
+      />
     </div>
   </div>
 </div>

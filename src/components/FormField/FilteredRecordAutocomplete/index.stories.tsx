@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test';
 
-import preview, { http } from '#.storybook/preview';
+import preview, { http, withAuth } from '#.storybook/preview';
 
 import Component from '.';
 
@@ -12,7 +12,7 @@ const meta = preview.meta({
     linkedClassName: 'Variant',
     isMulti: false,
   },
-
+  decorators: [withAuth],
   beforeEach({ msw }) {
     msw.use(
       http.gkb.query(() => [{ '@rid': '#15:1' }, { '@rid': '#15:2' }, { '@rid': '#15:3' }]),

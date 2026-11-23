@@ -1,0 +1,30 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ErrorAuthenticating snapshot 1`] = `
+<div>
+  <div
+  >
+    <div
+      class="error-wrapper"
+    >
+      <h2
+        class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        Error Authenticating
+      </h2>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
+      >
+        An error occurred while authenticating. Please logout and try again or contact your administrator if the problem persists. not a user.
+      </p>
+      <button
+        class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
+`;

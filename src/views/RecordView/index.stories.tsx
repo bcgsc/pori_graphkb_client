@@ -291,6 +291,12 @@ export const ViewStatementOptionalFieldsExpanded = ViewStatement.extend({
   },
 });
 
+// cannot actually test clicking copy button as that
+// opens in a new tab
+export const CopyStatement = ViewStatement.extend({
+  args: { path: '/new/Statement/157:106045' },
+});
+
 export const EditStatement = ViewStatement.extend({
   args: { path: '/edit/Statement/157:106045' },
 });

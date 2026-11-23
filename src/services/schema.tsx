@@ -49,7 +49,7 @@ type SchemaClassDefinition = Omit<ClassDefinition, 'properties'> & {
  * @param obj record to get label of
  * @param options.truncate if true, label if cut off after 50 characters. defaults to true
  */
-const getLabel = (obj, options?: { truncate: boolean; }) => {
+const getLabel = (obj, options?: { truncate: boolean; }): string => {
   let label = schemaDefn.getPreview(obj);
   const truncate = options?.truncate ?? true;
 
@@ -62,6 +62,9 @@ const getLabel = (obj, options?: { truncate: boolean; }) => {
       label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
     }
     return label;
+  }
+  if (typeof obj !== 'string') {
+    return String(obj);
   }
   return obj;
 };

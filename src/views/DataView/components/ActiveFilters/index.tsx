@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { util } from '@bcgsc-pori/graphkb-schema';
 import CopyIcon from '@mui/icons-material/FileCopyOutlined';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
@@ -22,30 +21,11 @@ import React, {
 import { useQuery } from 'react-query';
 
 import { QueryBody } from '@/components/types';
-import { tuple } from '@/components/util';
+import { extractRids, tuple } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
 import JSONView from './JSONView';
-
-const extractRids = (obj) => {
-  const recordIds: string[] = [];
-
-  const queue = [obj];
-
-  while (queue.length > 0) {
-    const current = queue.shift();
-
-    if (Array.isArray(current)) {
-      queue.push(...current);
-    } else if (current && typeof current === 'object') {
-      queue.push(...Object.values(current));
-    } else if (util.looksLikeRID(current, false)) {
-      recordIds.push(current);
-    }
-  }
-  return Array.from(new Set(recordIds));
-};
 
 const ActiveFilters = ({ queryBody }: { queryBody: QueryBody; }) => {
   const [anchorEl, setAnchorEl] = useState(null);

@@ -1,3 +1,4 @@
+import { util } from '@bcgsc-pori/graphkb-schema';
 import { useSnackbar } from 'notistack';
 import { NavigateFunction } from 'react-router';
 
@@ -112,11 +113,31 @@ function tuple<const T extends readonly [unknown, unknown, ...unknown[]]>(...val
   return values as MutableTupleValue<T>;
 }
 
+const extractRids = (obj) => {
+  const recordIds: string[] = [];
+
+  const queue = [obj];
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+
+    if (Array.isArray(current)) {
+      queue.push(...current);
+    } else if (current && typeof current === 'object') {
+      queue.push(...Object.values(current));
+    } else if (util.looksLikeRID(current, false)) {
+      recordIds.push(current);
+    }
+  }
+  return Array.from(new Set(recordIds));
+};
+
 export {
   cleanLinkedRecords,
   cleanPayload,
   decodeJSON,
   encodeJSON,
+  extractRids,
   FORM_VARIANT,
   navigateToGraph,
   tuple,

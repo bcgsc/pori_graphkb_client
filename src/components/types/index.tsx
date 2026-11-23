@@ -103,7 +103,7 @@ type FilterValue =
   | FixedSubQuery
   | SubQuery;
 
-type Comparison = {
+export type Comparison = {
   operator?: ComparisonOperator;
   negate?: boolean;
   AND?: never;
@@ -168,7 +168,7 @@ interface SimilarityQuery {
   treeEdges?: QueryEdge[];
 }
 
-type FixedSubQuery =
+export type FixedSubQuery =
   | KeywordQuery
   | DisplayNameQuery
   | NeighborhoodQuery

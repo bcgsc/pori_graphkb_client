@@ -1,47 +1,10 @@
 import { produce } from 'immer';
 import { useCallback, useState } from 'react';
 
-import { FilterType, QueryBody } from '@/components/types';
-
-/**
- * Unlike cleaning record links, cannot assume there are no intermediary
- * objects that are not also records
- */
-const cleanFilterLinks = (content: unknown): unknown => {
-  if (Array.isArray(content)) {
-    return content.map(cleanFilterLinks);
-  }
-
-  function isObj(value: unknown): value is Record<string, unknown> {
-    return value != null && typeof value === 'object';
-  }
-
-  if (isObj(content)) {
-    const newContent: Record<string, unknown> = {};
-
-    if (content['@rid'] !== undefined) {
-      return content['@rid'];
-    }
-    Object.keys(content).forEach((key) => {
-      if (content[key] !== undefined) {
-        newContent[key] = cleanFilterLinks(content[key]);
-      }
-    });
-    return newContent;
-  }
-  return content;
-};
-
-export interface VerboseFilterType {
-  query: FilterType;
-  value: unknown;
-  attr: string;
-  operator: string;
-  subqueryType?: string;
-}
+import { Comparison, FilterType, QueryBody } from '@/components/types';
 
 const useFilterGroups = () => {
-  const [groups, setGroups] = useState<VerboseFilterType[][]>([[]]);
+  const [groups, setGroups] = useState<Comparison[][]>([[]]);
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
 
   const reset = useCallback(() => {
@@ -52,7 +15,7 @@ const useFilterGroups = () => {
     setGroups((prev) => [...prev, []]);
   }, []);
 
-  const addFilter = useCallback((filter) => {
+  const addFilter = useCallback((filter: Comparison) => {
     setGroups(produce((draft) => {
       if (!draft.length) {
         draft.push([]);
@@ -87,7 +50,7 @@ const useFilterGroups = () => {
     groups.forEach((group) => {
       const filters: FilterType[] = [];
       group.forEach((filter) => {
-        filters.push(cleanFilterLinks(filter.query) as FilterType);
+        filters.push(filter);
       });
 
       if (filters.length === 1) {

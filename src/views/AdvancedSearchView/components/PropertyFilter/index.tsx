@@ -12,13 +12,27 @@ import ActionButton from '@/components/ActionButton';
 import DropDownSelect from '@/components/DropDownSelect';
 import FormField from '@/components/FormField';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
-import { ComparisonOperator } from '@/components/types';
+import { Comparison, ComparisonOperator } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
 
 import { BLACKLISTED_PROPERTIES, DATE_FIELDS, OPERATORS } from '../constants';
-import { VerboseFilterType } from '../useFilterGroups';
 import SubqueryTypeSelector from './SubqueryTypeSelector';
+
+const cleanFilterLinks = (content: unknown): unknown => {
+  if (Array.isArray(content)) {
+    return content.map(cleanFilterLinks);
+  }
+  if (content && typeof content === 'object') {
+    if ('@rid' in content) return content['@rid'];
+    return Object.fromEntries(
+      Object.entries(content)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, cleanFilterLinks(value)]),
+    );
+  }
+  return content;
+};
 
 const propertySort = ({ label: label1 }, { label: label2 }) => {
   let prop1 = label1;
@@ -71,7 +85,7 @@ const constructOperatorOptions = ({ iterable, type, name }: Partial<SchemaProper
 interface PropertyFilterProps {
   /** name of target model of query */
   modelName: string;
-  onSubmit: (result: VerboseFilterType) => void;
+  onSubmit: (result: Comparison) => void;
 }
 
 /**
@@ -239,20 +253,15 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
 
   const handleAddFilter = useCallback(() => {
     const originalPropertyModel = schema.getQueryProperties(modelName).find((p) => p.name === property);
-    const result: VerboseFilterType = {
-      attr: property,
-      value: form.content[fieldName],
-      operator,
-      subqueryType,
-      query: undefined as any,
-    };
+    const value = cleanFilterLinks(form.content[fieldName]) as Comparison[string];
+    let query: Comparison | undefined;
 
     if (subqueryType === 'keyword') {
       if (operator !== '=' && operator !== 'CONTAINSTEXT') {
         throw new Error(`Invalid keyword search operator: ${operator}`);
       }
 
-      result.query = {
+      query = {
         operator: originalPropertyModel?.iterable
           ? 'CONTAINSANY'
           : 'IN',
@@ -264,13 +273,13 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
           target: {
             target: keywordTarget || originalPropertyModel?.linkedClass || 'V',
             operator,
-            keyword: form.content[fieldName],
+            keyword: value as string,
             queryType: 'keyword',
           },
         },
       };
     } else if (subqueryType === 'tree') {
-      result.query = {
+      query = {
         operator: originalPropertyModel?.iterable
           ? 'CONTAINSANY'
           : 'IN',
@@ -278,26 +287,19 @@ const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
           queryType: 'similarTo',
           treeEdges: [],
           target: {
-            target: Array.isArray(form.content[fieldName])
-              ? form.content[fieldName]
-              : [form.content[fieldName]],
+            target: (Array.isArray(value) ? value : [value]) as string[],
             queryType: 'ancestors',
           },
         },
       };
     } else {
-      let value = form.content[fieldName];
-
-      if (operator === 'CONTAINS' && value.length === 1) {
-        // special case. CONTAINS is marked iterable for entry convenience for the user
-        [value] = value;
-      }
-      result.query = {
+      query = {
         operator,
-        [property]: value,
+        // special case. CONTAINS is marked iterable for entry convenience for the user
+        [property]: operator === 'CONTAINS' && Array.isArray(value) && value.length === 1 ? value[0] : value,
       };
     }
-    onSubmit(result);
+    onSubmit(query);
   }, [fieldName, form.content, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
 
   return (

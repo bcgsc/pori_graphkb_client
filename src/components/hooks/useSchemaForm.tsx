@@ -311,14 +311,7 @@ const useSchemaForm = (
         delete payload.displayName;
       }
 
-      if (state.model.name === 'PositionalVariant') {
-        /* KBDEV-1216 Adding refAA to break1Start property when new variant has ProteinPosition coordinate system.
-        Property has the same value as refSeq and should be hidden from users to avoid confusion. */
-        if (payload?.break1Start && payload?.break1Start['@class'] === 'ProteinPosition') {
-          const refAA = payload.refSeq ? payload.refSeq : '';
-          payload.break1Start = { ...payload.break1Start, refAA };
-        }
-      } else if (state.model.name === 'Statement' && actionType === 'create') {
+      if (state.model.name === 'Statement' && actionType === 'create') {
         payload.reviewStatus ??= 'initial';
 
         if (!payload.reviews) {

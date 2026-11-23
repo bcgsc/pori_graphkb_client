@@ -103,7 +103,7 @@ exports[`NoRows snapshot 1`] = `
                   tabindex="0"
                 />
                 <div
-                  aria-colcount="96"
+                  aria-colcount="94"
                   aria-rowcount="-1"
                   class="ag-body-vertical-content-no-gap ag-layout-normal ag-root ag-unselectable"
                   role="grid"
@@ -140,7 +140,7 @@ exports[`NoRows snapshot 1`] = `
                           tabindex="0"
                         >
                           <div
-                            aria-colindex="17"
+                            aria-colindex="16"
                             aria-colspan="3"
                             class="ag-header-group-cell ag-header-group-cell-with-group"
                             col-id="Conditions_0"
@@ -192,7 +192,7 @@ exports[`NoRows snapshot 1`] = `
                             />
                           </div>
                           <div
-                            aria-colindex="69"
+                            aria-colindex="67"
                             aria-colspan="3"
                             aria-expanded="false"
                             class="ag-header-group-cell ag-header-group-cell-with-group"
@@ -344,7 +344,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="17"
+                            aria-colindex="16"
                             class="ag-focus-managed ag-header-cell"
                             col-id="variant"
                             role="columnheader"
@@ -436,7 +436,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="18"
+                            aria-colindex="17"
                             class="ag-focus-managed ag-header-cell"
                             col-id="disease"
                             role="columnheader"
@@ -528,7 +528,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="19"
+                            aria-colindex="18"
                             class="ag-focus-managed ag-header-cell"
                             col-id="other"
                             role="columnheader"
@@ -620,7 +620,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="35"
+                            aria-colindex="33"
                             class="ag-focus-managed ag-header-cell ag-header-span-height ag-header-span-total"
                             col-id="evidence"
                             role="columnheader"
@@ -712,7 +712,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="36"
+                            aria-colindex="34"
                             class="ag-focus-managed ag-header-cell ag-header-span-height ag-header-span-total"
                             col-id="evidenceLevel"
                             role="columnheader"
@@ -804,7 +804,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="49"
+                            aria-colindex="47"
                             aria-sort="none"
                             class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-span-height ag-header-span-total"
                             col-id="name"
@@ -927,7 +927,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="69"
+                            aria-colindex="67"
                             aria-sort="none"
                             class="ag-focus-managed ag-header-cell ag-header-cell-sortable"
                             col-id="source.displayName"
@@ -1050,7 +1050,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="72"
+                            aria-colindex="70"
                             aria-sort="none"
                             class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-span-height ag-header-span-total"
                             col-id="sourceId"
@@ -1173,7 +1173,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="73"
+                            aria-colindex="71"
                             aria-sort="none"
                             class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-span-height ag-header-span-total"
                             col-id="sourceIdVersion"
@@ -1296,7 +1296,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="92"
+                            aria-colindex="90"
                             aria-sort="none"
                             class="ag-focus-managed ag-header-cell ag-header-cell-sortable ag-header-span-height ag-header-span-total"
                             col-id="version"
@@ -1419,7 +1419,7 @@ exports[`NoRows snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            aria-colindex="96"
+                            aria-colindex="94"
                             class="ag-column-last ag-focus-managed ag-header-cell ag-header-span-height ag-header-span-total"
                             col-id="SubClassOf"
                             role="columnheader"
@@ -1604,7 +1604,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -1622,7 +1622,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -1640,7 +1640,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -1658,7 +1658,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -1676,7 +1676,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -1694,7 +1694,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -1712,7 +1712,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -1730,7 +1730,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -1748,7 +1748,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -1766,7 +1766,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -1784,7 +1784,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -1831,7 +1831,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -1849,7 +1849,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -1867,7 +1867,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -1885,7 +1885,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -1903,7 +1903,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -1921,7 +1921,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -1939,7 +1939,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -1957,7 +1957,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -1975,7 +1975,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -1993,7 +1993,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -2011,7 +2011,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -2058,7 +2058,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -2076,7 +2076,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -2094,7 +2094,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -2112,7 +2112,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -2130,7 +2130,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -2148,7 +2148,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -2166,7 +2166,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -2184,7 +2184,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -2202,7 +2202,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -2220,7 +2220,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -2238,7 +2238,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -2285,7 +2285,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -2303,7 +2303,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -2321,7 +2321,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -2339,7 +2339,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -2357,7 +2357,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -2375,7 +2375,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -2393,7 +2393,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -2411,7 +2411,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -2429,7 +2429,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -2447,7 +2447,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -2465,7 +2465,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -2512,7 +2512,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -2530,7 +2530,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -2548,7 +2548,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -2566,7 +2566,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -2584,7 +2584,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -2602,7 +2602,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -2620,7 +2620,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -2638,7 +2638,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -2656,7 +2656,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -2674,7 +2674,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -2692,7 +2692,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -2739,7 +2739,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -2757,7 +2757,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -2775,7 +2775,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -2793,7 +2793,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -2811,7 +2811,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -2829,7 +2829,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -2847,7 +2847,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -2865,7 +2865,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -2883,7 +2883,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -2901,7 +2901,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -2919,7 +2919,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -2966,7 +2966,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -2984,7 +2984,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -3002,7 +3002,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -3020,7 +3020,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -3038,7 +3038,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -3056,7 +3056,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -3074,7 +3074,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -3092,7 +3092,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -3110,7 +3110,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -3128,7 +3128,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -3146,7 +3146,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -3193,7 +3193,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -3211,7 +3211,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -3229,7 +3229,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -3247,7 +3247,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -3265,7 +3265,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -3283,7 +3283,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -3301,7 +3301,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -3319,7 +3319,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -3337,7 +3337,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -3355,7 +3355,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -3373,7 +3373,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -3420,7 +3420,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -3438,7 +3438,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -3456,7 +3456,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -3474,7 +3474,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -3492,7 +3492,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -3510,7 +3510,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -3528,7 +3528,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -3546,7 +3546,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -3564,7 +3564,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -3582,7 +3582,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -3600,7 +3600,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -3647,7 +3647,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -3665,7 +3665,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -3683,7 +3683,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -3701,7 +3701,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -3719,7 +3719,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -3737,7 +3737,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -3755,7 +3755,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -3773,7 +3773,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -3791,7 +3791,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -3809,7 +3809,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -3827,7 +3827,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"
@@ -3874,7 +3874,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="17"
+                              aria-colindex="16"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="variant"
                               role="gridcell"
@@ -3892,7 +3892,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="18"
+                              aria-colindex="17"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="disease"
                               role="gridcell"
@@ -3910,7 +3910,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="19"
+                              aria-colindex="18"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="other"
                               role="gridcell"
@@ -3928,7 +3928,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="35"
+                              aria-colindex="33"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidence"
                               role="gridcell"
@@ -3946,7 +3946,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="36"
+                              aria-colindex="34"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="evidenceLevel"
                               role="gridcell"
@@ -3964,7 +3964,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="49"
+                              aria-colindex="47"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="name"
                               role="gridcell"
@@ -3982,7 +3982,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="69"
+                              aria-colindex="67"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="source.displayName"
                               role="gridcell"
@@ -4000,7 +4000,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="72"
+                              aria-colindex="70"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceId"
                               role="gridcell"
@@ -4018,7 +4018,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="73"
+                              aria-colindex="71"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="sourceIdVersion"
                               role="gridcell"
@@ -4036,7 +4036,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="92"
+                              aria-colindex="90"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing"
                               col-id="version"
                               role="gridcell"
@@ -4054,7 +4054,7 @@ exports[`NoRows snapshot 1`] = `
                               </div>
                             </div>
                             <div
-                              aria-colindex="96"
+                              aria-colindex="94"
                               class="ag-cell ag-cell-normal-height ag-cell-not-inline-editing ag-column-last"
                               col-id="SubClassOf"
                               role="gridcell"

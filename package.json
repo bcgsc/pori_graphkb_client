@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@bcgsc-pori/graphkb-parser": "^2.1.0",
-    "@bcgsc-pori/graphkb-schema": "~4.1.0",
+    "@bcgsc-pori/graphkb-schema": "~5.0.1",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

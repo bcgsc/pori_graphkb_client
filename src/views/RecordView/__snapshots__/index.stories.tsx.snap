@@ -948,7 +948,7 @@ exports[`CopyStatement snapshot 1`] = `
                   class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  A summarization of the supporting evidence for this statment as a category
+                  A summarization of the supporting evidence for this statement as a category
                 </p>
               </div>
             </div>
@@ -1013,7 +1013,7 @@ exports[`CopyStatement snapshot 1`] = `
                 class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                 id="_r_XXXX_-helper-text"
               >
-                The review status of the overall statement. The amalgemated status of all (or no) reviews
+                The review status of the overall statement. The amalgamated status of all (or no) reviews
               </p>
             </div>
             <div
@@ -3993,42 +3993,6 @@ exports[`EditPositionalVariant snapshot 1`] = `
               class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
             >
               <label
-                class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
-                data-shrink="false"
-                for="_r_XXXX_"
-                id="_r_XXXX_-label"
-              >
-                assembly
-              </label>
-              <div
-                class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
-              >
-                <textarea
-                  aria-describedby="_r_XXXX_-helper-text"
-                  aria-invalid="false"
-                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                  data-testid="assembly"
-                  id="_r_XXXX_"
-                  name="assembly"
-                />
-                <textarea
-                  aria-hidden="true"
-                  class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
-                  readonly=""
-                  tabindex="-1"
-                />
-              </div>
-              <p
-                class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
-                id="_r_XXXX_-helper-text"
-              >
-                Flag which is optionally used for genomic variants that are not linked to a fixed assembly reference
-              </p>
-            </div>
-            <div
-              class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
-            >
-              <label
                 class="MuiFormLabel-colorPrimary MuiFormLabel-filled MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-shrink MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
                 data-shrink="true"
                 for="_r_XXXX_"
@@ -4388,6 +4352,42 @@ exports[`EditPositionalVariant snapshot 1`] = `
                               The timestamp at which the record was last updated (ex. 1547245339649)
                             </p>
                           </div>
+                        </div>
+                        <div
+                          class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
+                        >
+                          <label
+                            class="MuiFormLabel-colorPrimary MuiFormLabel-root MuiInputLabel-animated MuiInputLabel-formControl MuiInputLabel-root MuiInputLabel-standard css-XXXX-MuiFormLabel-root-MuiInputLabel-root"
+                            data-shrink="false"
+                            for="_r_XXXX_"
+                            id="_r_XXXX_-label"
+                          >
+                            assembly
+                          </label>
+                          <div
+                            class="MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-fullWidth MuiInputBase-multiline MuiInputBase-root css-XXXX-MuiInputBase-root-MuiInput-root"
+                          >
+                            <textarea
+                              aria-describedby="_r_XXXX_-helper-text"
+                              aria-invalid="false"
+                              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                              data-testid="assembly"
+                              id="_r_XXXX_"
+                              name="assembly"
+                            />
+                            <textarea
+                              aria-hidden="true"
+                              class="MuiInput-input MuiInputBase-input MuiInputBase-inputMultiline css-XXXX-MuiInputBase-input-MuiInput-input"
+                              readonly=""
+                              tabindex="-1"
+                            />
+                          </div>
+                          <p
+                            class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
+                            id="_r_XXXX_-helper-text"
+                          >
+                            Flag which is optionally used for genomic variants that are not linked to a fixed assembly reference
+                          </p>
                         </div>
                         <div
                           class="MuiFormControl-fullWidth MuiFormControl-root MuiTextField-root css-XXXX-MuiFormControl-root-MuiTextField-root text-field"
@@ -5721,7 +5721,7 @@ exports[`EditStatement snapshot 1`] = `
                   class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  A summarization of the supporting evidence for this statment as a category
+                  A summarization of the supporting evidence for this statement as a category
                 </p>
               </div>
             </div>
@@ -5789,7 +5789,7 @@ exports[`EditStatement snapshot 1`] = `
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  The review status of the overall statement. The amalgemated status of all (or no) reviews (ex. pending)
+                  The review status of the overall statement. The amalgamated status of all (or no) reviews (ex. pending)
                 </p>
               </div>
               <div
@@ -7522,7 +7522,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                   class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  A summarization of the supporting evidence for this statment as a category
+                  A summarization of the supporting evidence for this statement as a category
                 </p>
               </div>
             </div>
@@ -7590,7 +7590,7 @@ exports[`EditStatementErrorDeleting snapshot 1`] = `
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  The review status of the overall statement. The amalgemated status of all (or no) reviews (ex. pending)
+                  The review status of the overall statement. The amalgamated status of all (or no) reviews (ex. pending)
                 </p>
               </div>
               <div
@@ -17324,7 +17324,7 @@ exports[`ViewStatement snapshot 1`] = `
                   class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  A summarization of the supporting evidence for this statment as a category
+                  A summarization of the supporting evidence for this statement as a category
                 </p>
               </div>
             </div>
@@ -17384,7 +17384,7 @@ exports[`ViewStatement snapshot 1`] = `
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  The review status of the overall statement. The amalgemated status of all (or no) reviews
+                  The review status of the overall statement. The amalgamated status of all (or no) reviews
                 </p>
               </div>
               <div
@@ -18653,7 +18653,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   class="MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  A summarization of the supporting evidence for this statment as a category
+                  A summarization of the supporting evidence for this statement as a category
                 </p>
               </div>
             </div>
@@ -18713,7 +18713,7 @@ exports[`ViewStatementOptionalFieldsExpanded snapshot 1`] = `
                   class="MuiFormHelperText-filled MuiFormHelperText-root MuiFormHelperText-sizeMedium css-XXXX-MuiFormHelperText-root"
                   id="_r_XXXX_-helper-text"
                 >
-                  The review status of the overall statement. The amalgemated status of all (or no) reviews
+                  The review status of the overall statement. The amalgamated status of all (or no) reviews
                 </p>
               </div>
               <div

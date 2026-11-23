@@ -56,6 +56,7 @@ const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
           'conditions.displayName',
           'evidence.displayName',
           'subject.displayName',
+          'reviewStatus',
         ],
       },
     ),
@@ -93,20 +94,23 @@ const RelatedStatementsTable = ({ recordId }: RelatedStatementsTableProps) => {
           {...grid.props}
           columnDefs={[
             {
-              headerName: 'relevance',
+              headerName: 'Relevance',
               field: 'relevance.displayName',
             },
             {
-              headerName: 'subject',
+              headerName: 'Subject',
               field: 'subject.displayName',
             },
             {
-              headerName: 'conditions',
+              headerName: 'Conditions',
               valueGetter: ({ data }) => data.conditions.map((c) => c.displayName).join('; '),
             },
             {
-              headerName: 'evidence',
+              headerName: 'Evidence',
               valueGetter: ({ data }) => data.evidence.map((c) => c.displayName).join('; '),
+            },
+            {
+              field: 'reviewStatus',
             },
             {
               headerName: 'Actions',

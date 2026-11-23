@@ -13,19 +13,15 @@ const meta = preview.meta({
     onSubmit: fn(),
   },
   title: 'Views/AdvancedSearchView/PropertyFilter',
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [
-          {
-            '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
-          },
-          {
-            '@class': 'Therapy', '@rid': '#111:222', count: 2, name: 'immunological therapy',
-          },
-        ]),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query(() => [
+      {
+        '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
+      },
+      {
+        '@class': 'Therapy', '@rid': '#111:222', count: 2, name: 'immunological therapy',
+      },
+    ]));
   },
 });
 

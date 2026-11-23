@@ -1,5 +1,5 @@
 # Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM node:22 as build-stage
+FROM node:26-alpine as build-stage
 
 ARG API_BASE_URL
 ARG KEYCLOAK_URL

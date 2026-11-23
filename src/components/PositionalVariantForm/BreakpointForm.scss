@@ -1,0 +1,39 @@
+@use '../../globals';
+
+
+.breakpoints-form {
+  display: grid;
+  column-gap: 16px;
+  grid-template-columns: 1fr;
+  /* creates track for rows, but empty ones collapse to 0px */
+  grid-template-rows: repeat(10, min-content);
+
+  > :not(.column) {
+    grid-column: 1 / -1;
+    padding-bottom: 8px;
+  }
+
+  .column {
+    display: grid;
+    grid-template-rows: subgrid;
+    /* span entire height */
+    grid-row: span 10;
+    row-gap: 8px;
+  }
+
+  &:has(#break2) {
+    @media (min-width: globals.$breakpoint-lg) {
+      grid-template-columns: 1fr 1fr;
+
+      .spacer {
+        display: block;
+      }
+
+      .column {
+        padding: 10px;
+        @include globals.field-set;
+      }
+    }
+  }
+}
+

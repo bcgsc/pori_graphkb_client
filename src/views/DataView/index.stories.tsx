@@ -21,29 +21,23 @@ export const WithRows = NoRows.extend({
   args: {
     path: '/data/table?%40class=Therapy&complex=eyJ0YXJnZXQiOiJUaGVyYXB5In0%253D',
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [
-          {
-            '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
-          },
-          {
-            '@class': 'Therapy', '@rid': '#111:222', count: 2, name: 'immunological therapy',
-          },
-        ]),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query(() => [
+      {
+        '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
+      },
+      {
+        '@class': 'Therapy', '@rid': '#111:222', count: 2, name: 'immunological therapy',
+      },
+    ]));
   },
 });
 
 export const WithError = WithRows.extend({
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => HttpResponse.json({ message: 'Bad Request' }, { status: 400 })),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => HttpResponse.json({ message: 'Bad Request' }, { status: 400 })),
+    );
   },
 });
 
@@ -52,28 +46,26 @@ export const WithDetailsOpen = WithRows.extend({
     await hasFinishedLoading({ canvas, step });
     await userEvent.click(await canvas.findByText('source 1234'));
     await expect(await canvas.findByText('immunotherapy (#111:111)')).toBeInTheDocument();
+    // the drawer title renders from row data before the details query (and footer spinner) finishes
+    await hasFinishedLoading({ canvas, step });
   },
 });
 
 export const WithDetailsOpenError = WithRows.extend({
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((body) => {
-          if (Array.isArray(body.target) && body.target.length === 1) {
-            return HttpResponse.json({ message: 'Bad Request' }, { status: 400 });
-          }
-          return [
-            {
-              '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
-            },
-            {
-              '@class': 'Therapy', '@rid': '#111:222', count: 2, name: 'immunological therapy',
-            },
-          ];
-        }),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query((body) => {
+      if (Array.isArray(body.target) && body.target.length === 1) {
+        return HttpResponse.json({ message: 'Bad Request' }, { status: 400 });
+      }
+      return [
+        {
+          '@class': 'Therapy', '@rid': '#111:111', count: 2, name: 'immunotherapy', source: { displayName: 'source 1234' },
+        },
+        {
+          '@class': 'Therapy', '@rid': '#111:222', count: 2, name: 'immunological therapy',
+        },
+      ];
+    }));
   },
   play: async ({ canvas, context }) => {
     await WithDetailsOpen.play(context);

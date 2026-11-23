@@ -5,6 +5,7 @@ import { util } from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
 import qs from 'qs';
 import { QueryClient } from 'react-query';
+import { createContext as createRouterContext } from 'react-router';
 
 import { GeneralRecordType, QueryBody } from '@/components/types';
 
@@ -153,6 +154,8 @@ const encodeQueryComplexToSearch = (content, modelName = 'V') => {
   return search;
 };
 
+const routerQueryContext = createRouterContext<QueryClient>();
+
 export default {
   encodeQueryComplexToSearch,
   getQueryFromSearch,
@@ -167,4 +170,5 @@ export default {
   queryClient,
   query,
   authenticate,
+  routerQueryContext,
 };

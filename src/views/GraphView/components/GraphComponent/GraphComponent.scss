@@ -24,11 +24,6 @@
   transition: padding 255ms;
   z-index: calc(#{globals.$drawer-z-index} + 1);
 
-  .table-btn {
-    background-color: globals.$palette__secondary--extra-light;
-    margin: auto 24px auto 8px;
-  }
-
   .refresh-wrapper {
     margin: auto 8px;
   }

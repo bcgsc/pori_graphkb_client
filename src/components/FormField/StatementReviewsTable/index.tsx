@@ -66,6 +66,9 @@ const StatementReviewsTable = (props: StatementReviewsTableProps) => {
         <TableBody>
           {values.map((value, index) => (
             <StatementReviewRow
+              // cannot guarantee that the value will have a unique identifier, so we use the index as a key
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
               disabled={Boolean(disabled || readOnly)}
               index={index}
               onDelete={handleDeleteReview}

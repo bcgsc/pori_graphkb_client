@@ -1,4 +1,3 @@
-import { Person } from '@mui/icons-material';
 import { expect, fn } from 'storybook/test';
 
 import preview from '#.storybook/preview';
@@ -46,12 +45,6 @@ export const ReadOnlyWithInvalidValue = Empty.extend({
 
 export const WithError = WithValue.extend({
   args: { error: true, helperText: 'bad value' },
-});
-
-export const WithCustomIcon = WithValue.extend({
-  args: {
-    IconComponent: Person,
-  },
 });
 
 export const ComplexOptionsWithValueSelect = meta.story({

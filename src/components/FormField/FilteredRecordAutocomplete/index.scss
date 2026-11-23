@@ -1,37 +1,24 @@
-@use '../../../globals';
-
 .filtered-record-autocomplete {
   max-width: 100%;
   width: 100%;
 
-  &__content {
-    max-width: 100%;
-    width: 100%;
-  }
+  & &__class-filter {
+    height: 100%;
 
-  .Mui-error {
-    margin-top: 0;
-  }
-
-  &__select-search-class {
-    .MuiListItemText-multiline {
-      margin-bottom: 0;
-      margin-top: 0;
-    }
-  }
-
-  @media (min-width: #{globals.$breakpoint-xl}) {
-    align-items: flex-start;
-    display: flex;
-
-    &__select-search-class {
-      margin-right: 20px;
-      max-width: 15rem;
-    }
-
-    &__content {
+    .MuiSelect-select {
+      padding-top: 0;
+      padding-bottom: 0;
       display: flex;
-      align-items: start;
+      align-items: center;
+      line-height: normal;
+    }
+
+    .MuiSelect-icon {
+      // otherwise tooltip doesn't work
+      pointer-events: auto;
+      cursor: pointer;
+      // don't flip the icon when the menu opens
+      transform: none;
     }
   }
 }

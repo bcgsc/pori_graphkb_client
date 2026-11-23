@@ -495,7 +495,7 @@ exports[`ClassesTabSigned snapshot 1`] = `
                 <p
                   class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
-                  Evidence which has been summarized, amalgemated, or curated by some external database/society
+                  Evidence which has been summarized, amalgamated, or curated by some external database/society
                 </p>
               </div>
             </li>
@@ -715,7 +715,7 @@ exports[`ClassesTabSigned snapshot 1`] = `
                 <p
                   class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
-                  Variants which can be described by there position on some reference sequence
+                  Variants which can be described by their position on some reference sequence
                 </p>
               </div>
             </li>
@@ -1282,7 +1282,7 @@ exports[`ClassesTabSigned snapshot 1`] = `
                 <p
                   class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
-                  Given the source record, the target record is also expected. For example given some genomic variant we infer the protein change equivalent
+                  Given the source record, the target record is also expected. For example, given some genomic variant we infer the protein change equivalent
                 </p>
               </div>
             </li>
@@ -1391,7 +1391,7 @@ exports[`ClassesTabSigned snapshot 1`] = `
                 <p
                   class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
-                  The source record is a target of the target record. For example some gene is the target of a particular drug
+                  The source record is a target of the target record. For example, some gene is the target of a particular drug
                 </p>
               </div>
             </li>

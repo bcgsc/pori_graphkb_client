@@ -1,12 +1,9 @@
 import { setProjectAnnotations } from '@storybook/react-vite';
-import * as matchers from '@testing-library/jest-dom/matchers';
-import { cleanup } from '@testing-library/react';
 import { plugins } from '@vitest/pretty-format'; // dependency of vitest
 import { format } from 'date-fns';
-import { afterEach, expect, beforeAll } from 'vitest';
+import { expect, beforeAll } from 'vitest';
 
 import * as previewAnnotations from '#.storybook/preview';
-process.env.REACT_APP_VERSION = '1.0.0'
 
 const today = format(new Date(), 'yyyy-MM-dd');
 
@@ -22,7 +19,7 @@ const today = format(new Date(), 'yyyy-MM-dd');
  *
  * for that reason this helper will replace any generated classnames, ids, uuids,
  * relative dates, current dates etc. and omit style attributes entirely
- * 
+ *
  * @param {string} value - the string to normalize
  */
 function replaceNonDeterministicValues(value) {
@@ -38,10 +35,10 @@ function replaceNonDeterministicValues(value) {
   fixed = fixed.replace(/id="cell-[^-"]+-[^-"]+"/g, (matched) => matched.replaceAll(/\d+/g, 'XXXX'));
   fixed = fixed.replace(/id="ag-\d+/g, 'id="ag-XXXX');
 
-  const flakyAgGridClasses = ['ag-row-not-inline-editing','ag-body-horizontal-content-no-gap', 'ag-scrollbar-scrolling', 'ag-invisible']
+  const flakyClasses = ['ag-row-not-inline-editing','ag-body-horizontal-content-no-gap', 'ag-scrollbar-scrolling', 'ag-invisible', 'Mui-focusVisible']
 
   fixed = fixed.replaceAll(/class="([^"]+)"/g, (_, classnames) => {
-    const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).filter((name) => !flakyAgGridClasses.includes(name)).sort().join(' ');
+    const classes = Array.from(new Set(classnames.trim().split(' '))).map((name) => name.replace(/css\-[0-9a-zA-Z]+/g, 'css-XXXX')).filter((name) => !flakyClasses.includes(name)).sort().join(' ');
     return `class="${classes}"`;
   });
 
@@ -58,7 +55,6 @@ function replaceNonDeterministicValues(value) {
   return fixed;
 }
 
-expect.extend(matchers);
 expect.addSnapshotSerializer({
   serialize: (...args) => replaceNonDeterministicValues(plugins.DOMElement.serialize(...args)),
   test: plugins.DOMElement.test,
@@ -76,17 +72,3 @@ expect.addSnapshotSerializer({
 const annotations = setProjectAnnotations([previewAnnotations]);
 
 beforeAll(annotations.beforeAll);
-
-afterEach(() => {
-  cleanup(); // from @testing-library/react
-});
-
-window._env_ = {
-  KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || "GraphKB",
-  KEYCLOAK_ROLE: process.env.KEYCLOAK_ROLE || "GraphKB",
-  KEYCLOAK_REALM: process.env.KEYCLOAK_REALM || "GSC",
-  KEYCLOAK_URL: process.env.KEYCLOAK_URL || "https://keycloakdev.bcgsc.ca/auth",
-  API_BASE_URL: process.env.API_BASE_URL || "https://graphkbdev-api.bcgsc.ca",
-  CONTACT_EMAIL: process.env.CONTACT_EMAIL || "graphkb@bcgsc.ca",
-  CONTACT_TICKET_URL: process.env.CONTACT_TICKET_URL || "https://www.bcgsc.ca/jira/projects/KBDEV",
-};

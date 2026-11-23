@@ -1,16 +1,12 @@
-import './index.scss';
-
-import { Button, CircularProgress, Typography } from '@mui/material';
 import fetchIntercept from 'fetch-intercept';
 import jwtDecode from 'jwt-decode';
 import Keycloak from 'keycloak-js';
-import React, {
-  createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo,
-} from 'react';
-import { useMutation } from 'react-query';
-import { Outlet, useNavigate } from 'react-router';
+import React, { createContext, useContext } from 'react';
+import { QueryClient } from 'react-query';
+import { type MiddlewareFunction, createContext as createRouterContext } from 'react-router';
 
 import api from '@/services/api';
+import { AuthenticationError, AuthorizationError, SignedLicenseRequiredError } from '@/services/errors';
 
 import { GeneralRecordType } from '../types';
 
@@ -26,6 +22,8 @@ const keycloak = new Keycloak({
   url: window._env_.KEYCLOAK_URL,
 });
 
+const logout = () => keycloak.logout();
+
 interface DecodedKBToken {
   user: GeneralRecordType & {
     '@rid': string;
@@ -36,20 +34,15 @@ interface DecodedKBToken {
 }
 
 export interface AuthContextState {
-  login: () => void;
-  logout: () => void;
-  error: Error | undefined;
-  isAuthenticating: boolean;
-  authenticationToken?: string;
-  authorizationToken?: string;
-  isAuthenticated?: boolean;
-  isAdmin?: boolean;
-  hasWriteAccess?: boolean;
-  user?: DecodedKBToken['user'];
-  username?: string;
+  isAdmin: boolean;
+  hasWriteAccess: boolean;
+  user: DecodedKBToken['user'];
+  username: string;
 }
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
+
+export const authContext = createRouterContext<AuthContextState>();
 
 const useAuth = () => {
   const state = useContext(AuthContext);
@@ -61,14 +54,14 @@ const useAuth = () => {
   return state;
 };
 
-const AuthProvider = (props: { children: ReactNode }) => {
-  const { children } = props;
-
-  const {
-    mutate: logInOrOut, isPending: isAuthenticating, data, error,
-  } = useMutation({
-    mutationFn: async ({ loggingIn }: { loggingIn: boolean }) => {
-      if (loggingIn) {
+const authenticate = async (queryClient: QueryClient) => {
+  const result = await queryClient.fetchQuery({
+    queryKey: ['auth'],
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
+    queryFn: async () => {
+      try {
         const loggedIn = await keycloak.init({
           checkLoginIframe: false,
           enableLogging: true,
@@ -86,141 +79,55 @@ const AuthProvider = (props: { children: ReactNode }) => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         const username = (keycloak.userInfo as { preferred_username?: string } | undefined)?.preferred_username || user?.name;
 
+        fetchIntercept.register({
+          request: (fetchUrl, fetchConfig) => {
+            if (fetchUrl.startsWith(window._env_.API_BASE_URL)) {
+              return [fetchUrl, { ...fetchConfig, headers: { ...fetchConfig.headers, Authorization: authorizationToken } }];
+            }
+            return [fetchUrl, fetchConfig];
+          },
+        });
+
         return {
-          authenticationToken: keycloak.token,
-          authorizationToken,
-          isAuthenticated: true,
           isAdmin: Boolean(user.groups.find((group) => group.name === dbRoles.admin)),
           hasWriteAccess: Boolean(user.groups.find((group) => [dbRoles.admin, dbRoles.regular].includes(group.name))),
           user,
           username,
         };
+      } catch (error) {
+        throw new AuthenticationError(
+          `An error occurred while authenticating. Please logout and try again or contact your administrator if the problem persists. ${error instanceof Error ? error.message : ''}`,
+        );
       }
-
-      await keycloak.logout();
-      return undefined;
     },
   });
-
-  const { authorizationToken } = data ?? {};
-
-  useEffect(() => {
-    const unregister = fetchIntercept.register({
-      request: (fetchUrl, fetchConfig) => {
-        if (fetchUrl.startsWith(window._env_.API_BASE_URL)) {
-          const newConfig = { ...fetchConfig };
-
-          if (!newConfig.headers) {
-            newConfig.headers = {};
-          }
-          newConfig.headers.Authorization = authorizationToken;
-          return [fetchUrl, newConfig];
-        }
-        return [fetchUrl, fetchConfig];
-      },
-    });
-    return unregister;
-  }, [authorizationToken]);
-
-  const auth = useMemo(() => ({
-    login: () => {
-      if (!isAuthenticating) {
-        logInOrOut({ loggingIn: true });
-      }
-    },
-    logout: () => {
-      if (!isAuthenticating) {
-        logInOrOut({ loggingIn: false });
-      }
-    },
-    isAuthenticating,
-    error: error as Error,
-    ...(data || {}),
-  }), [data, isAuthenticating, logInOrOut, error]);
-
-  return (
-    <AuthContext.Provider
-      value={auth}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return result;
 };
 
-const Centered = ({ children }: { children: ReactNode }) => (
-  <div className="auth-centered">
-    {children}
-  </div>
-);
+export const createAuthMiddleware = (options: { requireSignedLicense?: boolean; requireAdmin?: boolean } = {}): MiddlewareFunction => async ({ context }, next) => {
+  let auth: AuthContextState;
 
-interface AuthenticatedRouteProps {
-  admin?: boolean;
-  signedLicenseRequired?: boolean;
-}
-
-const AuthenticatedLayout = (props: AuthenticatedRouteProps) => {
-  const {
-    admin = false,
-    signedLicenseRequired = false,
-  } = props;
-  const auth = useAuth();
-  const navigate = useNavigate();
-
-  const routeChange = () => {
-    const path = '/about/terms';
-    navigate(path);
-  };
-
-  useLayoutEffect(() => {
-    if (!auth.isAuthenticating && !auth.isAuthenticated && !auth.error) {
-      auth.login();
-    }
-  }, [auth]);
-
-  if (auth.error) {
-    return (
-      <Centered>
-        <Typography color="error" gutterBottom variant="h2">Error Authenticating</Typography>
-        <Typography paragraph>An Error occurred while authenticating. please logout and try again or contact your administrator if the problem persists</Typography>
-        <Typography paragraph>{auth.error?.message}</Typography>
-        <Button onClick={auth.logout}>logout</Button>
-      </Centered>
-    );
+  try {
+    auth = context.get(authContext);
+  } catch (error) {
+    auth = await authenticate(context.get(api.routerQueryContext));
+    context.set(authContext, auth);
+    console.error('Error retrieving auth context', error);
   }
 
-  if (!auth.isAuthenticated) {
-    return (
-      <Centered>
-        <CircularProgress />
-      </Centered>
-    );
+  if (options.requireSignedLicense && !auth.user?.signedLicenseAt) {
+    throw new SignedLicenseRequiredError('User must sign the license agreement before they can access data.');
   }
 
-  if (admin && !auth.isAdmin) {
-    return (
-      <Centered>
-        <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
-        <Typography paragraph>You do not have sufficient permissions to see this page.</Typography>
-      </Centered>
-    );
+  if (options.requireAdmin && !auth.isAdmin) {
+    throw new AuthorizationError('You do not have sufficient permissions to see this page.');
   }
 
-  if (signedLicenseRequired && !auth.user?.signedLicenseAt) {
-    return (
-      <Centered>
-        <Typography color="error" gutterBottom variant="h2">Forbidden</Typography>
-        <Typography paragraph>User must sign the license agreement before they can access data.</Typography>
-        <Button onClick={routeChange}>Terms of Use and License Agreement</Button>
-      </Centered>
-    );
-  }
-
-  return <Outlet />;
+  return next();
 };
 
 export {
   AuthContext,
-  AuthenticatedLayout,
-  AuthProvider,
+  logout,
   useAuth,
 };

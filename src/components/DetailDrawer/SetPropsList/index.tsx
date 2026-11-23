@@ -33,7 +33,7 @@ const sortProps = (value) => {
 interface SetPropsListProps<V extends GeneralRecordType | string> {
   handleExpand?: (arg: V) => void;
   /** props to be displayed for submenu */
-  identifiers?: unknown[];
+  identifiers?: string[];
   /** opened dropdowns in drawer */
   opened?: V[];
   /** link/embedded property model */
@@ -67,8 +67,8 @@ function SetPropsList<V extends GeneralRecordType | string>(props: SetPropsListP
       </ListItem>
       <List dense disablePadding>
         {type === 'linkset' && (values as GeneralRecordType<'@rid' | '@class'>[]).map((item) => (
-          <>
-            <ListItem key={item['@rid']} dense onClick={() => handleExpand?.(item as V)}>
+          <React.Fragment key={item['@rid']}>
+            <ListItem dense onClick={() => handleExpand?.(item as V)}>
               <div className="nested-spacer" />
               <ListItemText className="detail-li-text">
                 <div className="detail-identifiers-linkset">
@@ -84,7 +84,7 @@ function SetPropsList<V extends GeneralRecordType | string>(props: SetPropsListP
             </ListItem>
             <Collapse in={!!opened.includes(item as V)} unmountOnExit>
               {identifiers.map((propName) => (
-                <List dense disablePadding>
+                <List key={propName} dense disablePadding>
                   <ListItem>
                     <ListItemText>
                       <div className="detail-identifiers">
@@ -102,7 +102,7 @@ function SetPropsList<V extends GeneralRecordType | string>(props: SetPropsListP
                 </List>
               ))}
             </Collapse>
-          </>
+          </React.Fragment>
         ))}
         { type === 'embeddedset' && (values as string[]).map((item) => (
           <ListItem key={item} dense>

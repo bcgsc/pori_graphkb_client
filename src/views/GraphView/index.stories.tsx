@@ -7,7 +7,13 @@ import preview, {
   view, ViewPreviewType,
 } from '#.storybook/preview';
 
-const meta = preview.type<ViewPreviewType>().meta({ ...view });
+const meta = preview.type<ViewPreviewType>().meta({
+  ...view,
+  beforeEach({ msw }) {
+    window.localStorage.clear();
+    msw.use(http.gkb.query(() => []));
+  },
+});
 
 export const GraphNoNodes = meta.story({
   args: {
@@ -19,53 +25,49 @@ export const GraphOneNode = meta.story({
   args: {
     path: `/data/graph?nodes=${encodeURIComponent(btoa(JSON.stringify(['#123:123'])))}`,
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query((body) => {
-          const rids = body.target as string[];
-          const mainRecord = {
-            '@class': 'Therapy',
-            '@rid': '#123:123',
-            name: 'immunotherapy',
-            in_AliasOf: [
-              {
-                in: '#123:123',
-                out: {
-                  displayName: 'immunological therapy [c15262]',
-                  name: 'immunological therapy',
-                  alias: true,
-                  '@class': 'Therapy',
-                  '@rid': '#124:124',
-                },
-                '@class': 'AliasOf',
-                '@rid': '#68:68',
-              },
-              {
-                in: '#123:123',
-                out: {
-                  displayName: 'immunological [c15262]',
-                  name: 'immunological',
-                  alias: true,
-                  '@class': 'Therapy',
-                  '@rid': '#122:122',
-                },
-                '@class': 'AliasOf',
-                '@rid': '#65:65',
-              },
-            ],
-          };
-          const recordsById: Record<string, unknown> = {
-            [mainRecord['@rid']]: mainRecord,
-          };
-          mainRecord.in_AliasOf.forEach((edge) => {
-            recordsById[edge['@rid']] = { ...edge, out: { ...edge.out } };
-            recordsById[edge.out['@rid']] = { ...edge.out };
-          });
-          return rids.map((rid) => recordsById[rid]).filter(Boolean) as GeneralRecordType[];
-        }),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(http.gkb.query((body) => {
+      const rids = body.target as string[];
+      const mainRecord = {
+        '@class': 'Therapy',
+        '@rid': '#123:123',
+        name: 'immunotherapy',
+        in_AliasOf: [
+          {
+            in: '#123:123',
+            out: {
+              displayName: 'immunological therapy [c15262]',
+              name: 'immunological therapy',
+              alias: true,
+              '@class': 'Therapy',
+              '@rid': '#124:124',
+            },
+            '@class': 'AliasOf',
+            '@rid': '#68:68',
+          },
+          {
+            in: '#123:123',
+            out: {
+              displayName: 'immunological [c15262]',
+              name: 'immunological',
+              alias: true,
+              '@class': 'Therapy',
+              '@rid': '#122:122',
+            },
+            '@class': 'AliasOf',
+            '@rid': '#65:65',
+          },
+        ],
+      };
+      const recordsById: Record<string, unknown> = {
+        [mainRecord['@rid']]: mainRecord,
+      };
+      mainRecord.in_AliasOf.forEach((edge) => {
+        recordsById[edge['@rid']] = { ...edge, out: { ...edge.out } };
+        recordsById[edge.out['@rid']] = { ...edge.out };
+      });
+      return rids.map((rid) => recordsById[rid]).filter(Boolean) as GeneralRecordType[];
+    }));
   },
   play: async ({ canvas, step }) => {
     await hasFinishedLoading({ canvas, step });

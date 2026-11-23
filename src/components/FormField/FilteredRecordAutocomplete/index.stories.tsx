@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test';
 
-import preview, { http } from '#.storybook/preview';
+import preview, { http, withAuth } from '#.storybook/preview';
 
 import Component from '.';
 
@@ -12,12 +12,11 @@ const meta = preview.meta({
     linkedClassName: 'Variant',
     isMulti: false,
   },
-  parameters: {
-    msw: {
-      handlers: [
-        http.gkb.query(() => [{ '@rid': '#15:1' }, { '@rid': '#15:2' }, { '@rid': '#15:3' }]),
-      ],
-    },
+  decorators: [withAuth],
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.query(() => [{ '@rid': '#15:1' }, { '@rid': '#15:2' }, { '@rid': '#15:3' }]),
+    );
   },
 });
 
@@ -36,6 +35,13 @@ export const WithFilterOptions = meta.story({
 
 export const WithValue = meta.story({
   args: {
+    value: { '@rid': '#15:1' },
+  },
+});
+
+export const WithLabel = meta.story({
+  args: {
+    label: 'Record Label',
     value: { '@rid': '#15:1' },
   },
 });

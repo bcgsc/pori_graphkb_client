@@ -49,6 +49,14 @@ export interface FormContextState extends ReducerState {
   /** setter for setting the formIsDirty property */
   setDirty: (dirty: boolean) => void;
   disabled: boolean;
+  action: {
+    error: Error | null;
+    inProgress: boolean,
+    errorMessage: string | undefined;
+    actionType: string | undefined;
+    submit: () => void;
+    delete: () => void;
+  }
 }
 
 export const FormContext = React.createContext<FormContextState | null>(null);
@@ -234,17 +242,6 @@ export function shouldHideField(
   );
 }
 
-interface UseSchemaFormReturnType extends FormContextState {
-  action: {
-    error: Error | null;
-    inProgress: boolean,
-    errorMessage: string | undefined;
-    actionType: string | undefined;
-    submit: () => void;
-    delete: () => void;
-  }
-}
-
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
@@ -258,7 +255,7 @@ const useSchemaForm = (
   initialModel: FormContextState['model'],
   initialValue: GeneralRecordType | undefined,
   { variant = FORM_VARIANT.VIEW, additionalValidationFn, onActionSuccess }: UseSchemaFormOptions = {},
-): UseSchemaFormReturnType => {
+): FormContextState => {
   const queryClient = useQueryClient();
   const snackbar = useSnackbar();
   const [state, dispatch] = useReducer(produce(reducer), produce(reducer)({
@@ -444,6 +441,7 @@ export function useEmbeddedForm(
   }, [update]);
 
   return {
+    action: form.action,
     content,
     validation,
     isDirty: form.isDirty,

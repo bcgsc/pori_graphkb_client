@@ -154,114 +154,30 @@ exports[`ClassesTab snapshot 1`] = `
   <div
   >
     <div
-      class="about-page"
+      class="error-wrapper"
     >
-      <div
-        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      <h2
+        class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
-        />
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
-        >
-          <div
-            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
-            role="tablist"
-          >
-            <a
-              aria-current="page"
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about"
-              role="tab"
-              tabindex="-1"
-            >
-              About
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/getting-started"
-              role="tab"
-              tabindex="-1"
-            >
-              Getting Started
-            </a>
-            <a
-              aria-current="page"
-              aria-selected="true"
-              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/classes"
-              role="tab"
-              tabindex="0"
-            >
-              Classes
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/notation"
-              role="tab"
-              tabindex="-1"
-            >
-              Notation
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/matching"
-              role="tab"
-              tabindex="-1"
-            >
-              Matching
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/terms"
-              role="tab"
-              tabindex="-1"
-            >
-              Terms of Use
-            </a>
-          </div>
-          <span
-            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
-          />
-        </div>
-      </div>
-      <div
-        class="tabs-content"
+        Forbidden
+      </h2>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="auth-centered"
+        User must sign the license agreement before they can access data.
+      </p>
+      <a
+        data-discover="true"
+        href="/about/terms"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <h2
-            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            Forbidden
-          </h2>
-          <p
-            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            User must sign the license agreement before they can access data.
-          </p>
-          <button
-            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            Terms of Use and License Agreement
-          </button>
-        </div>
-      </div>
+          Terms of Use and License Agreement
+        </button>
+      </a>
     </div>
   </div>
 </div>
@@ -2067,6 +1983,10 @@ exports[`GettingStartedTab snapshot 1`] = `
               class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
             >
               For this example we are attempting to input the following. There is a clinical trial with the trial id NCT0444444 (Fictional trial ID). This trial requires participants to have mutations in the gene EGFR for Eligibility. It also requires the patients to be diagnosed with Lung Adenocarcinoma. Decomposed this becomes
+            </p>
+            <ul
+              class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+            >
               <li
                 class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
               >
@@ -2139,7 +2059,7 @@ exports[`GettingStartedTab snapshot 1`] = `
                   </p>
                 </div>
               </li>
-            </p>
+            </ul>
           </div>
           <div
             class="MuiCard-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-root MuiPaper-rounded css-XXXX-MuiPaper-root-MuiCard-root getting-started__card"
@@ -2392,68 +2312,64 @@ exports[`GettingStartedTab snapshot 1`] = `
                 alt="Graph Node Actions"
                 src="/src/static/images/graph-actions.png"
               />
-              <p
-                class="MuiTypography-body1 MuiTypography-root css-XXXX-MuiTypography-root"
+              <ul
+                class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
               >
-                <ul
-                  class="MuiList-padding MuiList-root css-XXXX-MuiList-root"
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
                 >
-                  <li
-                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
                   >
-                    <div
-                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      <span
-                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Expand
-                      </span>
-                      <p
-                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Expand the record to view its related records
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                      Expand
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      Expand the record to view its related records
+                    </p>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                >
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
                   >
-                    <div
-                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      <span
-                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Hide
-                      </span>
-                      <p
-                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Hide the record from the graph
-                      </p>
-                    </div>
-                  </li>
-                  <li
-                    class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                      Hide
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      Hide the record from the graph
+                    </p>
+                  </div>
+                </li>
+                <li
+                  class="MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-root css-XXXX-MuiListItem-root"
+                >
+                  <div
+                    class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
                   >
-                    <div
-                      class="MuiListItemText-dense MuiListItemText-multiline MuiListItemText-root css-XXXX-MuiListItemText-root"
+                    <span
+                      class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                     >
-                      <span
-                        class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        Details
-                      </span>
-                      <p
-                        class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
-                      >
-                        View record details in a side drawer
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </p>
+                      Details
+                    </span>
+                    <p
+                      class="MuiListItemText-secondary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
+                    >
+                      View record details in a side drawer
+                    </p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -2468,114 +2384,30 @@ exports[`MatchingTab snapshot 1`] = `
   <div
   >
     <div
-      class="about-page"
+      class="error-wrapper"
     >
-      <div
-        class="MuiTabs-root css-XXXX-MuiTabs-root tabs-bar"
+      <h2
+        class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX css-XXXX"
-        />
-        <div
-          class="MuiTabs-hideScrollbar MuiTabs-scrollableX MuiTabs-scroller css-XXXX-MuiTabs-scroller"
-        >
-          <div
-            class="MuiTabs-flexContainer MuiTabs-list css-XXXX-MuiTabs-list"
-            role="tablist"
-          >
-            <a
-              aria-current="page"
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about"
-              role="tab"
-              tabindex="-1"
-            >
-              About
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/getting-started"
-              role="tab"
-              tabindex="-1"
-            >
-              Getting Started
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/classes"
-              role="tab"
-              tabindex="-1"
-            >
-              Classes
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/notation"
-              role="tab"
-              tabindex="-1"
-            >
-              Notation
-            </a>
-            <a
-              aria-current="page"
-              aria-selected="true"
-              class="Mui-selected MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary active css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/matching"
-              role="tab"
-              tabindex="0"
-            >
-              Matching
-            </a>
-            <a
-              aria-selected="false"
-              class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-XXXX-MuiButtonBase-root-MuiTab-root"
-              data-discover="true"
-              href="/about/terms"
-              role="tab"
-              tabindex="-1"
-            >
-              Terms of Use
-            </a>
-          </div>
-          <span
-            class="MuiTabs-indicator css-XXXX-MuiTabs-indicator"
-          />
-        </div>
-      </div>
-      <div
-        class="tabs-content"
+        Forbidden
+      </h2>
+      <p
+        class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
       >
-        <div
-          class="auth-centered"
+        User must sign the license agreement before they can access data.
+      </p>
+      <a
+        data-discover="true"
+        href="/about/terms"
+      >
+        <button
+          class="MuiButton-colorPrimary MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeSmall MuiButton-root MuiButton-sizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <h2
-            class="MuiTypography-gutterBottom MuiTypography-h2 MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            Forbidden
-          </h2>
-          <p
-            class="MuiTypography-body1 MuiTypography-paragraph MuiTypography-root css-XXXX-MuiTypography-root"
-          >
-            User must sign the license agreement before they can access data.
-          </p>
-          <button
-            class="MuiButton-colorPrimary MuiButton-root MuiButton-sizeSmall MuiButton-text MuiButton-textPrimary MuiButton-textSizeSmall MuiButtonBase-root css-XXXX-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            Terms of Use and License Agreement
-          </button>
-        </div>
-      </div>
+          Terms of Use and License Agreement
+        </button>
+      </a>
     </div>
   </div>
 </div>
@@ -2736,7 +2568,7 @@ exports[`MatchingTabSigned snapshot 1`] = `
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="m7 10 5 5 5-5z"
+                  d="M7 10l5 5 5-5z"
                 />
               </svg>
             </div>
@@ -3587,7 +3419,7 @@ exports[`TermsTab snapshot 1`] = `
                   class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
                   <a
-                    href="about/terms#undefined"
+                    href="about/terms#term-a"
                   >
                     Term A
                   </a>
@@ -3598,6 +3430,7 @@ exports[`TermsTab snapshot 1`] = `
           <div>
             <h3
               class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="term-a"
             >
               Term A
             </h3>
@@ -3785,7 +3618,7 @@ exports[`TermsTabSigned snapshot 1`] = `
                   class="MuiListItemText-primary MuiTypography-body2 MuiTypography-root css-XXXX-MuiTypography-root"
                 >
                   <a
-                    href="about/terms#undefined"
+                    href="about/terms#term-a"
                   >
                     Term A
                   </a>
@@ -3796,6 +3629,7 @@ exports[`TermsTabSigned snapshot 1`] = `
           <div>
             <h3
               class="MuiTypography-h3 MuiTypography-root css-XXXX-MuiTypography-root"
+              id="term-a"
             >
               Term A
             </h3>

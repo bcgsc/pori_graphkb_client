@@ -1,7 +1,6 @@
 /**
  * RadioList based selection
  */
-import './index.scss';
 
 import {
   FormLabel,
@@ -67,7 +66,6 @@ function RadioSelect<V>({
         return (
           <MenuItem
             key={key}
-            className="radio-option"
             onClick={() => {
               onChange?.({ target: { name, value: option.value } });
             }}
@@ -78,16 +76,14 @@ function RadioSelect<V>({
               slotProps={{
                 input: {
                   'aria-labelledby': `${id}-${key}-label`,
-                  [('data-testid' as any)]: `radio-option__${optionToKey(option)}`,
                 },
               }}
             />
             <ListItemText
               primary={option.label}
-              secondary={option.caption || ''}
+              secondary={option.caption}
               slotProps={{
-                primary: { className: 'radio-option__title', id: `${id}-${key}-label` },
-                secondary: { className: 'radio-option__caption' },
+                primary: { id: `${id}-${key}-label` },
               }}
             />
           </MenuItem>

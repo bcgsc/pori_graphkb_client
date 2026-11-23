@@ -1,8 +1,6 @@
 import './index.scss';
 
-import {
-  Typography,
-} from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import React, {
   useCallback,
   useEffect,
@@ -13,7 +11,6 @@ import React, {
 import ActionButton from '@/components/ActionButton';
 import DropDownSelect from '@/components/DropDownSelect';
 import FormField from '@/components/FormField';
-import FieldWrapper from '@/components/FormField/FieldWrapper';
 import useSchemaForm, { FormContext } from '@/components/hooks/useSchemaForm';
 import { FORM_VARIANT } from '@/components/util';
 import schema, { SchemaPropertyDefinition } from '@/services/schema';
@@ -73,15 +70,12 @@ interface PropertyFilterProps {
   /** name of target model of query */
   modelName: string;
   onSubmit: (result: unknown) => void;
-  className?: string;
 }
 
 /**
  * Form to choose a filter to add (property, value, operator)
  */
-const PropertyFilter = ({
-  modelName, onSubmit, className = '',
-}: PropertyFilterProps) => {
+const PropertyFilter = ({ modelName, onSubmit }: PropertyFilterProps) => {
   const [property, setProperty] = useState('');
   const [propertyChoices, setPropertyChoices] = useState<{
     label: string;
@@ -301,39 +295,38 @@ const PropertyFilter = ({
   }, [fieldName, form.content, keywordTarget, modelName, onSubmit, operator, property, subqueryType]);
 
   return (
-    <>
-      <div className={`property-filter ${className}`}>
+    <Stack className="property-filter" spacing={2}>
+      <Stack className="property-filter__content" spacing={1}>
         <Typography className="property-filter__title" variant="h5">
           Add New Filter
         </Typography>
-        <div className="property-filter__content">
-          <FieldWrapper className="property-filter__property">
-            <DropDownSelect
-              aria-label="Property"
-              innerProps={{ 'data-testid': 'prop-select' }}
-              onChange={({ target: { value: newValue } }) => setProperty(newValue)}
-              options={propertyChoices}
-              value={property}
-            />
-          </FieldWrapper>
-          <FieldWrapper className="property-filter__subquery">
-            <SubqueryTypeSelector
-              disabled={!canSubquery}
-              onChange={({ target: { value: newValue } }) => setSubqueryType(newValue)}
-              value={subqueryType}
-            />
-          </FieldWrapper>
-          <FieldWrapper className="property-filter__operator">
-            <DropDownSelect
-              aria-label="Operator"
-              disabled={!property || operatorChoices.length < 2}
-              onChange={({ target: { value: newValue } }) => setOperator(newValue)}
-              options={operatorChoices}
-              value={operator}
-            />
-          </FieldWrapper>
+        <Stack spacing={1}>
+          <DropDownSelect
+            aria-label="Property"
+            innerProps={{ 'data-testid': 'prop-select' }}
+            onChange={({ target: { value: newValue } }) => setProperty(newValue)}
+            options={propertyChoices}
+            value={property}
+          />
+          <div className="property-filter__operators">
+            <div className="property-filter__subquery">
+              <SubqueryTypeSelector
+                disabled={!canSubquery}
+                onChange={({ target: { value: newValue } }) => setSubqueryType(newValue)}
+                value={subqueryType}
+              />
+            </div>
+            <div className="property-filter__operator">
+              <DropDownSelect
+                aria-label="Operator"
+                disabled={!property || operatorChoices.length < 2}
+                onChange={({ target: { value: newValue } }) => setOperator(newValue)}
+                options={operatorChoices}
+                value={operator}
+              />
+            </div>
+          </div>
           {property && subqueryType === 'keyword' && (
-          <FieldWrapper className="property-filter__keyword-target">
             <DropDownSelect
               aria-label="Keyword Target"
               disabled={keywordTargetOptions.length < 2}
@@ -341,29 +334,21 @@ const PropertyFilter = ({
               options={keywordTargetOptions}
               value={keywordTarget}
             />
-          </FieldWrapper>
           )}
-          <FormContext.Provider
-            value={form}
-          >
-            <FormField
-              name={fieldName}
-            />
+          <FormContext.Provider value={form}>
+            <FormField name={fieldName} />
           </FormContext.Provider>
-
-        </div>
-      </div>
-      <div className="property-filter__actions">
-        <ActionButton
-          disabled={!property || !form.validation.valid || !operator}
-          onClick={handleAddFilter}
-          requireConfirm={false}
-          variant="outlined"
-        >
-          add to selected group
-        </ActionButton>
-      </div>
-    </>
+        </Stack>
+      </Stack>
+      <ActionButton
+        disabled={!property || !form.validation.valid || !operator}
+        onClick={handleAddFilter}
+        requireConfirm={false}
+        variant="outlined"
+      >
+        add to selected group
+      </ActionButton>
+    </Stack>
   );
 };
 

@@ -1,4 +1,5 @@
 import {
+  List,
   ListItem,
   ListItemText,
   Typography,
@@ -27,7 +28,8 @@ const AboutStatements = () => (
       For this example we are attempting to input the following. There is a clinical trial with the trial
       id NCT0444444 (Fictional trial ID). This trial requires participants to have mutations in the gene EGFR for Eligibility.
       It also requires the patients to be diagnosed with Lung Adenocarcinoma. Decomposed this becomes
-
+    </Typography>
+    <List>
       <ListItem>
         <ListItemText
           primary="subject"
@@ -52,7 +54,7 @@ const AboutStatements = () => (
           secondary="NCT0444444: Here the support is also the clinical trial since it is responsible for defining the eligibility requirements"
         />
       </ListItem>
-    </Typography>
+    </List>
   </>
 );
 

@@ -18,70 +18,12 @@
     }
   }
 
-  .graph-input-wrapper {
-    svg {
-      color: globals.$palette__secondary--main;
-    }
-  }
-
   span {
     .label {
       color: globals.$palette__primary--main;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-size: 0.7em;
       margin: 0;
-    }
-  }
-
-  .graph-input {
-    border: 1px solid globals.$palette__grey--A100;
-    border-radius: 4px;
-    overflow: hidden;
-
-    input {
-      background-color: unset;
-      border: none;
-      font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-      font-size: 0.9em;
-      width: 100%;
-
-      &:focus {
-        box-shadow: none;
-        outline: none;
-      }
-
-      &:invalid {
-        box-shadow: none;
-        outline: none;
-      }
-    }
-  }
-
-  .advanced-options-grid {
-    display: grid;
-    grid-gap: 8px;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    padding: 24px;
-  }
-
-  .options-grid {
-    display: grid;
-    grid-column-gap: 8px;
-    grid-template-columns: 1fr;
-    grid-template-rows: 2fr 1fr;
-  }
-
-  .advanced-options-wrapper {
-    padding: 24px;
-    padding-top: 0;
-
-    .advanced-options-grid {
-      display: grid;
-      grid-gap: 8px;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      padding: 24px;
     }
   }
 

@@ -2,7 +2,7 @@ import {
   Button,
   FormHelperText,
   FormLabel,
-  List,
+  Stack,
 } from '@mui/material';
 import React, { ReactNode } from 'react';
 
@@ -81,11 +81,11 @@ const EmbeddedForm = ({
   }
 
   return (
-    <List className="form-layout__content-subgroup" sx={{ p: 1 }}>
+    <Stack spacing={1}>
       <FormLabel required={required}>{label}</FormLabel>
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
       {content}
-    </List>
+    </Stack>
   );
 };
 

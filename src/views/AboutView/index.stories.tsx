@@ -13,26 +13,23 @@ const meta = preview.type<ViewPreviewType>().meta({
       },
     },
   },
-  parameters: {
-    ...view.parameters,
-    msw: {
-      handlers: [
-        http.gkb.get('/api/version', () => []),
-        http.gkb.get('/api/stats', ({ request }) => {
-          const classList = new URL(request.url).searchParams.get('classList') ?? 'unknown';
-          return ({
-            [classList]: 10,
-          });
-        }),
-        http.gkb.get('/api/license', () => ({
-          enactedAt: new Date(2000, 0, 1).getTime(),
-          content: [
-            { label: 'Term A', content: 'You must provide free oranges for the team.' },
-          ],
-        })),
-        http.gkb.query(() => []),
-      ],
-    },
+  beforeEach({ msw }) {
+    msw.use(
+      http.gkb.get('/api/version', () => []),
+      http.gkb.get('/api/stats', ({ request }) => {
+        const classList = new URL(request.url).searchParams.get('classList') ?? 'unknown';
+        return ({
+          [classList]: 10,
+        });
+      }),
+      http.gkb.get('/api/license', () => ({
+        enactedAt: new Date(2000, 0, 1).getTime(),
+        content: [
+          { id: 'term-a', label: 'Term A', content: 'You must provide free oranges for the team.' },
+        ],
+      })),
+      http.gkb.query(() => []),
+    );
   },
 });
 

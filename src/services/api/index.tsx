@@ -7,7 +7,6 @@ import { QueryClient } from 'react-query';
 import { createContext as createRouterContext } from 'react-router';
 
 import { GeneralRecordType, QueryBody } from '@/components/types';
-import { encodeJSON } from '@/components/util';
 
 import schema from '../schema';
 import { request, RequestCallOptions } from './call';
@@ -126,27 +125,9 @@ const getDefaultSuggestionQueryBody = (model) => (textInput: string): QueryBody 
   return body;
 };
 
-/**
- * encodes complex/payload for POST query request. Returns search with encoded complex.
- *
- * @param {object} content is the payload or query object to be sent with request
- * @param {string} modelName target class that is expected to be returned
- * generated at the top of dataview
- */
-const encodeQueryComplexToSearch = (content: unknown, modelName = 'V'): URLSearchParams => {
-  const search = new URLSearchParams({ '@class': modelName });
-
-  if (content) {
-    search.set('complex', encodeJSON(content));
-  }
-
-  return search;
-};
-
 const routerQueryContext = createRouterContext<QueryClient>();
 
 export default {
-  encodeQueryComplexToSearch,
   CLASS_PROP,
   delete: del,
   get,

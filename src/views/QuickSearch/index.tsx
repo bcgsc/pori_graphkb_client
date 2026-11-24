@@ -14,7 +14,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import api from '@/services/api';
+import { encodeJSON } from '@/components/util';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
@@ -38,8 +38,7 @@ const QuickSearch = () => {
         keyword: value,
       };
 
-      const search = api.encodeQueryComplexToSearch(payload, 'Statement');
-      navigate(`/data/table?${search}`);
+      navigate(`/data/table?${new URLSearchParams({ q: encodeJSON(payload) })}`);
     }
   }, [errorMessage, navigate, value]);
 
@@ -56,12 +55,7 @@ const QuickSearch = () => {
         },
       };
 
-      const search = api.encodeQueryComplexToSearch(
-        HGVSQuery,
-        'Statement',
-      );
-
-      navigate(`/data/table?${search}`);
+      navigate(`/data/table?${new URLSearchParams({ q: encodeJSON(HGVSQuery) })}`);
     }
   }, [navigate, value, variant]);
 

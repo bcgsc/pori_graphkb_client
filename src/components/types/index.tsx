@@ -203,5 +203,7 @@ export type {
   FilterType,
   GeneralRecordType,
   QueryBody,
+  QueryOptions,
   StatementType,
+  SubQuery,
 };

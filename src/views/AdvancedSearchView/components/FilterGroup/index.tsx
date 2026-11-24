@@ -15,7 +15,7 @@ import React, { useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import LetterIcon from '@/components/LetterIcon';
-import { Comparison, FixedSubQuery } from '@/components/types';
+import { Comparison, FilterType, FixedSubQuery } from '@/components/types';
 import { extractRids, tuple } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
@@ -53,8 +53,12 @@ function formatValue(value: unknown, attr: string, labels: Record<string, string
   return JSON.stringify(value);
 }
 
-export function getComparisonLabelAndIcon(filter: Comparison, labelsByRid: Record<string, string>) {
-  const { operator = '=', ...rest } = filter;
+export function getComparisonLabelAndIcon(filter: FilterType, labelsByRid: Record<string, string>) {
+  if (filter.AND !== undefined || filter.OR !== undefined) {
+    return { label: JSON.stringify(filter) };
+  }
+  const comparison = filter as Comparison;
+  const { operator = '=', ...rest } = comparison;
 
   if (Object.keys(rest).length !== 1) {
     // does not follow expected pattern, but still show something
@@ -86,7 +90,7 @@ export function getComparisonLabelAndIcon(filter: Comparison, labelsByRid: Recor
 }
 
 interface FilterGroupProps {
-  filters: Comparison[];
+  filters: FilterType[];
   groupIndex: number;
   name: string;
   isSelected?: boolean;
@@ -148,6 +152,7 @@ function FilterGroup({
       </div>
       {onDelete && (
         <IconButton
+          aria-label={`Remove filter group ${groupIndex + 1}`}
           className="filter-group__cancel-btn"
           data-testid="cancel-btn"
           onClick={() => { onDelete(groupIndex); }}

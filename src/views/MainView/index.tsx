@@ -29,7 +29,6 @@ const AboutViewMatchingTab = lazy(() => import('@/views/AboutView/components/Mat
 const AboutViewNotationTab = lazy(() => import('@/views/AboutView/components/Notation'));
 const ActivityView = lazy(() => import('@/views/ActivityView'));
 const AdminView = lazy(() => import('@/views/AdminView'));
-const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
 const GraphView = lazy(() => import('@/views/GraphView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
 const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
@@ -84,7 +83,7 @@ export const createRoutes = (MainAuthLayout?: React.ComponentType): RouteObject[
         children: [
           { path: '/activity', Component: ActivityView },
           { path: '/query', Component: QuickSearch },
-          { path: '/query-advanced', Component: AdvancedSearchView },
+          { path: '/query-advanced', lazy: () => import('@/views/AdvancedSearchView') },
           { path: '/user-profile', Component: UserProfileView },
           { path: '/admin', Component: AdminView, middleware: [createAuthMiddleware({ requireAdmin: true })] },
           {

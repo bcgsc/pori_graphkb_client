@@ -1,6 +1,9 @@
 import { HttpResponse } from 'msw';
-import { expect } from 'storybook/test';
+import {
+  expect, fn, screen, waitFor,
+} from 'storybook/test';
 
+import { encodeJSON } from '@/components/util';
 import preview, {
   hasFinishedLoading, http, view, ViewPreviewType,
 } from '#.storybook/preview';
@@ -19,7 +22,7 @@ export const NoRows = meta.story({
 
 export const WithRows = NoRows.extend({
   args: {
-    path: '/data/table?%40class=Therapy&complex=eyJ0YXJnZXQiOiJUaGVyYXB5In0%253D',
+    path: `/data/table?${new URLSearchParams({ q: encodeJSON({ target: 'Therapy' }) })}`,
   },
   beforeEach({ msw }) {
     msw.use(http.gkb.query(() => [
@@ -71,4 +74,36 @@ export const WithDetailsOpenError = WithRows.extend({
     await WithDetailsOpen.play(context);
     await expect(await canvas.findByText('An error occurred loading the details.', { exact: false })).toBeInTheDocument();
   },
+});
+
+export const WithQueryForModifySearch = WithRows.extend({
+  args: {
+    path: `/data/table?${new URLSearchParams({
+      q: encodeJSON({
+        target: 'Therapy',
+        neighbors: 2,
+        limit: 100,
+      }),
+    })}`,
+    onLocationChange: fn(),
+  },
+  parameters: { snapshot: false },
+});
+
+WithQueryForModifySearch.test('Modify Search opens the resolved query', async ({
+  canvas, args, userEvent, step,
+}) => {
+  await hasFinishedLoading({ canvas, step });
+  await userEvent.click(canvas.getByRole('button', { name: 'click here for table and export options' }));
+  await userEvent.click(await screen.findByText('Modify Search'));
+  await waitFor(() => expect(args.onLocationChange).toHaveBeenLastCalledWith({
+    pathname: '/query-advanced',
+    search: `?${new URLSearchParams({
+      q: encodeJSON({
+        target: 'Therapy',
+        neighbors: 2,
+        limit: 100,
+      }),
+    })}`,
+  }), { timeout: 5000 });
 });

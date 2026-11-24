@@ -17,13 +17,15 @@ import {
   QueryClient, useIsFetching, useQuery, useQueryClient,
 } from 'react-query';
 import {
-  LoaderFunctionArgs, useLoaderData, useNavigate,
+  LoaderFunctionArgs, redirect, useLoaderData, useNavigate,
 } from 'react-router';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
 import { GeneralRecordType, QueryBody } from '@/components/types';
-import { decodeJSON, tuple } from '@/components/util';
+import {
+  decodeJSON, encodeJSON, isFixedSubquery, tuple, validateQueryBody,
+} from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage, NotFoundError } from '@/services/errors';
 import schema from '@/services/schema';
@@ -81,31 +83,47 @@ const getQueryPayload = ({
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
+  const q = url.searchParams.get('q');
   const complex = url.searchParams.get('complex');
-  let modelName = url.searchParams.get('@class') || url.searchParams.get('class') || 'V';
+  const legacyClass = url.searchParams.get('@class') || url.searchParams.get('class');
 
-  let payload: QueryBody;
+  // Redirect to a query-based URL if necessary from old format
+  if (!q && (complex || legacyClass)) {
+    const searchParams = new URLSearchParams(url.searchParams);
 
-  if (complex) {
-    // the decodeURIComponent should not be necessary but this seems to be double encoded
-    payload = decodeJSON<QueryBody>(decodeURIComponent(complex));
+    searchParams.delete('complex');
+    searchParams.delete('@class');
+    searchParams.delete('class');
+    searchParams.set(
+      'q',
+      complex ? decodeURIComponent(complex) : encodeJSON({ target: legacyClass }),
+    );
+    return redirect(`${url.pathname}?${searchParams}`);
+  }
+
+  let modelName = 'V';
+  let payload: QueryBody | undefined;
+
+  if (q) {
+    payload = decodeJSON<QueryBody>(q);
+
+    if (!validateQueryBody(payload)) {
+      throw new Error('Query body does not match the /query API shape.');
+    }
 
     if (payload.target && typeof payload.target === 'string') {
       modelName = payload.target;
     }
-  } else {
-    payload = { target: modelName };
-  }
+    const model = schema.get(modelName, false);
 
+    if (!model) {
+      throw new NotFoundError(`Failed to find the expected model (${modelName})`);
+    }
+  } else {
+    payload = { target: 'V' };
+  }
   payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
   payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
-  const model = schema.get(modelName, false);
-
-  if (!model) {
-    throw new NotFoundError(`Failed to find the expected model (${modelName})`);
-  }
-
-  payload.target = model.name;
 
   return {
     queryBody: payload,
@@ -371,6 +389,9 @@ const DataView = (): React.JSX.Element => {
             gridRef={grid.ref}
             onClose={() => setOptionsMenuAnchor(null)}
             onExportToTsv={(totalRows !== null) ? handleClickExport : undefined}
+            onRequestModifySearch={isFixedSubquery(queryBody)
+              ? undefined
+              : () => navigate(`/query-advanced?${new URLSearchParams({ q: encodeJSON(queryBody) })}`)}
           />
           <AgGridReact
             {...grid.props}

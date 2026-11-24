@@ -1,38 +1,37 @@
 import { produce } from 'immer';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Comparison, FilterType, QueryBody } from '@/components/types';
+import { Comparison, FilterType } from '@/components/types';
 
-const useFilterGroups = () => {
-  const [groups, setGroups] = useState<Comparison[][]>([[]]);
+const useFilterGroups = (groups: FilterType[][], onChange: (groups: FilterType[][]) => void) => {
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
 
-  const reset = useCallback(() => {
-    setGroups([[]]);
-  }, []);
+  useEffect(() => {
+    setSelectedGroupIndex((index) => Math.min(index, Math.max(groups.length - 1, 0)));
+  }, [groups.length]);
 
   const addGroup = useCallback(() => {
-    setGroups((prev) => [...prev, []]);
-  }, []);
+    onChange([...groups, []]);
+  }, [groups, onChange]);
 
   const addFilter = useCallback((filter: Comparison) => {
-    setGroups(produce((draft) => {
+    onChange(produce(groups, (draft) => {
       if (!draft.length) {
         draft.push([]);
       }
       const group = draft[selectedGroupIndex];
       group.push(filter);
     }));
-  }, [selectedGroupIndex]);
+  }, [groups, selectedGroupIndex, onChange]);
 
   const removeFilter = useCallback((groupIndex: number, filterIndex: number) => {
-    setGroups(produce((draft) => {
+    onChange(produce(groups, (draft) => {
       draft[groupIndex].splice(filterIndex, 1);
     }));
-  }, []);
+  }, [groups, onChange]);
 
   const removeGroup = useCallback((groupIndex: number) => {
-    setGroups(produce((draft) => {
+    onChange(produce(groups, (draft) => {
       draft.splice(groupIndex, 1);
 
       if (!draft.length) {
@@ -40,35 +39,10 @@ const useFilterGroups = () => {
       }
     }));
 
-    if (selectedGroupIndex === groupIndex) {
-      setSelectedGroupIndex(0);
+    if (selectedGroupIndex >= groupIndex) {
+      setSelectedGroupIndex(Math.max(0, selectedGroupIndex - 1));
     }
-  }, [selectedGroupIndex]);
-
-  const getQuery = useCallback((target: string): QueryBody => {
-    const cleanedContent: FilterType[] = [];
-    groups.forEach((group) => {
-      const filters: FilterType[] = [];
-      group.forEach((filter) => {
-        filters.push(filter);
-      });
-
-      if (filters.length === 1) {
-        cleanedContent.push(filters[0]);
-      } else if (filters.length > 1) {
-        cleanedContent.push({ AND: filters });
-      }
-    });
-
-    const content: QueryBody = { target };
-
-    if (cleanedContent.length === 1) {
-      content.filters = cleanedContent;
-    } else if (cleanedContent.length > 1) {
-      content.filters = { OR: cleanedContent };
-    }
-    return content;
-  }, [groups]);
+  }, [groups, selectedGroupIndex, onChange]);
 
   return {
     groups,
@@ -78,8 +52,6 @@ const useFilterGroups = () => {
     selectedGroupIndex,
     setSelectedGroupIndex,
     addGroup,
-    getQuery,
-    reset,
   };
 };
 

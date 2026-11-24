@@ -2,6 +2,8 @@ import { util } from '@bcgsc-pori/graphkb-schema';
 import { useSnackbar } from 'notistack';
 import { NavigateFunction } from 'react-router';
 
+import { FixedSubQuery } from './types';
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 enum FORM_VARIANT {
   EDIT = 'edit', VIEW = 'view', DELETE = 'delete', NEW = 'new', SEARCH = 'search',
@@ -132,6 +134,37 @@ const extractRids = (obj) => {
   return Array.from(new Set(recordIds));
 };
 
+function isFixedSubquery(query: unknown): query is FixedSubQuery {
+  return typeof query === 'object' && query !== null && 'queryType' in query && query.queryType !== undefined;
+}
+
+function validateFilterNode(filter: unknown): boolean {
+  if (typeof filter !== 'object' || filter === null || Array.isArray(filter)) {
+    return false;
+  }
+  if ('AND' in filter && filter.AND !== undefined) {
+    return Array.isArray(filter.AND)
+      && filter.AND.every(validateFilterNode)
+      && (!('OR' in filter) || filter.OR === undefined);
+  }
+  if ('OR' in filter && filter.OR !== undefined) {
+    return Array.isArray(filter.OR) && filter.OR.every(validateFilterNode);
+  }
+  return true;
+}
+
+function validateQueryBody(query: unknown): query is Record<string, unknown> & { target: unknown } {
+  if (typeof query !== 'object' || query === null || Array.isArray(query) || !('target' in query)) {
+    return false;
+  }
+  if ('filters' in query && query.filters !== undefined) {
+    return Array.isArray(query.filters)
+      ? query.filters.every(validateFilterNode)
+      : validateFilterNode(query.filters);
+  }
+  return true;
+}
+
 export {
   cleanLinkedRecords,
   cleanPayload,
@@ -139,6 +172,8 @@ export {
   encodeJSON,
   extractRids,
   FORM_VARIANT,
+  isFixedSubquery,
   navigateToGraph,
   tuple,
+  validateQueryBody,
 };

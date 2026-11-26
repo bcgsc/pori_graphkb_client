@@ -5,9 +5,10 @@
   & &__class-filter {
     height: 100%;
 
-    .MuiSelect-select {
+    &.MuiInput-root .MuiSelect-select {
       padding-top: 0;
       padding-bottom: 0;
+      padding-right: 28px;
       display: flex;
       align-items: center;
       line-height: normal;

@@ -3,7 +3,6 @@
  */
 import { util } from '@bcgsc-pori/graphkb-schema';
 import * as jc from 'json-cycle';
-import qs from 'qs';
 import { QueryClient } from 'react-query';
 import { createContext as createRouterContext } from 'react-router';
 
@@ -11,9 +10,6 @@ import { GeneralRecordType, QueryBody } from '@/components/types';
 
 import schema from '../schema';
 import { request, RequestCallOptions } from './call';
-import {
-  getQueryFromSearch, getSearchFromQuery,
-} from './search';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -108,17 +104,14 @@ const del = (endpoint: string) => {
  * @param {ClassModel} model the schema model to use to generate the search function
  * @returns the function to retrieve the query request body based on some input text
  */
-const getDefaultSuggestionQueryBody = (model) => (textInput) => {
-  let body: Record<string, unknown> = {};
-
+const getDefaultSuggestionQueryBody = (model) => (textInput: string): QueryBody => {
   if (util.looksLikeRID(textInput)) {
-    body = {
+    return {
       target: [textInput],
     };
-    return body;
   }
 
-  body = {
+  const body: QueryBody = {
     queryType: 'keyword',
     target: `${model.name}`,
     keyword: textInput,
@@ -132,34 +125,9 @@ const getDefaultSuggestionQueryBody = (model) => (textInput) => {
   return body;
 };
 
-/**
- * encodes complex/payload for POST query request. Returns search with encoded complex.
- *
- * @param {object} content is the payload or query object to be sent with request
- * @param {string} modelName target class that is expected to be returned
- * generated at the top of dataview
- */
-const encodeQueryComplexToSearch = (content, modelName = 'V') => {
-  const payload: Record<string, unknown> = {};
-  payload['@class'] = modelName;
-
-  if (content) {
-    const stringifiedContent = JSON.stringify(content);
-    const base64EncodedContent = btoa(stringifiedContent);
-    const encodedContent = encodeURIComponent(base64EncodedContent);
-    payload.complex = encodedContent;
-  }
-
-  const search = qs.stringify(payload);
-  return search;
-};
-
 const routerQueryContext = createRouterContext<QueryClient>();
 
 export default {
-  encodeQueryComplexToSearch,
-  getQueryFromSearch,
-  getSearchFromQuery,
   CLASS_PROP,
   delete: del,
   get,

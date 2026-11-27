@@ -9,8 +9,6 @@ import { titleCase } from 'change-case';
 import { EdgeType, GeneralRecordType } from '@/components/types';
 import { FORM_VARIANT } from '@/components/util';
 
-import { getQueryFromSearch } from './api/search';
-
 const MAX_LABEL_LENGTH = 50;
 
 type SchemaPropertyDefinition = Partial<PropertyDefinition> & {
@@ -51,7 +49,7 @@ type SchemaClassDefinition = Omit<ClassDefinition, 'properties'> & {
  * @param obj record to get label of
  * @param options.truncate if true, label if cut off after 50 characters. defaults to true
  */
-const getLabel = (obj, options?: { truncate: boolean; }) => {
+const getLabel = (obj, options?: { truncate: boolean; }): string => {
   let label = schemaDefn.getPreview(obj);
   const truncate = options?.truncate ?? true;
 
@@ -64,6 +62,9 @@ const getLabel = (obj, options?: { truncate: boolean; }) => {
       label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
     }
     return label;
+  }
+  if (typeof obj !== 'string') {
+    return String(obj);
   }
   return obj;
 };
@@ -235,13 +236,9 @@ const validateValue = (propModel: SchemaPropertyDefinition, value: unknown): Val
 /**
  * Given some search string, defines column definitions for AgGrid table
  *
- * @param {string} search the URI search component
- *
  * @returns {Array.<object>} the column definitions to be applied to a grid
  */
-const defineGridColumns = (search) => {
-  const { modelName } = getQueryFromSearch(search);
-
+const defineGridColumns = (modelName: string) => {
   const showEdges: string[] = [];
   const showByDefault: string[] = [];
   const defaultOrdering: string[] = [];

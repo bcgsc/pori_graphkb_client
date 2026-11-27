@@ -20,14 +20,14 @@ import { useDebounce } from 'use-debounce';
 import DetailChip from '@/components/DetailChip';
 import DropDownSelect from '@/components/DropDownSelect';
 import SearchBox from '@/components/SearchBox';
-import { GeneralRecordType } from '@/components/types';
+import { GeneralRecordType, QueryBody } from '@/components/types';
 import { navigateToGraph, tuple } from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 
 const MATCH_LIMIT = 100;
 
-const termTreeQuery = (ontologyClass, term) => ({
+const termTreeQuery = (ontologyClass, term): QueryBody => ({
   target: {
     target: ontologyClass,
     queryType: 'ancestors',
@@ -48,7 +48,7 @@ const termTreeQuery = (ontologyClass, term) => ({
   limit: MATCH_LIMIT,
 });
 
-const equivalentTermsQuery = (ontologyClass, term) => ({
+const equivalentTermsQuery = (ontologyClass, term): QueryBody => ({
   target: {
     target: ontologyClass,
     queryType: 'descendants',
@@ -69,7 +69,7 @@ const equivalentTermsQuery = (ontologyClass, term) => ({
   limit: MATCH_LIMIT,
 });
 
-const exludeRootTermsQuery = (ontologyClass, rootTerm) => ({
+const exludeRootTermsQuery = (ontologyClass, rootTerm): QueryBody => ({
   target: {
     target: ontologyClass,
     queryType: 'descendants',

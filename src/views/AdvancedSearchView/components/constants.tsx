@@ -1,8 +1,10 @@
-const OPERATORS_OPTS = ['=', 'CONTAINS', 'CONTAINSALL', 'CONTAINSTEXT', 'CONTAINSANY', 'IN', '>=', '>', '<=', '<'];
+import type { ComparisonOperator } from '@/components/types';
+
+const OPERATORS_OPTS = ['=', 'CONTAINS', 'CONTAINSALL', 'CONTAINSTEXT', 'CONTAINSANY', 'IN', '>=', '>', '<=', '<'] as const;
 
 interface Operator {
   label: string;
-  value: string;
+  value: ComparisonOperator;
   key: string;
   iterable?: boolean;
   isNumOperator?: boolean;

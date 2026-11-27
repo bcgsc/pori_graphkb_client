@@ -18,10 +18,12 @@ interface TableOptionsProps {
   gridRef?: ReturnType<typeof useGrid>['ref'];
   onClose?: (...args: unknown[]) => void;
   onExportToTsv?: (arg: false) => void;
+  onRequestModifySearch?: () => void;
 }
 
 const TableOptions = ({
   onExportToTsv,
+  onRequestModifySearch,
   anchorEl,
   onClose,
   gridRef,
@@ -37,8 +39,14 @@ const TableOptions = ({
       label: 'Configure Visible Columns',
       handler: () => setColumnControlIsOpen(true),
     },
-
   ];
+
+  if (onRequestModifySearch) {
+    menuContents.push({
+      label: 'Modify Search',
+      handler: onRequestModifySearch,
+    });
+  }
 
   if (onExportToTsv) {
     menuContents.push({

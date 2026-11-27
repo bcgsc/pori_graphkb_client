@@ -35,14 +35,8 @@ export const ExactMatchLinkProperty = Default.extend({
     await userEvent.click(await canvas.findByText(/add to selected group/i));
     await userEvent.tab();
     await waitFor(() => expect(args.onSubmit).toHaveBeenCalledWith({
-      attr: 'relevance',
-      value: [expect.objectContaining({ '@rid': '#111:111', name: 'immunotherapy' })],
       operator: 'IN',
-      subqueryType: '',
-      query: {
-        operator: 'IN',
-        relevance: [expect.objectContaining({ '@rid': '#111:111', name: 'immunotherapy' })],
-      },
+      relevance: ['#111:111'],
     }));
   },
 });
@@ -57,21 +51,15 @@ export const KeywordLinkProperty = Default.extend({
     await userEvent.click(await canvas.findByText(/add to selected group/i));
     await userEvent.tab();
     await waitFor(() => expect(args.onSubmit).toHaveBeenCalledWith({
-      attr: 'relevance',
-      value: 'something',
-      operator: 'CONTAINSTEXT',
-      subqueryType: 'keyword',
-      query: {
-        operator: 'IN',
-        relevance: {
-          queryType: 'similarTo',
-          treeEdges: [],
-          target: {
-            target: 'Vocabulary',
-            operator: 'CONTAINSTEXT',
-            keyword: 'something',
-            queryType: 'keyword',
-          },
+      operator: 'IN',
+      relevance: {
+        queryType: 'similarTo',
+        treeEdges: [],
+        target: {
+          target: 'Vocabulary',
+          operator: 'CONTAINSTEXT',
+          keyword: 'something',
+          queryType: 'keyword',
         },
       },
     }));
@@ -85,19 +73,13 @@ export const SubclassTreeLinkProperty = Default.extend({
     await userEvent.click(await canvas.findByText(/add to selected group/i));
     await userEvent.tab();
     await waitFor(() => expect(args.onSubmit).toHaveBeenCalledWith({
-      attr: 'relevance',
-      value: [expect.objectContaining({ '@rid': '#111:111', name: 'immunotherapy' })],
       operator: 'IN',
-      subqueryType: 'tree',
-      query: {
-        operator: 'IN',
-        relevance: {
-          queryType: 'similarTo',
-          treeEdges: [],
-          target: {
-            target: [expect.objectContaining({ '@rid': '#111:111', name: 'immunotherapy' })],
-            queryType: 'ancestors',
-          },
+      relevance: {
+        queryType: 'similarTo',
+        treeEdges: [],
+        target: {
+          target: ['#111:111'],
+          queryType: 'ancestors',
         },
       },
     }));
@@ -113,14 +95,8 @@ export const EmbeddedProperty = meta.story({
     await userEvent.click(await canvas.findByText(/add to selected group/i));
     await userEvent.tab();
     await waitFor(() => expect(args.onSubmit).toHaveBeenCalledWith({
-      attr: 'break1Start.@class',
-      value: 'ProteinPosition',
       operator: '=',
-      subqueryType: '',
-      query: {
-        operator: '=',
-        'break1Start.@class': 'ProteinPosition',
-      },
+      'break1Start.@class': 'ProteinPosition',
     }));
   },
 });

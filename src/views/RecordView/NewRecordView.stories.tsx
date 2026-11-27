@@ -280,7 +280,7 @@ export const NewStatement = meta.story({
           return [];
         }
 
-        if (payload.target === 'Vocabulary' && payload.filters) {
+        if (payload.target === 'Vocabulary' && 'filters' in payload && payload.filters) {
           return VOCABULARY;
         }
         if (payload.target === 'Feature') {

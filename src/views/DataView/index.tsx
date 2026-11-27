@@ -16,14 +16,18 @@ import React, {
 import {
   QueryClient, useIsFetching, useQuery, useQueryClient,
 } from 'react-query';
-import { useLocation, useNavigate } from 'react-router';
+import {
+  LoaderFunctionArgs, redirect, useLoaderData, useNavigate,
+} from 'react-router';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import useGrid from '@/components/hooks/useGrid';
-import { GeneralRecordType } from '@/components/types';
-import { tuple } from '@/components/util';
+import { GeneralRecordType, QueryBody } from '@/components/types';
+import {
+  decodeJSON, encodeJSON, isFixedSubquery, tuple, validateQueryBody,
+} from '@/components/util';
 import api from '@/services/api';
-import { ErrorMessage } from '@/services/errors';
+import { ErrorMessage, NotFoundError } from '@/services/errors';
 import schema from '@/services/schema';
 import config from '@/static/config';
 
@@ -33,11 +37,11 @@ import TableOptions from './components/TableOptions';
 
 const CACHE_BLOCK_SIZE = 50;
 const DEFAULT_BLOCK_SIZE = 100;
-const { DEFAULT_NEIGHBORS, MAX_EXPORT_SIZE } = config;
+const DEFAULT_LIMIT = 100;
+const { DEFAULT_NEIGHBORS, MAX_EXPORT_SIZE, TABLE_DEFAULT_NEIGHBORS } = config;
 
 interface GetQueryPayloadArgs {
-  /** the query string */
-  search: string;
+  body: QueryBody;
   /**
    * the sort model
    */
@@ -56,10 +60,9 @@ interface GetQueryPayloadArgs {
  * @returns {ApiCall} the api call for retriving the requested data
  */
 const getQueryPayload = ({
-  search, sortModel, skip, limit, count = false,
+  body, sortModel, skip, limit, count = false,
 }: GetQueryPayloadArgs) => {
-  const { payload } = api.getQueryFromSearch(search);
-  const content = payload || { neighbors: DEFAULT_NEIGHBORS };
+  const content = { ...body };
 
   if (count) {
     content.count = true;
@@ -78,11 +81,61 @@ const getQueryPayload = ({
   return content;
 };
 
+export const loader = ({ request }: LoaderFunctionArgs) => {
+  const url = new URL(request.url);
+  const q = url.searchParams.get('q');
+  const complex = url.searchParams.get('complex');
+  const legacyClass = url.searchParams.get('@class') || url.searchParams.get('class');
+
+  // Redirect to a query-based URL if necessary from old format
+  if (!q && (complex || legacyClass)) {
+    const searchParams = new URLSearchParams(url.searchParams);
+
+    searchParams.delete('complex');
+    searchParams.delete('@class');
+    searchParams.delete('class');
+    searchParams.set(
+      'q',
+      complex ? decodeURIComponent(complex) : encodeJSON({ target: legacyClass }),
+    );
+    return redirect(`${url.pathname}?${searchParams}`);
+  }
+
+  let modelName = 'V';
+  let payload: QueryBody | undefined;
+
+  if (q) {
+    payload = decodeJSON<QueryBody>(q);
+
+    if (!validateQueryBody(payload)) {
+      throw new Error('Query body does not match the /query API shape.');
+    }
+
+    if (payload.target && typeof payload.target === 'string') {
+      modelName = payload.target;
+    }
+    const model = schema.get(modelName, false);
+
+    if (!model) {
+      throw new NotFoundError(`Failed to find the expected model (${modelName})`);
+    }
+  } else {
+    payload = { target: 'V' };
+  }
+  payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
+  payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
+
+  return {
+    queryBody: payload,
+    modelName,
+  };
+};
+
 interface GetRowsFromBlocksArgs {
   startRow: number;
   endRow: number;
   sortModel?: { colId: string; sort: string; }[];
-  search: string;
+  body: QueryBody;
   blockSize: number;
   queryClient: QueryClient;
 }
@@ -94,7 +147,7 @@ const getRowsFromBlocks = async ({
   startRow,
   endRow, // exclusive
   sortModel,
-  search,
+  body,
   blockSize,
   queryClient,
 }: GetRowsFromBlocksArgs) => {
@@ -105,7 +158,7 @@ const getRowsFromBlocks = async ({
 
   for (let block = firstBlock; block <= lastBlock; block += blockSize) {
     const payload = getQueryPayload({
-      search, skip: block, limit: blockSize, sortModel,
+      body, skip: block, limit: blockSize, sortModel,
     });
 
     blockRequests.push(queryClient.fetchQuery({
@@ -129,13 +182,10 @@ const getRowsFromBlocks = async ({
  * Shows the search result filters and an edit button
  */
 const DataView = (): React.JSX.Element => {
-  const {
-    search: initialSearch,
-  } = useLocation();
+  const { queryBody, modelName } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [isExportingData, setIsExportingData] = useState(false);
   const isLoading = useIsFetching();
-  const [search, setSearch] = useState(initialSearch);
   const [selectedRecords, setSelectedRecords] = useState<GeneralRecordType[]>([]);
   const [optionsMenuAnchor, setOptionsMenuAnchor] = useState<HTMLButtonElement | null>(null);
   const [detailsRowId, setDetailsRowId] = useState<string | null>(null);
@@ -143,8 +193,8 @@ const DataView = (): React.JSX.Element => {
   const queryClient = useQueryClient();
 
   const payload = useMemo(() => getQueryPayload({
-    search, count: true,
-  }), [search]);
+    body: queryBody, count: true,
+  }), [queryBody]);
 
   const { data: totalRows } = useQuery({
     queryKey: tuple('/query', payload),
@@ -158,7 +208,7 @@ const DataView = (): React.JSX.Element => {
     if (!gridApi) { return; }
 
     gridApi.setGridOption('columnDefs', [
-      ...schema.defineGridColumns(search),
+      ...schema.defineGridColumns(modelName),
     ]);
 
     gridApi.setGridOption('datasource', {
@@ -172,7 +222,7 @@ const DataView = (): React.JSX.Element => {
           sortModel,
         }) => {
           const result = await getRowsFromBlocks({
-            startRow, endRow, sortModel, search, blockSize: DEFAULT_BLOCK_SIZE, queryClient,
+            startRow, endRow, sortModel, body: queryBody, blockSize: DEFAULT_BLOCK_SIZE, queryClient,
           });
           return [result, totalRows] as const;
         };
@@ -184,13 +234,7 @@ const DataView = (): React.JSX.Element => {
           }).catch(() => failCallback());
       },
     });
-  }, [grid.ref, search, totalRows, queryClient]);
-
-  useEffect(() => {
-    // normalize the input query
-    const newSearch = api.getSearchFromQuery(api.getQueryFromSearch(initialSearch));
-    setSearch(newSearch);
-  }, [initialSearch]);
+  }, [grid.ref, modelName, queryBody, queryClient, totalRows]);
 
   // set up infinitite row model data source
   useEffect(() => {
@@ -205,7 +249,7 @@ const DataView = (): React.JSX.Element => {
 
     initializeGrid();
     gridApi.addEventListener('selectionChanged', handleSelectionChange);
-  }, [grid.ref, initializeGrid, search, totalRows]);
+  }, [grid.ref, initializeGrid, queryBody, totalRows]);
 
   const { data: detailPanelRow, error } = useQuery({
     queryKey: tuple('/query', { target: [detailsRowId!], neighbors: DEFAULT_NEIGHBORS }),
@@ -274,7 +318,7 @@ const DataView = (): React.JSX.Element => {
         endRow: maxExportSize,
         // @ts-expect-error private property
         sortModel: gridApi.sortController.getSortModel(),
-        search,
+        body: queryBody,
         blockSize: DEFAULT_BLOCK_SIZE,
         queryClient,
       });
@@ -301,7 +345,7 @@ const DataView = (): React.JSX.Element => {
 
       gridApi.setGridOption('datasource', tempDataSource);
     }
-  }, [grid.ref, initializeGrid, isExportingData, search, totalRows, queryClient]);
+  }, [grid.ref, isExportingData, totalRows, queryBody, queryClient, initializeGrid]);
 
   const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -321,7 +365,7 @@ const DataView = (): React.JSX.Element => {
   return (
     <div className={`data-view ${detailPanelIsOpen ? 'data-view--squished' : ''}`}>
       <div className="data-view__header">
-        <ActiveFilters search={search} />
+        <ActiveFilters queryBody={queryBody} />
         <Tooltip title="click here for table and export options">
           <IconButton
             className="data-view__edit-filters"
@@ -345,6 +389,9 @@ const DataView = (): React.JSX.Element => {
             gridRef={grid.ref}
             onClose={() => setOptionsMenuAnchor(null)}
             onExportToTsv={(totalRows !== null) ? handleClickExport : undefined}
+            onRequestModifySearch={isFixedSubquery(queryBody)
+              ? undefined
+              : () => navigate(`/query-advanced?${new URLSearchParams({ q: encodeJSON(queryBody) })}`)}
           />
           <AgGridReact
             {...grid.props}
@@ -394,4 +441,4 @@ const DataView = (): React.JSX.Element => {
   );
 };
 
-export default DataView;
+export { DataView as Component };

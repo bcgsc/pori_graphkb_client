@@ -8,11 +8,13 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useIsFetching, useQuery, useQueryClient } from 'react-query';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import DetailDrawer from '@/components/DetailDrawer';
 import { GeneralRecordType } from '@/components/types';
-import { getNodeRIDsFromURL, navigateToGraph, tuple } from '@/components/util';
+import {
+  decodeJSON, navigateToGraph, tuple,
+} from '@/components/util';
 import api from '@/services/api';
 import { ErrorMessage } from '@/services/errors';
 import schema from '@/services/schema';
@@ -28,13 +30,13 @@ const { DEFAULT_NEIGHBORS } = config;
  * Shows the search result filters and an edit button
  */
 const GraphView = () => {
-  const { search } = useLocation();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isLoading = useIsFetching();
   const [detailPanelRid, setDetailPanelRid] = useState<string | null>(null);
   // the existing behaviour of the graph relies on this not changing even when the url *is* updated (TODO fix logic so this can update)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const recordIds = useMemo(() => getNodeRIDsFromURL(`${window.location.origin}${search}`), []);
+  const recordIds = useMemo(() => (searchParams.get('nodes') ? decodeJSON<string[]>(searchParams.get('nodes')!) : []), []);
   const queryClient = useQueryClient();
   const snackbar = useSnackbar();
 
